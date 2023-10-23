@@ -1,3 +1,5 @@
+
+
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
@@ -32,6 +34,10 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -62,4 +68,9 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
+
+    // ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
+    // framework ktx dependency 추가
+    implementation("androidx.fragment:fragment-ktx:1.4.1")
 }
