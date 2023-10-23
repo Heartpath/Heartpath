@@ -1,5 +1,3 @@
-
-
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
@@ -73,4 +71,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
     // framework ktx dependency 추가
     implementation("androidx.fragment:fragment-ktx:1.4.1")
+    
+    // SDP
+    implementation("com.intuit.sdp:sdp-android:1.1.0")
 }
