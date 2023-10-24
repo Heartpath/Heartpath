@@ -30,7 +30,8 @@
             android:id="@+id/textview_send_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint = "하동혁님이 보낸 편지"
+            android:text="하동혁님이 보낸 편지"
+            style="@style/Black_15_Bold_NanumText"
             />
 
         <Space
@@ -41,7 +42,8 @@
             android:id="@+id/textview_send_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint = "보낸 날짜: 2023.03.11"
+            android:text="보낸 날짜: 2023.03.11"
+            style="@style/Black_10_Light_NanumText"
             />
 
 
