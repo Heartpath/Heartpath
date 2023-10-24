@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/sendLetterFragment">
 
     <fragment
         android:id="@+id/homeFragment"
@@ -15,4 +15,8 @@
         android:name="com.zootopia.presentation.sendletter.SendLetterFragment"
         android:label="fragment_send_letter"
         tools:layout="@layout/fragment_send_letter" />
+    <fragment
+        android:id="@+id/receiveLetterFragment"
+        android:name="com.zootopia.presentation.receiveletter.ReceiveLetterFragment"
+        android:label="ReceiveLetterFragment" />
 </navigation>
