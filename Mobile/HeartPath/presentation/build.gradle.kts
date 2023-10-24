@@ -75,4 +75,8 @@ dependencies {
     
     // SDP
     implementation("com.intuit.sdp:sdp-android:1.1.0")
+    
+    // Navigation
+    implementation("androidx.navigation:navigation-fragment-ktx:2.5.1")
+    implementation("androidx.navigation:navigation-ui-ktx:2.5.1")
 }

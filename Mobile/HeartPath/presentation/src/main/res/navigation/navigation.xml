@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/sendLetterFragment"
+        android:name="com.zootopia.presentation.sendletter.SendLetterFragment"
+        android:label="fragment_send_letter"
+        tools:layout="@layout/fragment_send_letter" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.zootopia.presentation.home.HomeFragment"
+        android:label="HomeFragment" />
+</navigation>
