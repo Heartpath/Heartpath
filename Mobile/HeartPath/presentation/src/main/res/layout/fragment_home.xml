@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/PrimaryLightBlue">
@@ -9,44 +10,118 @@
         android:layout_width="@dimen/_80sdp"
         android:layout_height="@dimen/_80sdp"
         android:src="@drawable/image_heart_cloud"
-        android:layout_marginStart="@dimen/_30sdp"
+        app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textview_title"
         style="@style/BlackLargeLeeSeoyunText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/_20sdp"
         android:text="@string/home_title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/image_branch"
-        android:layout_marginTop="@dimen/_64sdp"
-        android:layout_width="@dimen/_200sdp"
-        android:layout_height="@dimen/_200sdp"
-        android:src="@drawable/image_branch"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    <ImageView
-        android:id="@+id/image_view_bird"
-        android:layout_width="@dimen/_100sdp"
-        android:layout_height="@dimen/_100sdp"
-        android:layout_marginRight="@dimen/_30sdp"
-        android:src="@drawable/image_bird_delivery"
-        app:layout_constraintEnd_toEndOf="@+id/image_branch"
-        app:layout_constraintTop_toTopOf="@+id/image_branch" />
-
-    <ImageView
-        android:id="@+id/button_write_letter"
-        android:layout_width="@dimen/_120sdp"
-        android:layout_height="@dimen/_120sdp"
-        android:src="@drawable/image_letter"
-        android:layout_marginTop="@dimen/_300sdp"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_bird_branch"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.3"
+        app:layout_constraintWidth_percent="0.7"
+        app:layout_constraintVertical_bias="0.15"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+        <ImageView
+            android:id="@+id/image_branch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/image_branch"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+        <ImageView
+            android:id="@+id/button_character_encyclopedia"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_percent="0.6"
+            app:layout_constraintWidth_percent="0.46"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintHorizontal_bias="0.7"
+            android:src="@drawable/image_bird_delivery"
+            app:layout_constraintEnd_toEndOf="@+id/image_branch"
+            app:layout_constraintStart_toStartOf="@id/image_branch"
+            app:layout_constraintBottom_toTopOf="@id/image_branch"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    <LinearLayout
+        android:id="@+id/linearlayout_letter_bag"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.4"
+        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraint_bird_branch"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/button_write_letter"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:src="@drawable/image_letter"
+            />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"/>
+        <ImageView
+            android:id="@+id/button_letter_storage"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.4"
+            android:src="@drawable/image_bag"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout_map_box"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.4"
+        app:layout_constraintWidth_percent="0.5"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/constraint_bird_branch"
+        app:layout_constraintStart_toEndOf="@id/linearlayout_letter_bag"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.4">
+        <ImageView
+            android:id="@+id/button_map"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:src="@drawable/image_map" />
+        <Space
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"/>
+        <ImageView
+            android:id="@+id/button_letter_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:src="@drawable/image_box" />
+    </LinearLayout>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
