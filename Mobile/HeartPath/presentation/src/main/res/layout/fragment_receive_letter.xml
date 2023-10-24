@@ -8,7 +8,7 @@
     tools:context=".sendletter.SendLetterFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview_send_letter"
+        android:id="@+id/recyclerview_receive_letter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
