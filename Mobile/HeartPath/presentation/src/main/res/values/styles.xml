@@ -13,10 +13,10 @@
         <item name="android:textSize">@dimen/_10sdp</item>
     </style>
 
-    <style name="Black_15_Bold_NanumText" parent="@style/Widget.AppCompat.TextView">
+    <style name="Black_12_Bold_NanumText" parent="@style/Widget.AppCompat.TextView">
         <item name="fontFamily">@font/nanum_square_round_otf_bold</item>
         <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">@dimen/_15sdp</item>
+        <item name="android:textSize">@dimen/_12sdp</item>
     </style>
 
     <style name="Black_30_Bold_NanumText" parent="@style/Widget.AppCompat.TextView">
@@ -27,6 +27,12 @@
 
     <style name="Black_10_Light_NanumText" parent="@style/Widget.AppCompat.TextView">
         <item name="fontFamily">@font/nanum_square_round_otf_light</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/_10sdp</item>
+    </style>
+
+    <style name="Black_10_Regular_NanumText" parent="@style/Widget.AppCompat.TextView">
+        <item name="fontFamily">@font/nanum_square_round_otf_regular</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">@dimen/_10sdp</item>
     </style>
