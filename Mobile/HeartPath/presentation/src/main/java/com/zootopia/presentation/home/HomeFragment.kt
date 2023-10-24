@@ -1,4 +1,4 @@
-package com.zootopia.presentation.sendletter
+package com.zootopia.presentation.home
 
 import android.content.Context
 import android.os.Bundle
@@ -6,10 +6,10 @@ import android.view.View
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
-import com.zootopia.presentation.databinding.FragmentSendLetterBinding
+import com.zootopia.presentation.databinding.FragmentHomeBinding
 
-class SendLetterFragment :
-    BaseFragment<FragmentSendLetterBinding>(FragmentSendLetterBinding::bind, R.layout.fragment_send_letter) {
+class HomeFragment :
+    BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::bind, R.layout.fragment_home) {
     
     private lateinit var mainActivity: MainActivity
     
