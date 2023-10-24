@@ -9,14 +9,37 @@
         android:id="@+id/homeFragment"
         android:name="com.zootopia.presentation.home.HomeFragment"
         android:label="HomeFragment"
-        tools:layout="@layout/fragment_home"/>
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_sendLetterFragment"
+            app:destination="@id/sendLetterFragment"
+            style="@style/SlideAnimation"/>
+        <action
+            android:id="@+id/action_homeFragment_to_receiveLetterFragment"
+            app:destination="@id/receiveLetterFragment"
+            style="@style/SlideAnimation"/>
+        <action
+            android:id="@+id/action_homeFragment_to_mapFragment"
+            app:destination="@id/mapFragment"
+            style="@style/SlideAnimation"/>
+    </fragment>
+
     <fragment
         android:id="@+id/sendLetterFragment"
         android:name="com.zootopia.presentation.sendletter.SendLetterFragment"
         android:label="fragment_send_letter"
-        tools:layout="@layout/fragment_send_letter" />
+        tools:layout="@layout/fragment_send_letter">
+    </fragment>
+
     <fragment
         android:id="@+id/receiveLetterFragment"
         android:name="com.zootopia.presentation.receiveletter.ReceiveLetterFragment"
-        android:label="ReceiveLetterFragment" />
+        android:label="ReceiveLetterFragment"
+        tools:layout="@layout/fragment_receive_letter"/>
+
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.zootopia.presentation.map.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map"/>
 </navigation>
