@@ -25,38 +25,36 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraint_bird_branch"
+        android:id="@+id/constraintlayout_bird_branch"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.3"
+        android:layout_height="@dimen/_190sdp"
         app:layout_constraintWidth_percent="0.7"
-        app:layout_constraintVertical_bias="0.15"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0"
         >
+
         <ImageView
             android:id="@+id/image_branch"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:scaleType="fitEnd"
             android:src="@drawable/image_branch"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
         <ImageView
-            android:id="@+id/button_character_encyclopedia"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintHeight_percent="0.6"
-            app:layout_constraintWidth_percent="0.46"
-            app:layout_constraintVertical_bias="0"
-            app:layout_constraintHorizontal_bias="0.7"
+            android:layout_height=""
+            android:layout_width="wrap_content"
             android:src="@drawable/image_bird_delivery"
-            app:layout_constraintEnd_toEndOf="@+id/image_branch"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintVertical_bias="0.6"
             app:layout_constraintStart_toStartOf="@id/image_branch"
-            app:layout_constraintBottom_toTopOf="@id/image_branch"
-            app:layout_constraintTop_toTopOf="parent"/>
-
+            app:layout_constraintEnd_toEndOf="@id/image_branch"
+            app:layout_constraintTop_toTopOf="@id/image_branch"
+            app:layout_constraintBottom_toBottomOf="@id/image_branch"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -70,7 +68,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/constraint_bird_branch"
+        app:layout_constraintTop_toBottomOf="@id/constraintlayout_bird_branch"
         android:orientation="vertical">
 
         <ImageView
@@ -100,7 +98,7 @@
         app:layout_constraintHeight_percent="0.4"
         app:layout_constraintWidth_percent="0.5"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/constraint_bird_branch"
+        app:layout_constraintTop_toBottomOf="@id/constraintlayout_bird_branch"
         app:layout_constraintStart_toEndOf="@id/linearlayout_letter_bag"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.4">
