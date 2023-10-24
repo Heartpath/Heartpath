@@ -11,11 +11,10 @@ private const val TAG = "SendLetterAdapter_HeartPath"
 class SendLetterAdapter() : 
     RecyclerView.Adapter<SendLetterAdapter.SendLetterViewHolder>() {
     
-    inner class SendLetterViewHolder(val binding: ItemSendLetterBinding) : 
+    inner class SendLetterViewHolder(val binding: ItemSendLetterBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bindInfo() = with(binding) {
-            textviewSendUser.text = "하동혁님이 보낸 편지"
-            textviewSendTime.text = "보낸 날짜: 2023.03.11"
+            textviewReceiveUser.text = "하동혁님이 보낸 편지"
             
             // Click Event
             linearlayoutLetter.setOnClickListener {
