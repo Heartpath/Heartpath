@@ -18,11 +18,11 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image_open_letter"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/_60sdp"
+            android:layout_width="@dimen/_70sdp"
+            android:layout_height="@dimen/_70sdp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/image_receive_letter"
+            android:src="@drawable/image_open_letter"
             tools:ignore="MissingConstraints" />
 
         <Space
@@ -30,12 +30,22 @@
             android:layout_height="@dimen/_4sdp" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/textview_receive_user"
+            android:id="@+id/textview_send_user"
             style="@style/Black_12_Bold_NanumText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="하동혁님이 보낸 편지" />
 
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_2sdp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textview_send_time"
+            style="@style/Black_10_Regular_NanumText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="보낸 날짜: 2023.03.11" />
 
 
     </androidx.appcompat.widget.LinearLayoutCompat>
