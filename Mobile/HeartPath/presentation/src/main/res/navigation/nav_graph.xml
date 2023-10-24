@@ -6,12 +6,13 @@
     app:startDestination="@id/homeFragment">
 
     <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.zootopia.presentation.home.HomeFragment"
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_home"/>
+    <fragment
         android:id="@+id/sendLetterFragment"
         android:name="com.zootopia.presentation.sendletter.SendLetterFragment"
         android:label="fragment_send_letter"
         tools:layout="@layout/fragment_send_letter" />
-    <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.zootopia.presentation.home.HomeFragment"
-        android:label="HomeFragment" />
 </navigation>
