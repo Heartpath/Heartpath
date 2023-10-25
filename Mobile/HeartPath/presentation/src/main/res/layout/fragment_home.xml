@@ -33,6 +33,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
+    <ImageView
+        android:id="@+id/button_my_page"
+        android:layout_width="@dimen/_30sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:scaleType="fitCenter"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:backgroundTint="@color/PrimaryLightBlue"
+        android:src="@drawable/image_bird_face"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintlayout_bird_branch"
         android:layout_width="0dp"
