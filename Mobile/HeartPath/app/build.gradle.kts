@@ -1,4 +1,7 @@
-import org.jetbrains.kotlin.storage.CacheResetOnProcessCanceled.enabled
+import java.util.*
+import java.io.*
+
+// ktlint-disable no-wildcard-imports
 
 plugins {
     id("com.android.application")
@@ -6,6 +9,10 @@ plugins {
     id("dagger.hilt.android.plugin")
     id("kotlin-kapt")
 }
+
+val localProperties = Properties()
+localProperties.load(FileInputStream(rootProject.file("local.properties")))
+val naverMapClientId = properties["naver_map_client_id"].toString()
 
 android {
     namespace = "com.zootopia.heartpath"
@@ -22,6 +29,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        
+        buildConfigField("String", "NAVER_MAP_CLIENT_ID", properties["naver_map_client_id"].toString())
+        manifestPlaceholders["NAVER_MAP_CLIENT_ID"] = naverMapClientId
     }
 
     buildTypes {
@@ -39,6 +49,10 @@ android {
     }
     kotlinOptions {
         jvmTarget = "17"
+    }
+    
+    buildFeatures {
+        buildConfig = true
     }
 }
 

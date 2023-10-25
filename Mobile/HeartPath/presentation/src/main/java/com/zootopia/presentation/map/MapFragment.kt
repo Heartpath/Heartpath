@@ -3,6 +3,7 @@ package com.zootopia.presentation.map
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.zootopia.presentation.MainActivity
@@ -22,5 +23,10 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::bind, R
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
+        
+        initCheckPermission()
+    }
+    
+    private fun initCheckPermission() {
     }
 }
