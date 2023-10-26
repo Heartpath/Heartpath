@@ -43,4 +43,12 @@
         <item name="android:textSize">@dimen/_10sdp</item>
     </style>
 
+    <!-- 화면 Slide 애니메이션 -->
+    <style name="SlideAnimation">
+        <item name="enterAnim">@anim/slide_in_right</item>
+        <item name="exitAnim">@anim/slide_out_left</item>
+        <item name="popEnterAnim">@anim/slide_in_left</item>
+        <item name="popExitAnim">@anim/slide_out_right</item>
+    </style>
+
 </resources>
