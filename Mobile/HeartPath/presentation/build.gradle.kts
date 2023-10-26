@@ -43,7 +43,6 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-//    implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.compose.material3:material3:1.0.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.google.android.material:material:1.10.0")
@@ -79,6 +78,12 @@ dependencies {
     // Navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.1")
     implementation("androidx.navigation:navigation-ui-ktx:2.5.1")
+    
+    // 네이버 지도 SDK
+    implementation("com.naver.maps:map-sdk:3.17.0")
+    
+    // datastore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     // Glide
     implementation("com.github.bumptech.glide:glide:4.12.0")
