@@ -3,17 +3,18 @@ package com.zootopia.presentation.util
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.zootopia.presentation.MainActivity
-import android.net.Uri
+import com.zootopia.presentation.MainViewModel
 
 private const val TAG = "PermissionUtil_HeartPath"
 
-fun Context.hasPermissions(permission: String): Boolean{
+fun Context.hasPermissions(permission: String): Boolean {
     return ContextCompat.checkSelfPermission(
         this,
         permission
@@ -22,41 +23,20 @@ fun Context.hasPermissions(permission: String): Boolean{
 
 /**
  * permissionList에 있는 권한들에 대해서 요청합니다.
- * getPermissionRejected -> 해당 권한에 대해서 한 번 거절했었는지 가져오는 함수
- * setPermissionRejected -> 해당 권한에 대해 거절하면 거절했다는 정보를 저장하는 함수
- * getIsShowedPermissionDialog -> 해당 권한에 대해서 설정으로 이동하는 dialog를 보여줬는지 가져오는 함수
- * setIsShowedPermissionDialog -> 해당 권한에 대해서 설정으로 이동하는 dialog를 보여줘야 한다고 값 갱신하는 함수
- * isShowDialog -> 다이얼로그를 총 한 번만 띄우기 위해 실행하는 함수
  */
 fun checkAllPermission(
     fragment: Fragment?,
     activity: MainActivity,
+    mainViewModel: MainViewModel,
     permissionList: Array<String>,
-    getPermissionRejected: (String) -> Boolean,
-    setPermissionRejected: (String) -> Unit,
-    getIsShowedPermissionDialog: (String) -> Boolean,
-    setIsShowedPermissionDialog: (String) -> Unit,
-    isShowDialog: () -> Unit
 ){
     val requestMultiplePermission =
         (fragment?:activity).registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
             var lastResult = false // 초기값을 false 설정
             results.forEach {
                 if(!it.value) {
-                    if(!getPermissionRejected(it.key)){ //거절한 적이 없다면
-                        setPermissionRejected(it.key) //거절했다고 값 갱신
-                    }else{
-                        if(!getIsShowedPermissionDialog(it.key)) { //두 번 거절해서 다이얼로그 띄운 적 없으면
-                            setIsShowedPermissionDialog(it.key) //해당 권한에 대해서 다이얼로그 띄워야 한다고 값 갱신
-                            lastResult = true // 다이얼로그 총 한 번만 띄우기 위해 값 저장
-                        }
-                    }
+                    mainViewModel.getPermissionRejected(it.key)
                 }
-            }
-            // 다이얼로그 띄워야 한다면
-            if(lastResult){
-                //여기서 다이얼로그 띄우는 변수 갱신
-                isShowDialog()
             }
         }
     requestMultiplePermission.launch(permissionList)
