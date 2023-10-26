@@ -30,4 +30,13 @@ public class LetterController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponseBody<>(201, "편지 생성 성공"));
     }
+
+    @PostMapping("/text")
+    public ResponseEntity<? extends BaseResponseBody> createTextLetter(@RequestHeader(value = "Authorization", required = false) String accessToken,
+                                                                       @RequestPart(value = "text", required = true) String text,
+                                                                       @RequestPart(value = "content", required = true) MultipartFile content,
+                                                                       @RequestPart(value = "files", required = false) List<MultipartFile> files) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponseBody<>(201, "편지 생성 성공"));
+    }
+
 }
