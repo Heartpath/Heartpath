@@ -81,6 +81,23 @@ public class LetterServiceImpl implements LetterService {
     @Override
     @Transactional
     public void createTextLetter(String text, MultipartFile content, List<MultipartFile> files) {
+        if (text.trim().isEmpty()) {
+            throw new BadRequestException(ErrorCode.NOT_EXISTS_TEXT);
+        }
 
+        // text 금칙어 검사
+
+        if (content.isEmpty()) {
+            throw new BadRequestException(ErrorCode.NOT_EXISTS_CONTENT);
+        }
+        String contentUrl = uploadFileToS3(content, "letter-text-content");
+
+        List<String> fileUrls = new ArrayList<>();
+        if (files != null) {
+            for (MultipartFile file : files) {
+                String fileUrl = uploadFileToS3(file, "letter-hand-files");
+                fileUrls.add(fileUrl);
+            }
+        }
     }
 }
