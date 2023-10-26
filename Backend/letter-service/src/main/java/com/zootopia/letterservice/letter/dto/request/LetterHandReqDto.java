@@ -1,6 +1,5 @@
 package com.zootopia.letterservice.letter.dto.request;
 
-import com.zootopia.letterservice.letter.entity.Letter;
 import lombok.*;
 
 @Getter

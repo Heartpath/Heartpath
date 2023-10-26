@@ -21,13 +21,13 @@ public class LetterImage {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "letter_id", nullable = false)
-    private Letter letter;
+    private LetterMySQL letter;
 
     @Column(length = 1000)
     private String imagePath;
 
     @Builder
-    public LetterImage(Letter letter, String imagePath) {
+    public LetterImage(LetterMySQL letter, String imagePath) {
         this.letter = letter;
         this.imagePath = imagePath;
     }
