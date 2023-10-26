@@ -129,6 +129,7 @@
                     android:text="@string/mypage_friends"
                     style="@style/DarkGray_14_ExtraBold_NanumText"/>
                 <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/linearlayout_add_friend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
@@ -140,10 +141,11 @@
                         android:layout_height="wrap_content" />
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_4sdp"
                         android:text="@string/mypage_add_friend"
                         android:gravity="center"
-                        style="@style/DarkGray_12_Bold_NanumText"/>
+                        style="@style/DarkGray_10_Bold_NanumText"/>
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>
             <androidx.recyclerview.widget.RecyclerView
