@@ -27,6 +27,12 @@
             android:id="@+id/action_homeFragment_to_mapFragment"
             app:destination="@id/mapFragment"
             style="@style/SlideAnimation"/>
+        <action
+            android:id="@+id/action_homeFragment_self"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_myPageFragment"
+            app:destination="@id/myPageFragment" />
     </fragment>
 
     <fragment
@@ -47,4 +53,9 @@
         android:name="com.zootopia.presentation.map.MapFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map"/>
+    <fragment
+        android:id="@+id/myPageFragment"
+        android:name="com.zootopia.presentation.mypage.MyPageFragment"
+        android:label="fragment_my_page"
+        tools:layout="@layout/fragment_my_page" />
 </navigation>
