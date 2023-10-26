@@ -3,8 +3,6 @@ package com.zootopia.letterservice.letter.service;
 import com.zootopia.letterservice.common.error.code.ErrorCode;
 import com.zootopia.letterservice.common.error.exception.BadRequestException;
 import com.zootopia.letterservice.common.s3.S3Uploader;
-import com.zootopia.letterservice.letter.dto.request.LetterHandReqDto;
-import com.zootopia.letterservice.letter.dto.request.LetterTextReqDto;
 import com.zootopia.letterservice.letter.entity.LetterMongo;
 import com.zootopia.letterservice.letter.repository.LetterJpaRepository;
 import com.zootopia.letterservice.letter.repository.LetterMongoRepository;
@@ -35,34 +33,13 @@ public class LetterServiceImpl implements LetterService {
             throw new BadRequestException(ErrorCode.NOT_EXISTS_CONTENT);
         }
 
-        String contentUrl;
-        try {
-            String contentName = content.getOriginalFilename();
-            if (isImageFile(contentName)) {
-                contentUrl = s3Uploader.uploadFiles(content, "letter-hand-content");
-            } else {
-                throw new BadRequestException(ErrorCode.INVALID_IMAGE_FORMAT);
-            }
-        } catch (IOException e) {
-            throw new BadRequestException(ErrorCode.FAIL_UPLOAD_FILE);
-        }
+        String contentUrl = uploadFileToS3(content, "letter-hand-content");
 
         // letter file
         List<String> fileUrls = new ArrayList<>();
         if (files != null) {
             for (MultipartFile file : files) {
-                String fileUrl;
-                String fileName = file.getOriginalFilename();
-
-                try {
-                    if (isImageFile(fileName)) {
-                        fileUrl = s3Uploader.uploadFiles(file, "letter-hand-files");
-                    } else {
-                        throw new BadRequestException(ErrorCode.INVALID_IMAGE_FORMAT);
-                    }
-                } catch (IOException e) {
-                    throw new BadRequestException(ErrorCode.FAIL_UPLOAD_FILE);
-                }
+                String fileUrl = uploadFileToS3(file, "letter-hand-files");
                 fileUrls.add(fileUrl);
             }
         }
@@ -85,8 +62,20 @@ public class LetterServiceImpl implements LetterService {
                 return true;
             }
         }
-
         return false;
+    }
+
+    private String uploadFileToS3(MultipartFile file, String s3Folder) {
+        try {
+            String fileName = file.getOriginalFilename();
+            if (isImageFile(fileName)) {
+                return s3Uploader.uploadFiles(file, s3Folder);
+            } else {
+                throw new BadRequestException(ErrorCode.INVALID_IMAGE_FORMAT);
+            }
+        } catch (IOException e) {
+            throw new BadRequestException(ErrorCode.FAIL_UPLOAD_FILE);
+        }
     }
 
     @Override
