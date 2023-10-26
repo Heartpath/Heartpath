@@ -11,7 +11,9 @@ public enum ErrorCode {
 
     // Letter
     NOT_EXISTS_CONTENT(HttpStatus.BAD_REQUEST, "L-001", "편지 내용 파일은 필수 항목입니다."),
-    INVALID_IMAGE_FORMAT(HttpStatus.BAD_REQUEST, "L-002", "지원하지 않는 이미지 파일 확장자입니다.");
+    INVALID_IMAGE_FORMAT(HttpStatus.BAD_REQUEST, "L-002", "지원하지 않는 이미지 파일 확장자입니다."),
+    NOT_EXISTS_TEXT(HttpStatus.BAD_REQUEST, "L-003", "공백이 아닌 텍스트를 입력해주세요."),
+    EXISTS_FORBIDDEN_WORD(HttpStatus.BAD_REQUEST, "L-004", "편지에 금칙어가 포함되어 있습니다. 금칙어를 제외하고 작성해주세요.");
 
     private HttpStatus httpStatus;
     private String errorCode;
