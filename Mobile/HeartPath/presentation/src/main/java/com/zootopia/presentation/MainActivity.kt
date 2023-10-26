@@ -1,14 +1,21 @@
 package com.zootopia.presentation
 
-import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.zootopia.presentation.config.BaseActivity
 import com.zootopia.presentation.databinding.ActivityMainBinding
 import com.zootopia.presentation.util.checkAllPermission
+import com.zootopia.presentation.util.showPermissionDialog
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
+private const val TAG = "MainActivity_HeartPath"
+@AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
     
     lateinit var navController: NavController
@@ -16,9 +23,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-    
         initNavHost()
         initCheckPermission()
+        initCollect()
     }
     
     private fun initNavHost() {
@@ -30,13 +37,23 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         checkAllPermission(
             fragment = null,
             activity = this,
+            mainViewModel = mainViewModel,
             permissionList = PERMISSION_LOCATION,
-            getPermissionRejected = {it -> mainViewModel.getPermissionRejected(it)},
-            setPermissionRejected = {it -> mainViewModel.setPermissionRejected(it)},
-            getIsShowedPermissionDialog = {it -> mainViewModel.getIsShowedPermissionDialog(it+"show")},
-            setIsShowedPermissionDialog = {it -> mainViewModel.setIsShowedPermissionDialog(it+"show")},
-            isShowDialog = {if(!mainViewModel.isShowPermissionDialog.value) mainViewModel.setIsShowPermissionDialog(true)}
         )
+    }
+    
+    private fun initCollect(){
+        mainViewModel.apply {
+            lifecycleScope.launch {
+                isShowPermissionDialog.collectLatest {
+                    Log.d(TAG, "isShowPermissionDialog collect... $it")
+                    if(it){
+                        showPermissionDialog(this@MainActivity)
+                        setIsShowPermissionDialog(false)
+                    }
+                }
+            }
+        }
     }
     
     // 코틀린의 전역변수
