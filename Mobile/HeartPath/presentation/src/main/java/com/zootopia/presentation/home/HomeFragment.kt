@@ -40,6 +40,9 @@ class HomeFragment :
         buttonMap.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_mapFragment)
         }
+        buttonMyPage.setOnClickListener{
+            findNavController().navigate(R.id.action_homeFragment_to_myPageFragment)
+        }
         initAnimation()
     }
 
