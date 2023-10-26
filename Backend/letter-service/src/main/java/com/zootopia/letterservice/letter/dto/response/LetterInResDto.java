@@ -1,8 +1,7 @@
 package com.zootopia.letterservice.letter.dto.response;
 
-import com.zootopia.letterservice.letter.entity.Letter;
+import com.zootopia.letterservice.letter.entity.LetterMySQL;
 import lombok.*;
-import net.bytebuddy.asm.Advice;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,8 +18,8 @@ public class LetterInResDto {
 
     private List<String> location;
 
-    public LetterInResDto(Letter letter) {
+    public LetterInResDto(LetterMySQL letter) {
         this.index = letter.getId();
-//        this.receiver = letter.getReceiver().getNickname();
+//        this.sender = letter.getSender().getNickname();
     }
 }

@@ -1,6 +1,5 @@
 package com.zootopia.letterservice.letter.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -15,7 +14,7 @@ import java.util.List;
 @Table
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Letter {
+public class LetterMySQL {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, name = "letter_id")
@@ -59,7 +58,7 @@ public class Letter {
     private List<PlaceImage> placeImages;
 
     @Builder
-    public Letter(String content, String type) {
+    public LetterMySQL(String content, String type) {
         this.content = content;
         this.type = type;
     }
