@@ -26,6 +26,7 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/textview_friend_search_friend_img"
             android:layout_width="@dimen/_60sdp"
             android:layout_height="@dimen/_60sdp"
             android:src="@drawable/image_default_profile"
@@ -36,11 +37,13 @@
             android:gravity="center_vertical"
             android:orientation="vertical">
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textview_friend_search_friend_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/default_name"
                 style="@style/DarkGray_14_Bold_NanumText"/>
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textview_friend_search_friend_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_8sdp"
