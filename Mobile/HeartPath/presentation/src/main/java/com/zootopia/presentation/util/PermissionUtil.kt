@@ -36,6 +36,8 @@ fun checkAllPermission(
             results.forEach {
                 if(!it.value) {
                     mainViewModel.getPermissionRejected(it.key)
+                } else {
+                    mainViewModel.setPermissionRejected(it.key, 0)
                 }
             }
         }
