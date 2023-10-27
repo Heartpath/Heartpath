@@ -2,6 +2,7 @@ package com.zootopia.presentation.searchfriend
 
 import android.os.Bundle
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentFriendSearchBinding
@@ -18,5 +19,9 @@ class FriendSearchFragment : BaseFragment<FragmentFriendSearchBinding>(
     }
     private fun initAdapter() = with(binding) {
         friendSearchAdapter = FriendSearchAdapter()
+        recyclerviewFriendSearchResult.apply {
+            adapter = friendSearchAdapter
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        }
     }
 }
