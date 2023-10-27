@@ -57,5 +57,29 @@
         android:id="@+id/myPageFragment"
         android:name="com.zootopia.presentation.mypage.MyPageFragment"
         android:label="fragment_my_page"
-        tools:layout="@layout/fragment_my_page" />
+        tools:layout="@layout/fragment_my_page" >
+        <action
+            android:id="@+id/action_myPageFragment_to_friendSearchFragment"
+            app:destination="@id/friendSearchFragment" />
+        <action
+            android:id="@+id/action_myPageFragment_to_settingFragment"
+            app:destination="@id/settingFragment" />
+        <action
+            android:id="@+id/action_myPageFragment_to_pointHistoryFragment"
+            app:destination="@id/pointHistoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.zootopia.presentation.settings.SettingFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" />
+    <fragment
+        android:id="@+id/friendSearchFragment"
+        android:name="com.zootopia.presentation.searchfriend.FriendSearchFragment"
+        android:label="fragment_friend_search"
+        tools:layout="@layout/fragment_friend_search" />
+    <fragment
+        android:id="@+id/pointHistoryFragment"
+        android:name="com.zootopia.presentation.pointhistory.PointHistoryFragment"
+        android:label="PointHistoryFragment" />
 </navigation>
