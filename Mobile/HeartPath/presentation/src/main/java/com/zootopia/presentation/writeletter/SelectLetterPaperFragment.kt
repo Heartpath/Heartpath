@@ -72,7 +72,10 @@ class SelectLetterPaperFragment : BaseFragment<FragmentSelectLetterPaperBinding>
     }
 
     fun initClickListener() = with(binding) {
-
+        buttonSelectLetterPaper.setOnClickListener {
+            writeLetterViewModel.setSelectedLetterPaperUrl(letterPaperList[viewPagerLetterPaper.currentItem])
+            navController.navigate(R.id.action_selectLetterPaperFragment_to_handWriteFragment)
+        }
     }
 
 }
