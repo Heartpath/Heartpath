@@ -16,8 +16,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginVertical="@dimen/_16sdp"/>
-
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_point_history"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_4sdp"
