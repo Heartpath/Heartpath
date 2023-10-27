@@ -14,7 +14,11 @@ public enum ErrorCode {
     INVALID_IMAGE_FORMAT(HttpStatus.BAD_REQUEST, "L-002", "지원하지 않는 이미지 파일 확장자입니다."),
     NOT_EXISTS_RECEIVER_ID(HttpStatus.BAD_REQUEST, "L-003", "수신자 ID는 필수 항목 입니다."),
     NOT_EXISTS_TEXT(HttpStatus.BAD_REQUEST, "L-004", "텍스트 편지 생성시 사용자 입력 텍스트는 필수 항목입니다."),
-    EXISTS_FORBIDDEN_WORD(HttpStatus.BAD_REQUEST, "L-005", "편지에 금칙어가 포함되어 있습니다. 금칙어를 제외하고 작성해주세요.");
+    EXISTS_FORBIDDEN_WORD(HttpStatus.BAD_REQUEST, "L-005", "편지에 금칙어가 포함되어 있습니다. 금칙어를 제외하고 작성해주세요."),
+    NOT_EQUAL_USER(HttpStatus.BAD_REQUEST, "L-006", "편지 작성자와 요청을 보낸 사용자가 일치하지 않습니다."),
+    NOT_EXISTS_LETTER(HttpStatus.BAD_REQUEST, "L-007", "존재하지 않는 편지입니다."),
+    NOT_EXISTS_LAT_OR_LNG(HttpStatus.BAD_REQUEST, "L-008", "위도, 경도는 필수 항목입니다."),
+    NOT_EXISTS_PLACE_IMAGES(HttpStatus.BAD_REQUEST, "L-009", "배치 장소에 대한 이미지 파일은 필수 항목입니다.");
 
 
     private HttpStatus httpStatus;

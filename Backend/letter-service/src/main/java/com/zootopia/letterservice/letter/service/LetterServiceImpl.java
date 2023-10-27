@@ -4,9 +4,15 @@ import com.zootopia.letterservice.common.error.code.ErrorCode;
 import com.zootopia.letterservice.common.error.exception.BadRequestException;
 import com.zootopia.letterservice.common.global.BannedWords;
 import com.zootopia.letterservice.common.s3.S3Uploader;
+import com.zootopia.letterservice.letter.dto.request.LetterPlaceReqDto;
+import com.zootopia.letterservice.letter.entity.LetterImage;
 import com.zootopia.letterservice.letter.entity.LetterMongo;
+import com.zootopia.letterservice.letter.entity.LetterMySQL;
+import com.zootopia.letterservice.letter.entity.PlaceImage;
+import com.zootopia.letterservice.letter.repository.LetterImageRepository;
 import com.zootopia.letterservice.letter.repository.LetterJpaRepository;
 import com.zootopia.letterservice.letter.repository.LetterMongoRepository;
+import com.zootopia.letterservice.letter.repository.PlaceImageRepository;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,6 +30,8 @@ import java.util.List;
 public class LetterServiceImpl implements LetterService {
     private final LetterJpaRepository letterJpaRepository;
     private final LetterMongoRepository letterMongoRepository;
+    private final LetterImageRepository letterImageRepository;
+    private final PlaceImageRepository placeImageRepository;
     private final BannedWords bannedWords;
     private final S3Uploader s3Uploader;
 
@@ -89,6 +97,62 @@ public class LetterServiceImpl implements LetterService {
                 .build();
 
         letterMongoRepository.save(letterMongo);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void placeLetter(LetterPlaceReqDto letterPlaceReqDto, List<MultipartFile> files) {
+        // accessToken으로 지금 요청을 보낸 유저랑 편지의 발신자랑 맞는지 확인하는 작업 필요함.
+        LetterMongo letterMongo = letterMongoRepository.findById(letterPlaceReqDto.getId()).orElseThrow(() -> {
+            return new BadRequestException(ErrorCode.NOT_EXISTS_LETTER);
+        });
+
+        Double lat = letterPlaceReqDto.getLat();
+        Double lng = letterPlaceReqDto.getLng();
+        if (lat == null || lng == null) {
+            throw new BadRequestException(ErrorCode.NOT_EXISTS_LAT_OR_LNG);
+        }
+
+        LetterMySQL letterMySQL = LetterMySQL.builder()
+                .content(letterMongo.getContent())
+                .type(letterMongo.getType())
+                .lat(lat)
+                .lng(lng)
+                .build();
+
+        LetterMySQL letter = letterJpaRepository.save(letterMySQL);
+
+        // 편지 첨부 파일 저장
+        if (!letterMongo.getFiles().isEmpty()) {
+            for (String imageUrl : letterMongo.getFiles()) {
+                LetterImage letterImage = LetterImage.builder()
+                        .letter(letter)
+                        .imagePath(imageUrl)
+                        .build();
+
+                letterImageRepository.save(letterImage);
+            }
+        }
+
+        if (files == null) {
+            throw new BadRequestException(ErrorCode.NOT_EXISTS_PLACE_IMAGES);
+        }
+
+        for (MultipartFile file : files) {
+            if (file.isEmpty()) {
+                throw new BadRequestException(ErrorCode.NOT_EXISTS_PLACE_IMAGES);
+            }
+
+            String fileUrl = uploadFileToS3(file, "letter-place-files");
+
+            PlaceImage placeImage = PlaceImage.builder()
+                    .letter(letter)
+                    .imagePath(fileUrl)
+                    .build();
+
+            placeImageRepository.save(placeImage);
+        }
+        letterMongoRepository.delete(letterMongo);
     }
 
     // 첨부된 파일이 이미지 파일인지 확인

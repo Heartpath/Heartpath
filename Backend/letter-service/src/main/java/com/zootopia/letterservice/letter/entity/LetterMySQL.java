@@ -1,6 +1,7 @@
 package com.zootopia.letterservice.letter.entity;
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -11,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table
+@Table(name = "letter")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LetterMySQL {
@@ -33,7 +34,7 @@ public class LetterMySQL {
     @Column(length = 1000)
     private String content;
 
-    @Column(nullable = false, columnDefinition = "boolean default false")
+    @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean isPlace;
 
     @CreatedDate
@@ -58,9 +59,11 @@ public class LetterMySQL {
     private List<PlaceImage> placeImages;
 
     @Builder
-    public LetterMySQL(String content, String type) {
+    public LetterMySQL(String content, String type, Double lat, Double lng) {
         this.content = content;
         this.type = type;
+        this.lat = lat;
+        this.lng = lng;
     }
 
 }
