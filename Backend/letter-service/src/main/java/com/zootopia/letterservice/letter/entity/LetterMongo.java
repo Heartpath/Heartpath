@@ -35,6 +35,8 @@ public class LetterMongo {
     @Field("receiver_id")
     private String receiverId;
 
+    private String type;
+
 
     @Builder
     public LetterMongo(String content, List<String> files) {

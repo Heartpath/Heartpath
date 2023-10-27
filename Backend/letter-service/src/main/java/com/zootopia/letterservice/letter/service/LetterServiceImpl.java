@@ -2,6 +2,7 @@ package com.zootopia.letterservice.letter.service;
 
 import com.zootopia.letterservice.common.error.code.ErrorCode;
 import com.zootopia.letterservice.common.error.exception.BadRequestException;
+import com.zootopia.letterservice.common.global.BannedWords;
 import com.zootopia.letterservice.common.s3.S3Uploader;
 import com.zootopia.letterservice.letter.entity.LetterMongo;
 import com.zootopia.letterservice.letter.repository.LetterJpaRepository;
@@ -23,8 +24,10 @@ import java.util.List;
 public class LetterServiceImpl implements LetterService {
     private final LetterJpaRepository letterJpaRepository;
     private final LetterMongoRepository letterMongoRepository;
+    private final BannedWords bannedWords;
     private final S3Uploader s3Uploader;
 
+    // 수신자 확인 로직 추가 필요
     @Override
     @Transactional
     public void createHandLetter(MultipartFile content, List<MultipartFile> files) {
@@ -47,6 +50,42 @@ public class LetterServiceImpl implements LetterService {
         LetterMongo letterMongo = LetterMongo.builder()
                 .content(contentUrl)
                 .files(fileUrls)
+                .type("HandWritten")
+                .build();
+
+        letterMongoRepository.save(letterMongo);
+    }
+
+    // 수신자 확인 로직 추가 필요
+    @Override
+    @Transactional
+    public void createTextLetter(String text, MultipartFile content, List<MultipartFile> files) {
+        if (text.trim().isEmpty()) {
+            throw new BadRequestException(ErrorCode.NOT_EXISTS_TEXT);
+        }
+
+        // text 금칙어 검사
+        if (bannedWords.isBannedWords(text)) {
+            throw new BadRequestException(ErrorCode.EXISTS_FORBIDDEN_WORD);
+        }
+
+        if (content.isEmpty()) {
+            throw new BadRequestException(ErrorCode.NOT_EXISTS_CONTENT);
+        }
+        String contentUrl = uploadFileToS3(content, "letter-text-content");
+
+        List<String> fileUrls = new ArrayList<>();
+        if (files != null) {
+            for (MultipartFile file : files) {
+                String fileUrl = uploadFileToS3(file, "letter-hand-files");
+                fileUrls.add(fileUrl);
+            }
+        }
+
+        LetterMongo letterMongo = LetterMongo.builder()
+                .content(contentUrl)
+                .files(fileUrls)
+                .type("Digital")
                 .build();
 
         letterMongoRepository.save(letterMongo);
@@ -75,29 +114,6 @@ public class LetterServiceImpl implements LetterService {
             }
         } catch (IOException e) {
             throw new BadRequestException(ErrorCode.FAIL_UPLOAD_FILE);
-        }
-    }
-
-    @Override
-    @Transactional
-    public void createTextLetter(String text, MultipartFile content, List<MultipartFile> files) {
-        if (text.trim().isEmpty()) {
-            throw new BadRequestException(ErrorCode.NOT_EXISTS_TEXT);
-        }
-
-        // text 금칙어 검사
-
-        if (content.isEmpty()) {
-            throw new BadRequestException(ErrorCode.NOT_EXISTS_CONTENT);
-        }
-        String contentUrl = uploadFileToS3(content, "letter-text-content");
-
-        List<String> fileUrls = new ArrayList<>();
-        if (files != null) {
-            for (MultipartFile file : files) {
-                String fileUrl = uploadFileToS3(file, "letter-hand-files");
-                fileUrls.add(fileUrl);
-            }
         }
     }
 }
