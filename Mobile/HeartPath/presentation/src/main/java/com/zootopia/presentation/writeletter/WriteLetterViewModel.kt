@@ -1,11 +1,9 @@
 package com.zootopia.presentation.writeletter
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zootopia.presentation.util.LetterType
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -18,8 +16,8 @@ class WriteLetterViewModel @Inject constructor(
     private var _selectedLetterType: LetterType = LetterType.HAND_WRITE
     val selectedLetterType: LetterType = _selectedLetterType
 
-    private var _selectedLetterPaperId: Int = 0
-    val selectedLetterPaperId: Int = _selectedLetterPaperId
+    private var _selectedLetterPaperUrl: MutableStateFlow<String> = MutableStateFlow("")
+    val selectedLetterPaperUrl: StateFlow<String> = _selectedLetterPaperUrl
 
     private var _letterPaperList: MutableStateFlow<MutableList<String>> = MutableStateFlow(
         mutableListOf()
@@ -30,11 +28,13 @@ class WriteLetterViewModel @Inject constructor(
         _selectedLetterType = type
     }
 
-    fun setSelectedLetterPaperId(id: Int) {
-        _selectedLetterPaperId = id
+    fun setSelectedLetterPaperUrl(url: String) {
+        viewModelScope.launch {
+            _selectedLetterPaperUrl.emit(url)
+        }
     }
 
-    fun getLetterPaperList(){
+    fun getLetterPaperList() {
         //서버로 부터 편지지 리스트를 받는다.
         viewModelScope.launch {
             var list = mutableListOf<String>().apply {
