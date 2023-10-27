@@ -15,7 +15,7 @@ class MyPageFriendAdapter() :
         fun bindInfo() = with(binding) {
             textviewFriendName.text = "김뱁새"
             textviewFriendId.text = "@iam_babsae"
-            Glide.with(binding.root).load(R.drawable.image_default_profile)
+            Glide.with(root).load(R.drawable.image_default_profile)
                 .into(imageviewFriendProfileImg)
         }
     }
