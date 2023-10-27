@@ -1,8 +1,10 @@
 package com.zootopia.letterservice.store.dto.request;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Data
+@Getter
+@NoArgsConstructor
 public class LetterPaperBuyReqDto {
 
     private Long letterpaperId;
