@@ -1,6 +1,5 @@
 package com.zootopia.presentation.writeletter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +12,7 @@ class LetterPaperViewPagerAdapter(var letterPaperList: MutableList<String>) :
     inner class PagerViewHolder(var binding: ItemLetterPaperBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun setImage(url: String) {
-            Glide.with(binding.root).load(url).into(binding.imageviewLetterPaper)
+            Glide.with(binding.root).load(url).into(binding.imageviewLetterPaperItem)
         }
     }
 
