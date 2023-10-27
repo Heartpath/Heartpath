@@ -24,7 +24,10 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding> (
     }
     private fun initAdapter() = with(binding) {
         myPageFriendAdapter = MyPageFriendAdapter()
-
+        recyclerviewMypageFriend.apply {
+            adapter = myPageFriendAdapter
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        }
     }
     private fun initClickEvent() = with(binding) {
         linearlayoutAddFriend.setOnClickListener {
@@ -32,10 +35,6 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding> (
         }
         linearlayoutPoint.setOnClickListener {
             findNavController().navigate(R.id.action_myPageFragment_to_pointHistoryFragment)
-        }
-        recyclerviewMypageFriend.apply {
-            adapter = myPageFriendAdapter
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
     }
 }
