@@ -42,6 +42,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         )
     }
     
+    // 권한 확인 다이얼로그
     private fun initCollect(){
         mainViewModel.apply {
             lifecycleScope.launch {
