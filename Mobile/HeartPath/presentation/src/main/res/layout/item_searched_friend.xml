@@ -41,14 +41,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/default_name"
-                style="@style/DarkGray_14_Bold_NanumText"/>
+                style="@style/DarkGray_12_Bold_NanumText"/>
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textview_friend_search_friend_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_8sdp"
                 android:text="@string/default_id"
-                style="@style/Gray_12_Regular_NanumText"/>
+                style="@style/Gray_10_Regular_NanumText"/>
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>
 <Button
@@ -58,7 +58,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingHorizontal="@dimen/_32sdp"
-    android:paddingVertical="0dp"/>
+    android:paddingVertical="@dimen/_4sdp"/>
     <!--    android:background="@drawable/custom_shadow_layer"-->
 </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.cardview.widget.CardView>
