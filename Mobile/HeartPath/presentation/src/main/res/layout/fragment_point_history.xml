@@ -1,29 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/PrimaryLightBlue">
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/imageview_bird_developer_calculating"
-        android:layout_width="@dimen/_112sdp"
-        android:layout_height="@dimen/_112sdp"
-        android:src="@drawable/image_bird_calculating"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginVertical="@dimen/_16sdp"/>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview_point_history"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar_point_history"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_4sdp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageview_bird_developer_calculating"
-        tools:itemCount="10"
-        tools:listitem="@layout/item_point_history" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:background="@color/PrimaryLightBlue"
+        android:fitsSystemWindows="true">
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            app:contentScrim="@color/PrimaryLightBlue"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:statusBarScrim="@android:color/transparent">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageview_bird_developer_calculating"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_112sdp"
+                android:layout_gravity="center"
+                android:src="@drawable/image_bird_calculating"
+                android:layout_marginVertical="@dimen/_16sdp"/>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:overScrollMode="never"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview_point_history"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_4sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imageview_bird_developer_calculating"
+            tools:itemCount="10"
+            tools:listitem="@layout/item_point_history" />
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
