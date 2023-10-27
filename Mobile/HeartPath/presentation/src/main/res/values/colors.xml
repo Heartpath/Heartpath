@@ -16,4 +16,5 @@
     <color name="DarkGray">#FF3F3F3F</color>
     <color name="Gray">#FF858585</color>
     <color name="LightBlue">#FFDFE8EE</color>
+    <color name="ExtraLightBlue">#FFF6F7F9</color>
 </resources>
