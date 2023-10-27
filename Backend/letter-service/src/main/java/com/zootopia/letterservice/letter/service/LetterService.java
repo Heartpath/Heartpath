@@ -1,6 +1,7 @@
 package com.zootopia.letterservice.letter.service;
 
 import com.zootopia.letterservice.letter.dto.request.LetterHandReqDto;
+import com.zootopia.letterservice.letter.dto.request.LetterPlaceReqDto;
 import com.zootopia.letterservice.letter.dto.request.LetterTextReqDto;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,5 +17,7 @@ public interface LetterService {
 
 //    void createTextLetter (LetterTextReqDto letterTextReqDto, MultipartFile content, List<MultipartFile> files);
     void createTextLetter (String text, MultipartFile content, List<MultipartFile> files);
+
+    void placeLetter(LetterPlaceReqDto letterPlaceReqDto, List<MultipartFile> files);
 
 }

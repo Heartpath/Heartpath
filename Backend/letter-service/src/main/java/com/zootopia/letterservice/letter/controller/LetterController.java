@@ -1,13 +1,11 @@
 package com.zootopia.letterservice.letter.controller;
 
 import com.zootopia.letterservice.common.dto.BaseResponseBody;
-import com.zootopia.letterservice.letter.dto.request.LetterHandReqDto;
-import com.zootopia.letterservice.letter.dto.response.LetterOutDetailResDto;
+import com.zootopia.letterservice.letter.dto.request.LetterPlaceReqDto;
 import com.zootopia.letterservice.letter.service.LetterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,8 +37,8 @@ public class LetterController {
     })
     @PostMapping("/hand")
     public ResponseEntity<? extends BaseResponseBody> createHandLetter(@RequestHeader(value = "Authorization", required = false) String accessToken,
-//                                                                       @RequestPart(value = "receiverId", required = true) String receiverId,
-                                                                       @RequestPart(value = "content", required = true) MultipartFile content,
+//                                                                       @RequestPart(value = "receiverId") String receiverId,
+                                                                       @RequestPart(value = "content") MultipartFile content,
                                                                        @RequestPart(value = "files", required = false) List<MultipartFile> files) {
         // accessToken → 발신자, receiverId → 수신자 멤버 객체 찾아서 service 넘기기
         // LetterHandReqDto letterHandReqDto = new LetterHandReqDto();
@@ -62,9 +60,9 @@ public class LetterController {
     })
     @PostMapping("/text")
     public ResponseEntity<? extends BaseResponseBody> createTextLetter(@RequestHeader(value = "Authorization", required = false) String accessToken,
-//                                                                       @RequestPart(value = "receiverId", required = true) String receiverId,
-                                                                       @RequestPart(value = "text", required = true) String text,
-                                                                       @RequestPart(value = "content", required = true) MultipartFile content,
+//                                                                       @RequestPart(value = "receiverId") String receiverId,
+                                                                       @RequestPart(value = "text") String text,
+                                                                       @RequestPart(value = "content") MultipartFile content,
                                                                        @RequestPart(value = "files", required = false) List<MultipartFile> files) {
         // accessToken → 발신자, receiverId → 수신자 멤버 객체 찾아서 service 넘기기
         letterService.createTextLetter(text, content, files);
@@ -73,11 +71,19 @@ public class LetterController {
 
     @PostMapping("/placed")
     public ResponseEntity<? extends BaseResponseBody> placeLetter(@RequestHeader(value = "Authorization", required = false) String accessToken,
-                                                                  @RequestPart(value = "letterId", required = true) String letterId,
-                                                                  @RequestPart(value = "lat", required = true) Double lat,
-                                                                  @RequestPart(value = "lng", required = true) Double lng,
+                                                                  @RequestPart(value = "letterId") String letterId,
+                                                                  @RequestPart(value = "lat", required = false) Double lat,
+                                                                  @RequestPart(value = "lng", required = false) Double lng,
                                                                   @RequestPart(value = "files", required = false) List<MultipartFile> files) {
-        
+
+        LetterPlaceReqDto letterPlaceReqDto = LetterPlaceReqDto.builder()
+                .id(letterId)
+                .lat(lat)
+                .lng(lng)
+                .build();
+
+        letterService.placeLetter(letterPlaceReqDto, files);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponseBody<>(201, "편지 배치 성공"));
     }
 }
