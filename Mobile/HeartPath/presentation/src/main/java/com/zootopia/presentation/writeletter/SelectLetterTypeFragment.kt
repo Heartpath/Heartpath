@@ -3,12 +3,15 @@ package com.zootopia.presentation.writeletter
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentSelectLetterTypeBinding
+import com.zootopia.presentation.util.LetterType
 
 class SelectLetterTypeFragment : BaseFragment<FragmentSelectLetterTypeBinding>(
     FragmentSelectLetterTypeBinding::bind,
@@ -16,6 +19,7 @@ class SelectLetterTypeFragment : BaseFragment<FragmentSelectLetterTypeBinding>(
 ) {
     private lateinit var mainActivity: MainActivity
     private lateinit var navController: NavController
+    private val writeLetterViewModel: WriteLetterViewModel by activityViewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -25,6 +29,17 @@ class SelectLetterTypeFragment : BaseFragment<FragmentSelectLetterTypeBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
+        initClickListener()
+    }
+
+    fun initClickListener() = with(binding) {
+        binding.linealayoutHandWrite.setOnClickListener {
+            writeLetterViewModel.setSelectedLetterType(LetterType.HAND_WRITE)
+            findNavController().navigate(R.id.action_selectLetterTypeFragment_to_selectLetterPaperFragment)
+        }
+        binding.linearlayoutTypingWrite.setOnClickListener {
+            writeLetterViewModel.setSelectedLetterType(LetterType.TYPING_WRITE)
+        }
     }
 
 }
