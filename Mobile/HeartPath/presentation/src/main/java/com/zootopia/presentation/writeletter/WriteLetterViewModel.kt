@@ -47,6 +47,8 @@ class WriteLetterViewModel @Inject constructor(
                 add("https://picsum.photos/id/243/400/600")
                 add("https://picsum.photos/id/244/400/600")
                 add("https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2022/04/22/91193624-51b9-4b28-b3b2-bef73c770691.jpg")
+                add("https://img.allurekorea.com/allure/2023/08/style_64d0bb505c802-768x1024.jpg")
+                add("https://img.freepik.com/premium-photo/cute-gray-cat-kid-animal-with-interested-question-facial-face-expression-look-up-on-copy-space-small-tabby-kitten-on-white-background-vertical-format_221542-2278.jpg?w=360")
             }
             _letterPaperList.emit(list)
         }

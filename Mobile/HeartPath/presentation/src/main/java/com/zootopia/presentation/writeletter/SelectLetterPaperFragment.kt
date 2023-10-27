@@ -7,6 +7,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.viewpager2.widget.CompositePageTransformer
+import androidx.viewpager2.widget.MarginPageTransformer
+import androidx.viewpager2.widget.ViewPager2
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
@@ -38,7 +41,7 @@ class SelectLetterPaperFragment : BaseFragment<FragmentSelectLetterPaperBinding>
         initClickListener()
     }
 
-    fun initCollecter(){
+    fun initCollecter() {
         lifecycleScope.launch {
             writeLetterViewModel.letterPaperList.collectLatest {
                 letterPaperList.clear()
@@ -53,8 +56,19 @@ class SelectLetterPaperFragment : BaseFragment<FragmentSelectLetterPaperBinding>
     }
 
     fun initViewPager() = with(binding) {
+        viewPagerLetterPaper.offscreenPageLimit = 3
+        viewPagerLetterPaper.getChildAt(0).overScrollMode = View.OVER_SCROLL_NEVER
         pagerAdapter = LetterPaperViewPagerAdapter(letterPaperList)
         viewPagerLetterPaper.adapter = (pagerAdapter)
+
+        var transform = CompositePageTransformer()
+        transform.addTransformer(MarginPageTransformer(8))
+        transform.addTransformer(ViewPager2.PageTransformer { view: View, position: Float ->
+            var v = 1 - Math.abs(position)
+            view.scaleY = 0.8f + v * 0.2f
+        })
+
+        viewPagerLetterPaper.setPageTransformer(transform)
     }
 
     fun initClickListener() = with(binding) {
