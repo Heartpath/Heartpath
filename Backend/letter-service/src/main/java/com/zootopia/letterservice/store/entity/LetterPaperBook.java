@@ -21,10 +21,12 @@ public class LetterPaperBook {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "letter_paper_id")
     private LetterPaper letterPaper;
+
     private LocalDateTime acquisitionDate;
 
     @Builder
-    public LetterPaperBook(LocalDateTime acquisitionDate){
+    public LetterPaperBook(LetterPaper letterPaper,LocalDateTime acquisitionDate){
+        this.letterPaper = letterPaper;
         this.acquisitionDate = acquisitionDate;
     }
 }

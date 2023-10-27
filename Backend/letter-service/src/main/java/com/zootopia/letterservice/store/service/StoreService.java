@@ -1,12 +1,17 @@
 package com.zootopia.letterservice.store.service;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.zootopia.letterservice.store.dto.request.LetterPaperBuyReqDto;
+import com.zootopia.letterservice.store.entity.CrowTit;
+import com.zootopia.letterservice.store.entity.LetterPaper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
-@Slf4j
+
 @Service
-public class StoreService {
+public interface StoreService {
 
+    void buyLetterPaper(String memberId, LetterPaperBuyReqDto letterPaperBuyReqDto);
+
+    LetterPaper getLetterPaperDetail(Long letterpaperId);
+
+    CrowTit getCharacterInfo(Long charater_id);
 }
