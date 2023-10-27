@@ -13,8 +13,8 @@ class MyPageFriendAdapter() :
     inner class MyPageFriendViewHolder(val binding: ItemMypageFriendBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bindInfo() = with(binding) {
-            textviewFriendName.text = "김뱁새"
-            textviewFriendId.text = "@iam_babsae"
+            textviewFriendName.text = "김뱁새 친구"
+            textviewFriendId.text = "@iam_babsae_friend"
             Glide.with(root).load(R.drawable.image_default_profile)
                 .into(imageviewFriendProfileImg)
         }

@@ -12,17 +12,37 @@
         android:background="@color/PrimaryLightBlue"
         android:orientation="vertical">
 
-        <com.google.android.material.search.SearchBar
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/LightBlue"
-            android:hint="@string/search_friend_search_bar_hint"
-            android:textAppearance="@style/DarkGray_12_Bold_NanumText"
             android:layout_marginTop="@dimen/_16sdp"
             android:layout_marginHorizontal="@dimen/_16sdp"
-            app:navigationIconTint="@color/DarkGray"/>
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:background="@drawable/custom_search_bar_background">
+            <androidx.appcompat.widget.AppCompatEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_4sdp"
+                android:layout_marginVertical="@dimen/_8sdp"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_weight="1"
+                android:hint="@string/search_friend_search_bar_hint"
+                style="@style/DarkGray_12_Bold_NanumText"
+                android:background="@null"/>
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginVertical="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:src="@drawable/icon_search"
+                android:scaleType="fitCenter"
+                android:background="@android:color/transparent"
+                />
+        </androidx.appcompat.widget.LinearLayoutCompat>
         
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview_friend_search_result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_8sdp"
