@@ -8,4 +8,16 @@
     <string name="home_put_letter">편지 놓기</string>
     <string name="home_find_letter">편지 찾기</string>
     <string name="home_letter_storage">편지 보관함</string>
+    <string name="point_history_text">10포인트를 수령했습니다.</string>
+    <string name="search_friend_search_bar_hint">검색 아이디를 입력하세요.</string>
+    <string name="point_history_date_text">2023.10.25</string>
+    <string name="default_name">김뱁새</string>
+    <string name="default_id">\@im_babsae</string>
+    <string name="setting_set_bgm">BGM 설정</string>
+    <string name="setting_privacy_policy">개인정보 처리방침</string>
+    <string name="setting_logout">로그아웃</string>
+    <string name="setting_withdraw">회원탈퇴</string>
+    <string name="mypage_default_point">100</string>
+    <string name="mypage_friends">친구</string>
+    <string name="mypage_add_friend">친구추가</string>
 </resources>
