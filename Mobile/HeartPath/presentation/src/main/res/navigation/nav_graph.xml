@@ -66,5 +66,15 @@
         android:id="@+id/selectLetterTypeFragment"
         android:name="com.zootopia.presentation.writeletter.SelectLetterTypeFragment"
         android:label="SelectLetterTypeFragment"
-        tools:layout="@layout/fragment_select_letter_type"/>
+        tools:layout="@layout/fragment_select_letter_type">
+        <action
+            android:id="@+id/action_selectLetterTypeFragment_to_selectLetterPaperFragment"
+            app:destination="@id/selectLetterPaperFragment"
+            style="@style/SlideAnimation"/>
+    </fragment>
+    <fragment
+        android:id="@+id/selectLetterPaperFragment"
+        android:name="com.zootopia.presentation.writeletter.SelectLetterPaperFragment"
+        android:label="SelectLetterPaperFragment"
+        tools:layout="@layout/fragment_select_letter_paper"/>
 </navigation>
