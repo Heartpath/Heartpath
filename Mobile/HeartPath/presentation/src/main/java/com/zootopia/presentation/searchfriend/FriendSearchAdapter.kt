@@ -1,6 +1,7 @@
 package com.zootopia.presentation.searchfriend
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -17,8 +18,15 @@ RecyclerView.Adapter<FriendSearchAdapter.FriendSearchViewHolder>()
                 .into(textviewFriendSearchFriendImg)
             textviewFriendSearchFriendName.text = "김뱁새 친구"
             textviewFriendSearchFriendId.text = "@iam_babsae_friend"
+            buttonAddFriend.setOnClickListener {
+                itemClickListener.itemClick(it, layoutPosition)
+            }
         }
     }
+    interface ItemClickListener {
+        fun itemClick(view: View, position: Int)
+    }
+    lateinit var itemClickListener: ItemClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendSearchViewHolder {
         return FriendSearchViewHolder(
