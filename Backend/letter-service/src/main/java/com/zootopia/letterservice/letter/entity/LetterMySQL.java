@@ -30,6 +30,9 @@ public class LetterMySQL {
     @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean isPlace;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isRead;
+
     @CreatedDate
     private LocalDateTime CreatedDate;
 

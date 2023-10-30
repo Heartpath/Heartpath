@@ -5,6 +5,10 @@ import com.zootopia.letterservice.common.error.exception.BadRequestException;
 import com.zootopia.letterservice.common.global.BannedWords;
 import com.zootopia.letterservice.common.s3.S3Uploader;
 import com.zootopia.letterservice.letter.dto.request.LetterPlaceReqDto;
+import com.zootopia.letterservice.letter.dto.response.LetterReceivedDetailResDto;
+import com.zootopia.letterservice.letter.dto.response.LetterReceivedResDto;
+import com.zootopia.letterservice.letter.dto.response.LetterSendResDto;
+import com.zootopia.letterservice.letter.dto.response.LetterUnsendResDto;
 import com.zootopia.letterservice.letter.entity.LetterImage;
 import com.zootopia.letterservice.letter.entity.LetterMongo;
 import com.zootopia.letterservice.letter.entity.LetterMySQL;
@@ -22,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional
@@ -186,17 +191,57 @@ public class LetterServiceImpl implements LetterService {
 
     @Override
     @Transactional
-    public List<LetterMySQL> getSendLetters() {
-        // Member 객체 받아서 해당 멤버에 해당하는 편지만 가져와야 함.
-//        return letterJpaRepository.findBySenderId();
-        return letterJpaRepository.findAll();
+    public List<LetterSendResDto> getSendLetters() {
+        // Member 객체 받아서 발신자가 해당 멤버에 해당하는 편지만 가져와야 함.
+        List<LetterSendResDto> letters = letterJpaRepository.findAll()
+                .stream()
+                .map(LetterSendResDto::new)
+                .collect(Collectors.toList());
+        return letters;
     }
 
     @Override
     @Transactional
-    public List<LetterMongo> getUnsendLetters() {
-//        return letterMongoRepository.findBySenderId();
-        return letterMongoRepository.findAll();
+    public List<LetterUnsendResDto> getUnsendLetters() {
+        // Member 객체 받아서 발신자가 해당 멤버에 해당하는 편지만 가져와야 함.
+        List<LetterUnsendResDto> letters = letterMongoRepository.findAll()
+                .stream()
+                .map(LetterUnsendResDto::new)
+                .collect(Collectors.toList());
+        return letters;
+    }
+
+    @Override
+    @Transactional
+    public List<LetterReceivedResDto> getReadLetters() {
+        List<LetterReceivedResDto> letters = letterJpaRepository.findByIsReadTrue()
+                .stream()
+                .map(LetterReceivedResDto::new)
+                .collect(Collectors.toList());
+        return letters;
+    }
+
+    @Override
+    @Transactional
+    public List<LetterReceivedResDto> getUnreadLetters() {
+        List<LetterReceivedResDto> letters = letterJpaRepository.findByIsReadFalse()
+                .stream()
+                .map(LetterReceivedResDto::new)
+                .collect(Collectors.toList());
+        return letters;
+    }
+
+    @Override
+    @Transactional
+    public LetterReceivedDetailResDto getLetter(Long letter_id) {
+        // accessToken으로 멤버 객체 찾기 → SendId, ReceivedId가 해당 맴버인 것만 열람 가능
+        // 해당 요청을 보낸 멤버가 ReceivedId와 일치하면 isRead = true로 변경
+        LetterMySQL letterMySQL = letterJpaRepository.findById(letter_id).orElseThrow(() -> {
+            throw new BadRequestException(ErrorCode.NOT_EXISTS_LETTER);
+        });
+        LetterReceivedDetailResDto letter = new LetterReceivedDetailResDto(letterMySQL);
+        // isFriend 변수 추가
+        return letter;
     }
 
 
