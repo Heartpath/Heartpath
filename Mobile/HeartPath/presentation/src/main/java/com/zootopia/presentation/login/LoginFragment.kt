@@ -7,8 +7,10 @@ import com.bumptech.glide.Glide
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentLoginBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 private const val TAG = "LoginFragment_HeartPath"
+@AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(
     FragmentLoginBinding::bind,
     R.layout.fragment_login

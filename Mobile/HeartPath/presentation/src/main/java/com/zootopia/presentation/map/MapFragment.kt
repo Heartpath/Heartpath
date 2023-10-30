@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -31,14 +32,17 @@ import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentMapBinding
 import com.zootopia.presentation.util.hasPermissions
 import com.zootopia.presentation.util.showPermissionDialog
+import dagger.hilt.android.AndroidEntryPoint
 
 private const val TAG = "MapFragment_HP"
 
+@AndroidEntryPoint
 class MapFragment :
     BaseFragment<FragmentMapBinding>(FragmentMapBinding::bind, R.layout.fragment_map),
     OnMapReadyCallback {
     private lateinit var mainActivity: MainActivity
     private lateinit var navController: NavController
+    private val mapViewModel: MapViewModel by viewModels()
     
     private val LOCATION_PERMISSION_REQUEST_CODE = 100
     private lateinit var locationSource: FusedLocationSource
@@ -53,6 +57,8 @@ class MapFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
+    
+        mapViewModel.getMapDirection()
         
         mapView = binding.mapviewNaver
         
