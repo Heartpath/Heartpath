@@ -23,7 +23,7 @@ public class UserController {
     @GetMapping("/mypage")
     public ResponseEntity<BaseResponse> getUserInfo() {
 
-        UserInfoDTO userInfoDTO = userService.loadUserInfo("SSAFY");
+        UserInfoDTO userInfoDTO = userService.loadUserInfo("MEMBER_ID");
 
         return ResponseEntity.status(200).body(new BaseResponse(HttpStatus.OK, "유저 불러오기", userInfoDTO));
     }
