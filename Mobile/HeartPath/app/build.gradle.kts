@@ -13,6 +13,7 @@ plugins {
 val localProperties = Properties()
 localProperties.load(FileInputStream(rootProject.file("local.properties")))
 val naverMapClientId = properties["naver_map_client_id"].toString()
+val kakaoNativeAppKey = properties["NATIVE_APP_KEY"].toString()
 
 android {
     namespace = "com.zootopia.heartpath"
@@ -32,6 +33,8 @@ android {
         
         buildConfigField("String", "NAVER_MAP_CLIENT_ID", properties["naver_map_client_id"].toString())
         manifestPlaceholders["NAVER_MAP_CLIENT_ID"] = naverMapClientId
+        buildConfigField("String", "NATIVE_APP_KEY", properties["NATIVE_APP_KEY"].toString())
+        manifestPlaceholders["NATIVE_APP_KEY"] = kakaoNativeAppKey
     }
 
     buildTypes {
