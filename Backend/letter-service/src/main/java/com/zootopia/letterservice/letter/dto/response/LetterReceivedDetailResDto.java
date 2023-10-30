@@ -15,13 +15,13 @@ public class LetterReceivedDetailResDto {
 
     private Long index;
     private String content;
-    private String sender;
-    private String receiver;
+//    private String sender;
+//    private String receiver;
     private LocalDateTime time;
     private Double lat;
     private Double lng;
     private List<String> files;
-    private boolean isFriend;
+//    private boolean isFriend;
 
     public LetterReceivedDetailResDto(LetterMySQL letter) {
         this.index = letter.getId();

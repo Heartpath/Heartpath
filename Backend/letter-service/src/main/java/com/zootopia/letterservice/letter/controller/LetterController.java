@@ -2,8 +2,10 @@ package com.zootopia.letterservice.letter.controller;
 
 import com.zootopia.letterservice.common.dto.BaseResponseBody;
 import com.zootopia.letterservice.letter.dto.request.LetterPlaceReqDto;
+import com.zootopia.letterservice.letter.dto.response.LetterReceivedResDto;
 import com.zootopia.letterservice.letter.dto.response.LetterSendResDto;
 import com.zootopia.letterservice.letter.dto.response.LetterUnsendResDto;
+import com.zootopia.letterservice.letter.entity.LetterMySQL;
 import com.zootopia.letterservice.letter.service.LetterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -117,12 +119,7 @@ public class LetterController {
     })
     @GetMapping("/placed")
     public ResponseEntity<? extends BaseResponseBody> getSendLetters(@RequestHeader(value = "Authorization", required = false) String accessToken) {
-        List<LetterSendResDto> letters = letterService.getSendLetters()
-                .stream()
-                .map(LetterSendResDto::new)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "발송 편지 목록 조회 성공", letters));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "발송 편지 목록 조회 성공", letterService.getSendLetters()));
     }
 
     @Operation(summary = "미발송 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
@@ -141,11 +138,7 @@ public class LetterController {
     })
     @GetMapping("/unplaced")
     public ResponseEntity<? extends BaseResponseBody> getUnsendLetters(@RequestHeader(value = "Authorization", required = false) String accessToken) {
-        List<LetterUnsendResDto> letters = letterService.getUnsendLetters()
-                .stream()
-                .map(LetterUnsendResDto::new)
-                .collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "미발송 편지 목록 조회 성공", letters));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "미발송 편지 목록 조회 성공", letterService.getUnsendLetters()));
     }
 
     @Operation(summary = "열람한 수신 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
@@ -171,7 +164,7 @@ public class LetterController {
     @GetMapping("/checked")
     public ResponseEntity<? extends BaseResponseBody> getReadLetters(@RequestHeader(value = "Authorization", required = false) String accessToken) {
         // accessToken으로 멤버 객체 찾기 → SendId가 해당 맴버인 것 중 isRead = true인 값들만 반환
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "열람한 편지 목록 조회 성공", "임시"));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "열람한 편지 목록 조회 성공", letterService.getReadLetters()));
     }
 
     @Operation(summary = "미열람한 수신 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
@@ -197,7 +190,7 @@ public class LetterController {
     @GetMapping("/unchecked")
     public ResponseEntity<? extends BaseResponseBody> getUnReadLetters(@RequestHeader(value = "Authorization", required = false) String accessToken) {
         // accessToken으로 멤버 객체 찾기 → SendId가 해당 맴버인 것 중 isRead = false인 값들만 반환
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "미열람한 편지 목록 조회 성공", "임시"));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "미열람한 편지 목록 조회 성공", letterService.getUnreadLetters()));
     }
 
     @Operation(summary = "편지 상세조회", description = "Authorization : Bearer {accessToken}, 필수")
@@ -224,9 +217,8 @@ public class LetterController {
                             "}")))
     })
     @GetMapping("/{letter_id}")
-    public ResponseEntity<? extends BaseResponseBody> getLetter(@RequestHeader(value = "Authorization", required = false) String accessToken) {
-        // accessToken으로 멤버 객체 찾기 → SendId, ReceivedId가 해당 맴버인 것만 열람 가능
-        // 해당 요청을 보낸 멤버가 ReceivedId와 일치하면 isRead = true로 변경
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "편지 상세 조회 성공", "임시"));
+    public ResponseEntity<? extends BaseResponseBody> getLetter(@PathVariable Long letter_id,
+                                                                @RequestHeader(value = "Authorization", required = false) String accessToken) {
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "편지 상세 조회 성공", letterService.getLetter(letter_id)));
     }
 }

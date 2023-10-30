@@ -9,4 +9,8 @@ public interface LetterJpaRepository extends JpaRepository<LetterMySQL, Long> {
 //    List<LetterMySQL> findBySenderId(String memberId);
 
 //    List<LetterMySQL> findByReceiverId(String memberId);
+
+    List<LetterMySQL> findByIsReadTrue();
+
+    List<LetterMySQL> findByIsReadFalse();
 }
