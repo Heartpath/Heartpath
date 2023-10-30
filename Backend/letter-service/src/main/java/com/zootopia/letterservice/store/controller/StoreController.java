@@ -1,6 +1,7 @@
 package com.zootopia.letterservice.store.controller;
 
 import com.zootopia.letterservice.common.dto.BaseResponseBody;
+import com.zootopia.letterservice.store.dto.request.CharacterBuyReqDto;
 import com.zootopia.letterservice.store.dto.request.LetterPaperBuyReqDto;
 import com.zootopia.letterservice.store.entity.CrowTit;
 import com.zootopia.letterservice.store.entity.LetterPaper;
@@ -85,7 +86,17 @@ public class StoreController {
 
     // 캐릭터 구매
     @PostMapping("/charater/buy")
-    public ResponseEntity<? extends BaseResponseBody> buyCharacter(@RequestHeader("Authorization") String accessToken){
+    public ResponseEntity<? extends BaseResponseBody> buyCharacter(@RequestHeader("Authorization") String accessToken,
+                                                                   @RequestBody CharacterBuyReqDto characterBuyReqDto){
+
+//        String memberId = webClient
+//            .post()
+//            .header("Authorization", accessToken)
+//            .retrieve()
+//            .bodyToMono(Object.class.getId());
+//
+//        storeService.buyCharacter(memberId, characterBuyReqDto);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponseBody<>(201, "캐릭터 구매 성공"));
     }
 

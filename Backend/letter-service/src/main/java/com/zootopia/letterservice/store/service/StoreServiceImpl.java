@@ -2,6 +2,7 @@ package com.zootopia.letterservice.store.service;
 
 import com.zootopia.letterservice.common.error.code.ErrorCode;
 import com.zootopia.letterservice.common.error.exception.BadRequestException;
+import com.zootopia.letterservice.store.dto.request.CharacterBuyReqDto;
 import com.zootopia.letterservice.store.dto.request.LetterPaperBuyReqDto;
 import com.zootopia.letterservice.store.entity.CrowTit;
 import com.zootopia.letterservice.store.entity.LetterPaper;
@@ -38,6 +39,11 @@ public class StoreServiceImpl implements StoreService {
         LetterPaper letterPaper = letterPaperRepository.findById(letterpaperId)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTS_LETTERPAPER));
         return letterPaper;
+    }
+
+    public void buyCharacter(String memberId, CharacterBuyReqDto characterBuyReqDto){
+        CrowTit crowTit = crowTitRepository.findById(characterBuyReqDto.getCharacterId())
+                .orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTS_CROWTIT));
     }
 
     public CrowTit getCharacterInfo(Long charater_id){
