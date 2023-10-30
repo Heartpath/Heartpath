@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
-public class LetterInDetailResDto {
+public class LetterReceivedDetailResDto {
 
     private Long index;
     private String content;
@@ -23,7 +23,7 @@ public class LetterInDetailResDto {
     private List<String> files;
     private boolean isFriend;
 
-    public LetterInDetailResDto (LetterMySQL letter) {
+    public LetterReceivedDetailResDto(LetterMySQL letter) {
         this.index = letter.getId();
         this.content = letter.getContent();
 //        this.sender = letter.getSender();

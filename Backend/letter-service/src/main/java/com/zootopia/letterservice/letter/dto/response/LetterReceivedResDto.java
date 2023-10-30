@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class LetterInResDto {
+public class LetterReceivedResDto {
 
     private Long index;
     private String sender;
@@ -18,7 +18,7 @@ public class LetterInResDto {
 
     private List<String> location;
 
-    public LetterInResDto(LetterMySQL letter) {
+    public LetterReceivedResDto(LetterMySQL letter) {
         this.index = letter.getId();
 //        this.sender = letter.getSender().getNickname();
     }

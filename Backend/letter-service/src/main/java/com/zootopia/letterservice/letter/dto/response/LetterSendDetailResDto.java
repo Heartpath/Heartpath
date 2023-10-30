@@ -6,14 +6,14 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class LetterOutDetailResDto {
+public class LetterSendDetailResDto {
 
     private Long index;
     private String content;
     private String sender;
     private String receiver;
 
-    public LetterOutDetailResDto (LetterMySQL letter) {
+    public LetterSendDetailResDto(LetterMySQL letter) {
         this.index = letter.getId();
         this.content = letter.getContent();
 //        this.sender = letter.getSender();
