@@ -64,6 +64,7 @@ public class LetterMySQL {
         this.type = type;
         this.lat = lat;
         this.lng = lng;
+        this.isPlace = true;
     }
 
 }

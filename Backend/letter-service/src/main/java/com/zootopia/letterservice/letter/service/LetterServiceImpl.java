@@ -120,6 +120,16 @@ public class LetterServiceImpl implements LetterService {
                 .lng(lng)
                 .build();
 
+        if (files == null) {
+            throw new BadRequestException(ErrorCode.NOT_EXISTS_PLACE_IMAGES);
+        }
+
+        for (MultipartFile file :files) {
+            if (file.isEmpty()) {
+                throw new BadRequestException(ErrorCode.NOT_EXISTS_PLACE_IMAGES);
+            }
+        }
+
         LetterMySQL letter = letterJpaRepository.save(letterMySQL);
 
         // 편지 첨부 파일 저장
@@ -134,14 +144,7 @@ public class LetterServiceImpl implements LetterService {
             }
         }
 
-        if (files == null) {
-            throw new BadRequestException(ErrorCode.NOT_EXISTS_PLACE_IMAGES);
-        }
-
         for (MultipartFile file : files) {
-            if (file.isEmpty()) {
-                throw new BadRequestException(ErrorCode.NOT_EXISTS_PLACE_IMAGES);
-            }
 
             String fileUrl = uploadFileToS3(file, "letter-place-files");
 
