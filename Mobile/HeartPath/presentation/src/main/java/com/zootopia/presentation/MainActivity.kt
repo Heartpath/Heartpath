@@ -46,8 +46,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             permissionList = PERMISSION_LOCATION,
         )
     }
-
-    private fun initCollect() {
+    
+    // 권한 확인 다이얼로그
+    private fun initCollect(){
         mainViewModel.apply {
             lifecycleScope.launch {
                 isShowPermissionDialog.collectLatest {

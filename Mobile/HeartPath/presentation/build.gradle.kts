@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         minSdk = 24
-
+        multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -88,4 +88,10 @@ dependencies {
     // Glide
     implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+    
+    // google location
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+    
+    // multidex
+    implementation("com.android.support:multidex:1.0.3")
 }
