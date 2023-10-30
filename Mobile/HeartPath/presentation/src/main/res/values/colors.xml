@@ -16,4 +16,10 @@
     <color name="DarkGray">#FF3F3F3F</color>
     <color name="Gray">#FF858585</color>
     <color name="LightBlue">#FFDFE8EE</color>
+    <color name="DustyBlue">#FF84B1CB</color>
+    <color name="DustyGreen">#FF91C4A8</color>
+    <color name="DarkDustyGreen">#729984</color>
+    <color name="PurpleBlue">#FF89A8CE</color>
+    <color name="AlertRed">#FFDA5E5E</color>
+    <color name="DarklessGray">#535252</color>
 </resources>
