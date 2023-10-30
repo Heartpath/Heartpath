@@ -1,10 +1,8 @@
 package com.zootopia.userservice.service;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import com.zootopia.userservice.dto.UserInfoDTO;
 
+public interface UserService {
 
-@Slf4j
-@Service
-public class UserService {
+    UserInfoDTO loadUserInfo(String memberID);
 }
