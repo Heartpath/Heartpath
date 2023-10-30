@@ -7,8 +7,8 @@
         SELECT m.`MEMBER_ID`          as `memberID`,
                m.`NICKNAME`           as `nickname`,
                m.`PROFILE_IMAGE_PATH` as `profileImagePath`,
-               m.`POINT`              as `point`,
-               ct.`IMAGE_PATH`        as `characterImagePath`
+               ct.`IMAGE_PATH`        as `characterImagePath`,
+               m.`POINT`              as `point`
         FROM `member` m
                  LEFT JOIN `crow_tit_book` ctb ON m.MEMBER_ID = ctb.MEMBER_ID
                  LEFT JOIN `crow_tit` ct ON ctb.CROW_TIT_ID = ct.CROW_TIT_ID
