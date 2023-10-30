@@ -9,7 +9,7 @@
     <string name="home_find_letter">편지 찾기</string>
     <string name="home_letter_storage">편지 보관함</string>
     <string name="point_history_text">10포인트를 수령했습니다.</string>
-    <string name="search_friend_search_bar_hint">검색 아이디를 입력하세요.</string>
+    <string name="search_friend_search_bar_hint">검색 아이디를 입력하세요</string>
     <string name="point_history_date_text">2023.10.25</string>
     <string name="default_name">김뱁새</string>
     <string name="default_id">\@im_babsae</string>
