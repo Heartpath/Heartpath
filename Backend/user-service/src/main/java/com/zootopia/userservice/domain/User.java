@@ -6,13 +6,13 @@ import java.time.LocalDateTime;
 
 
 @Getter
-public class Member {
+public class User {
 
-    private String MEMBER_ID;
+    private String memberID;
 
-    private String KAKAO_ID;
+    private String kakaoID;
 
-    private String FCM_TOKEN;
+    private String fcmToken;
 
     private String nickname;
 
