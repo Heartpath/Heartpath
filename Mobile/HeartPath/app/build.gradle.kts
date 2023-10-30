@@ -1,5 +1,4 @@
-import java.util.*
-import java.io.*
+import java.util.Properties
 
 // ktlint-disable no-wildcard-imports
 
@@ -11,8 +10,8 @@ plugins {
 }
 
 val localProperties = Properties()
-localProperties.load(FileInputStream(rootProject.file("local.properties")))
-val naverMapClientId = properties["naver_map_client_id"].toString()
+localProperties.load(project.rootProject.file("local.properties").inputStream())
+
 
 android {
     namespace = "com.zootopia.heartpath"
@@ -24,14 +23,14 @@ android {
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
-
+        multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
         
-        buildConfigField("String", "NAVER_MAP_CLIENT_ID", properties["naver_map_client_id"].toString())
-        manifestPlaceholders["NAVER_MAP_CLIENT_ID"] = naverMapClientId
+        buildConfigField("String", "NAVER_MAP_CLIENT_ID", "\"" + properties["naver_map_client_id"] + "\"")
+        addManifestPlaceholders(mutableMapOf("NAVER_MAP_CLIENT_ID" to localProperties["naver_map_client_id"]!!))
     }
 
     buildTypes {
@@ -68,7 +67,8 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-
+    
+    
     // Hilt
     val dagger_version = "2.45"
     val hilt_version = "1.0.0"
@@ -81,7 +81,11 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
+    implementation ("com.squareup.retrofit2:converter-scalars:2.3.0")
 
     // kakao
     implementation("com.kakao.sdk:v2-all:2.14.0")
+    
+    // multidex
+    implementation("com.android.support:multidex:1.0.3")
 }
