@@ -33,7 +33,7 @@ public class LetterController {
                     examples = @ExampleObject(value = "{\n \"status\": 201,\n \"message\": \"편지 생성 성공\"\n}"))),
             @ApiResponse(responseCode = "L-001", description =  "NOT_EXISTS_CONTENT", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-001\",\n \"message\": \"편지 내용 파일은 필수 항목입니다.\"\n}"))),
             @ApiResponse(responseCode = "L-002", description =  "INVALID_IMAGE_FORMAT", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-002\",\n \"message\": \"지원하지 않는 이미지 파일 확장자입니다.\"\n}"))),
-            @ApiResponse(responseCode = "L-003", description =  "NOT_EXISTS_RECEIVER_ID", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-003\",\n \"message\": \"수신자 ID는 필수 항목 입니다.\"\n}"))),
+            @ApiResponse(responseCode = "L-003", description =  "NOT_EXISTS_RECEIVER_ID", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-003\",\n \"message\": \"수신자 ID는 필수 항목 입니다.\"\n}")))
     })
     @PostMapping("/hand")
     public ResponseEntity<? extends BaseResponseBody> createHandLetter(@RequestHeader(value = "Authorization", required = false) String accessToken,
@@ -55,8 +55,8 @@ public class LetterController {
             @ApiResponse(responseCode = "L-001", description =  "NOT_EXISTS_CONTENT", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-001\",\n \"message\": \"편지 내용 파일은 필수 항목입니다.\"\n}"))),
             @ApiResponse(responseCode = "L-002", description =  "INVALID_IMAGE_FORMAT", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-002\",\n \"message\": \"지원하지 않는 이미지 파일 확장자입니다.\"\n}"))),
             @ApiResponse(responseCode = "L-003", description =  "NOT_EXISTS_RECEIVER_ID", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-003\",\n \"message\": \"수신자 ID는 필수 항목 입니다.\"\n}"))),
-            @ApiResponse(responseCode = "L-004", description =  "NOT_EXISTS_TEXT", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-004\",\n \"message\": \"텍스트 편지 생성시 사용자 입력 텍스트는 필수 항목입니다.\"\n}"))),
-            @ApiResponse(responseCode = "L-005", description =  "EXISTS_FORBIDDEN_WORD", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-005\",\n \"message\": \"편지에 금칙어가 포함되어 있습니다. 금칙어를 제외하고 작성해주세요.\"\n}"))),
+            @ApiResponse(responseCode = "1  1   .", description =  "NOT_EXISTS_TEXT", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-004\",\n \"message\": \"텍스트 편지 생성시 사용자 입력 텍스트는 필수 항목입니다.\"\n}"))),
+            @ApiResponse(responseCode = "L-005", description =  "EXISTS_FORBIDDEN_WORD", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-005\",\n \"message\": \"편지에 금칙어가 포함되어 있습니다. 금칙어를 제외하고 작성해주세요.\"\n}")))
     })
     @PostMapping("/text")
     public ResponseEntity<? extends BaseResponseBody> createTextLetter(@RequestHeader(value = "Authorization", required = false) String accessToken,
@@ -69,6 +69,17 @@ public class LetterController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponseBody<>(201, "편지 생성 성공"));
     }
 
+    @Operation(summary = "편지 배치", description = "letterId(편지 ID, String), lat(편지 위도, Double), lng(편지 경도, Double), files(편지 배치 장소 이미지) s3, db에 저장\n\n " +
+            "(letterId : 필수, lat : 필수, lng : 필수, files : 필수(1장 이상))")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description =  "CREATED", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{\n \"status\": 201,\n \"message\": \"편지 생성 성공\"\n}"))),
+            @ApiResponse(responseCode = "L-002", description =  "INVALID_IMAGE_FORMAT", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-002\",\n \"message\": \"지원하지 않는 이미지 파일 확장자입니다.\"\n}"))),
+            @ApiResponse(responseCode = "L-006", description =  "NOT_EQUAL_USER", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-006\",\n \"message\": \"편지 작성자와 요청을 보낸 사용자가 일치하지 않습니다.\"\n}"))),
+            @ApiResponse(responseCode = "L-007", description =  "NOT_EXISTS_LETTER", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-007\",\n \"message\": \"존재하지 않는 편지입니다.\"\n}"))),
+            @ApiResponse(responseCode = "L-008", description =  "NOT_EXISTS_LAT_OR_LNG", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-008\",\n \"message\": \"위도, 경도는 필수 항목입니다.\"\n}"))),
+            @ApiResponse(responseCode = "L-009", description =  "NOT_EXISTS_PLACE_IMAGES", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-009\",\n \"message\": \"배치 장소에 대한 이미지 파일은 필수 항목입니다.\"\n}"))),
+    })
     @PostMapping("/placed")
     public ResponseEntity<? extends BaseResponseBody> placeLetter(@RequestHeader(value = "Authorization", required = false) String accessToken,
                                                                   @RequestPart(value = "letterId") String letterId,
