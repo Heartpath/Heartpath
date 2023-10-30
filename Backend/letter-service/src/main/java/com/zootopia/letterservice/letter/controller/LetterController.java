@@ -2,6 +2,8 @@ package com.zootopia.letterservice.letter.controller;
 
 import com.zootopia.letterservice.common.dto.BaseResponseBody;
 import com.zootopia.letterservice.letter.dto.request.LetterPlaceReqDto;
+import com.zootopia.letterservice.letter.dto.response.LetterSendResDto;
+import com.zootopia.letterservice.letter.dto.response.LetterUnsendResDto;
 import com.zootopia.letterservice.letter.service.LetterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -55,7 +58,7 @@ public class LetterController {
             @ApiResponse(responseCode = "L-001", description =  "NOT_EXISTS_CONTENT", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-001\",\n \"message\": \"편지 내용 파일은 필수 항목입니다.\"\n}"))),
             @ApiResponse(responseCode = "L-002", description =  "INVALID_IMAGE_FORMAT", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-002\",\n \"message\": \"지원하지 않는 이미지 파일 확장자입니다.\"\n}"))),
             @ApiResponse(responseCode = "L-003", description =  "NOT_EXISTS_RECEIVER_ID", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-003\",\n \"message\": \"수신자 ID는 필수 항목 입니다.\"\n}"))),
-            @ApiResponse(responseCode = "1  1   .", description =  "NOT_EXISTS_TEXT", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-004\",\n \"message\": \"텍스트 편지 생성시 사용자 입력 텍스트는 필수 항목입니다.\"\n}"))),
+            @ApiResponse(responseCode = "L-004", description =  "NOT_EXISTS_TEXT", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-004\",\n \"message\": \"텍스트 편지 생성시 사용자 입력 텍스트는 필수 항목입니다.\"\n}"))),
             @ApiResponse(responseCode = "L-005", description =  "EXISTS_FORBIDDEN_WORD", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"L-005\",\n \"message\": \"편지에 금칙어가 포함되어 있습니다. 금칙어를 제외하고 작성해주세요.\"\n}")))
     })
     @PostMapping("/text")
@@ -96,5 +99,134 @@ public class LetterController {
         letterService.placeLetter(letterPlaceReqDto, files);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponseBody<>(201, "편지 배치 성공"));
+    }
+
+    @Operation(summary = "발송 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{" +
+                            " \"status\": 200," +
+                            " \"message\": \"발송 편지 목록 조회 성공\"," +
+                            " \"data\": [" +
+                            "       {" +
+                            "           \"index\": 1," +
+                            "           \"receiver\": \"사용자 닉네임\"" +
+                            "       }" +
+                            "   ]" +
+                            "}")))
+    })
+    @GetMapping("/placed")
+    public ResponseEntity<? extends BaseResponseBody> getSendLetters(@RequestHeader(value = "Authorization", required = false) String accessToken) {
+        List<LetterSendResDto> letters = letterService.getSendLetters()
+                .stream()
+                .map(LetterSendResDto::new)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "발송 편지 목록 조회 성공", letters));
+    }
+
+    @Operation(summary = "미발송 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{" +
+                            " \"status\": 200," +
+                            " \"message\": \"미발송 편지 목록 조회 성공\"," +
+                            " \"data\": [" +
+                            "       {" +
+                            "           \"index\": 1," +
+                            "           \"receiver\": \"사용자 닉네임\"" +
+                            "       }" +
+                            "   ]" +
+                            "}")))
+    })
+    @GetMapping("/unplaced")
+    public ResponseEntity<? extends BaseResponseBody> getUnsendLetters(@RequestHeader(value = "Authorization", required = false) String accessToken) {
+        List<LetterUnsendResDto> letters = letterService.getUnsendLetters()
+                .stream()
+                .map(LetterUnsendResDto::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "미발송 편지 목록 조회 성공", letters));
+    }
+
+    @Operation(summary = "열람한 수신 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{" +
+                            " \"status\": 200," +
+                            " \"message\": \"열람한 편지 목록 조회 성공\"," +
+                            " \"data\": [" +
+                            "       {" +
+                            "           \"index\": 1," +
+                            "           \"sender\": \"사용자 닉네임\"," +
+                            "           \"time\": \"yyyy-mm-dd-hh-mm-ss\"," +
+                            "           \"lat\": 125.345436," +
+                            "           \"lng\": 45.235233," +
+                            "           \"location\":[" +
+                            "                           \"https://zootopia-s3.s3.ap-northeast-2.amazonaws.com/-/file.jpg\"" +
+                                                    "]" +
+                            "       }" +
+                            "   ]" +
+                            "}")))
+    })
+    @GetMapping("/checked")
+    public ResponseEntity<? extends BaseResponseBody> getReadLetters(@RequestHeader(value = "Authorization", required = false) String accessToken) {
+        // accessToken으로 멤버 객체 찾기 → SendId가 해당 맴버인 것 중 isRead = true인 값들만 반환
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "열람한 편지 목록 조회 성공", "임시"));
+    }
+
+    @Operation(summary = "미열람한 수신 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{" +
+                            " \"status\": 200," +
+                            " \"message\": \"미열람한 편지 목록 조회 성공\"," +
+                            " \"data\": [" +
+                            "       {" +
+                            "           \"index\": 1," +
+                            "           \"sender\": \"사용자 닉네임\"," +
+                            "           \"time\": \"yyyy-mm-dd-hh-mm-ss\"," +
+                            "           \"lat\": 125.345436," +
+                            "           \"lng\": 45.235233," +
+                            "           \"location\":[" +
+                            "                           \"https://zootopia-s3.s3.ap-northeast-2.amazonaws.com/-/file.jpg\"" +
+                            "                       ]" +
+                            "       }" +
+                            "   ]" +
+                            "}")))
+    })
+    @GetMapping("/unchecked")
+    public ResponseEntity<? extends BaseResponseBody> getUnReadLetters(@RequestHeader(value = "Authorization", required = false) String accessToken) {
+        // accessToken으로 멤버 객체 찾기 → SendId가 해당 맴버인 것 중 isRead = false인 값들만 반환
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "미열람한 편지 목록 조회 성공", "임시"));
+    }
+
+    @Operation(summary = "편지 상세조회", description = "Authorization : Bearer {accessToken}, 필수")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{" +
+                            " \"status\": 200," +
+                            " \"message\": \"편지 상세 조회 성공\"," +
+                            " \"data\": [" +
+                            "       {" +
+                            "           \"index\": 1," +
+                            "           \"content\": \"https://zootopia-s3.s3.ap-northeast-2.amazonaws.com/-/file.jpg\"," +
+                            "           \"sender\": \"사용자 닉네임\"," +
+                            "           \"receiver\": \"사용자 닉네임\"," +
+                            "           \"time\": \"yyyy-mm-dd-hh-mm-ss\"," +
+                            "           \"lat\": 125.345436," +
+                            "           \"lng\": 45.235233," +
+                            "           \"files\":[" +
+                            "                           \"https://zootopia-s3.s3.ap-northeast-2.amazonaws.com/-/file.jpg\"" +
+                            "                   ]," +
+                            "           \"isFriend\": true" +
+                            "       }" +
+                            "   ]" +
+                            "}")))
+    })
+    @GetMapping("/{letter_id}")
+    public ResponseEntity<? extends BaseResponseBody> getLetter(@RequestHeader(value = "Authorization", required = false) String accessToken) {
+        // accessToken으로 멤버 객체 찾기 → SendId, ReceivedId가 해당 맴버인 것만 열람 가능
+        // 해당 요청을 보낸 멤버가 ReceivedId와 일치하면 isRead = true로 변경
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "편지 상세 조회 성공", "임시"));
     }
 }

@@ -21,15 +21,8 @@ public class LetterMySQL {
     @Column(updatable = false, name = "letter_id")
     private Long id;
 
-//    @JsonIgnore
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "sender", nullable = false)
-//    private Member sender;
-
-//    @JsonIgnore
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "receiver", nullable = false)
-//    private Member receiver;
+//    private String senderId;
+//    private String receiverId;
 
     @Column(length = 1000)
     private String content;

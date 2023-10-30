@@ -183,4 +183,21 @@ public class LetterServiceImpl implements LetterService {
             throw new BadRequestException(ErrorCode.FAIL_UPLOAD_FILE);
         }
     }
+
+    @Override
+    @Transactional
+    public List<LetterMySQL> getSendLetters() {
+        // Member 객체 받아서 해당 멤버에 해당하는 편지만 가져와야 함.
+//        return letterJpaRepository.findBySenderId();
+        return letterJpaRepository.findAll();
+    }
+
+    @Override
+    @Transactional
+    public List<LetterMongo> getUnsendLetters() {
+//        return letterMongoRepository.findBySenderId();
+        return letterMongoRepository.findAll();
+    }
+
+
 }

@@ -3,6 +3,8 @@ package com.zootopia.letterservice.letter.service;
 import com.zootopia.letterservice.letter.dto.request.LetterHandReqDto;
 import com.zootopia.letterservice.letter.dto.request.LetterPlaceReqDto;
 import com.zootopia.letterservice.letter.dto.request.LetterTextReqDto;
+import com.zootopia.letterservice.letter.entity.LetterMongo;
+import com.zootopia.letterservice.letter.entity.LetterMySQL;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,4 +22,7 @@ public interface LetterService {
 
     void placeLetter(LetterPlaceReqDto letterPlaceReqDto, List<MultipartFile> files);
 
+    List<LetterMySQL> getSendLetters();
+
+    List<LetterMongo> getUnsendLetters();
 }
