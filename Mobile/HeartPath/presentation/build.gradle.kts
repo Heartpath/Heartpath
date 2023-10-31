@@ -94,4 +94,7 @@ dependencies {
     
     // multidex
     implementation("com.android.support:multidex:1.0.3")
+
+    // Kakao
+    implementation("com.kakao.sdk:v2-all:2.14.0")
 }
