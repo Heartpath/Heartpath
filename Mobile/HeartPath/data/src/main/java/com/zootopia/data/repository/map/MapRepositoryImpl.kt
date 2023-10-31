@@ -13,7 +13,9 @@ private const val TAG = "MapRepositoryImpl_HP"
 class MapRepositoryImpl @Inject constructor(
     val mapDataSource: MapDataSource,
 ) : MapRepository {
-//    val NAVER_MAP_CLIENT_ID = BuildConfig.DATA_NAVER_MAP_CLIENT_ID
+    val NAVER_MAP_CLIENT_ID = BuildConfig.DATA_NAVER_MAP_CLIENT_ID
+    val NAVER_MAP_API_KEY = BuildConfig.DATA_NAVER_MAP_API_KEY
+    
     /**
      * 네이버 맵 길찾기 요청
      */
@@ -22,14 +24,13 @@ class MapRepositoryImpl @Inject constructor(
         goal: String,
         option: String,
     ): MapDirectionDto {
-        Log.d(TAG, "requestMapDirection: ${BuildConfig.DATA_NAVER_MAP_CLIENT_ID}")
+        Log.d(TAG, "requestMapDirection: ${NAVER_MAP_CLIENT_ID}")
         return getValueOrThrow { mapDataSource.getNaverMapDirection(
             start = start,
             goal = goal,
             option = option,
-            apiKeyId = "oetmwcozd1",
-//            apiKeyId = BuildConfig.DATA_NAVER_MAP_CLIENT_ID,
-            apiKey = "7aiL7pVGQ93sYI6B3azANREgGdMVLDfQGthCEi0O"
+            apiKeyId = NAVER_MAP_CLIENT_ID,
+            apiKey = NAVER_MAP_API_KEY
         ).toDomain() }
     }
     

@@ -40,9 +40,10 @@ private const val TAG = "MapFragment_HP"
 class MapFragment :
     BaseFragment<FragmentMapBinding>(FragmentMapBinding::bind, R.layout.fragment_map),
     OnMapReadyCallback {
+    
+    private val mapViewModel: MapViewModel by viewModels()
     private lateinit var mainActivity: MainActivity
     private lateinit var navController: NavController
-    private val mapViewModel: MapViewModel by viewModels()
     
     private val LOCATION_PERMISSION_REQUEST_CODE = 100
     private lateinit var locationSource: FusedLocationSource
