@@ -2,11 +2,13 @@ package com.zootopia.presentation.writeletter
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
@@ -14,8 +16,11 @@ import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentSelectLetterPaperBinding
+import com.zootopia.presentation.util.LetterType
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+
+private const val TAG = "SelectLetterPaperFragme_HP"
 
 class SelectLetterPaperFragment : BaseFragment<FragmentSelectLetterPaperBinding>(
     FragmentSelectLetterPaperBinding::bind,
@@ -26,7 +31,7 @@ class SelectLetterPaperFragment : BaseFragment<FragmentSelectLetterPaperBinding>
     private val writeLetterViewModel: WriteLetterViewModel by activityViewModels()
     private lateinit var pagerAdapter: LetterPaperViewPagerAdapter
     private var letterPaperList: MutableList<String> = mutableListOf()
-
+    private val args: SelectLetterPaperFragmentArgs by navArgs()
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
@@ -39,6 +44,7 @@ class SelectLetterPaperFragment : BaseFragment<FragmentSelectLetterPaperBinding>
         initViewPager()
         initCollecter()
         initClickListener()
+        Log.d(TAG, "onViewCreated: ${args.letterType}")
     }
 
     fun initCollecter() {
@@ -74,7 +80,12 @@ class SelectLetterPaperFragment : BaseFragment<FragmentSelectLetterPaperBinding>
     fun initClickListener() = with(binding) {
         buttonSelectLetterPaper.setOnClickListener {
             writeLetterViewModel.setSelectedLetterPaperUrl(letterPaperList[viewPagerLetterPaper.currentItem])
-            navController.navigate(R.id.action_selectLetterPaperFragment_to_handWriteFragment)
+            if(args.letterType == LetterType.HAND_WRITE){
+                navController.navigate(R.id.action_selectLetterPaperFragment_to_handWriteFragment)
+            }else{
+                // 폰트 설정화면으로 이동
+                
+            }
         }
     }
 
