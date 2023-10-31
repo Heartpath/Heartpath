@@ -151,7 +151,7 @@ public class LetterController {
                             "       {" +
                             "           \"index\": 1," +
                             "           \"sender\": \"사용자 닉네임\"," +
-                            "           \"time\": \"yyyy-mm-dd-hh-mm-ss\"," +
+                            "           \"time\": \"yyyy-MM-ddThh:mm:ss.ssssss\"," +
                             "           \"lat\": 125.345436," +
                             "           \"lng\": 45.235233," +
                             "           \"location\":[" +
@@ -177,7 +177,7 @@ public class LetterController {
                             "       {" +
                             "           \"index\": 1," +
                             "           \"sender\": \"사용자 닉네임\"," +
-                            "           \"time\": \"yyyy-mm-dd-hh-mm-ss\"," +
+                            "           \"time\": \"yyyy-MM-ddThh:mm:ss.ssssss\"," +
                             "           \"lat\": 125.345436," +
                             "           \"lng\": 45.235233," +
                             "           \"location\":[" +
@@ -205,7 +205,7 @@ public class LetterController {
                             "           \"content\": \"https://zootopia-s3.s3.ap-northeast-2.amazonaws.com/-/file.jpg\"," +
                             "           \"sender\": \"사용자 닉네임\"," +
                             "           \"receiver\": \"사용자 닉네임\"," +
-                            "           \"time\": \"yyyy-mm-dd-hh-mm-ss\"," +
+                            "           \"time\": \"yyyy-MM-ddThh:mm:ss.ssssss\"," +
                             "           \"lat\": 125.345436," +
                             "           \"lng\": 45.235233," +
                             "           \"files\":[" +
