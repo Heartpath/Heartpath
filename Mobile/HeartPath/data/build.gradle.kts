@@ -1,9 +1,14 @@
+import java.util.Properties
+
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("dagger.hilt.android.plugin")
     id("kotlin-kapt")
 }
+
+val localProperties = Properties()
+localProperties.load(project.rootProject.file("local.properties").inputStream())
 
 android {
     namespace = "com.zootopia.data"
@@ -14,6 +19,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+    
+        buildConfigField("String", "DATA_NAVER_MAP_CLIENT_ID",localProperties.getProperty("data_naver_map_client_id"))
+        buildConfigField("String", "DATA_NAVER_MAP_API_KEY",localProperties.getProperty("data_naver_map_api_key"))
     }
 
     buildTypes {
@@ -31,6 +39,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = "17"
+    }
+    buildFeatures {
+        buildConfig = true
     }
 }
 
@@ -61,12 +72,6 @@ dependencies {
     // Add the dependency for the Firebase SDK for Google Analytics
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-messaging-ktx")
-
-    // retrofit & okhttp
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
-    implementation("com.squareup.okhttp3:okhttp:4.9.0")
     
     // datastore
     implementation("androidx.datastore:datastore-preferences:1.0.0")

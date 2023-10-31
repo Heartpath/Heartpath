@@ -79,8 +79,15 @@
         <item name="android:textColor">@color/DarkGray</item>
         <item name="android:textSize">@dimen/_10sdp</item>
     </style>
+
     <style name="DarkGray_10_ExtraBold_NanumText" parent="@style/Widget.AppCompat.TextView">
         <item name="fontFamily">@font/nanum_square_round_otf_extra_bold</item>
+        <item name="android:textColor">@color/DarkGray</item>
+        <item name="android:textSize">@dimen/_10sdp</item>
+    </style>
+
+    <style name="DarkGray_10_Regular_NanumText" parent="@style/Widget.AppCompat.TextView">
+        <item name="fontFamily">@font/nanum_square_round_otf_regular</item>
         <item name="android:textColor">@color/DarkGray</item>
         <item name="android:textSize">@dimen/_10sdp</item>
     </style>
@@ -95,15 +102,55 @@
         <item name="android:textColor">@color/Gray</item>
         <item name="android:textSize">@dimen/_12sdp</item>
     </style>
+    <style name="Gray_10_Regular_NanumText" parent="@style/Widget.AppCompat.TextView">
+        <item name="fontFamily">@font/nanum_square_round_otf_regular</item>
+        <item name="android:textColor">@color/Gray</item>
+        <item name="android:textSize">@dimen/_10sdp</item>
+    </style>
+    <style name="DustyBlue_14_Bold_NanumText" parent="@style/Widget.AppCompat.TextView">
+        <item name="fontFamily">@font/nanum_square_round_otf_bold</item>
+        <item name="android:textColor">@color/DustyBlue</item>
+        <item name="android:textSize">@dimen/_14sdp</item>
+    </style>
 
 
     <style name="Add_Friend_Button_Style" parent="@style/Widget.Material3.Button.IconButton.Filled.Tonal">
         <item name="backgroundTint">@color/LightBlue</item>
         <item name="icon">@drawable/icon_add_person</item>
-        <item name="iconTint">@color/DarkGray</item>
+        <item name="iconSize">@dimen/_18sdp</item>
+        <item name="iconTint">@color/DarklessGray</item>
         <item name="android:gravity">center</item>
         <item name="iconGravity">textEnd</item>
-        <item name="cornerRadius">@dimen/_12sdp</item>
-        <item name="android:elevation">@dimen/_4sdp</item>
+        <item name="cornerRadius">@dimen/_8sdp</item>
+        <item name="android:elevation">@dimen/_2sdp</item>
+    </style>
+    <style name="Cancel_Button_Style" parent="@style/Widget.Material3.Button.TextButton">
+        <item name="fontFamily">@font/nanum_square_round_otf_extra_bold</item>
+        <item name="android:textColor">@color/DarkGray</item>
+        <item name="android:textSize">@dimen/_14sdp</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+    </style>
+    <style name="Add_Friend_Dialog_Add_Button_Style" parent="@style/Widget.Material3.Button.TextButton">
+        <item name="fontFamily">@font/nanum_square_round_otf_extra_bold</item>
+        <item name="android:textColor">@color/DarkDustyGreen</item>
+        <item name="android:textSize">@dimen/_14sdp</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+    </style>
+    <style name="Delete_Friend_Dialog_Delete_Button_Style" parent="@style/Widget.Material3.Button.TextButton">
+        <item name="fontFamily">@font/nanum_square_round_otf_extra_bold</item>
+        <item name="android:textColor">@color/AlertRed</item>
+        <item name="android:textSize">@dimen/_14sdp</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+    </style>
+    <style name="Search_Friend_Search_Bar_Style" parent="@style/Widget.Material3.SearchBar">
+        <item name="backgroundTint">@color/LightBlue</item>
+        <item name="android:hint">@string/search_friend_search_bar_hint</item>
+        <item name="hintTextColor">@color/DarkGray</item>
+        <item name="hintAnimationEnabled">true</item>
+        <item name="iconSize">@dimen/_24sdp</item>
+        <item name="iconTint">@color/DarkGray</item>
+        <item name="defaultMarginsEnabled">false</item>
+        <item name="android:textSize">@dimen/_24sdp</item>
+        <item name="textInputStyle">@style/DarkGray_12_Bold_NanumText</item>
     </style>
 </resources>

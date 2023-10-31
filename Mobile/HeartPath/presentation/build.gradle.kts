@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         minSdk = 24
-
+        multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -94,4 +94,12 @@ dependencies {
     // ViewPager2
     implementation("androidx.viewpager2:viewpager2:1.0.0")
 
+    // google location
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+    
+    // multidex
+    implementation("com.android.support:multidex:1.0.3")
+
+    // Kakao
+    implementation("com.kakao.sdk:v2-all:2.14.0")
 }
