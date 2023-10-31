@@ -9,7 +9,6 @@ import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.kakao.sdk.common.util.Utility
 import com.zootopia.presentation.config.BaseActivity
 import com.zootopia.presentation.databinding.ActivityMainBinding
 import com.zootopia.presentation.util.checkAllPermission
@@ -33,7 +32,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         initCollect()
 
         // 카카오 키 해시 값 가지고 오기
-        Log.d(TAG, "KAKAO keyhash : ${Utility.getKeyHash(this)}")
+//        Log.d(TAG, "KAKAO keyhash : ${Utility.getKeyHash(this)}")
     }
 
     private fun initNavHost() {
