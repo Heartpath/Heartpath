@@ -26,6 +26,7 @@ class HomeFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClickEvent()
+        initAnimation()
     }
     
     private fun initClickEvent() = with(binding) {
@@ -43,45 +44,48 @@ class HomeFragment :
         buttonMyPage.setOnClickListener{
             findNavController().navigate(R.id.action_homeFragment_to_myPageFragment)
         }
-        initAnimation()
+
+        buttonWriteLetter.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_selectLetterTypeFragment)
+        }
     }
 
     private fun initView() = with(binding) {
 
     }
 
-    private fun initAnimation() {
+    private fun initAnimation() = with(binding) {
         var anim_up_and_down: Animation =
             AnimationUtils.loadAnimation(
                 requireContext(),
                 R.anim.shaking_animation_up_and_down_2000
             )
-        binding.imageNote1.startAnimation(anim_up_and_down)
-        binding.imageNote2.startAnimation(anim_up_and_down)
-        binding.imageHeart.startAnimation(anim_up_and_down)
+        imageNote1.startAnimation(anim_up_and_down)
+        imageNote2.startAnimation(anim_up_and_down)
+        imageHeart.startAnimation(anim_up_and_down)
 
-        binding.buttonWriteLetter.startAnimation(
+        buttonWriteLetter.startAnimation(
             AnimationUtils.loadAnimation(
                 requireContext(),
-                R.anim.shaking_animation_down_and_up_2000
+                R.anim.shaking_animation_down_and_up_5000
             )
         )
-        binding.buttonLetterStorage.startAnimation(
+        buttonLetterStorage.startAnimation(
             AnimationUtils.loadAnimation(
                 requireContext(),
-                R.anim.shaking_animation_down_and_up_2400
+                R.anim.shaking_animation_down_and_up_5200
             )
         )
-        binding.buttonMap.startAnimation(
+        buttonMap.startAnimation(
             AnimationUtils.loadAnimation(
                 requireContext(),
-                R.anim.shaking_animation_down_and_up_2800
+                R.anim.shaking_animation_down_and_up_5400
             )
         )
-        binding.buttonLetterList.startAnimation(
+        buttonLetterList.startAnimation(
             AnimationUtils.loadAnimation(
                 requireContext(),
-                R.anim.shaking_animation_down_and_up_3200
+                R.anim.shaking_animation_down_and_up_5800
             )
         )
     }
