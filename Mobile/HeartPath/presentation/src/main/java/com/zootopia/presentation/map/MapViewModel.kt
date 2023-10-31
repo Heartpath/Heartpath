@@ -13,14 +13,12 @@ class MapViewModel @Inject constructor(
     private val getMapDirectionUseCase: GetMapDirectionUseCase,
 ) : BaseViewModel() {
     
-    
-    
     fun getMapDirection() {
         getApiResult(
             block = {
                 getMapDirectionUseCase.invoke(
-                    "127.1058342,37.359708",
-                    "129.075986,35.179470",
+                    "128.4164631,36.107114,",
+                    "128.418643,36.1066181",
                     "trafast"
                 )
             },
