@@ -13,8 +13,6 @@ import javax.inject.Inject
 class WriteLetterViewModel @Inject constructor(
 
 ) : ViewModel() {
-    private var _selectedLetterType: LetterType = LetterType.HAND_WRITE
-    val selectedLetterType: LetterType = _selectedLetterType
 
     private var _selectedLetterPaperUrl: MutableStateFlow<String> = MutableStateFlow("")
     val selectedLetterPaperUrl: StateFlow<String> = _selectedLetterPaperUrl
@@ -23,10 +21,6 @@ class WriteLetterViewModel @Inject constructor(
         mutableListOf()
     )
     val letterPaperList: StateFlow<MutableList<String>> = _letterPaperList
-
-    fun setSelectedLetterType(type: LetterType) {
-        _selectedLetterType = type
-    }
 
     fun setSelectedLetterPaperUrl(url: String) {
         viewModelScope.launch {
@@ -38,11 +32,11 @@ class WriteLetterViewModel @Inject constructor(
         //서버로 부터 편지지 리스트를 받는다.
         viewModelScope.launch {
             var list = mutableListOf<String>().apply {
-                add("https://img.freepik.com/free-vector/blank-rectangle-gold-frame-on-pink-background-template-vector_53876-136483.jpg?w=360&t=st=1698396216~exp=1698396816~hmac=493c55aaf2c74d7fa7f212227714a33533b48d4bfd139b58e3cd3b728e979f64")
-                add("https://img.freepik.com/free-vector/abstract-botanical-frame-template-vector_53876-136489.jpg?w=360&t=st=1698396237~exp=1698396837~hmac=a6ae72a5fbe0160a9e79bcd0f84af42fd7253eaa6c0ca0e88e81c0e33d8d3db0")
-                add("https://img.freepik.com/free-vector/terrazzo-frame-on-beige-background_53876-100754.jpg?w=360&t=st=1698396277~exp=1698396877~hmac=f3754740f3daecf172aaa95a8a10ac21520e15557942b0a751ad894a0d45c1f2")
-                add("https://img.freepik.com/free-vector/cute-colorful-illustrated-star-frame-on-a-beige-background_53876-115059.jpg?w=360&t=st=1698396256~exp=1698396856~hmac=3de671417b53b9be68eddc6acfc2b825b2fbc6703476eb9845898a8c398e3ebe")
-                add("https://img.freepik.com/premium-vector/doodle-nature-patterned-frame-vector_53876-166757.jpg?w=360")
+                add("https://postfiles.pstatic.net/MjAyMzEwMjhfNjcg/MDAxNjk4NDI0ODE5NjI4.kPCHa288iH5JCl8arHKkxb-X5vq_zph7A8N7B6YTiJIg.56HHDL7-Jb3xGtjdMpdNnUPltZkV7HVZ0Hhk-AosBBEg.PNG.vmfpel0425/export202310280139235243.png?type=w773")
+                add("https://postfiles.pstatic.net/MjAyMzEwMjhfNTMg/MDAxNjk4NDIyODU5NzQz.efoLw5ABlo7eg_dVvCB6gxLCZjvuPRMTOlc7Obt4tHMg.wzujXlvx44kykz1JfcHRikbdFCZoBeGckASWcqJjSmMg.PNG.vmfpel0425/export202310280100244537.png?type=w773")
+                add("https://postfiles.pstatic.net/MjAyMzEwMjhfMTEw/MDAxNjk4NDI4MDk5MzAz.AGlsyuL5RlHfwm4c-n79IfJpDOIScnL9hu8zBIwsJhkg.63uoa5hAWNijsFU8DuSLrZdHqXxnXgsMIM9AlqTz3KAg.PNG.vmfpel0425/export202310280234128271.png?type=w773")
+                add("https://postfiles.pstatic.net/MjAyMzEwMjhfNDcg/MDAxNjk4NDI5OTUzMjc0.zzPnSz3F2lcumdN_KbXvUB6vDa1qgPYvKZ2H2ntqNGEg._x8G_WEtyChmAvRDqpJi3988M6KdxNjLDgA-i5eBGPQg.PNG.vmfpel0425/export202310280304530889.png?type=w773")
+                add("https://postfiles.pstatic.net/MjAyMzEwMjhfMjkx/MDAxNjk4NDMxNjA5ODE4.5DV-03qZur91-juxpIlZlHMKwJ1_YCAcAXVWBYk873Mg.keXERyWc6DbWLHhAEcuhfxZtLJEbqeMx7PvKvtYu_Rcg.PNG.vmfpel0425/export202310280332561002.png?type=w773")
                 add("https://img.freepik.com/free-vector/paper-note-frame-vector-on-memphis-pattern_53876-108786.jpg?w=360&t=st=1698396316~exp=1698396916~hmac=94d23abab6ea4c081de421792add4fd65d41c77270948725a80fae01ad16e994")
                 add("https://img.freepik.com/free-vector/empty-paper-on-daisy-field-patterned-background_53876-115658.jpg?w=360&t=st=1698396333~exp=1698396933~hmac=fdb3786b47d67f9256107a83d9fe7c4df5988a330311df12e6032eb87e910013")
                 add("https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2022/04/22/91193624-51b9-4b28-b3b2-bef73c770691.jpg")
