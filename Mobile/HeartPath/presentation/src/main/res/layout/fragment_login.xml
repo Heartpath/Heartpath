@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_200sdp"
         android:src="@drawable/animation_bird_on_earth"
-        app:layout_constraintBottom_toTopOf="@+id/imageButton"
+        app:layout_constraintBottom_toTopOf="@id/imagebutton_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,7 +19,7 @@
         app:layout_constraintVertical_chainStyle="packed" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/imagebutton_login"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_56sdp"
         android:layout_marginHorizontal="@dimen/_32sdp"

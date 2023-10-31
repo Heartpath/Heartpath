@@ -33,7 +33,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         initCollect()
 
         // 카카오 키 해시 값 가지고 오기
-        Log.d(TAG, "KAKAO keyhash : ${Utility.getKeyHash(this)}")
+//        Log.d(TAG, "KAKAO keyhash : ${Utility.getKeyHash(this)}")
     }
 
     private fun initNavHost() {

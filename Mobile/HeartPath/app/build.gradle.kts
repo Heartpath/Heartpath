@@ -31,8 +31,8 @@ android {
         
         buildConfigField("String", "NAVER_MAP_CLIENT_ID", "\"" + properties["naver_map_client_id"] + "\"")
         addManifestPlaceholders(mutableMapOf("NAVER_MAP_CLIENT_ID" to localProperties["naver_map_client_id"]!!))
-        buildConfigField("String", "NATIVE_APP_KEY", "\"" + properties["kakao_native_app_key"] + "\"")
-        addManifestPlaceholders(mutableMapOf("NATIVE_APP_KEY" to localProperties["kakao_native_app_key"]!!))
+        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", localProperties.getProperty("kakao_native_app_key"))
+        addManifestPlaceholders(mutableMapOf("KAKAO_NATIVE_APP_KEY" to localProperties["kakao_native_app_key"]!!))
 
     }
 
