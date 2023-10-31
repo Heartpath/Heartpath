@@ -34,11 +34,18 @@ class SelectLetterTypeFragment : BaseFragment<FragmentSelectLetterTypeBinding>(
 
     fun initClickListener() = with(binding) {
         binding.linealayoutHandWrite.setOnClickListener {
-            writeLetterViewModel.setSelectedLetterType(LetterType.HAND_WRITE)
-            findNavController().navigate(R.id.action_selectLetterTypeFragment_to_selectLetterPaperFragment)
+            val action =
+                SelectLetterTypeFragmentDirections.actionSelectLetterTypeFragmentToSelectLetterPaperFragment(
+                    LetterType.HAND_WRITE
+                )
+            findNavController().navigate(action)
         }
         binding.linearlayoutTypingWrite.setOnClickListener {
-            writeLetterViewModel.setSelectedLetterType(LetterType.TYPING_WRITE)
+            val action =
+                SelectLetterTypeFragmentDirections.actionSelectLetterTypeFragmentToSelectLetterPaperFragment(
+                    LetterType.TYPING_WRITE
+                )
+            findNavController().navigate(action)
         }
     }
 
