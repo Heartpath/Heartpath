@@ -1,5 +1,6 @@
 package com.zootopia.letterservice.letter.service;
 
+import com.zootopia.letterservice.common.FCM.FCMService;
 import com.zootopia.letterservice.common.error.code.ErrorCode;
 import com.zootopia.letterservice.common.error.exception.BadRequestException;
 import com.zootopia.letterservice.common.global.BannedWords;
@@ -37,6 +38,9 @@ public class LetterServiceImpl implements LetterService {
     private final LetterMongoRepository letterMongoRepository;
     private final LetterImageRepository letterImageRepository;
     private final PlaceImageRepository placeImageRepository;
+
+    private final FCMService fcmService;
+
     private final BannedWords bannedWords;
     private final S3Uploader s3Uploader;
 
