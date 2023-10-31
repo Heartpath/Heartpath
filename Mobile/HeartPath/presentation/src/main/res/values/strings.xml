@@ -9,7 +9,7 @@
     <string name="home_find_letter">편지 찾기</string>
     <string name="home_letter_storage">편지 보관함</string>
     <string name="point_history_text">10포인트를 수령했습니다.</string>
-    <string name="search_friend_search_bar_hint">검색 아이디를 입력하세요.</string>
+    <string name="search_friend_search_bar_hint">검색 아이디를 입력하세요</string>
     <string name="point_history_date_text">2023.10.25</string>
     <string name="default_name">김뱁새</string>
     <string name="default_id">\@im_babsae</string>
@@ -24,4 +24,14 @@
     <string name="select_letter_type_hand_write">손으로 편지쓰기</string>
     <string name="select_letter_type_typing_write">타이핑으로 편지쓰기</string>
     <string name="select_letter_paper_button">편지지 선택</string>
+
+    <string name="add_friend_dialog_question">친구로 추가할까요?</string>
+    <string name="delete_friend_dialog_question">친구에서 삭제할까요?</string>
+    <string name="report_friend_dialog_question">사용자를 신고할까요?</string>
+    <string name="add">추가</string>
+    <string name="cancel">취소</string>
+    <string name="delete">삭제</string>
+    <string name="report">신고</string>
+    <string name="point_history"></string>
+
 </resources>
