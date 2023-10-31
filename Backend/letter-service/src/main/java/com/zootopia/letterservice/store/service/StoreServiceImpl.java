@@ -11,7 +11,11 @@ import com.zootopia.letterservice.store.repository.CrowTitRepository;
 import com.zootopia.letterservice.store.repository.LetterPaperRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -21,6 +25,8 @@ import java.time.LocalDateTime;
 @Transactional
 @RequiredArgsConstructor
 public class StoreServiceImpl implements StoreService {
+    @Autowired
+    private WebClient webClient;
 
     private final LetterPaperRepository letterPaperRepository;
     private final CrowTitRepository crowTitRepository;
@@ -44,6 +50,21 @@ public class StoreServiceImpl implements StoreService {
     public void buyCharacter(String memberId, CharacterBuyReqDto characterBuyReqDto){
         CrowTit crowTit = crowTitRepository.findById(characterBuyReqDto.getCharacterId())
                 .orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTS_CROWTIT));
+
+        // ** 구매한 뱁새정보 멤버 서버로 전송
+
+//        try {
+//            ResponseEntity<String> result = webClient.post()
+//                    .uri("/crowtit/save")
+//                    .contentType(MediaType.APPLICATION_JSON)
+//                    .bodyValue(crowTit)
+//                    .retrieve()
+//                    .toEntity(String.class)
+//                    .block();
+//            return;
+//        }catch (Exception e){
+//            throw new BadRequestException(ErrorCode.FAIL_SEND_TO_MEMBER_CROWTIT);
+//        }
     }
 
     public CrowTit getCharacterInfo(Long charater_id){
