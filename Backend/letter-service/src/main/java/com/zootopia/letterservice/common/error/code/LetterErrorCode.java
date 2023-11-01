@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public enum ErrorCode {
+public enum LetterErrorCode {
     // S3
     FAIL_UPLOAD_FILE(HttpStatus.INTERNAL_SERVER_ERROR, "S3-001", "서버 장애로 s3에 파일에 업로드할 때 오류가 발생하였습니다."),
     FAIL_DELETE_FILE(HttpStatus.INTERNAL_SERVER_ERROR, "S3-002", "S3에 업로드 된 파일을 지울 때 오류가 발생하였습니다."),
@@ -20,12 +20,11 @@ public enum ErrorCode {
     NOT_EXISTS_LAT_OR_LNG(HttpStatus.BAD_REQUEST, "L-008", "위도, 경도는 필수 항목입니다."),
     NOT_EXISTS_PLACE_IMAGES(HttpStatus.BAD_REQUEST, "L-009", "배치 장소에 대한 이미지 파일은 필수 항목입니다.");
 
-
     private HttpStatus httpStatus;
     private String errorCode;
     private String message;
 
-    ErrorCode(HttpStatus httpStatus, String errorCode, String message) {
+    LetterErrorCode(HttpStatus httpStatus, String errorCode, String message) {
         this.httpStatus = httpStatus;
         this.errorCode = errorCode;
         this.message = message;

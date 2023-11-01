@@ -1,8 +1,8 @@
 package com.zootopia.letterservice.letter.service;
 
 import com.zootopia.letterservice.common.FCM.FCMService;
-import com.zootopia.letterservice.common.error.code.ErrorCode;
-import com.zootopia.letterservice.common.error.exception.BadRequestException;
+import com.zootopia.letterservice.common.error.code.LetterErrorCode;
+import com.zootopia.letterservice.common.error.exception.LetterBadRequestException;
 import com.zootopia.letterservice.common.global.BannedWords;
 import com.zootopia.letterservice.common.s3.S3Uploader;
 import com.zootopia.letterservice.letter.dto.request.LetterPlaceReqDto;
@@ -50,7 +50,7 @@ public class LetterServiceImpl implements LetterService {
     public void createHandLetter(MultipartFile content, List<MultipartFile> files) {
         // content 파일
         if (content.isEmpty()) {
-            throw new BadRequestException(ErrorCode.NOT_EXISTS_CONTENT);
+            throw new LetterBadRequestException(LetterErrorCode.NOT_EXISTS_CONTENT);
         }
 
         String contentUrl = uploadFileToS3(content, "letter-hand-content");
@@ -78,16 +78,16 @@ public class LetterServiceImpl implements LetterService {
     @Transactional
     public void createTextLetter(String text, MultipartFile content, List<MultipartFile> files) {
         if (text.trim().isEmpty()) {
-            throw new BadRequestException(ErrorCode.NOT_EXISTS_TEXT);
+            throw new LetterBadRequestException(LetterErrorCode.NOT_EXISTS_TEXT);
         }
 
         // text 금칙어 검사
         if (bannedWords.isBannedWords(text)) {
-            throw new BadRequestException(ErrorCode.EXISTS_FORBIDDEN_WORD);
+            throw new LetterBadRequestException(LetterErrorCode.EXISTS_FORBIDDEN_WORD);
         }
 
         if (content.isEmpty()) {
-            throw new BadRequestException(ErrorCode.NOT_EXISTS_CONTENT);
+            throw new LetterBadRequestException(LetterErrorCode.NOT_EXISTS_CONTENT);
         }
         String contentUrl = uploadFileToS3(content, "letter-text-content");
 
@@ -113,13 +113,13 @@ public class LetterServiceImpl implements LetterService {
     public void placeLetter(LetterPlaceReqDto letterPlaceReqDto, List<MultipartFile> files) {
         // accessToken으로 지금 요청을 보낸 유저랑 편지의 발신자랑 맞는지 확인하는 작업 필요함.
         LetterMongo letterMongo = letterMongoRepository.findById(letterPlaceReqDto.getId()).orElseThrow(() -> {
-            return new BadRequestException(ErrorCode.NOT_EXISTS_LETTER);
+            return new LetterBadRequestException(LetterErrorCode.NOT_EXISTS_LETTER);
         });
 
         Double lat = letterPlaceReqDto.getLat();
         Double lng = letterPlaceReqDto.getLng();
         if (lat == null || lng == null) {
-            throw new BadRequestException(ErrorCode.NOT_EXISTS_LAT_OR_LNG);
+            throw new LetterBadRequestException(LetterErrorCode.NOT_EXISTS_LAT_OR_LNG);
         }
 
         LetterMySQL letterMySQL = LetterMySQL.builder()
@@ -130,12 +130,12 @@ public class LetterServiceImpl implements LetterService {
                 .build();
 
         if (files == null) {
-            throw new BadRequestException(ErrorCode.NOT_EXISTS_PLACE_IMAGES);
+            throw new LetterBadRequestException(LetterErrorCode.NOT_EXISTS_PLACE_IMAGES);
         }
 
         for (MultipartFile file :files) {
             if (file.isEmpty()) {
-                throw new BadRequestException(ErrorCode.NOT_EXISTS_PLACE_IMAGES);
+                throw new LetterBadRequestException(LetterErrorCode.NOT_EXISTS_PLACE_IMAGES);
             }
         }
 
@@ -186,10 +186,10 @@ public class LetterServiceImpl implements LetterService {
             if (isImageFile(fileName)) {
                 return s3Uploader.uploadFiles(file, s3Folder);
             } else {
-                throw new BadRequestException(ErrorCode.INVALID_IMAGE_FORMAT);
+                throw new LetterBadRequestException(LetterErrorCode.INVALID_IMAGE_FORMAT);
             }
         } catch (IOException e) {
-            throw new BadRequestException(ErrorCode.FAIL_UPLOAD_FILE);
+            throw new LetterBadRequestException(LetterErrorCode.FAIL_UPLOAD_FILE);
         }
     }
 
@@ -241,7 +241,7 @@ public class LetterServiceImpl implements LetterService {
         // accessToken으로 멤버 객체 찾기 → SendId, ReceivedId가 해당 맴버인 것만 열람 가능
         // 해당 요청을 보낸 멤버가 ReceivedId와 일치하면 isRead = true로 변경
         LetterMySQL letterMySQL = letterJpaRepository.findById(letter_id).orElseThrow(() -> {
-            throw new BadRequestException(ErrorCode.NOT_EXISTS_LETTER);
+            throw new LetterBadRequestException(LetterErrorCode.NOT_EXISTS_LETTER);
         });
         LetterReceivedDetailResDto letter = new LetterReceivedDetailResDto(letterMySQL);
         // isFriend 변수 추가
