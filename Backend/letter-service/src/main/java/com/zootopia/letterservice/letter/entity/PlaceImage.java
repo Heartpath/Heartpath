@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table
+@Table(name = "PLACE_IMAGE")
 @NoArgsConstructor
 public class PlaceImage {
 

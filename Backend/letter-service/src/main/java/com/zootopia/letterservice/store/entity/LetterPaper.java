@@ -9,6 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
+@Table(name = "LETTER_PAPER")
 @NoArgsConstructor
 @AllArgsConstructor
 public class LetterPaper {

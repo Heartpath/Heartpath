@@ -10,6 +10,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
+@Table(name = "CROW_TIT")
 @NoArgsConstructor
 @AllArgsConstructor
 public class CrowTit {
