@@ -62,6 +62,13 @@
         <item name="android:textColor">@color/DarkGray</item>
         <item name="android:textSize">@dimen/_14sdp</item>
     </style>
+
+    <style name="DarkGray_12_ExtraBold_NanumText" parent="@style/Widget.AppCompat.TextView">
+        <item name="fontFamily">@font/nanum_square_round_otf_extra_bold</item>
+        <item name="android:textColor">@color/DarkGray</item>
+        <item name="android:textSize">@dimen/_12sdp</item>
+    </style>
+
     <style name="DarkGray_12_Bold_NanumText" parent="@style/Widget.AppCompat.TextView">
         <item name="fontFamily">@font/nanum_square_round_otf_bold</item>
         <item name="android:textColor">@color/DarkGray</item>
@@ -163,6 +170,8 @@
         <item name="fontFamily">@font/nanum_square_round_otf_regular</item>
         <item name="android:textSize">@dimen/_12sdp</item>
         <item name="endIconMode">clear_text</item>
+        <item name="endIconDrawable">@drawable/icon_close</item>
+        <item name="endIconTint">@color/DarkGray</item>
         <item name="android:label">아이디</item>
     </style>
 </resources>
