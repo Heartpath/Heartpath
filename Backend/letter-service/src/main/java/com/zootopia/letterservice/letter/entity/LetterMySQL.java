@@ -11,40 +11,44 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "letter")
+@Table(name = "LETTER")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LetterMySQL {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(updatable = false, name = "letter_id")
+    @Column(updatable = false, name = "LETTER_ID")
     private Long id;
 
 //    private String senderId;
 //    private String receiverId;
 
-    @Column(length = 1000)
+    @Column(length = 1000, name="CONTENT")
     private String content;
 
-    @Column(nullable = false, columnDefinition = "boolean default true")
+    @Column(nullable = false, columnDefinition = "boolean default true", name = "IS_PLACE")
     private boolean isPlace;
 
-    @Column(nullable = false, columnDefinition = "boolean default false")
+    @Column(nullable = false, columnDefinition = "boolean default false", name = "IS_READ")
     private boolean isRead;
 
+    @Column(name = "CREATED_DATE")
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "TYPE")
     private String type;
 
-    @Column(nullable = false, columnDefinition = "boolean default false")
+    @Column(nullable = false, columnDefinition = "boolean default false", name = "SENDER_IS_DELETED")
     private boolean senderIsDeleted;
 
-    @Column(nullable = false, columnDefinition = "boolean default false")
+    @Column(nullable = false, columnDefinition = "boolean default false", name = "RECEIVER_IS_DELETED")
     private boolean ReceiverIsDeleted;
 
+    @Column(name = "LAT")
     private Double lat;
+
+    @Column(name = "LNG")
     private Double lng;
 
     @OneToMany(mappedBy = "letter", cascade =  CascadeType.ALL, orphanRemoval = true)

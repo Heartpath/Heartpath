@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table
+@Table(name = "LETTER_IMAGE")
 @NoArgsConstructor
 @AllArgsConstructor
 public class LetterImage {
