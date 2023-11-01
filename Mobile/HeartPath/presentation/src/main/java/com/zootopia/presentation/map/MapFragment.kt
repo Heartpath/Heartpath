@@ -14,12 +14,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.LocationTrackingMode
@@ -31,6 +33,7 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.zootopia.domain.model.map.MapDirectionDto
+import com.zootopia.domain.model.map.MapLetterDto
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
@@ -46,12 +49,16 @@ private const val TAG = "MapFragment_HP"
 
 @AndroidEntryPoint
 class MapFragment :
-    BaseFragment<FragmentMapBinding>(FragmentMapBinding::bind, R.layout.fragment_map), OnMapReadyCallback {
+    BaseFragment<FragmentMapBinding>(FragmentMapBinding::bind, R.layout.fragment_map),
+    OnMapReadyCallback {
     
     private val mapViewModel: MapViewModel by viewModels()
     private lateinit var mainActivity: MainActivity
     private lateinit var navController: NavController
+    private lateinit var mapLetterAdapter: MapLetterAdapter
     
+    private var path: PathOverlay? = null
+    private var marker: Marker? = null
     private val LOCATION_PERMISSION_REQUEST_CODE = 100
     private lateinit var locationSource: FusedLocationSource
     private lateinit var mapView: MapView
@@ -71,8 +78,10 @@ class MapFragment :
         
         initAdapter()
         initCollect()
+        initClickEvent()
+        initData()
+        
         mapView = binding.mapviewNaver
-
         if (initCheckPermission()) {
             mapView.onCreate(savedInstanceState)
             mapView.getMapAsync(this)
@@ -80,15 +89,81 @@ class MapFragment :
         }
     }
     
-    private fun initAdapter() {
+    private fun initData() {
+        mapViewModel.getDummyList()
+    }
     
+    private fun initClickEvent() = with(binding) {
+        // 신고 버튼 클릭 이벤트
+        imageviewReport.setOnClickListener {
+            Log.d(TAG, "initClickEvent: 신고버튼 클릭")
+            mapViewModel.apply {
+                isReport = !isReport
+                LetterList.map { MapLetterDto ->
+                    MapLetterDto.isSelected = !MapLetterDto.isSelected
+                }
+                if (isReport) {
+                    buttonReport.visibility = View.VISIBLE
+                } else {
+                    buttonReport.visibility = View.GONE
+                }
+            }
+            initAdapter()
+            initData()
+        }
+    }
+    
+    private fun initAdapter() {
+        mapLetterAdapter = MapLetterAdapter(mapViewModel = mapViewModel).apply {
+            itemClickListener = object : MapLetterAdapter.ItemClickListener {
+                override fun itemClick(view: View, position: Int, mapLetterDto: MapLetterDto) {
+                    Log.d(TAG, "itemClick: 받은 편지 item 클릭됨")
+                    /**
+                     * 길찾기 API 요청
+                     */
+                    mapViewModel.getMapDirection(
+                        mapLetterDto = mapLetterDto,
+                    )
+                }
+                
+                override fun reportClick(view: View, position: Int) {
+                    Log.d(TAG, "itemClick: 받은 편지 신고버튼 클릭됨")
+                }
+            }
+        }
+        
+        binding.recyclerviewLetterList.apply {
+            adapter = mapLetterAdapter
+            layoutManager = LinearLayoutManager(mainActivity, LinearLayoutManager.VERTICAL, false)
+        }
     }
     
     private fun initCollect() {
+        // 편지 리스트
+        viewLifecycleOwner.lifecycleScope.launch {
+            mapViewModel.mapLetterList.collectLatest {
+                mapLetterAdapter.submitList(it.toMutableList())
+            }
+        }
+        
+        // 길 찾기 data 수신
         viewLifecycleOwner.lifecycleScope.launch {
             mapViewModel.mapDirectionInfo.collectLatest {
                 DrawLoad(it)
-                setLastLocation(
+                
+                setCameraToIncludeMyLocationAndMarker(
+                    naverMap,
+                    LatLng(
+                        mapViewModel.lastLatitude.toDouble(),
+                        mapViewModel.lastLongitude.toDouble(),
+                    ),
+                    LatLng(
+                        it.route.trafast[0].summary.goal.location[1],
+                        it.route.trafast[0].summary.goal.location[0]
+                    )
+                )
+                
+                setMarkerLocation(
                     it.route.trafast[0].summary.goal.location[1],
                     it.route.trafast[0].summary.goal.location[0],
                 )
@@ -97,17 +172,26 @@ class MapFragment :
     }
     
     private fun DrawLoad(mapDirectionDto: MapDirectionDto) {
+        path?.map = null
+        
         val pathList = mapDirectionDto.route.trafast[0].path
-        val path = PathOverlay()
+        path = PathOverlay()
         //MutableList에 add 기능 쓰기 위해 더미 원소 하나 넣어둠
         val path_container: MutableList<LatLng>? = mutableListOf(LatLng(0.1, 0.1))
         for (path_cords_xy in pathList) {
             path_container?.add(LatLng(path_cords_xy[1], path_cords_xy[0]))
         }
+        // 마커와 마지막 위경도 연결
+        path_container?.add(
+            LatLng(
+                mapDirectionDto.route.trafast[0].summary.goal.location[1],
+                mapDirectionDto.route.trafast[0].summary.goal.location[0]
+            )
+        )
         //더미원소 드랍후 path.coords에 path들을 넣어줌.
-        path.coords = path_container?.drop(1)!!
-        path.color = Color.RED
-        path.map = naverMap
+        path!!.coords = path_container?.drop(1)!!
+        path!!.color = Color.RED
+        path!!.map = naverMap
     }
     
     
@@ -142,7 +226,7 @@ class MapFragment :
             isLocationButtonEnabled = false
             isZoomControlEnabled = false
             logoGravity = Gravity.LEFT or Gravity.TOP
-            setLogoMargin(20,20, 0, 0)
+            setLogoMargin(20, 20, 0, 0)
         }
         
         binding.apply {
@@ -159,6 +243,7 @@ class MapFragment :
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient //자동으로 gps값을 받아온다.
     lateinit var locationCallback: LocationCallback //gps응답 값을 가져온다.
     
+    // 좌표계를 주기적으로 갱신
     @SuppressLint("MissingPermission")
     fun setUpdateLocationListner() {
         val locationRequest = LocationRequest.create()
@@ -171,9 +256,11 @@ class MapFragment :
             override fun onLocationResult(locationResult: LocationResult) {
                 locationResult ?: return
                 for ((i, location) in locationResult.locations.withIndex()) {
-                    Log.d(TAG, "${location.latitude}, ${location.longitude}")
-//                    Log.d(TAG, "initNaverMapSetting: locationation button is clicked")
-//                    setLastLocation(location)
+                    Log.d(TAG, "latitude: ${location.latitude}, longitude: ${location.longitude}")
+                    mapViewModel.setLocation(
+                        latitude = location.latitude,
+                        longitude = location.longitude
+                    )
                 }
             }
         }
@@ -183,14 +270,17 @@ class MapFragment :
             locationCallback,
             Looper.myLooper()
         )
-    }// 좌표계를 주기적으로 갱신
+    }
     
     
-    fun setLastLocation(latitude: Double, longitude: Double) {
+    fun setMarkerLocation(latitude: Double, longitude: Double) {
+        // 기존 마커가 존재하는 경우 제거합니다
+        marker?.map = null
+        
         val myLocation = LatLng(latitude, longitude)
-        //마커
-        val marker = Marker()
-        marker.apply {
+        // 새로운 마커를 생성합니다
+        marker = Marker()
+        marker?.apply {
             position = myLocation
             icon = OverlayImage.fromResource(R.drawable.ic_marker_letter)
             width = 100
@@ -198,13 +288,31 @@ class MapFragment :
             map = naverMap
         }
         
-        // 카메라
-        val cameraUpdate = CameraUpdate.scrollTo(myLocation)
+//        // 카메라
+//        val cameraUpdate = CameraUpdate.scrollTo(myLocation)
+//        naverMap.moveCamera(cameraUpdate)
+//        naverMap.maxZoom = 18.0
+//        naverMap.minZoom = 5.0
+    }
+    
+    // 카메라 포커스 이동
+    fun setCameraToIncludeMyLocationAndMarker(
+        naverMap: NaverMap,
+        myLocation: LatLng,
+        markerLocation: LatLng,
+    ) {
+        val cameraUpdate = CameraUpdate.fitBounds(
+            LatLngBounds.Builder()
+                .include(myLocation) // 내 위치
+                .include(markerLocation) // 마커 위치
+                .build(), 200 // padding 값을 조정하여 여백을 설정할 수 있습니다.
+        )
         naverMap.moveCamera(cameraUpdate)
         naverMap.maxZoom = 18.0
         naverMap.minZoom = 5.0
     }
     
+    // 권한 Check
     private fun initCheckPermission(): Boolean = with(mainActivity) {
         if (!hasPermissions(ACCESS_COARSE_LOCATION) && !hasPermissions(ACCESS_FINE_LOCATION)) {
             showPermissionDialog(mainActivity)
