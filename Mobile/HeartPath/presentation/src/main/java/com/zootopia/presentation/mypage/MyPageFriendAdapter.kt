@@ -2,11 +2,13 @@ package com.zootopia.presentation.mypage
 
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zootopia.presentation.R
 import com.zootopia.presentation.databinding.ItemMypageFriendBinding
+import com.zootopia.presentation.searchfriend.FriendSearchAdapter
 
 class MyPageFriendAdapter() :
     RecyclerView.Adapter<MyPageFriendAdapter.MyPageFriendViewHolder>() {
@@ -19,6 +21,11 @@ class MyPageFriendAdapter() :
                 .into(imageviewFriendProfileImg)
         }
     }
+
+    interface ItemClickListener {
+        fun itemClick(view: View, position: Int)
+    }
+    lateinit var itemClickListener: ItemClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyPageFriendViewHolder {
         return MyPageFriendViewHolder(
