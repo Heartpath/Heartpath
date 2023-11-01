@@ -32,6 +32,6 @@
     <string name="signup_id_input_hint">아이디 입력</string>
     <string name="signup_id_check">중복확인</string>
     <string name="alert">주의</string>
-    <string name="signup_id_alert">아이디는 본인 개인 정보가 들어가지 않도록 작성해 주세요.</string>
+    <string name="signup_id_alert">아이디는 본인 개인 정보가 들어가지 않도록\n작성해 주세요.</string>
     <string name="signup_accept">마음길 가입하기</string>
 </resources>
