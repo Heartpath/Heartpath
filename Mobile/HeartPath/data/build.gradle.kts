@@ -20,7 +20,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     
-        buildConfigField("String", "DATA_NAVER_MAP_CLIENT_ID",""+properties["data_naver_map_client_id"]+"")
+        buildConfigField("String", "DATA_NAVER_MAP_CLIENT_ID",localProperties.getProperty("data_naver_map_client_id"))
+        buildConfigField("String", "DATA_NAVER_MAP_API_KEY",localProperties.getProperty("data_naver_map_api_key"))
     }
 
     buildTypes {
