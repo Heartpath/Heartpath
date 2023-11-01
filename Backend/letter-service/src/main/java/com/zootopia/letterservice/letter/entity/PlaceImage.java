@@ -14,15 +14,15 @@ public class PlaceImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(updatable = false, name = "place_image_id")
+    @Column(updatable = false, name = "PLACE_IMAGE_ID")
     private Long id;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "letter_id", nullable = false)
+    @JoinColumn(name = "LETTER_ID", nullable = false)
     private LetterMySQL letter;
 
-    @Column(length = 1000)
+    @Column(length = 1000, name = "IMAGE_PATH")
     private String imagePath;
 
     @Builder
