@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentLoginBinding
+import com.zootopia.presentation.util.clickAnimation
 import dagger.hilt.android.AndroidEntryPoint
 
 private const val TAG = "LoginFragment_HeartPath"
@@ -26,6 +28,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
 
     private fun initClickEvent() = with(binding) {
         imagebuttonLogin.setOnClickListener {
+            it.clickAnimation(lifeCycleOwner = viewLifecycleOwner)
             loginViewModel.loginByKakao(context = requireContext())
         }
     }
