@@ -60,17 +60,62 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:paddingVertical="@dimen/_8sdp"
+            android:paddingHorizontal="@dimen/_8sdp"
+            android:background="@drawable/custom_outline_edittext_background"
             android:hint="@string/signup_id_input_hint"
             style="@style/SignUp_Id_Input_EditText_Style"/>
         <Button
+            style="@style/SignUp_Id_Check_Button_Style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/signup_id_check"
-            style="@style/SignUp_Id_Check_Button_Style"/>
+            android:paddingVertical="@dimen/_8sdp"
+            android:background="@drawable/custom_signup_check_button_background"/>
     </LinearLayout>
-<!--    <TextView-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text=""-->
-<!--        android:textColor="@color/AlertRed"-->
+    <ImageView
+        android:id="@+id/imageview_signup_info_icon"
+        android:layout_width="@dimen/_16sdp"
+        android:layout_height="@dimen/_16sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearlayout_signup_id"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_32sdp"
+        android:src="@drawable/icon_info"/>
+    <TextView
+        android:id="@+id/textview_signup_alert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/imageview_signup_info_icon"
+        app:layout_constraintTop_toBottomOf="@id/linearlayout_signup_id"
+        android:layout_marginStart="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_32sdp"
+        android:text="@string/alert"
+        android:textColor="@color/AlertRed"
+        style="@style/DarkGray_10_Bold_NanumText"/>
+    <TextView
+        android:id="@+id/textview_signup_alert_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/imageview_signup_info_icon"
+        app:layout_constraintTop_toBottomOf="@id/textview_signup_alert"
+        android:layout_marginStart="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:text="@string/signup_id_alert"
+        android:textColor="@color/AlertRed"
+        style="@style/Black_10_Regular_NanumText"/>
+    <Button
+        android:id="@+id/button_signup_accept"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginHorizontal="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_16sdp"
+        android:paddingVertical="@dimen/_8sdp"
+        android:text="@string/signup_accept"
+        style="@style/DarkGray_14_ExtraBold_NanumText"
+        android:background="@drawable/custom_signup_check_button_background"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
