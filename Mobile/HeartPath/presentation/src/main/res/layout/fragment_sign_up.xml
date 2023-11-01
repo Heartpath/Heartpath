@@ -22,6 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_6sdp"
         android:text="@string/home_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -35,16 +36,17 @@
         android:layout_marginTop="@dimen/_32sdp"
         android:layout_marginStart="@dimen/_16sdp"
         android:text="@string/signup_welcome_text"
-        android:lineSpacingExtra="@dimen/_4sdp"
-        style="@style/DarkGray_12_Bold_NanumText"/>
+        android:lineSpacingExtra="@dimen/_8sdp"
+        style="@style/DarkGray_14_Bold_NanumText"/>
     <ImageView
-        android:layout_width="@dimen/_60sdp"
-        android:layout_height="@dimen/_60sdp"
+        android:id="@+id/imageview_welcome_bird"
+        android:layout_width="@dimen/_64sdp"
+        android:layout_height="@dimen/_64sdp"
         android:src="@drawable/image_bird_delivery"
         app:layout_constraintStart_toEndOf="@id/textview_signup_welcome"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="@dimen/_116sdp"/>
+        android:layout_marginTop="@dimen/_96sdp"/>
     <LinearLayout
         android:id="@+id/linearlayout_signup_id"
         android:layout_width="match_parent"
@@ -56,25 +58,49 @@
         android:layout_marginHorizontal="@dimen/_16sdp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
-        <EditText
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginEnd="@dimen/_4sdp"
-            android:paddingVertical="@dimen/_8sdp"
-            android:paddingHorizontal="@dimen/_8sdp"
             android:background="@drawable/custom_outline_edittext_background"
-            android:hint="@string/signup_id_input_hint"
-            style="@style/SignUp_Id_Input_EditText_Style"/>
-        <Button
-            style="@style/SignUp_Id_Check_Button_Style"
+            android:gravity="center_vertical"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:orientation="horizontal">
+            <androidx.appcompat.widget.AppCompatEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingVertical="@dimen/_12sdp"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_4sdp"
+                android:hint="@string/signup_id_input_hint"
+                android:singleLine="true"
+                style="@style/SignUp_Id_Input_EditText_Style"
+                android:inputType="textVisiblePassword"
+                android:digits="0123456789_qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"/>
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/imagebutton_id_input_cancel"
+                android:layout_width="@dimen/_16sdp"
+                android:layout_height="@dimen/_16sdp"
+                android:src="@drawable/icon_close"
+                android:tint="@color/Gray"
+                android:backgroundTint="@android:color/transparent"
+                android:padding="0dp"
+                android:layout_marginEnd="@dimen/_6sdp"
+                android:clickable="true"/>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button_id_check"
+            style="@style/DarkGray_12_Bold_NanumText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/signup_id_check"
             android:paddingVertical="@dimen/_8sdp"
-            android:background="@drawable/custom_signup_check_button_background"/>
+            android:paddingHorizontal="@dimen/_12sdp"
+            android:background="@drawable/custom_signup_check_button_background"
+            android:stateListAnimator="@null"/>
     </LinearLayout>
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageview_signup_info_icon"
         android:layout_width="@dimen/_16sdp"
         android:layout_height="@dimen/_16sdp"
@@ -82,6 +108,7 @@
         app:layout_constraintTop_toBottomOf="@id/linearlayout_signup_id"
         android:layout_marginStart="@dimen/_16sdp"
         android:layout_marginTop="@dimen/_32sdp"
+        android:tint="@color/AlertRed"
         android:src="@drawable/icon_info"/>
     <TextView
         android:id="@+id/textview_signup_alert"
@@ -93,7 +120,7 @@
         android:layout_marginTop="@dimen/_32sdp"
         android:text="@string/alert"
         android:textColor="@color/AlertRed"
-        style="@style/DarkGray_10_Bold_NanumText"/>
+        style="@style/DarkGray_12_ExtraBold_NanumText" />
     <TextView
         android:id="@+id/textview_signup_alert_content"
         android:layout_width="wrap_content"
@@ -101,11 +128,12 @@
         app:layout_constraintStart_toEndOf="@id/imageview_signup_info_icon"
         app:layout_constraintTop_toBottomOf="@id/textview_signup_alert"
         android:layout_marginStart="@dimen/_4sdp"
-        android:layout_marginTop="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_8sdp"
         android:text="@string/signup_id_alert"
         android:textColor="@color/AlertRed"
-        style="@style/Black_10_Regular_NanumText"/>
-    <Button
+        android:lineSpacingExtra="@dimen/_8sdp"
+        style="@style/DarkGray_12_Regular_NanumText"/>
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button_signup_accept"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -114,8 +142,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginHorizontal="@dimen/_16sdp"
         android:layout_marginBottom="@dimen/_16sdp"
-        android:paddingVertical="@dimen/_8sdp"
+        android:paddingVertical="@dimen/_12sdp"
         android:text="@string/signup_accept"
         style="@style/DarkGray_14_ExtraBold_NanumText"
-        android:background="@drawable/custom_signup_check_button_background"/>
+        android:background="@drawable/custom_signup_check_button_background"
+        android:stateListAnimator="@null" />
 </androidx.constraintlayout.widget.ConstraintLayout>
