@@ -20,7 +20,6 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding> (
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
         initClickEvent()
-
     }
     private fun initAdapter() = with(binding) {
         myPageFriendAdapter = MyPageFriendAdapter()
