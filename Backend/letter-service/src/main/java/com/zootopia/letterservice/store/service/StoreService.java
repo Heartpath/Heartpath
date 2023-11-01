@@ -23,7 +23,7 @@ public interface StoreService {
 
     CrowTit getCharacterInfo(Long charater_id);
 
-    void upload(LetterPaperReqDto letterPaperReqDto, List<MultipartFile> files);
+    void upload(CrowTitReqDto crowTitReqDto, List<MultipartFile> files);
 
 //    void upload(CrowTitReqDto crowTitReqDto, List<MultipartFile> files);
 

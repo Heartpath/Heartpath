@@ -110,19 +110,19 @@ public class StoreController {
                                                                            @RequestPart(value = "price") Long price,
                                                                            @RequestPart(value = "description") String description,
                                                                            @RequestPart List<MultipartFile> files) {
-        LetterPaperReqDto letterPaperReqDto = LetterPaperReqDto.builder()
-                .name(name)
-                .price(price)
-                .description(description)
-                .build();
-
-//        CrowTitReqDto crowTitReqDto = CrowTitReqDto.builder()
+//        LetterPaperReqDto letterPaperReqDto = LetterPaperReqDto.builder()
 //                .name(name)
 //                .price(price)
 //                .description(description)
 //                .build();
 
-        storeService.upload(letterPaperReqDto, files);
+        CrowTitReqDto crowTitReqDto = CrowTitReqDto.builder()
+                .name(name)
+                .price(price)
+                .description(description)
+                .build();
+
+        storeService.upload(crowTitReqDto, files);
 
 //        storeService.upload(crowTitReqDto, files);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "s3 이미지 업로드 성공"));

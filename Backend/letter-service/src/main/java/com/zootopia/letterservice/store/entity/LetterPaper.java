@@ -15,13 +15,17 @@ import javax.persistence.*;
 public class LetterPaper {
 
     @Id
-    @Column(name = "letter_paper_id")
+    @Column(name = "LETTER_PAPER_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "NAME")
     private String name;
+    @Column(name = "PRICE")
     private Long price;
+    @Column(name = "DESCRIPTION")
     private String description;
+    @Column(name = "IMAGE_PATH")
     private String imagePath;
 
     @Builder
