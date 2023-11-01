@@ -16,13 +16,15 @@ import javax.persistence.*;
 public class CrowTit {
 
     @Id
-    @Column(name = "crow_tit_id")
+    @Column(name = "CROW_TIT_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
     private Long price;
     private String description;
+
+    @Column(name = "IMAGE_PATH")
     private String imagePath;
 
     @Builder
