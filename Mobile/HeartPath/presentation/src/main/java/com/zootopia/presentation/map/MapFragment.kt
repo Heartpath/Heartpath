@@ -44,43 +44,42 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-
 private const val TAG = "MapFragment_HP"
 
 @AndroidEntryPoint
 class MapFragment :
     BaseFragment<FragmentMapBinding>(FragmentMapBinding::bind, R.layout.fragment_map),
     OnMapReadyCallback {
-    
+
     private val mapViewModel: MapViewModel by viewModels()
     private lateinit var mainActivity: MainActivity
     private lateinit var navController: NavController
     private lateinit var mapLetterAdapter: MapLetterAdapter
-    
+
     private var path: PathOverlay? = null
     private var marker: Marker? = null
     private val LOCATION_PERMISSION_REQUEST_CODE = 100
     private lateinit var locationSource: FusedLocationSource
     private lateinit var mapView: MapView
     private lateinit var naverMap: NaverMap
-    
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-        
+
         // todo 임시 길찾기 호출 API
 //        mapViewModel.getMapDirection()
-        
+
         initAdapter()
         initCollect()
         initClickEvent()
         initData()
-        
+
         mapView = binding.mapviewNaver
         if (initCheckPermission()) {
             mapView.onCreate(savedInstanceState)
@@ -88,11 +87,11 @@ class MapFragment :
             locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
         }
     }
-    
+
     private fun initData() {
         mapViewModel.getDummyList()
     }
-    
+
     private fun initClickEvent() = with(binding) {
         // 신고 버튼 클릭 이벤트
         imageviewReport.setOnClickListener {
@@ -112,7 +111,7 @@ class MapFragment :
             initData()
         }
     }
-    
+
     private fun initAdapter() {
         mapLetterAdapter = MapLetterAdapter(mapViewModel = mapViewModel).apply {
             itemClickListener = object : MapLetterAdapter.ItemClickListener {
@@ -125,32 +124,39 @@ class MapFragment :
                         mapLetterDto = mapLetterDto,
                     )
                 }
-                
+
                 override fun reportClick(view: View, position: Int) {
                     Log.d(TAG, "itemClick: 받은 편지 신고버튼 클릭됨")
                 }
             }
         }
-        
+
         binding.recyclerviewLetterList.apply {
             adapter = mapLetterAdapter
             layoutManager = LinearLayoutManager(mainActivity, LinearLayoutManager.VERTICAL, false)
         }
     }
-    
+
     private fun initCollect() {
+        // error 처리
+        viewLifecycleOwner.lifecycleScope.launch {
+            mapViewModel.error.collectLatest {
+                mainActivity.showToast(it.message.toString())
+            }
+        }
+
         // 편지 리스트
         viewLifecycleOwner.lifecycleScope.launch {
             mapViewModel.mapLetterList.collectLatest {
                 mapLetterAdapter.submitList(it.toMutableList())
             }
         }
-        
+
         // 길 찾기 data 수신
         viewLifecycleOwner.lifecycleScope.launch {
             mapViewModel.mapDirectionInfo.collectLatest {
                 DrawLoad(it)
-                
+
                 setCameraToIncludeMyLocationAndMarker(
                     naverMap,
                     LatLng(
@@ -159,10 +165,10 @@ class MapFragment :
                     ),
                     LatLng(
                         it.route.trafast[0].summary.goal.location[1],
-                        it.route.trafast[0].summary.goal.location[0]
-                    )
+                        it.route.trafast[0].summary.goal.location[0],
+                    ),
                 )
-                
+
                 setMarkerLocation(
                     it.route.trafast[0].summary.goal.location[1],
                     it.route.trafast[0].summary.goal.location[0],
@@ -170,13 +176,13 @@ class MapFragment :
             }
         }
     }
-    
+
     private fun DrawLoad(mapDirectionDto: MapDirectionDto) {
         path?.map = null
-        
+
         val pathList = mapDirectionDto.route.trafast[0].path
         path = PathOverlay()
-        //MutableList에 add 기능 쓰기 위해 더미 원소 하나 넣어둠
+        // MutableList에 add 기능 쓰기 위해 더미 원소 하나 넣어둠
         val path_container: MutableList<LatLng>? = mutableListOf(LatLng(0.1, 0.1))
         for (path_cords_xy in pathList) {
             path_container?.add(LatLng(path_cords_xy[1], path_cords_xy[0]))
@@ -185,26 +191,25 @@ class MapFragment :
         path_container?.add(
             LatLng(
                 mapDirectionDto.route.trafast[0].summary.goal.location[1],
-                mapDirectionDto.route.trafast[0].summary.goal.location[0]
-            )
+                mapDirectionDto.route.trafast[0].summary.goal.location[0],
+            ),
         )
-        //더미원소 드랍후 path.coords에 path들을 넣어줌.
+        // 더미원소 드랍후 path.coords에 path들을 넣어줌.
         path!!.coords = path_container?.drop(1)!!
         path!!.color = Color.RED
         path!!.map = naverMap
     }
-    
-    
+
     override fun onMapReady(naverMap: NaverMap) {
         val cameraPosition = CameraPosition(
-            LatLng(37.5666102, 126.9783881),  // 위치 지정
-            16.0 // 줌 레벨
+            LatLng(37.5666102, 126.9783881), // 위치 지정
+            16.0, // 줌 레벨
         )
         this.naverMap = naverMap
         naverMap.cameraPosition = cameraPosition
-        
+
         initNaverMapSetting()
-        
+
         // 지도 타입
         naverMap.mapType = NaverMap.MapType.Basic
         // 현재 위치
@@ -213,12 +218,12 @@ class MapFragment :
         naverMap.isIndoorEnabled = true
         // 위치를 추적하면서 카메라도 따라 움직인다.
         naverMap.locationTrackingMode = LocationTrackingMode.Follow
-        
+
         fusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(mainActivity) //gps 자동으로 받아오기
-        setUpdateLocationListner() //내위치를 가져오는 코드
+            LocationServices.getFusedLocationProviderClient(mainActivity) // gps 자동으로 받아오기
+        setUpdateLocationListner() // 내위치를 가져오는 코드
     }
-    
+
     private fun initNaverMapSetting() {
         naverMap.uiSettings.apply {
             isCompassEnabled = false
@@ -228,30 +233,28 @@ class MapFragment :
             logoGravity = Gravity.LEFT or Gravity.TOP
             setLogoMargin(20, 20, 0, 0)
         }
-        
+
         binding.apply {
 //            compass.map = naverMap
 //            scalebar.map = naverMap
             zoom.map = naverMap
             location.map = naverMap
         }
-        
     }
-    
-    
-    //내 위치를 가져오는 코드
-    lateinit var fusedLocationProviderClient: FusedLocationProviderClient //자동으로 gps값을 받아온다.
-    lateinit var locationCallback: LocationCallback //gps응답 값을 가져온다.
-    
+
+    // 내 위치를 가져오는 코드
+    lateinit var fusedLocationProviderClient: FusedLocationProviderClient // 자동으로 gps값을 받아온다.
+    lateinit var locationCallback: LocationCallback // gps응답 값을 가져온다.
+
     // 좌표계를 주기적으로 갱신
     @SuppressLint("MissingPermission")
     fun setUpdateLocationListner() {
         val locationRequest = LocationRequest.create()
         locationRequest.run {
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY //높은 정확도
-            interval = 1000 //1초에 한번씩 GPS 요청
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY // 높은 정확도
+            interval = 1000 // 1초에 한번씩 GPS 요청
         }
-        
+
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 locationResult ?: return
@@ -259,24 +262,23 @@ class MapFragment :
                     Log.d(TAG, "latitude: ${location.latitude}, longitude: ${location.longitude}")
                     mapViewModel.setLocation(
                         latitude = location.latitude,
-                        longitude = location.longitude
+                        longitude = location.longitude,
                     )
                 }
             }
         }
-        
+
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
-            Looper.myLooper()
+            Looper.myLooper(),
         )
     }
-    
-    
+
     fun setMarkerLocation(latitude: Double, longitude: Double) {
         // 기존 마커가 존재하는 경우 제거합니다
         marker?.map = null
-        
+
         val myLocation = LatLng(latitude, longitude)
         // 새로운 마커를 생성합니다
         marker = Marker()
@@ -287,14 +289,14 @@ class MapFragment :
             height = 160
             map = naverMap
         }
-        
+
 //        // 카메라
 //        val cameraUpdate = CameraUpdate.scrollTo(myLocation)
 //        naverMap.moveCamera(cameraUpdate)
 //        naverMap.maxZoom = 18.0
 //        naverMap.minZoom = 5.0
     }
-    
+
     // 카메라 포커스 이동
     fun setCameraToIncludeMyLocationAndMarker(
         naverMap: NaverMap,
@@ -305,13 +307,14 @@ class MapFragment :
             LatLngBounds.Builder()
                 .include(myLocation) // 내 위치
                 .include(markerLocation) // 마커 위치
-                .build(), 200 // padding 값을 조정하여 여백을 설정할 수 있습니다.
+                .build(),
+            200, // padding 값을 조정하여 여백을 설정할 수 있습니다.
         )
         naverMap.moveCamera(cameraUpdate)
         naverMap.maxZoom = 18.0
         naverMap.minZoom = 5.0
     }
-    
+
     // 권한 Check
     private fun initCheckPermission(): Boolean = with(mainActivity) {
         if (!hasPermissions(ACCESS_COARSE_LOCATION) && !hasPermissions(ACCESS_FINE_LOCATION)) {
@@ -320,41 +323,39 @@ class MapFragment :
         }
         return true
     }
-    
+
     override fun onStart() {
         super.onStart()
         mapView.onStart()
     }
-    
+
     override fun onResume() {
         super.onResume()
         mapView.onResume()
     }
-    
+
     override fun onPause() {
         super.onPause()
         mapView.onPause()
     }
-    
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         mapView.onSaveInstanceState(outState)
     }
-    
+
     override fun onStop() {
         super.onStop()
         mapView.onStop()
     }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         mapView.onDestroy()
     }
-    
+
     override fun onLowMemory() {
         super.onLowMemory()
         mapView.onLowMemory()
     }
-    
-    
 }
