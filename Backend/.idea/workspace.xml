@@ -5,71 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5ac85300-bd7a-4ba4-b704-56b18d71c848" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/letter-service.main.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/gradlew" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/gradlew.bat" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/gradlew.bat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/settings.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/LetterServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/StoreServiceApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/common/FCM/FCMMessageDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/common/FCM/FCMMessageDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/common/FCM/FCMService.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/common/FCM/FCMService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/common/FCM/FirebaseCloudMessageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/common/FCM/FirebaseCloudMessageService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/common/advice/GlobalAdviceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/common/advice/GlobalAdviceController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/common/config/AwsS3Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/common/config/AwsS3Config.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/common/config/FCMConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/common/config/FCMConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/common/config/JasyptConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/common/config/JasyptConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/common/config/SwaggerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/common/config/SwaggerConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/common/config/WebClientConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/common/config/WebClientConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/common/dto/BaseResponseBody.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/common/dto/BaseResponseBody.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/common/error/code/LetterErrorCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/common/error/code/LetterErrorCode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/common/error/code/StoreErrorCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/common/error/code/StoreErrorCode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/common/error/exception/LetterBadRequestException.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/common/error/exception/LetterBadRequestException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/common/error/exception/StoreBadRequestException.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/common/error/exception/StoreBadRequestException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/common/error/response/ErrorResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/common/error/response/ErrorResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/common/global/BannedWords.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/common/global/BannedWords.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/common/s3/S3Uploader.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/common/s3/S3Uploader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/letter/controller/LetterController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/letter/dto/request/LetterHandReqDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/letter/dto/request/LetterPlaceReqDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/letter/dto/request/LetterTextReqDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/letter/dto/response/LetterReceivedDetailResDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/letter/dto/response/LetterReceivedResDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/letter/dto/response/LetterSendDetailResDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/letter/dto/response/LetterSendResDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/letter/dto/response/LetterUnsendResDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/letter/entity/LetterImage.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/letter/entity/LetterMongo.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/letter/entity/LetterMySQL.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/letter/entity/PlaceImage.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/letter/repository/LetterImageRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/letter/repository/LetterJpaRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/letter/repository/LetterMongoRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/letter/repository/PlaceImageRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/letter/service/LetterService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/letter/service/LetterServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/store/controller/StoreController.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/store/controller/StoreController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/store/dto/request/CharacterBuyReqDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/store/dto/request/CharacterBuyReqDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/store/dto/request/CrowTitReqDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/store/dto/request/CrowTitReqDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/store/dto/request/LetterPaperBuyReqDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/store/dto/request/LetterPaperBuyReqDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/store/dto/request/LetterPaperReqDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/store/dto/request/LetterPaperReqDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/store/entity/CrowTit.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/store/entity/CrowTit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/store/entity/LetterPaper.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/store/entity/LetterPaper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/store/entity/LetterPaperBook.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/store/entity/LetterPaperBook.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/store/repository/CrowTitRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/store/repository/CrowTitRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/store/repository/LetterPaperRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/store/repository/LetterPaperRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/store/service/StoreService.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/store/service/StoreService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/main/java/com/zootopia/letterservice/store/service/StoreServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/store/service/StoreServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/letter-service/src/test/java/com/zootopia/letterservice/JasyptConfigTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/test/java/com/zootopia/storeservice/JasyptConfigTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/store/service/PointServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/store/service/PointServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/store/service/StoreServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/store-service/src/main/java/com/zootopia/storeservice/store/service/StoreServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,6 +52,10 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "feature/BACK__Store",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
     "vue.rearranger.settings.migration": "true"
   }
@@ -146,7 +88,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1698898036383</updated>
-      <workItem from="1698898038029" duration="62000" />
+      <workItem from="1698898038029" duration="1236000" />
     </task>
     <servers />
   </component>
