@@ -8,7 +8,7 @@
     tools:context=".settings.SettingFragment">
 
     <com.google.android.material.card.MaterialCardView
-        style="?attr/materialCardViewFilledStyle"
+        android:background="@drawable/custom_round_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/_32sdp"

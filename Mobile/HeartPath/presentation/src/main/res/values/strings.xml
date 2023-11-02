@@ -33,5 +33,10 @@
     <string name="delete">삭제</string>
     <string name="report">신고</string>
     <string name="point_history"></string>
-
+    <string name="signup_welcome_text">안녕하세요, 저희는 마음길입니다.\n사용하기 전 친구들이 조회할 수 있는\n아이디를 작성해주세요.</string>
+    <string name="signup_id_input_hint">아이디 입력</string>
+    <string name="signup_id_check">중복확인</string>
+    <string name="alert">주의</string>
+    <string name="signup_id_alert">아이디는 본인 개인 정보가 들어가지 않도록\n작성해 주세요.</string>
+    <string name="signup_accept">마음길 가입하기</string>
 </resources>

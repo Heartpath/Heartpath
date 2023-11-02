@@ -9,7 +9,11 @@
         android:id="@+id/loginFragment"
         android:name="com.zootopia.presentation.login.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+    </fragment>
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.zootopia.presentation.home.HomeFragment"
@@ -116,4 +120,10 @@
         android:name="com.zootopia.presentation.writeletter.HandWriteFragment"
         android:label="HandWriteFragment"
         tools:layout="@layout/fragment_hand_write" />
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.zootopia.presentation.login.SignUpFragment"
+        android:label="fragment_sign_up"
+        tools:layout="@layout/fragment_sign_up" />
+
 </navigation>
