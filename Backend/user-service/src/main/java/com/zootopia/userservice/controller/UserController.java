@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 
 @Slf4j
 @RestController
@@ -21,8 +23,10 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/health_check")
-    public String checkServer() {
-        return "200 OK";
+    public String checkServer(HttpServletRequest request) {
+        String remoteAddr = request.getRemoteAddr();
+
+        return String.format("200 OK to %s", remoteAddr);
     }
 
     @GetMapping("/mypage")
