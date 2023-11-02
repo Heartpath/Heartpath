@@ -1,0 +1,70 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  jackson:
+    time-zone: Asia/Seoul
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/zootopia
+
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/heartpath
+    username: zootopia
+    password:
+    driver-class-name: org.h2.Driver
+
+    #     MySQL
+  #    url: jdbc:mysql://zootopia-mysql.c2f2jpwzzxst.ap-northeast-2.rds.amazonaws.com:3306/zootopia
+  #    username: admin
+  #    password: zootopia-admin
+  #    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # ?? ?? ??
+  main:
+    allow-circular-references: true
+
+  profiles:
+    include: db
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+
+cloud:
+  aws:
+    s3:
+      bucket: zootopia-s3
+    credentials:
+      access-key: AKIAT2IXRZPUG2OFXNRM
+      secret-key: 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
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    password: zootopiaD203!
+
+#env:
+#  USER_URL
