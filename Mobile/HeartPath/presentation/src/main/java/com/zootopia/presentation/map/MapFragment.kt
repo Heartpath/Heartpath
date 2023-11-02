@@ -32,8 +32,8 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
-import com.zootopia.domain.model.map.MapDirectionDto
-import com.zootopia.domain.model.map.MapLetterDto
+import com.zootopia.domain.model.navermap.MapLetterDto
+import com.zootopia.domain.model.tmap.FeatureCollectionDto
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
@@ -72,14 +72,14 @@ class MapFragment :
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
 
-        // todo 임시 길찾기 호출 API
-//        mapViewModel.getMapDirection()
-
         initAdapter()
         initCollect()
         initClickEvent()
         initData()
-
+        
+        // todo 임시
+        mapViewModel.requestTmapWalkRoad()
+        
         mapView = binding.mapviewNaver
         if (initCheckPermission()) {
             mapView.onCreate(savedInstanceState)
@@ -120,9 +120,9 @@ class MapFragment :
                     /**
                      * 길찾기 API 요청
                      */
-                    mapViewModel.getMapDirection(
-                        mapLetterDto = mapLetterDto,
-                    )
+//                    mapViewModel.getMapDirection(
+//                        mapLetterDto = mapLetterDto,
+//                    )
                 }
 
                 override fun reportClick(view: View, position: Int) {
@@ -152,48 +152,54 @@ class MapFragment :
             }
         }
 
-        // 길 찾기 data 수신
+        // 길 찾기 data 수신 Naver
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            mapViewModel.mapDirectionInfo.collectLatest {
+////                DrawLoad(it) // 경로 그리기
+//
+//                setCameraToIncludeMyLocationAndMarker(  // 카메라 포커스 (맵, 시작, 도착)
+//                    naverMap,
+//                    LatLng(
+//                        mapViewModel.lastLatitude.toDouble(),
+//                        mapViewModel.lastLongitude.toDouble(),
+//                    ),
+//                    LatLng(
+//                        it.route.trafast[0].summary.goal.location[1],
+//                        it.route.trafast[0].summary.goal.location[0],
+//                    ),
+//                )
+//
+//                setMarkerLocation(
+//                    it.route.trafast[0].summary.goal.location[1],
+//                    it.route.trafast[0].summary.goal.location[0],
+//                )
+//            }
+//        }
+        
+        // 길 찾기 data 수신 Tmap
         viewLifecycleOwner.lifecycleScope.launch {
-            mapViewModel.mapDirectionInfo.collectLatest {
-                DrawLoad(it)
-
-                setCameraToIncludeMyLocationAndMarker(
-                    naverMap,
-                    LatLng(
-                        mapViewModel.lastLatitude.toDouble(),
-                        mapViewModel.lastLongitude.toDouble(),
-                    ),
-                    LatLng(
-                        it.route.trafast[0].summary.goal.location[1],
-                        it.route.trafast[0].summary.goal.location[0],
-                    ),
-                )
-
-                setMarkerLocation(
-                    it.route.trafast[0].summary.goal.location[1],
-                    it.route.trafast[0].summary.goal.location[0],
-                )
+            mapViewModel.tmapWalkRoadInfo.collectLatest {
+                Log.d(TAG, "initCollect: $it")
+                DrawLoad(it) // 경로 그리기
             }
         }
     }
 
-    private fun DrawLoad(mapDirectionDto: MapDirectionDto) {
+    private fun DrawLoad(featureCollectionDto: FeatureCollectionDto) {
         path?.map = null
 
-        val pathList = mapDirectionDto.route.trafast[0].path
+        val featureList = featureCollectionDto.features
         path = PathOverlay()
         // MutableList에 add 기능 쓰기 위해 더미 원소 하나 넣어둠
         val path_container: MutableList<LatLng>? = mutableListOf(LatLng(0.1, 0.1))
-        for (path_cords_xy in pathList) {
-            path_container?.add(LatLng(path_cords_xy[1], path_cords_xy[0]))
+        for(feature in featureList) {
+            val pathList = feature.geometry.coordinates as? List<List<Double>> ?: emptyList()
+            
+            for (path_cords_xy in pathList) {
+                path_container?.add(LatLng(path_cords_xy[1],path_cords_xy[0]))
+            }
         }
-        // 마커와 마지막 위경도 연결
-        path_container?.add(
-            LatLng(
-                mapDirectionDto.route.trafast[0].summary.goal.location[1],
-                mapDirectionDto.route.trafast[0].summary.goal.location[0],
-            ),
-        )
+        Log.d(TAG, "DrawLoad: $path_container")
         // 더미원소 드랍후 path.coords에 path들을 넣어줌.
         path!!.coords = path_container?.drop(1)!!
         path!!.color = Color.RED

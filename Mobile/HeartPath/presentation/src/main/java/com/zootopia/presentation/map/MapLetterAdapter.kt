@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.zootopia.domain.model.map.MapLetterDto
+import com.zootopia.domain.model.navermap.MapLetterDto
 import com.zootopia.presentation.R
 import com.zootopia.presentation.databinding.ItemMapLetterBinding
 

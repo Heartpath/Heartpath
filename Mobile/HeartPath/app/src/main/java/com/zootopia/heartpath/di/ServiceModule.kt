@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.zootopia.data.service.BusinessService
 import com.zootopia.data.service.NaverService
+import com.zootopia.data.service.TmapService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,6 +24,8 @@ import javax.inject.Singleton
 object ServiceModule {
     private const val BUSINESS_BASE_URL = "https://naveropenapi.apigw.ntruss.com" // Business Base Url
     private const val NAVER_BASE_URL = "https://naveropenapi.apigw.ntruss.com" // Naver Base Url
+    private const val TMAP_BASE_URL = "https://apis.openapi.sk.com" // TMAP Base Url
+    
     @Singleton
     @Provides
     fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
@@ -66,6 +69,22 @@ object ServiceModule {
     
     @Singleton
     @Provides
+    @Named("TmapRetrofit")
+    fun provideTmapRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        val gson : Gson = GsonBuilder()
+            .setLenient()
+            .create()
+        
+        return Retrofit.Builder()
+            .baseUrl(TMAP_BASE_URL) // TODO BASE_URL 추가 필요
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .client(okHttpClient)
+            .build()
+    }
+    
+    @Singleton
+    @Provides
     fun provideBusinessService (
         retrofit: Retrofit,
     ): BusinessService = retrofit.create(BusinessService::class.java)
@@ -75,4 +94,10 @@ object ServiceModule {
     fun provideNaverService (
         @Named("naverRetrofit") retrofit: Retrofit,
     ): NaverService = retrofit.create(NaverService::class.java)
+    
+    @Singleton
+    @Provides
+    fun provideTmapService (
+        @Named("TmapRetrofit") retrofit: Retrofit
+    ): TmapService = retrofit.create(TmapService::class.java)
 }
