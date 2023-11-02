@@ -47,11 +47,15 @@ class BgmSettingDialog: DialogFragment() {
     }
     override fun onResume() {
         super.onResume()
+        // dialog 크기 동적으로 주기
         val parentWidth = resources.displayMetrics.widthPixels
         val size = parentWidth - (parentWidth/10)
-        Log.d(FriendSearchFriendAddDialog.TAG, "onCreateDialog: $parentWidth")
         dialog?.window?.setLayout(size, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+        // dialog background 동적으로 주기
         dialog?.window?.setBackgroundDrawableResource(R.drawable.custom_round_dialog_view)
+
+        // switch custom 값 동적으로 주기
         binding.apply {
             switchBgmSetting.trackDrawable = context?.getDrawable(R.drawable.custom_switch_track)
             switchBgmSetting.thumbDrawable = context?.getDrawable(R.drawable.custom_switch_thumb)

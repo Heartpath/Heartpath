@@ -17,7 +17,7 @@ class MyPageReportFriendDialog: DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isCancelable = true
+        isCancelable = true // 화면 밖에 클릭하면 dismiss 되도록
     }
 
     override fun onCreateView(
@@ -51,7 +51,6 @@ class MyPageReportFriendDialog: DialogFragment() {
         // dialog 크기 동적으로 주기
         val parentWidth = resources.displayMetrics.widthPixels
         val size = parentWidth - (parentWidth/10)
-        Log.d(FriendSearchFriendAddDialog.TAG, "onCreateDialog: $parentWidth")
         dialog?.window?.setLayout(size, ViewGroup.LayoutParams.WRAP_CONTENT)
 
         // dialog background 동적으로 주기
