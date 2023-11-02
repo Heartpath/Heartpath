@@ -1,7 +1,5 @@
-package com.zootopia.presentation.settings
+package com.zootopia.presentation.mypage
 
-import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -10,11 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.zootopia.presentation.R
-import com.zootopia.presentation.databinding.DialogBgmSettingBinding
+import com.zootopia.presentation.databinding.DialogDeleteFriendBinding
 import com.zootopia.presentation.searchfriend.FriendSearchFriendAddDialog
 
-class BgmSettingDialog: DialogFragment() {
-    private lateinit var binding: DialogBgmSettingBinding
+class MyPageDeleteFriendDialog: DialogFragment() {
+    private lateinit var binding: DialogDeleteFriendBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,26 +25,28 @@ class BgmSettingDialog: DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        binding = DialogBgmSettingBinding.inflate(inflater, container, false)
+        binding = DialogDeleteFriendBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
-            buttonDone.setOnClickListener {
-                //TODO: 상태 저장
+            buttonDeleteFriendCancel.setOnClickListener {
+                dismiss()
+            }
+            buttonDeleteFriendAccept.setOnClickListener {
+                // TODO: 친구 삭제
                 dismiss()
             }
         }
     }
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        dialog.window?.setGravity(Gravity.BOTTOM) // 다이얼로그를 하단에 표시
-        return dialog
-    }
+
     override fun onResume() {
         super.onResume()
+        // dialog 하단에 띄우기
+        dialog?.window?.setGravity(Gravity.BOTTOM)
+
         // dialog 크기 동적으로 주기
         val parentWidth = resources.displayMetrics.widthPixels
         val size = parentWidth - (parentWidth/10)
@@ -54,15 +54,5 @@ class BgmSettingDialog: DialogFragment() {
 
         // dialog background 동적으로 주기
         dialog?.window?.setBackgroundDrawableResource(R.drawable.custom_round_dialog_view)
-
-        // switch custom 값 동적으로 주기
-        binding.apply {
-            switchBgmSetting.trackDrawable = context?.getDrawable(R.drawable.custom_switch_track)
-            switchBgmSetting.thumbDrawable = context?.getDrawable(R.drawable.custom_switch_thumb)
-        }
-    }
-
-    companion object {
-        const val TAG = "BgmSettingDialog"
     }
 }

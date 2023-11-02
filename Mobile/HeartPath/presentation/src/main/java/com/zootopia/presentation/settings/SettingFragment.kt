@@ -22,7 +22,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(
     private fun initClickEvent() = with(binding) {
         linearlayoutSetBgm.setOnClickListener {
             // TODO: bgm 설정
-
+            BgmSettingDialog().show(childFragmentManager, BgmSettingDialog.TAG)
         }
         linearlayoutPrivatePolicy.setOnClickListener {
             // TODO: 개인정보 처리방침 페이지로 이동
