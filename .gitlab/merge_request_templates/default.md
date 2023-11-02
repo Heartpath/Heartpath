@@ -18,7 +18,7 @@ chore : 기타 커밋-->
 ## MR하기 전에 확인해주세요
 - [ ] Merge 제목 확인
 - [ ] Approve 3인 이상 (본인 포함)
-- [ ] Merge 위치 확인 (develop)
+- [ ] Merge 위치 확인 (android)
 
 ## Jira Issue Number
 - 지라 번호
