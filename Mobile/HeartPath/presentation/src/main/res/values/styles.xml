@@ -188,11 +188,4 @@
         <item name="endIconTint">@color/DarkGray</item>
         <item name="android:label">아이디</item>
     </style>
-    <style name="Dialog_Custom_Style" parent="Theme.AppCompat.Dialog">
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:windowFullscreen">false</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:backgroundDimAmount">0.5</item>
-    </style>
 </resources>
