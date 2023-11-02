@@ -58,8 +58,13 @@ class BottomSheetPalette : BottomSheetDialogFragment() {
 
     private fun initListener() = with(binding) {
         sliderPenSize.addOnChangeListener { slider, value, fromUser ->
-            Log.d(TAG, "initListener: changed!! ${fromUser}")
             writeLetterViewModel.setPenSize(value)
+        }
+        buttonPen.setOnClickListener {
+            writeLetterViewModel.setEraserState(false)
+        }
+        buttonEraser.setOnClickListener {
+            writeLetterViewModel.setEraserState(true)
         }
     }
 
@@ -93,7 +98,59 @@ class BottomSheetPalette : BottomSheetDialogFragment() {
                     layoutParams.height = it.toInt()/2
                     requestLayout()
                 }
-
+                binding.imageviewEraserStyleView.apply {
+                    layoutParams.width = it.toInt()/2
+                    layoutParams.height = it.toInt()/2
+                    requestLayout()
+                }
+            }
+        }
+        lifecycleScope.launch {
+            writeLetterViewModel.isEraserSelected.collectLatest {
+                Log.d(TAG, "initCollecter: eraser ${it}")
+                if(it){
+                    binding.imageviewPenStyleView.visibility = View.GONE
+                    binding.imageviewEraserStyleView.visibility = View.VISIBLE
+                    binding.buttonPen.apply {
+                        setColorFilter(
+                            ContextCompat.getColor(
+                                binding.root.context,
+                                R.color.LightBlueGray
+                            )
+                        )
+                        requestLayout()
+                    }
+                    binding.buttonEraser.apply {
+                        setColorFilter(
+                            ContextCompat.getColor(
+                                binding.root.context,
+                                R.color.DarkBlueGray
+                            )
+                        )
+                        requestLayout()
+                    }
+                }else{
+                    binding.imageviewEraserStyleView.visibility = View.GONE
+                    binding.imageviewPenStyleView.visibility = View.VISIBLE
+                    binding.buttonEraser.apply {
+                        setColorFilter(
+                            ContextCompat.getColor(
+                                binding.root.context,
+                                R.color.LightBlueGray
+                            )
+                        )
+                        requestLayout()
+                    }
+                    binding.buttonPen.apply {
+                        setColorFilter(
+                            ContextCompat.getColor(
+                                binding.root.context,
+                                R.color.DarkBlueGray
+                            )
+                        )
+                        requestLayout()
+                    }
+                }
             }
         }
     }
