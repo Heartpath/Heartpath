@@ -9,6 +9,11 @@ import com.zootopia.presentation.databinding.ItemPaletteColorBinding
 class PaletteColorAdapter(var colorList: ArrayList<Int>) :
     RecyclerView.Adapter<PaletteColorAdapter.GridViewHolder>() {
 
+    interface ColorClickListener{
+        fun onColorClicked(id: Int)
+    }
+    lateinit var colorClickListener: ColorClickListener
+
     inner class GridViewHolder(var binding: ItemPaletteColorBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun setColor(colorId: Int) {
@@ -18,6 +23,9 @@ class PaletteColorAdapter(var colorList: ArrayList<Int>) :
                     colorId
                 )
             )
+            binding.buttonItemPaletteColor.setOnClickListener {
+                colorClickListener.onColorClicked(colorId)
+            }
         }
     }
 

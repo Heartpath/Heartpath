@@ -8,25 +8,36 @@ import android.graphics.Path
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
-import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.zootopia.presentation.R
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
-private const val TAG = "LetterPaperCanvas"
-class LetterPaperCanvas(context: Context?, attrs: AttributeSet?) : ImageView(context, attrs){
+private const val TAG = "LetterPaperCanvas_HP"
 
+class LetterPaperCanvas(context: Context?, attrs: AttributeSet?) : ImageView(context, attrs) {
+//    private val viewModel by lazy {
+//        ViewModelProvider(context as ViewModelStoreOwner).get(WriteLetterViewModel::class.java)
+//    }
+    private lateinit var viewModel: WriteLetterViewModel
     private lateinit var mBitmap: Bitmap
     private lateinit var mCanvas: Canvas
     private lateinit var mPath: Path
     private lateinit var mPaint: Paint
 
-    //이 view가 생성될때 호출된다. 그 크기를 w, h로 준다
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        super.onSizeChanged(w, h, oldw, oldh)
-        mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
-        mCanvas = Canvas(mBitmap)
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+
         mPaint = Paint().apply {
             color = ContextCompat.getColor(context, R.color.black)
             setStrokeWidth(10f)
@@ -36,6 +47,29 @@ class LetterPaperCanvas(context: Context?, attrs: AttributeSet?) : ImageView(con
             setAntiAlias(true)
         }
         mPath = Path()
+
+        val activity = context as? AppCompatActivity
+        activity?.let {
+            Log.d(TAG, "onAttachedToWindow: activity get")
+            viewModel = ViewModelProvider(it).get(WriteLetterViewModel::class.java)
+            Log.d(TAG, "onAttachedToWindow: viewModel ${viewModel.hashCode()}")
+            Log.d(TAG, "onAttachedToWindowasasa: ${viewModel.selectedLetterPaperUrl.value}")
+            activity.lifecycleScope.launch {
+                viewModel.selectedColor.collectLatest {
+                    Log.d(TAG, "onAttachedToWindow: color changed ${it}")
+                    mPaint.setColor(resources.getColor(it))
+                }
+            }
+        }
+
+    }
+
+    //이 view가 생성될때 호출된다. 그 크기를 w, h로 준다
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+        mCanvas = Canvas(mBitmap)
+
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -52,13 +86,10 @@ class LetterPaperCanvas(context: Context?, attrs: AttributeSet?) : ImageView(con
             var y = motionEvent.y
 
             if (motionEvent.action == android.view.MotionEvent.ACTION_DOWN) {
-                Log.d(TAG, "onTouchEvent: down")
                 mPath.moveTo(x, y)
             } else if (motionEvent.action == android.view.MotionEvent.ACTION_MOVE) {
-                Log.d(TAG, "onTouchEvent: move")
                 mPath.lineTo(x, y)
             } else if (motionEvent.action == android.view.MotionEvent.ACTION_UP) {
-                Log.d(TAG, "onTouchEvent: up")
                 mPath.lineTo(x, y)
                 mCanvas.drawPath(mPath, mPaint)
                 mPath.reset()
@@ -68,5 +99,4 @@ class LetterPaperCanvas(context: Context?, attrs: AttributeSet?) : ImageView(con
         invalidate()
         return super.onTouchEvent(motionEvent)
     }
-
 }

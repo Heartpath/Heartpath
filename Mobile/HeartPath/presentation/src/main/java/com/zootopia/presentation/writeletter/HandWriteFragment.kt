@@ -2,37 +2,30 @@ package com.zootopia.presentation.writeletter
 
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.Path
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.MotionEvent
 import android.view.View
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.widget.ConstraintSet.Motion
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentHandWriteBinding
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-private const val TAG = "HandWriteFragment"
+private const val TAG = "HandWriteFragment_HP"
 
 class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
     FragmentHandWriteBinding::bind,
@@ -72,14 +65,16 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
         initClickListener()
     }
 
-
-
     private fun initCollecter() = with(binding) {
-        lifecycleScope.launch {
+        lifecycleScope.launch{
+
             writeLetterViewModel.selectedLetterPaperUrl.collectLatest {
                 Glide.with(mainActivity).load(it)
                     .into(object : CustomTarget<Drawable>() {
-                        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                        override fun onResourceReady(
+                            resource: Drawable,
+                            transition: Transition<in Drawable>?
+                        ) {
 
                             // 이미지의 너비와 높이를 가져옴
                             val imageWidth = resource.intrinsicWidth.toFloat()
@@ -121,8 +116,8 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
 
     private fun initClickListener() = with(binding) {
         buttonPalette.setOnClickListener {
-            val bottomSheetReport = BottomSheetPalette()
-            bottomSheetReport.show(childFragmentManager, "BottomSheetPalette")
+            val bottomSheetPalette = BottomSheetPalette()
+            bottomSheetPalette.show(childFragmentManager, "BottomSheetPalette")
         }
     }
 

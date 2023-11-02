@@ -1,6 +1,7 @@
 package com.zootopia.presentation.writeletter
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.zootopia.presentation.R
 import com.zootopia.presentation.databinding.BottomSheetPaletteBinding
 
+private const val TAG = "BottomSheetPalette"
 class BottomSheetPalette : BottomSheetDialogFragment() {
     private lateinit var binding: BottomSheetPaletteBinding
     private val writeLetterViewModel: WriteLetterViewModel by activityViewModels()
@@ -33,6 +35,16 @@ class BottomSheetPalette : BottomSheetDialogFragment() {
 
     private fun initRecyclerGridView() = with(binding) {
         paletteColorAdapter = PaletteColorAdapter(colorList)
+
+        paletteColorAdapter.colorClickListener = object : PaletteColorAdapter.ColorClickListener{
+            override fun onColorClicked(id: Int) {
+                Log.d(TAG, "onColorClicked: viewModel ${writeLetterViewModel.hashCode()}")
+                Log.d(TAG, "onColorClicked: i will send ${id}")
+                writeLetterViewModel.setSelectedColor(id)
+            }
+
+        }
+
         recyclerviewPaletteColors.apply {
             adapter = paletteColorAdapter
             layoutManager = GridLayoutManager(context, 4)
