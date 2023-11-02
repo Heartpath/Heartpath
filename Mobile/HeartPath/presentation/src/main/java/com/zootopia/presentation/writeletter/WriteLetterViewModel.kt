@@ -29,7 +29,7 @@ class WriteLetterViewModel @Inject constructor(
     )
     val letterPaperList: StateFlow<MutableList<String>> = _letterPaperList
 
-    private var _selectedColor: MutableStateFlow<Int> = MutableStateFlow<Int>(R.color.Orange)
+    private var _selectedColor: MutableStateFlow<Int> = MutableStateFlow<Int>(R.color.black)
     val selectedColor: StateFlow<Int> = _selectedColor
 
     private var _penSize: MutableStateFlow<Int> = MutableStateFlow<Int>(10)

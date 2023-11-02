@@ -55,7 +55,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_palette_colors"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_100sdp"/>
+        android:layout_height="wrap_content"/>
     <Space
         android:layout_width="wrap_content"
         android:layout_height="@dimen/_10sdp" />
