@@ -39,4 +39,8 @@
     <string name="alert">주의</string>
     <string name="signup_id_alert">아이디는 본인 개인 정보가 들어가지 않도록\n작성해 주세요.</string>
     <string name="signup_accept">마음길 가입하기</string>
+    <string name="bgm_setting">BGM 설정</string>
+    <string name="on">ON</string>
+    <string name="off">OFF</string>
+    <string name="done">완료</string>
 </resources>
