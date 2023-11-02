@@ -2,9 +2,11 @@ package com.zootopia.presentation.map
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.zootopia.domain.model.map.MapDirectionDto
-import com.zootopia.domain.model.map.MapLetterDto
+import com.zootopia.domain.model.navermap.MapLetterDto
+import com.zootopia.domain.model.tmap.FeatureCollectionDto
+import com.zootopia.domain.model.tmap.RequestTmapWalkRoadDto
 import com.zootopia.domain.usecase.map.GetMapDirectionUseCase
+import com.zootopia.domain.usecase.map.RequestTmapWalkRoadUseCase
 import com.zootopia.presentation.config.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,6 +20,7 @@ private const val TAG = "MapViewModel_HP"
 @HiltViewModel
 class MapViewModel @Inject constructor(
     private val getMapDirectionUseCase: GetMapDirectionUseCase,
+    private val requestTmapWalkRoadUseCase: RequestTmapWalkRoadUseCase,
 ) : BaseViewModel() {
     
     // 편지 신고 삭제 신고 클릭 유무
@@ -51,27 +54,35 @@ class MapViewModel @Inject constructor(
         lastLongitude = longitude.toString()
     }
     
-    private val _mapDirectionInfo = MutableSharedFlow<MapDirectionDto>()
-    val mapDirectionInfo: SharedFlow<MapDirectionDto>
-        get() = _mapDirectionInfo.asSharedFlow()
+    // Tmap
+    private val _tmapWalkRoadInfo = MutableSharedFlow<FeatureCollectionDto>()
+    val tmapWalkRoadInfo: SharedFlow<FeatureCollectionDto>
+        get() = _tmapWalkRoadInfo.asSharedFlow()
     
-    fun getMapDirection(
-        mapLetterDto: MapLetterDto
-    ) {
+    fun requestTmapWalkRoad() {
         getApiResult(
             block = {
-                getMapDirectionUseCase.invoke(
-                    start = "$lastLongitude,$lastLatitude",
-                    goal = mapLetterDto.longitude+","+mapLetterDto.latitude,
-                    option = "trafast"
+                Log.d(TAG, "requestTmapWalkRoad: Tmap 요청!!!!!!!!!!!!")
+                requestTmapWalkRoadUseCase.invoke(
+                    RequestTmapWalkRoadDto(
+                        startX = "128.418643",
+                        startY = "36.1066181",
+                        endX = "128.418535",
+                        endY = "36.1079891",
+                        reqCoordType = "WGS84GEO",
+                        resCoordType = "WGS84GEO",
+                        startName = "구미 인동 투썸플레이스",
+                        endName = "구미 인동 스타벅스"
+                    )
                 )
             },
             success = { result ->
-                Log.d(TAG, "getMapDirection: $result")
-                _mapDirectionInfo.emit(result)
-                // 여기서 result를 사용할 수 있습니다.
-            },
+                Log.d(TAG, "requestTmapWalkRoad: ${result.features}")
+                _tmapWalkRoadInfo.emit(result)
+            }
         )
     }
+    // Tmap - END
+    
 
 }
