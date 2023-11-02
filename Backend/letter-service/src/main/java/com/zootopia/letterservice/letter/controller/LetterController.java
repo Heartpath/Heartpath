@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,16 @@ import java.util.stream.Collectors;
 @Tag(name = "Letter API", description = "HeartPath letter api")
 public class LetterController {
     private final LetterService letterService;
+
+    /**
+     * ELB에서 Letter-Service Server 상태 Check 시, 필요!
+     */
+    @GetMapping("/health_check")
+    public String checkServer(HttpServletRequest request) {
+        String remoteAddr = request.getRemoteAddr();
+
+        return String.format("200 OK to %s", remoteAddr);
+    }
 
     @Operation(summary = "수기 편지 생성", description = "receiverId(수신자 ID), content(편지 내용 파일), files(편지 첨부 파일 - 이미지 파일) s3, db에 저장\n\n " +
             "(receiverId : 필수, content : 필수, files : 선택)")
