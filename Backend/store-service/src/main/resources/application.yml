@@ -19,16 +19,16 @@ spring:
       max-file-size: 500MB
       max-request-size: 500MB
   datasource:
-    url: jdbc:h2:tcp://localhost/~/heartpath
-    username: zootopia
-    password:
-    driver-class-name: org.h2.Driver
+    # url: jdbc:h2:tcp://localhost/~/heartpath
+    # username: zootopia
+    # password:
+    # driver-class-name: org.h2.Driver
 
     #     MySQL
-  #    url: jdbc:mysql://zootopia-mysql.c2f2jpwzzxst.ap-northeast-2.rds.amazonaws.com:3306/zootopia
-  #    username: admin
-  #    password: zootopia-admin
-  #    driver-class-name: com.mysql.cj.jdbc.Driver
+     url: jdbc:mysql://zootopia-mysql.c2f2jpwzzxst.ap-northeast-2.rds.amazonaws.com:3306/zootopia
+     username: admin
+     password: zootopia-admin
+     driver-class-name: com.mysql.cj.jdbc.Driver
 
   # ?? ?? ??
   main:
