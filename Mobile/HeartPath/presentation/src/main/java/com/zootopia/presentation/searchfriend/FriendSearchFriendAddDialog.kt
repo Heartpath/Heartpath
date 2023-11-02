@@ -20,7 +20,6 @@ class FriendSearchFriendAddDialog(context: Context): DialogFragment()  {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setStyle(STYLE_NO_TITLE, R.style.Dialog_Custom_Style)
         isCancelable = true // 화면 밖에 클릭하면 dismiss 되도록
     }
 

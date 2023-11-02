@@ -3,6 +3,7 @@ package com.zootopia.presentation.settings
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -10,13 +11,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.zootopia.presentation.R
 import com.zootopia.presentation.databinding.DialogBgmSettingBinding
+import com.zootopia.presentation.searchfriend.FriendSearchFriendAddDialog
 
 class BgmSettingDialog: DialogFragment() {
     private lateinit var binding: DialogBgmSettingBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NO_TITLE, R.style.Dialog_Custom_Style)
         isCancelable = true // 화면 밖에 클릭하면 dismiss 되도록
     }
 
@@ -43,6 +44,18 @@ class BgmSettingDialog: DialogFragment() {
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog.window?.setGravity(Gravity.BOTTOM) // 다이얼로그를 하단에 표시
         return dialog
+    }
+    override fun onResume() {
+        super.onResume()
+        val parentWidth = resources.displayMetrics.widthPixels
+        val size = parentWidth - (parentWidth/10)
+        Log.d(FriendSearchFriendAddDialog.TAG, "onCreateDialog: $parentWidth")
+        dialog?.window?.setLayout(size, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog?.window?.setBackgroundDrawableResource(R.drawable.custom_round_dialog_view)
+        binding.apply {
+            switchBgmSetting.trackDrawable = context?.getDrawable(R.drawable.custom_switch_track)
+            switchBgmSetting.thumbDrawable = context?.getDrawable(R.drawable.custom_switch_thumb)
+        }
     }
 
     companion object {
