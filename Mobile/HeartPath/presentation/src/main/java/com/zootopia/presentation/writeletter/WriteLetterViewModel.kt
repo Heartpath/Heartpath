@@ -37,7 +37,7 @@ class WriteLetterViewModel @Inject constructor(
 
     fun setSelectedLetterPaperUrl(url: String) {
         viewModelScope.launch {
-            _selectedLetterPaperUrl.emit(url)
+            _selectedLetterPaperUrl.value = url
         }
     }
 
