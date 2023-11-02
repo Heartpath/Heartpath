@@ -26,9 +26,7 @@ import kotlinx.coroutines.launch
 private const val TAG = "LetterPaperCanvas_HP"
 
 class LetterPaperCanvas(context: Context?, attrs: AttributeSet?) : ImageView(context, attrs) {
-//    private val viewModel by lazy {
-//        ViewModelProvider(context as ViewModelStoreOwner).get(WriteLetterViewModel::class.java)
-//    }
+
     private lateinit var viewModel: WriteLetterViewModel
     private lateinit var mBitmap: Bitmap
     private lateinit var mCanvas: Canvas
@@ -40,7 +38,7 @@ class LetterPaperCanvas(context: Context?, attrs: AttributeSet?) : ImageView(con
 
         mPaint = Paint().apply {
             color = ContextCompat.getColor(context, R.color.black)
-            setStrokeWidth(10f)
+            setStrokeWidth(10f * 0.3f)
             setStyle(Paint.Style.STROKE)
             setStrokeCap(Paint.Cap.ROUND)
             setStrokeJoin(Paint.Join.ROUND)
@@ -50,14 +48,18 @@ class LetterPaperCanvas(context: Context?, attrs: AttributeSet?) : ImageView(con
 
         val activity = context as? AppCompatActivity
         activity?.let {
-            Log.d(TAG, "onAttachedToWindow: activity get")
             viewModel = ViewModelProvider(it).get(WriteLetterViewModel::class.java)
-            Log.d(TAG, "onAttachedToWindow: viewModel ${viewModel.hashCode()}")
-            Log.d(TAG, "onAttachedToWindowasasa: ${viewModel.selectedLetterPaperUrl.value}")
+
             activity.lifecycleScope.launch {
                 viewModel.selectedColor.collectLatest {
                     Log.d(TAG, "onAttachedToWindow: color changed ${it}")
                     mPaint.setColor(resources.getColor(it))
+                }
+            }
+
+            activity.lifecycleScope.launch {
+                viewModel.penSize.collectLatest {
+                    mPaint.strokeWidth = it * 0.3f
                 }
             }
         }
