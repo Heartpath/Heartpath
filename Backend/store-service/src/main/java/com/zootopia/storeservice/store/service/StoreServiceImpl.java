@@ -11,8 +11,10 @@ import com.zootopia.storeservice.store.dto.request.LetterPaperBuyReqDto;
 import com.zootopia.storeservice.store.entity.CrowTit;
 import com.zootopia.storeservice.store.entity.LetterPaper;
 import com.zootopia.storeservice.store.entity.LetterPaperBook;
+import com.zootopia.storeservice.store.entity.Point;
 import com.zootopia.storeservice.store.repository.CrowTitRepository;
 import com.zootopia.storeservice.store.repository.LetterPaperRepository;
+import com.zootopia.storeservice.store.repository.PointRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -35,6 +38,7 @@ public class StoreServiceImpl implements StoreService {
 
     private final LetterPaperRepository letterPaperRepository;
     private final CrowTitRepository crowTitRepository;
+    private final PointRepository pointRepository;
 
     private final S3Uploader s3Uploader;
 
@@ -42,10 +46,26 @@ public class StoreServiceImpl implements StoreService {
         LetterPaper letterPaper = letterPaperRepository.findById(letterPaperBuyReqDto.getLetterpaperId())
                 .orElseThrow(() -> new StoreBadRequestException(StoreErrorCode.NOT_EXISTS_LETTERPAPER));
 
+        List<Point> pointUsage = pointRepository.findByMemberId(memberId);
+        // 포인트 사용 내역을 생성일자(`createdDate`)를 기준으로 내림차순으로 정렬
+        pointUsage.sort(Comparator.comparing(Point::getCreatedDate).reversed());
+        // 가장 최근의 포인트 사용 내역의 balance 가져오기
+        int lastBalance = pointUsage.isEmpty() ? 0 : pointUsage.get(0).getBalance();
+        int currentBalance = lastBalance + letterPaper.getPrice();
+
         LetterPaperBook letterPaperBook = LetterPaperBook.builder()
                 .letterPaper(letterPaper)
                 .acquisitionDate(LocalDateTime.now())
                 .build();
+
+        Point point = Point.builder()
+                .memberId(memberId)
+                .outline("편지지 구매")
+                .price(letterPaper.getPrice())
+                .balance(currentBalance)
+                .createdDate(LocalDateTime.now())
+                .build();
+        pointRepository.save(point);
     }
 
     public LetterPaper getLetterPaperDetail(Long letterpaperId){
@@ -57,6 +77,13 @@ public class StoreServiceImpl implements StoreService {
     public void buyCharacter(String memberId, CharacterBuyReqDto characterBuyReqDto){
         CrowTit crowTit = crowTitRepository.findById(characterBuyReqDto.getCharacterId())
                 .orElseThrow(() -> new StoreBadRequestException(StoreErrorCode.NOT_EXISTS_CROWTIT));
+
+        List<Point> pointUsage = pointRepository.findByMemberId(memberId);
+        // 포인트 사용 내역을 생성일자(`createdDate`)를 기준으로 내림차순으로 정렬
+        pointUsage.sort(Comparator.comparing(Point::getCreatedDate).reversed());
+        // 가장 최근의 포인트 사용 내역의 balance 가져오기
+        int lastBalance = pointUsage.isEmpty() ? 0 : pointUsage.get(0).getBalance();
+        int currentBalance = lastBalance+crowTit.getPrice();
 
         // ** 구매한 뱁새정보 멤버 서버로 전송
 
@@ -72,6 +99,16 @@ public class StoreServiceImpl implements StoreService {
 //        }catch (Exception e){
 //            throw new BadRequestException(ErrorCode.FAIL_SEND_TO_MEMBER_CROWTIT);
 //        }
+
+        Point point = Point.builder()
+                .memberId(memberId)
+                .outline("뱁새 구매")
+                .price(crowTit.getPrice())
+                .balance(currentBalance)
+                .createdDate(LocalDateTime.now())
+                .build();
+        pointRepository.save(point);
+
     }
 
     public CrowTit getCharacterInfo(Long charater_id){
