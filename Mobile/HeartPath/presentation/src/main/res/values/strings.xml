@@ -43,4 +43,5 @@
     <string name="on">ON</string>
     <string name="off">OFF</string>
     <string name="done">완료</string>
+    <string name="add_friend_letter_dialog_content">하참새님은 김뱁새님의 친구가 아닙니다.</string>
 </resources>
