@@ -3,56 +3,67 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minWidth="@dimen/_288sdp"
     android:layout_marginHorizontal="@dimen/_16sdp"
-    android:layout_marginBottom="@dimen/_8sdp"
+    android:layout_marginBottom="@dimen/_16sdp"
     android:background="@drawable/custom_round_dialog_view"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
         android:layout_marginHorizontal="@dimen/_16sdp"
-        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_4sdp"
+        android:layout_gravity="center_vertical"
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="@style/DarkGray_14_ExtraBold_NanumText"
-            android:layout_width="match_parent"
+            style="@style/DarkGray_14_Bold_NanumText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/_16sdp"
-            android:layout_weight="1"
             android:text="@string/bgm_setting" />
-
-        <TextView
-            style="@style/DarkGray_12_Bold_NanumText"
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/off" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switch_bgm_setting"
-            android:layout_width="@dimen/_52sdp"
-            android:layout_height="@dimen/_28sdp"
-            android:layout_marginHorizontal="@dimen/_8sdp"
-            android:background="@null"
-            android:thumb="@drawable/custom_switch_thumb"
-            app:switchMinWidth="@dimen/_52sdp"
-            app:track="@drawable/custom_switch_track" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/DarkGray_12_Bold_NanumText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/on" />
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+<!--            <androidx.appcompat.widget.AppCompatTextView-->
+<!--                style="@style/DarkGray_12_Bold_NanumText"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/off" />-->
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_bgm_setting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                app:switchMinWidth="@dimen/_48sdp"
+                app:thumbTextPadding="@dimen/_8sdp"
+                android:background="@null"
+                android:thumb="@drawable/custom_switch_thumb"
+                app:track="@drawable/custom_switch_track" />
+<!--            <androidx.appcompat.widget.AppCompatTextView-->
+<!--                style="@style/DarkGray_12_Bold_NanumText"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/on" />-->
+        </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>
     <Button
         android:id="@+id/button_done"
         style="@style/Add_Friend_Dialog_Add_Button_Style"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/_16sdp"
-        android:gravity="end"
+        android:layout_marginEnd="@dimen/_4sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:layout_gravity="end"
         android:text="@string/done"
         android:textSize="@dimen/_14sdp"/>
 
