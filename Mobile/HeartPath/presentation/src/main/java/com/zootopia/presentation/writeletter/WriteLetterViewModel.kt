@@ -35,6 +35,9 @@ class WriteLetterViewModel @Inject constructor(
     private var _penSize: MutableStateFlow<Float> = MutableStateFlow<Float>(10F)
     val penSize: StateFlow<Float> = _penSize
 
+    private var _isEraserSelected: MutableStateFlow<Boolean> = MutableStateFlow<Boolean>(false)
+    val isEraserSelected: StateFlow<Boolean> = _isEraserSelected
+
     fun setSelectedLetterPaperUrl(url: String) {
         viewModelScope.launch {
             _selectedLetterPaperUrl.value = url
@@ -44,6 +47,12 @@ class WriteLetterViewModel @Inject constructor(
     fun setPenSize(size: Float){
         viewModelScope.launch {
             _penSize.value = size
+        }
+    }
+
+    fun setEraserState(isEraserSelected: Boolean){
+        viewModelScope.launch {
+            _isEraserSelected.value = isEraserSelected
         }
     }
 

@@ -40,6 +40,15 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/_30sdp"
             />
+        <ImageView
+            android:id="@+id/imageview_eraser_style_view"
+            android:visibility="gone"
+            android:layout_width="3dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_eraser_point"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/_30sdp"
+            />
     </LinearLayout>
 
     <Space

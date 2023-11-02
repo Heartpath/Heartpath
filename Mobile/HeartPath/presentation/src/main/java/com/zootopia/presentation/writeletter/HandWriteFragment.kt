@@ -139,5 +139,7 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
         Log.d(TAG, "onDestroy: ")
         writeLetterViewModel.setSelectedColor(R.color.black)
         writeLetterViewModel.setSelectedLetterPaperUrl("")
+        writeLetterViewModel.setPenSize(10f)
+        writeLetterViewModel.setEraserState(false)
     }
 }
