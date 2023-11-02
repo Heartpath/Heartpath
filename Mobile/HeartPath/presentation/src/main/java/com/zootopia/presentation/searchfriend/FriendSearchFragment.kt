@@ -24,6 +24,7 @@ class FriendSearchFragment : BaseFragment<FragmentFriendSearchBinding>(
             itemClickListener = object : FriendSearchAdapter.ItemClickListener {
                 override fun itemClick(view: View, position: Int) {
                     Log.d(TAG, "itemClick_fragment: $position")
+                    FriendSearchFriendAddDialog(requireContext()).show(childFragmentManager, TAG)
                 }
             }
         }
