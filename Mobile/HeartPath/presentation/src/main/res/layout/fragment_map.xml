@@ -1,16 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".map.MapFragment">
-
 
     <com.naver.maps.map.MapView
         android:id="@+id/mapview_naver"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_6sdp"
+        android:layout_gravity="end|top"
+        android:orientation="vertical">
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_2sdp"/>
+
+        <com.naver.maps.map.widget.LocationButtonView
+            android:id="@+id/location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center"/>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_30sdp"/>
+
+        <com.naver.maps.map.widget.ZoomControlView
+            android:id="@+id/zoom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/location"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+<!--    <com.naver.maps.map.widget.CompassView-->
+<!--        android:id="@+id/compass"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentRight="true"-->
+<!--        android:layout_gravity="center_vertical|start"/>-->
+
+<!--    <com.naver.maps.map.widget.ScaleBarView-->
+<!--        android:id="@+id/scalebar"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentRight="true"-->
+<!--        android:layout_gravity="top"/>-->
+
+
 
     <!-- Persistent Bottom Sheet -->
     <!-- behavior 속성을 여기서 적용합니다 -->
@@ -18,40 +67,37 @@
         android:id="@+id/president_bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:background="@color/white"
+        android:background="@drawable/custom_round_dialog_view"
         android:orientation="vertical"
         android:padding="8dp"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="60dp"
+        app:behavior_peekHeight="@dimen/_60sdp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="@dimen/_4sdp"
-            android:src="@drawable/bottom_line"/>
+            android:src="@drawable/bottom_line" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/_6sdp">
 
-
+            <ImageView
+                android:id="@+id/imageview_report"
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:src="@drawable/icon_report"
+                android:layout_gravity="end|center_vertical"/>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <TextView
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview_letter_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="🔼 Pull me up! 🔼"
-            android:textSize="24sp"
-            android:gravity="center"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Persistent Bottom Sheet"
-            android:textSize="24sp"
-            android:paddingTop="100dp"
-            android:gravity="center"/>
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

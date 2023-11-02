@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/PrimaryLightBlue"
+    tools:context=".login.LoginFragment">
 
     <ImageView
         android:id="@+id/imageview_bird_on_earth"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_200sdp"
         android:src="@drawable/animation_bird_on_earth"
-        app:layout_constraintBottom_toTopOf="@+id/imageButton"
+        app:layout_constraintBottom_toTopOf="@id/imagebutton_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,19 +20,17 @@
         app:layout_constraintVertical_chainStyle="packed" />
 
     <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_56sdp"
-        android:layout_marginHorizontal="@dimen/_32sdp"
-        android:padding="0dp"
-        android:scaleType="fitCenter"
+        android:id="@+id/imagebutton_login"
         android:src="@drawable/image_kakao_login_button"
-        android:backgroundTint="@color/white"
+        android:scaleType="centerCrop"
+        android:padding="0dp"
+        android:background="@color/PrimaryLightBlue"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_42sdp"
+        android:layout_marginHorizontal="@dimen/_32sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageview_bird_on_earth" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
