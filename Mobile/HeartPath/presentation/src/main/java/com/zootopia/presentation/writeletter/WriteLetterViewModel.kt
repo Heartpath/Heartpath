@@ -32,12 +32,18 @@ class WriteLetterViewModel @Inject constructor(
     private var _selectedColor: MutableStateFlow<Int> = MutableStateFlow<Int>(R.color.black)
     val selectedColor: StateFlow<Int> = _selectedColor
 
-    private var _penSize: MutableStateFlow<Int> = MutableStateFlow<Int>(10)
-    val penSize: StateFlow<Int> = _penSize
+    private var _penSize: MutableStateFlow<Float> = MutableStateFlow<Float>(10F)
+    val penSize: StateFlow<Float> = _penSize
 
     fun setSelectedLetterPaperUrl(url: String) {
         viewModelScope.launch {
             _selectedLetterPaperUrl.value = url
+        }
+    }
+
+    fun setPenSize(size: Float){
+        viewModelScope.launch {
+            _penSize.value = size
         }
     }
 

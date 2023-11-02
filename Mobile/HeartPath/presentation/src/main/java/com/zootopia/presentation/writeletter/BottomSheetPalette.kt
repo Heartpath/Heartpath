@@ -1,9 +1,12 @@
 package com.zootopia.presentation.writeletter
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -53,8 +56,11 @@ class BottomSheetPalette : BottomSheetDialogFragment() {
         }
     }
 
-    private fun initListener() {
-
+    private fun initListener() = with(binding) {
+        sliderPenSize.addOnChangeListener { slider, value, fromUser ->
+            Log.d(TAG, "initListener: changed!! ${fromUser}")
+            writeLetterViewModel.setPenSize(value)
+        }
     }
 
     private fun initCollecter() {
@@ -68,6 +74,26 @@ class BottomSheetPalette : BottomSheetDialogFragment() {
                     }
                 }
                 paletteColorAdapter.notifyDataSetChanged()
+                binding.imageviewPenStyleView.apply {
+                    setColorFilter(
+                        ContextCompat.getColor(
+                            binding.root.context,
+                            colorId
+                        )
+                    )
+                    requestLayout()
+                }
+            }
+        }
+        lifecycleScope.launch {
+            writeLetterViewModel.penSize.collectLatest {
+                binding.sliderPenSize.value = it
+                binding.imageviewPenStyleView.apply {
+                    layoutParams.width = it.toInt()/2
+                    layoutParams.height = it.toInt()/2
+                    requestLayout()
+                }
+
             }
         }
     }
