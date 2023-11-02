@@ -9,7 +9,7 @@
     <string name="home_find_letter">편지 찾기</string>
     <string name="home_letter_storage">편지 보관함</string>
     <string name="point_history_text">10포인트를 수령했습니다.</string>
-    <string name="search_friend_search_bar_hint">검색 아이디를 입력하세요.</string>
+    <string name="search_friend_search_bar_hint">검색 아이디를 입력하세요</string>
     <string name="point_history_date_text">2023.10.25</string>
     <string name="default_name">김뱁새</string>
     <string name="default_id">\@im_babsae</string>
@@ -20,6 +20,11 @@
     <string name="mypage_default_point">100</string>
     <string name="mypage_friends">친구</string>
     <string name="mypage_add_friend">친구추가</string>
+
+    <string name="select_letter_type_hand_write">손으로 편지쓰기</string>
+    <string name="select_letter_type_typing_write">타이핑으로 편지쓰기</string>
+    <string name="select_letter_paper_button">편지지 선택</string>
+
     <string name="add_friend_dialog_question">친구로 추가할까요?</string>
     <string name="delete_friend_dialog_question">친구에서 삭제할까요?</string>
     <string name="report_friend_dialog_question">사용자를 신고할까요?</string>
@@ -28,4 +33,15 @@
     <string name="delete">삭제</string>
     <string name="report">신고</string>
     <string name="point_history"></string>
+    <string name="signup_welcome_text">안녕하세요, 저희는 마음길입니다.\n사용하기 전 친구들이 조회할 수 있는\n아이디를 작성해주세요.</string>
+    <string name="signup_id_input_hint">아이디 입력</string>
+    <string name="signup_id_check">중복확인</string>
+    <string name="alert">주의</string>
+    <string name="signup_id_alert">아이디는 본인 개인 정보가 들어가지 않도록\n작성해 주세요.</string>
+    <string name="signup_accept">마음길 가입하기</string>
+    <string name="bgm_setting">BGM 설정</string>
+    <string name="on">ON</string>
+    <string name="off">OFF</string>
+    <string name="done">완료</string>
+    <string name="add_friend_letter_dialog_content">하참새님은 김뱁새님의 친구가 아닙니다.</string>
 </resources>

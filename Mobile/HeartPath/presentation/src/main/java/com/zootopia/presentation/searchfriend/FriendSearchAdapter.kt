@@ -1,5 +1,6 @@
 package com.zootopia.presentation.searchfriend
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import com.bumptech.glide.Glide
 import com.zootopia.presentation.R
 import com.zootopia.presentation.databinding.ItemSearchedFriendBinding
 
+private const val TAG = "FriendSearchAdapter_HP"
 class FriendSearchAdapter():
 RecyclerView.Adapter<FriendSearchAdapter.FriendSearchViewHolder>()
 {
