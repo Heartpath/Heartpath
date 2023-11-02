@@ -23,7 +23,6 @@
     <string name="add_friend_dialog_question">친구로 추가할까요?</string>
     <string name="delete_friend_dialog_question">친구에서 삭제할까요?</string>
     <string name="report_friend_dialog_question">사용자를 신고할까요?</string>
-    <string name="add_friend_from_reading_letter_dialog_question">용가리님은 김뱁새님의 친구가 아닙니다.</string>
     <string name="add">추가</string>
     <string name="cancel">취소</string>
     <string name="delete">삭제</string>
