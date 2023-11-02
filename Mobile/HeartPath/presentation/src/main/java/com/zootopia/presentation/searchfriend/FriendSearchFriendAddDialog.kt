@@ -3,20 +3,17 @@ package com.zootopia.presentation.searchfriend
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.zootopia.presentation.R
-import com.zootopia.presentation.databinding.DialogBgmSettingBinding
-import com.zootopia.presentation.databinding.DialogFriendAddBinding
+import com.zootopia.presentation.databinding.DialogAddFriendBinding
+
 
 class FriendSearchFriendAddDialog(context: Context): DialogFragment()  {
-    private lateinit var binding: DialogFriendAddBinding
+    private lateinit var binding: DialogAddFriendBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +26,7 @@ class FriendSearchFriendAddDialog(context: Context): DialogFragment()  {
         savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        binding = DialogFriendAddBinding.inflate(inflater, container, false)
+        binding = DialogAddFriendBinding.inflate(inflater, container, false)
         return binding.root
     }
 
