@@ -20,6 +20,11 @@ public class UserController {
 
     private final UserService userService;
 
+    @GetMapping("/health_check")
+    public String checkServer() {
+        return "200 OK";
+    }
+
     @GetMapping("/mypage")
     public ResponseEntity<BaseResponse> getUserInfo() {
 
