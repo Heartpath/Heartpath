@@ -4,13 +4,12 @@ import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.zootopia.letterservice.common.error.code.ErrorCode;
-import com.zootopia.letterservice.common.error.exception.BadRequestException;
+import com.zootopia.letterservice.common.error.code.LetterErrorCode;
+import com.zootopia.letterservice.common.error.exception.LetterBadRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -40,7 +39,7 @@ public class S3Uploader {
         try{
             amazonS3Client.deleteObject(bucket, fileName);
         } catch (SdkClientException e) {
-            throw new BadRequestException(ErrorCode.FAIL_DELETE_FILE);
+            throw new LetterBadRequestException(LetterErrorCode.FAIL_DELETE_FILE);
         }
         return true;
     }

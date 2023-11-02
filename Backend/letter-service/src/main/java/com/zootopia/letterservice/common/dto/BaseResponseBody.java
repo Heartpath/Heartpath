@@ -8,11 +8,11 @@ import lombok.*;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BaseResponseBody<T> {
-    private String status;
+    private T status;
     private String message;
     private T data;
 
-    public BaseResponseBody(String status, String message) {
+    public BaseResponseBody(T status, String message) {
         this.status = status;
         this.message = message;
     }
