@@ -1,16 +1,11 @@
 package com.zootopia.presentation.writeletter
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zootopia.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,15 +24,30 @@ class WriteLetterViewModel @Inject constructor(
     )
     val letterPaperList: StateFlow<MutableList<String>> = _letterPaperList
 
-    private var _selectedColor: MutableStateFlow<Int> = MutableStateFlow<Int>(R.color.Orange)
+    private var _selectedColor: MutableStateFlow<Int> = MutableStateFlow<Int>(R.color.black)
     val selectedColor: StateFlow<Int> = _selectedColor
 
-    private var _penSize: MutableStateFlow<Int> = MutableStateFlow<Int>(10)
-    val penSize: StateFlow<Int> = _penSize
+    private var _penSize: MutableStateFlow<Float> = MutableStateFlow<Float>(10F)
+    val penSize: StateFlow<Float> = _penSize
+
+    private var _isEraserSelected: MutableStateFlow<Boolean> = MutableStateFlow<Boolean>(false)
+    val isEraserSelected: StateFlow<Boolean> = _isEraserSelected
 
     fun setSelectedLetterPaperUrl(url: String) {
         viewModelScope.launch {
-            _selectedLetterPaperUrl.emit(url)
+            _selectedLetterPaperUrl.value = url
+        }
+    }
+
+    fun setPenSize(size: Float) {
+        viewModelScope.launch {
+            _penSize.value = size
+        }
+    }
+
+    fun setEraserState(isEraserSelected: Boolean) {
+        viewModelScope.launch {
+            _isEraserSelected.value = isEraserSelected
         }
     }
 

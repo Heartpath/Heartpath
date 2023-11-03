@@ -5,8 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.zootopia.presentation.databinding.ItemReceiveLetterBinding
-import com.zootopia.presentation.databinding.ItemSendLetterBinding
-import com.zootopia.presentation.sendletter.SendLetterAdapter
 
 private const val TAG = "ReceiveLetterAdapter_HeartPath"
 class ReceiveLetterAdapter() :
