@@ -1,6 +1,7 @@
 package com.zootopia.presentation.readletter
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,13 +42,16 @@ class ReadLetterAddFriendDialog : DialogFragment() {
 
     override fun onResume() {
         super.onResume()
-        // dialog 크기 동적으로 크기
         val parentWidth = resources.displayMetrics.widthPixels
         val size = parentWidth - (parentWidth / 10)
-        dialog?.window?.setLayout(size, ViewGroup.LayoutParams.WRAP_CONTENT)    // (너비, 높이) 지정
-
-        // dialog background 동적으로 주기
-        dialog?.window?.setBackgroundDrawableResource(R.drawable.custom_round_dialog_view)
+        dialog?.let {dialog ->
+            // dialog 크기 동적으로 주기
+            dialog.window?.setLayout(size, ViewGroup.LayoutParams.WRAP_CONTENT)
+            // dialog background 동적으로 주기
+            dialog.window?.setBackgroundDrawableResource(R.drawable.custom_round_dialog_view)
+            // 다이얼로그를 하단에 표시
+            dialog.window?.setGravity(Gravity.BOTTOM)
+        }
     }
 
     companion object {
