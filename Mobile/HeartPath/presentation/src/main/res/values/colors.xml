@@ -22,6 +22,8 @@
     <color name="DarkDustyGreen">#729984</color>
     <color name="PurpleBlue">#FF89A8CE</color>
     <color name="AlertRed">#FFDA5E5E</color>
+    <color name="LightBlueGray">#99AEBB</color>
+    <color name="DarkBlueGray">#364954</color>
     <color name="DarklessGray">#FF535252</color>
     <color name="GrayLightBlue">#FF99AEBB</color>
     <color name="DarkBackground">#4DFFFFFF</color>
