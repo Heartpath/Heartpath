@@ -105,4 +105,7 @@ dependencies {
 
     // SSP
     implementation("com.intuit.ssp:ssp-android:1.1.0")
+    
+    // WorkManager
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
 }

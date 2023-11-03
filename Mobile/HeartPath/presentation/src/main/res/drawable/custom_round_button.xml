@@ -8,6 +8,6 @@
         />
     <stroke
         android:width="2.5dp"
-        android:color="@color/PrimaryLightBlue"
+        android:color="@color/LightestGray"
         />
 </shape>

@@ -7,6 +7,7 @@ import com.zootopia.domain.model.tmap.FeatureCollectionDto
 import com.zootopia.domain.model.tmap.RequestTmapWalkRoadDto
 import com.zootopia.domain.usecase.map.GetMapDirectionUseCase
 import com.zootopia.domain.usecase.map.RequestTmapWalkRoadUseCase
+import com.zootopia.domain.usecase.testUseCase
 import com.zootopia.presentation.config.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,6 +22,7 @@ private const val TAG = "MapViewModel_HP"
 class MapViewModel @Inject constructor(
     private val getMapDirectionUseCase: GetMapDirectionUseCase,
     private val requestTmapWalkRoadUseCase: RequestTmapWalkRoadUseCase,
+    private val testUseCase: testUseCase,
 ) : BaseViewModel() {
     
     // 편지 신고 삭제 신고 클릭 유무
@@ -86,5 +88,22 @@ class MapViewModel @Inject constructor(
     }
     // Tmap - END
     
-
+    // 길찾기
+    private val _isWorkManager = MutableSharedFlow<Boolean>()
+    val isWorkManager: SharedFlow<Boolean>
+        get() = _isWorkManager
+    
+    
+    // 임시 사용
+    fun test() {
+        getApiResult(
+            block = {
+                testUseCase.invoke()
+            },
+            success = {
+                Log.d(TAG, "test: $it")
+            }
+        )
+    }
+    
 }

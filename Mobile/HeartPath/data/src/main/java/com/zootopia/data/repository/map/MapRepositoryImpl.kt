@@ -57,4 +57,11 @@ class MapRepositoryImpl @Inject constructor(
         }
     }
     
+    
+    override suspend fun test() : String{
+        return getValueOrThrow2 {
+            mapDataSource.test()
+        }
+    }
+    
 }
