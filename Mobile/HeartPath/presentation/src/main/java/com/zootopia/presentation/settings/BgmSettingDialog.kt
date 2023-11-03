@@ -1,9 +1,7 @@
 package com.zootopia.presentation.settings
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -11,9 +9,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.zootopia.presentation.R
 import com.zootopia.presentation.databinding.DialogBgmSettingBinding
-import com.zootopia.presentation.searchfriend.FriendSearchFriendAddDialog
 
-class BgmSettingDialog: DialogFragment() {
+class BgmSettingDialog : DialogFragment() {
     private lateinit var binding: DialogBgmSettingBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,21 +37,19 @@ class BgmSettingDialog: DialogFragment() {
             }
         }
     }
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        dialog.window?.setGravity(Gravity.BOTTOM) // 다이얼로그를 하단에 표시
-        return dialog
-    }
+
     override fun onResume() {
         super.onResume()
-        // dialog 크기 동적으로 주기
         val parentWidth = resources.displayMetrics.widthPixels
-        val size = parentWidth - (parentWidth/10)
-        dialog?.window?.setLayout(size, ViewGroup.LayoutParams.WRAP_CONTENT)
-
-        // dialog background 동적으로 주기
-        dialog?.window?.setBackgroundDrawableResource(R.drawable.custom_round_dialog_view)
-
+        val size = parentWidth - (parentWidth / 10)
+        dialog?.let {dialog ->
+            // dialog 크기 동적으로 주기
+            dialog.window?.setLayout(size, ViewGroup.LayoutParams.WRAP_CONTENT)
+            // dialog background 동적으로 주기
+            dialog.window?.setBackgroundDrawableResource(R.drawable.custom_round_dialog_view)
+            // 다이얼로그를 하단에 표시
+            dialog.window?.setGravity(Gravity.BOTTOM)
+        }
         // switch custom 값 동적으로 주기
         binding.apply {
             switchBgmSetting.trackDrawable = context?.getDrawable(R.drawable.custom_switch_track)
