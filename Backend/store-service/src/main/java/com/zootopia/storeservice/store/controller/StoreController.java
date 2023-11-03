@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Slf4j
@@ -28,6 +29,13 @@ public class StoreController {
     private WebClient webClient;
 
     private final StoreService storeService;
+
+    @GetMapping("/health_check")
+    public String checkServer(HttpServletRequest request) {
+        String remoteAddr = request.getRemoteAddr();
+
+        return String.format("200 OK to %s", remoteAddr);
+    }
 
     // 편지지 목록 조회
     @GetMapping("/letterpaper")
