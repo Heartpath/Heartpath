@@ -10,8 +10,9 @@ private fun <T> Response<T>.isDelete(): Boolean {
     return this.raw().request.method == "DELETE"
 }
 
-@Suppress("UNCHECKED_CAST")
+//@Suppress("UNCHECKED_CAST")
 fun <T> Response<T>.getValueOrThrow(): T {
+    Log.d(TAG, "getValueOrThrow: $isSuccessful")
     if (this.isSuccessful) {
         if (this.isDelete()) { return Unit as T }
         return this.body() ?: throw NetworkThrowable.IllegalStateThrowable()
@@ -39,8 +40,9 @@ fun <T> Response<T>.getValueOrThrow(): T {
 /**
  * throwable 처리하기 전까지 가져갈 함수
  */
-suspend fun <T> getValueOrThrow(block: suspend () -> T): T{
+suspend fun <T> getValueOrThrow2(block: suspend () -> T): T{
     try{
+        Log.d(TAG, "getValueOrThrow2///")
         return block()
     }catch (throwable: NetworkThrowable){
         throw throwable
