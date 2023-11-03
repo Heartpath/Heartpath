@@ -1,16 +1,11 @@
 package com.zootopia.presentation.writeletter
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zootopia.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -44,13 +39,13 @@ class WriteLetterViewModel @Inject constructor(
         }
     }
 
-    fun setPenSize(size: Float){
+    fun setPenSize(size: Float) {
         viewModelScope.launch {
             _penSize.value = size
         }
     }
 
-    fun setEraserState(isEraserSelected: Boolean){
+    fun setEraserState(isEraserSelected: Boolean) {
         viewModelScope.launch {
             _isEraserSelected.value = isEraserSelected
         }

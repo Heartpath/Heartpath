@@ -43,26 +43,33 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
 
+        initViewReadyListener()
         initCollecter()
         initClickListener()
+    }
+
+    private fun initViewReadyListener() {
+        var viewTreeObserver: ViewTreeObserver = binding.imageviewLetterPaper.getViewTreeObserver()
+        if (viewTreeObserver.isAlive) {
+            viewTreeObserver.addOnGlobalLayoutListener(object :
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    Log.d(TAG, "onGlobalLayout: view ready")
+                    binding.imageviewLetterPaper.getViewTreeObserver()
+                        .removeOnGlobalLayoutListener(this)
+                    imageViewHeight = binding.imageviewLetterPaper.getHeight().toFloat()
+                    imageViewWidth = binding.imageviewLetterPaper.getWidth().toFloat()
+                    setLetterPaper(writeLetterViewModel.selectedLetterPaperUrl.value)
+                }
+            })
+        }
     }
 
     private fun initCollecter() = with(binding) {
         lifecycleScope.launch {
             writeLetterViewModel.selectedLetterPaperUrl.collect {
-                var viewTreeObserver: ViewTreeObserver = binding.imageviewLetterPaper.getViewTreeObserver()
-                if (viewTreeObserver.isAlive) {
-                    viewTreeObserver.addOnGlobalLayoutListener(object :
-                        ViewTreeObserver.OnGlobalLayoutListener {
-                        override fun onGlobalLayout() {
-                            imageviewLetterPaper.getViewTreeObserver()
-                                .removeOnGlobalLayoutListener(this)
-                            imageViewHeight = imageviewLetterPaper.getHeight().toFloat()
-                            imageViewWidth = imageviewLetterPaper.getWidth().toFloat()
-                            setLetterPaper(it)
-                        }
-                    })
-                }
+                Log.d(TAG, "initCollecter: url collect")
+                setLetterPaper(it)
             }
         }
 
