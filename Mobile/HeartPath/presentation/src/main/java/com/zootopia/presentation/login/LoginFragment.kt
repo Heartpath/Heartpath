@@ -36,7 +36,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         Glide
             .with(this@LoginFragment)
             .load(R.drawable.animation_bird_on_earth)
-            .into(binding.imageviewBirdOnEarth)
+            .into(imageviewBirdOnEarth)
     }
 
 }
