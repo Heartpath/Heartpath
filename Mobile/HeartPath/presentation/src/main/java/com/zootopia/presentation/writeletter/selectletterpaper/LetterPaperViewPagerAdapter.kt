@@ -1,4 +1,4 @@
-package com.zootopia.presentation.writeletter
+package com.zootopia.presentation.writeletter.selectletterpaper
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

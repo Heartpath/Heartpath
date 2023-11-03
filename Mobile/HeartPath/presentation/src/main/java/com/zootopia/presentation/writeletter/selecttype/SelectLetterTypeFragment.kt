@@ -1,4 +1,4 @@
-package com.zootopia.presentation.writeletter
+package com.zootopia.presentation.writeletter.selecttype
 
 import android.content.Context
 import android.os.Bundle
@@ -12,6 +12,7 @@ import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentSelectLetterTypeBinding
 import com.zootopia.presentation.util.LetterType
+import com.zootopia.presentation.writeletter.WriteLetterViewModel
 
 class SelectLetterTypeFragment : BaseFragment<FragmentSelectLetterTypeBinding>(
     FragmentSelectLetterTypeBinding::bind,

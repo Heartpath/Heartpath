@@ -1,4 +1,4 @@
-package com.zootopia.presentation.writeletter
+package com.zootopia.presentation.writeletter.selectletterpaper
 
 import android.content.Context
 import android.os.Bundle
@@ -17,6 +17,7 @@ import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentSelectLetterPaperBinding
 import com.zootopia.presentation.util.LetterType
+import com.zootopia.presentation.writeletter.WriteLetterViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -80,11 +81,11 @@ class SelectLetterPaperFragment : BaseFragment<FragmentSelectLetterPaperBinding>
     fun initClickListener() = with(binding) {
         buttonSelectLetterPaper.setOnClickListener {
             writeLetterViewModel.setSelectedLetterPaperUrl(letterPaperList[viewPagerLetterPaper.currentItem])
-            if(args.letterType == LetterType.HAND_WRITE){
+            if (args.letterType == LetterType.HAND_WRITE) {
                 navController.navigate(R.id.action_selectLetterPaperFragment_to_handWriteFragment)
-            }else{
+            } else {
                 // 폰트 설정화면으로 이동
-                
+                navController.navigate(R.id.action_selectLetterPaperFragment_to_typingWriteFragment)
             }
         }
     }
