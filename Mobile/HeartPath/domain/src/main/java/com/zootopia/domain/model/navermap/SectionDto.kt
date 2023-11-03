@@ -1,4 +1,4 @@
-package com.zootopia.domain.model.map
+package com.zootopia.domain.model.navermap
 
 data class SectionDto(
     val pointIndex: Int = 0,
