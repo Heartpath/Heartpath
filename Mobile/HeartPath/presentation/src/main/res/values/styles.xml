@@ -173,4 +173,10 @@
         <item name="endIconTint">@color/DarkGray</item>
         <item name="android:label">아이디</item>
     </style>
+
+    <style name="DarkerGray_14_ExtraBold_NanumText" parent="@style/Widget.AppCompat.TextView">
+        <item name="fontFamily">@font/nanum_square_round_otf_extra_bold</item>
+        <item name="android:textColor">@color/DarkerGray</item>
+        <item name="android:textSize">@dimen/_14ssp</item>
+    </style>
 </resources>
