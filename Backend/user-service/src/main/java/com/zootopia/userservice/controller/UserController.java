@@ -24,7 +24,9 @@ public class UserController {
 
     @GetMapping("/health_check")
     public String checkServer(HttpServletRequest request) {
+        
         String remoteAddr = request.getRemoteAddr();
+        log.info("Get Request From '{}'", remoteAddr);
 
         return String.format("200 OK to %s", remoteAddr);
     }
