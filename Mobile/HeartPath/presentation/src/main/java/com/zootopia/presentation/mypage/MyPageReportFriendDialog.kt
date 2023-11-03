@@ -1,8 +1,6 @@
 package com.zootopia.presentation.mypage
 
-import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.zootopia.presentation.R
 import com.zootopia.presentation.databinding.DialogReportFriendBinding
-import com.zootopia.presentation.searchfriend.FriendSearchFriendAddDialog
 
-class MyPageReportFriendDialog: DialogFragment() {
+class MyPageReportFriendDialog : DialogFragment() {
     private lateinit var binding: DialogReportFriendBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +47,7 @@ class MyPageReportFriendDialog: DialogFragment() {
 
         // dialog 크기 동적으로 주기
         val parentWidth = resources.displayMetrics.widthPixels
-        val size = parentWidth - (parentWidth/10)
+        val size = parentWidth - (parentWidth / 10)
         dialog?.window?.setLayout(size, ViewGroup.LayoutParams.WRAP_CONTENT)
 
         // dialog background 동적으로 주기

@@ -12,7 +12,7 @@ import com.zootopia.presentation.R
 import com.zootopia.presentation.databinding.DialogAddFriendBinding
 
 
-class FriendSearchFriendAddDialog(context: Context): DialogFragment()  {
+class FriendSearchFriendAddDialog(context: Context) : DialogFragment() {
     private lateinit var binding: DialogAddFriendBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,12 +54,13 @@ class FriendSearchFriendAddDialog(context: Context): DialogFragment()  {
         super.onResume()
         // dialog 크기 동적으로 주기
         val parentWidth = resources.displayMetrics.widthPixels
-        val size = parentWidth - (parentWidth/10)
+        val size = parentWidth - (parentWidth / 10)
         dialog?.window?.setLayout(size, ViewGroup.LayoutParams.WRAP_CONTENT)
 
         // dialog background 동적으로 주기
         dialog?.window?.setBackgroundDrawableResource(R.drawable.custom_round_dialog_view)
     }
+
     companion object {
         const val TAG = "FriendSearchFriendAddDi"
     }
