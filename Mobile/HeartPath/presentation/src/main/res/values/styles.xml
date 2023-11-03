@@ -136,6 +136,7 @@
         <item name="android:textColor">@color/DarkGray</item>
         <item name="android:textSize">@dimen/_14ssp</item>
         <item name="backgroundTint">@android:color/transparent</item>
+        <item name="rippleColor">@android:color/transparent</item>
     </style>
     <style name="Add_Friend_Dialog_Add_Button_Style" parent="@style/Widget.Material3.Button.TextButton">
         <item name="fontFamily">@font/nanum_square_round_otf_extra_bold</item>
@@ -149,6 +150,7 @@
         <item name="android:textColor">@color/AlertRed</item>
         <item name="android:textSize">@dimen/_14ssp</item>
         <item name="backgroundTint">@android:color/transparent</item>
+        <item name="rippleColor">@android:color/transparent</item>
     </style>
     <style name="tooltip" parent="Widget.MaterialComponents.Tooltip">
         <item name="shapeAppearanceOverlay">@style/tooltipShOverylay</item>
