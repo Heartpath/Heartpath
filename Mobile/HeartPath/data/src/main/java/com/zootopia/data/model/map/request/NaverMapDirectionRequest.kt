@@ -2,7 +2,7 @@ package com.zootopia.data.model.map.request
 
 import com.google.gson.annotations.SerializedName
 
-data class MapDirectionRequest(
+data class NaverMapDirectionRequest(
     @SerializedName("start")
     val start: String,
     @SerializedName("goal")

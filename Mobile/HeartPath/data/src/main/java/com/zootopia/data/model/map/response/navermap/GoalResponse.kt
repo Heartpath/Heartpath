@@ -1,4 +1,4 @@
-package com.zootopia.data.model.map.response
+package com.zootopia.data.model.map.response.navermap
 
 import com.google.gson.annotations.SerializedName
 
