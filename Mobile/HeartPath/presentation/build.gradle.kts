@@ -102,4 +102,7 @@ dependencies {
 
     // Kakao
     implementation("com.kakao.sdk:v2-all:2.14.0")
+
+    // SSP
+    implementation("com.intuit.ssp:ssp-android:1.1.0")
 }
