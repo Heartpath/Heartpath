@@ -1,20 +1,17 @@
-package com.zootopia.presentation.searchfriend
+package com.zootopia.presentation.mypage
 
-import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import com.zootopia.presentation.R
-import com.zootopia.presentation.databinding.DialogAddFriendBinding
+import com.zootopia.presentation.databinding.DialogReportFriendBinding
 
+class MyPageReportFriendDialog : DialogFragment() {
+    private lateinit var binding: DialogReportFriendBinding
 
-class FriendSearchFriendAddDialog(context: Context) : DialogFragment() {
-    private lateinit var binding: DialogAddFriendBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isCancelable = true // 화면 밖에 클릭하면 dismiss 되도록
@@ -26,18 +23,18 @@ class FriendSearchFriendAddDialog(context: Context) : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        binding = DialogAddFriendBinding.inflate(inflater, container, false)
+        binding = DialogReportFriendBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
-            buttonFriendAddCancel.setOnClickListener {
+            buttonReportFriendCancel.setOnClickListener {
                 dismiss()
             }
-            buttonFriendAddAccept.setOnClickListener {
-                // TODO: 친구 추가
+            buttonReportFriendAccept.setOnClickListener {
+                // TODO: 사용자 신고
                 dismiss()
             }
         }
@@ -55,9 +52,5 @@ class FriendSearchFriendAddDialog(context: Context) : DialogFragment() {
             // 다이얼로그를 하단에 표시
             dialog.window?.setGravity(Gravity.BOTTOM)
         }
-    }
-
-    companion object {
-        const val TAG = "FriendSearchFriendAddDi"
     }
 }
