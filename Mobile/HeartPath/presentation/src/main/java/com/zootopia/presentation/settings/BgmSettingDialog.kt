@@ -1,20 +1,18 @@
-package com.zootopia.presentation.searchfriend
+package com.zootopia.presentation.settings
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import com.zootopia.presentation.R
-import com.zootopia.presentation.databinding.DialogAddFriendBinding
+import com.zootopia.presentation.databinding.DialogBgmSettingBinding
 
+class BgmSettingDialog : DialogFragment() {
+    private lateinit var binding: DialogBgmSettingBinding
 
-class FriendSearchFriendAddDialog(context: Context) : DialogFragment() {
-    private lateinit var binding: DialogAddFriendBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isCancelable = true // 화면 밖에 클릭하면 dismiss 되도록
@@ -26,18 +24,15 @@ class FriendSearchFriendAddDialog(context: Context) : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        binding = DialogAddFriendBinding.inflate(inflater, container, false)
+        binding = DialogBgmSettingBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
-            buttonFriendAddCancel.setOnClickListener {
-                dismiss()
-            }
-            buttonFriendAddAccept.setOnClickListener {
-                // TODO: 친구 추가
+            buttonDone.setOnClickListener {
+                //TODO: 상태 저장
                 dismiss()
             }
         }
@@ -55,9 +50,14 @@ class FriendSearchFriendAddDialog(context: Context) : DialogFragment() {
             // 다이얼로그를 하단에 표시
             dialog.window?.setGravity(Gravity.BOTTOM)
         }
+        // switch custom 값 동적으로 주기
+        binding.apply {
+            switchBgmSetting.trackDrawable = context?.getDrawable(R.drawable.custom_switch_track)
+            switchBgmSetting.thumbDrawable = context?.getDrawable(R.drawable.custom_switch_thumb)
+        }
     }
 
     companion object {
-        const val TAG = "FriendSearchFriendAddDi"
+        const val TAG = "BgmSettingDialog"
     }
 }

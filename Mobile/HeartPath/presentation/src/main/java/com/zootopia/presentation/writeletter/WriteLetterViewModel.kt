@@ -1,13 +1,20 @@
 package com.zootopia.presentation.writeletter
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zootopia.presentation.util.LetterType
+import com.zootopia.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+private const val TAG = "WriteLetterViewModel"
 
 @HiltViewModel
 class WriteLetterViewModel @Inject constructor(
@@ -21,6 +28,12 @@ class WriteLetterViewModel @Inject constructor(
         mutableListOf()
     )
     val letterPaperList: StateFlow<MutableList<String>> = _letterPaperList
+
+    private var _selectedColor: MutableStateFlow<Int> = MutableStateFlow<Int>(R.color.Orange)
+    val selectedColor: StateFlow<Int> = _selectedColor
+
+    private var _penSize: MutableStateFlow<Int> = MutableStateFlow<Int>(10)
+    val penSize: StateFlow<Int> = _penSize
 
     fun setSelectedLetterPaperUrl(url: String) {
         viewModelScope.launch {
@@ -44,6 +57,12 @@ class WriteLetterViewModel @Inject constructor(
                 add("https://img.freepik.com/premium-photo/cute-gray-cat-kid-animal-with-interested-question-facial-face-expression-look-up-on-copy-space-small-tabby-kitten-on-white-background-vertical-format_221542-2278.jpg?w=360")
             }
             _letterPaperList.emit(list)
+        }
+    }
+
+    fun setSelectedColor(id: Int) {
+        viewModelScope.launch {
+            _selectedColor.value = id
         }
     }
 }
