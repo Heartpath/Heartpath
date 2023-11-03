@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/LightestGray"
-    android:fitsSystemWindows="true"
     tools:context=".mypage.MyPageFragment">
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar_mypage"
