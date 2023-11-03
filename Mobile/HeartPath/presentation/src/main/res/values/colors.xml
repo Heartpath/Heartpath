@@ -24,4 +24,6 @@
     <color name="AlertRed">#FFDA5E5E</color>
     <color name="DarklessGray">#FF535252</color>
     <color name="GrayLightBlue">#FF99AEBB</color>
+    <color name="DarkBackground">#4DFFFFFF</color>
+    <color name="DarkerGray">#FF303030</color>
 </resources>
