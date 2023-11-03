@@ -6,8 +6,4 @@
     <solid
         android:color="@color/white"
         />
-    <stroke
-        android:width="2.5dp"
-        android:color="@color/PrimaryLightBlue"
-        />
 </shape>

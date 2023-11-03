@@ -19,8 +19,7 @@ class MapRepositoryImpl @Inject constructor(
 ) : MapRepository {
     val NAVER_MAP_CLIENT_ID = BuildConfig.DATA_NAVER_MAP_CLIENT_ID
     val NAVER_MAP_API_KEY = BuildConfig.DATA_NAVER_MAP_API_KEY
-    
-    val TMAP_APP_KEY = ""
+    val TMAP_APP_KEY = BuildConfig.TMAP_APP_KEY
     
     
     /**
@@ -53,7 +52,7 @@ class MapRepositoryImpl @Inject constructor(
             Log.d(TAG, "requestTmapWalkRoad: 레파지토리에서 티맵 길 요청!!")
             mapDataSource.requestTmapWalkRoad(
                 tmapWalkRoadRequest = requestTmapWalkRoadDto.toData(),
-                appKey = "aXKly8Mb928lN1oZmkXxN1TXrSJLF9dv4pMsmddr"
+                appKey = TMAP_APP_KEY
             ).toDomain()
         }
     }

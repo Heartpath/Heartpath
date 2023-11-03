@@ -1,5 +1,7 @@
 package com.zootopia.presentation.config
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +30,8 @@ abstract class BaseDialogFragment<B: ViewBinding>(
         savedInstanceState: Bundle?,
     ): View? {
         _binding = bind(super.onCreateView(inflater, container, savedInstanceState)!!)
+        // 배경색 투명
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         return binding.root
     }
     

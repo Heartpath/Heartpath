@@ -45,28 +45,12 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-<!--    <com.naver.maps.map.widget.CompassView-->
-<!--        android:id="@+id/compass"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentRight="true"-->
-<!--        android:layout_gravity="center_vertical|start"/>-->
-
-<!--    <com.naver.maps.map.widget.ScaleBarView-->
-<!--        android:id="@+id/scalebar"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentRight="true"-->
-<!--        android:layout_gravity="top"/>-->
-
-
-
     <!-- Persistent Bottom Sheet -->
-    <!-- behavior 속성을 여기서 적용합니다 -->
+    <!-- behavior 속성을 여기서 적용 -->
     <LinearLayout
         android:id="@+id/president_bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_300sdp"
+        android:layout_height="@dimen/_250sdp"
         android:background="@drawable/custom_round_map_bottom_sheet"
         android:orientation="vertical"
         android:padding="8dp"
@@ -108,7 +92,7 @@
                 android:layout_gravity="center_vertical|end"
                 android:padding="@dimen/_1sdp"
                 android:fontFamily="@font/nanum_square_round_otf_bold"
-                android:background="@drawable/custom_round_stroke_button"/>
+                android:background="@drawable/custom_round_background_button"/>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

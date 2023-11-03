@@ -59,20 +59,22 @@ class MapViewModel @Inject constructor(
     val tmapWalkRoadInfo: SharedFlow<FeatureCollectionDto>
         get() = _tmapWalkRoadInfo.asSharedFlow()
     
-    fun requestTmapWalkRoad() {
+    fun requestTmapWalkRoad(
+        mapLetterDto: MapLetterDto
+    ) {
         getApiResult(
             block = {
                 Log.d(TAG, "requestTmapWalkRoad: Tmap 요청!!!!!!!!!!!!")
                 requestTmapWalkRoadUseCase.invoke(
                     RequestTmapWalkRoadDto(
-                        startX = "128.418643",
-                        startY = "36.1066181",
-                        endX = "128.418535",
-                        endY = "36.1079891",
+                        startX = lastLongitude,
+                        startY = lastLatitude,
+                        endX = mapLetterDto.longitude,
+                        endY = mapLetterDto.latitude,
                         reqCoordType = "WGS84GEO",
                         resCoordType = "WGS84GEO",
-                        startName = "구미 인동 투썸플레이스",
-                        endName = "구미 인동 스타벅스"
+                        startName = "내 위치",
+                        endName = "편지"
                     )
                 )
             },

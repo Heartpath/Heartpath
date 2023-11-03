@@ -22,6 +22,7 @@ android {
     
         buildConfigField("String", "DATA_NAVER_MAP_CLIENT_ID",localProperties.getProperty("data_naver_map_client_id"))
         buildConfigField("String", "DATA_NAVER_MAP_API_KEY",localProperties.getProperty("data_naver_map_api_key"))
+        buildConfigField("String","TMAP_APP_KEY", localProperties.getProperty("tmap_app_key"))
     }
 
     buildTypes {
