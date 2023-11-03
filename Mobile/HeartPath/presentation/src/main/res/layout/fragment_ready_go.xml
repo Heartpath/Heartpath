@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:minWidth="@dimen/_150sdp"
+    app:cardCornerRadius="16dp"
+    tools:context=".map.ReadyGoDialogFragment">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/_16sdp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="편지를 찾으러 가시겠어요?"
+            style="@style/Black_16_Bold_NanumText"/>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_100sdp"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button_start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="출발"
+            android:padding="@dimen/_3sdp"
+            android:gravity="center"
+            android:background="@drawable/custom_round_stroke_button"
+            style="@style/Black_12_Bold_NanumText"/>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -6,7 +6,7 @@
     <color name="PrimaryLightBlue">#FFC4D7E3</color>
     <color name="LightestGray">#FFF6F7F9</color>
     <color name="ExtraLightGray">#FFE7E7E7</color>
-    <color name="Red">#FFF44040</color>
+    <color name="Red">#FFDA5E5E</color>
     <color name="Orange">#FFF1A839</color>
     <color name="Yellow">#FFF1D439</color>
     <color name="Green">#FF8AF139</color>
@@ -22,8 +22,10 @@
     <color name="DarkDustyGreen">#729984</color>
     <color name="PurpleBlue">#FF89A8CE</color>
     <color name="AlertRed">#FFDA5E5E</color>
-    <color name="DarklessGray">#535252</color>
     <color name="LightBlueGray">#99AEBB</color>
     <color name="DarkBlueGray">#364954</color>
->>>>>>> android
+    <color name="DarklessGray">#FF535252</color>
+    <color name="GrayLightBlue">#FF99AEBB</color>
+    <color name="DarkBackground">#4DFFFFFF</color>
+    <color name="DarkerGray">#FF303030</color>
 </resources>
