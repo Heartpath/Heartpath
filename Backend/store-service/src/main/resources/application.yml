@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 80
   servlet:
     context-path: /
     encoding:
@@ -10,9 +10,9 @@ server:
 spring:
   jackson:
     time-zone: Asia/Seoul
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/zootopia
+#  data:
+#    mongodb:
+#      uri: mongodb://localhost:27017/zootopia
 
   servlet:
     multipart:
