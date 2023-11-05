@@ -43,7 +43,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/_24sdp">
+                    android:paddingTop="@dimen/_16sdp">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/imageview_profile_img"
