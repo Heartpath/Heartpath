@@ -105,4 +105,7 @@ dependencies {
 
     // SSP
     implementation("com.intuit.ssp:ssp-android:1.1.0")
+
+    // coordinatorlayout
+    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
 }
