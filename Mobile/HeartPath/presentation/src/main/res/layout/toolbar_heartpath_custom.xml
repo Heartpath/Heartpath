@@ -37,6 +37,7 @@
                 android:layout_height="@dimen/_20sdp"
                 android:layout_marginEnd="@dimen/_16sdp"
                 android:src="@drawable/icon_setting"
-                android:tint="@color/DarkGray" />
+                android:tint="@color/DarkGray"
+                android:visibility="gone"/>
         </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.appcompat.widget.Toolbar>
