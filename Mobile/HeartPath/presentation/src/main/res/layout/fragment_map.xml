@@ -11,6 +11,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textview_top_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_6sdp"
+        android:layout_gravity="top|center"
+        android:text="---m"
+        style="@style/Black_12_Bold_NanumText"/>
+
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
