@@ -58,7 +58,7 @@ public class PointController {
     }
 
     @PostMapping("/point")
-    @Operation(summary = "포인트 적립", description = "Authorization : Bearer {accessToken}, 필수\\n\\n " +
+    @Operation(summary = "포인트 적립", description = "Authorization : Bearer {accessToken}, 필수\n\n " +
     "pointTransReqDto : { point : int }")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description =  "CREATED", content = @Content(mediaType = "application/json",
