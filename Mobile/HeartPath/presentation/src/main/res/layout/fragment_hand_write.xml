@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:layout_gravity="center_vertical">
-        <com.zootopia.presentation.writeletter.LetterPaperCanvas
+        <com.zootopia.presentation.writeletter.handwrite.LetterPaperCanvas
             android:id="@+id/imageview_letter_paper"
             android:clickable="true"
             android:layout_width="match_parent"
@@ -25,7 +25,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintVertical_bias="0.5">
-        </com.zootopia.presentation.writeletter.LetterPaperCanvas>
+        </com.zootopia.presentation.writeletter.handwrite.LetterPaperCanvas>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
