@@ -90,7 +90,8 @@ public class StoreController {
                             "           \"image\": \"url\"" +
                             "       }" +
                             "   ]" +
-                            "}")))
+                            "}"))),
+            @ApiResponse(responseCode = "4001", description = "NOT_EXISTS_LETTERPAPER", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"4001\",\n \"message\": \"존재하지 않는 편지지입니다..\"\n}")))
     })
     public ResponseEntity<? extends BaseResponseBody> getLetterPaper(@RequestHeader("Authorization") String accessToken,
                                                                      @PathVariable(value = "letterpaper_id") Long letterpaper_id){
@@ -105,7 +106,8 @@ public class StoreController {
     @Operation(summary = "편지지 구매", description = "Authorization : Bearer {accessToken}, 필수")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description =  "CREATED", content = @Content(mediaType = "application/json",
-                    examples = @ExampleObject(value = "{\n \"status\": 201,\n \"message\": \"편지지 구매 성공\"\n}")))}
+                    examples = @ExampleObject(value = "{\n \"status\": 201,\n \"message\": \"편지지 구매 성공\"\n}"))),
+            @ApiResponse(responseCode = "4001", description = "NOT_EXISTS_LETTERPAPER", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"4001\",\n \"message\": \"존재하지 않는 편지지입니다..\"\n}")))}
     )
     public ResponseEntity<? extends BaseResponseBody> buyLetterPaper(@RequestHeader("Authorization") String accessToken,
                                                                      @RequestBody LetterPaperBuyReqDto letterPaperBuyReqDto){
@@ -166,8 +168,9 @@ public class StoreController {
                             "           \"image\": \"url\"" +
                             "       }" +
                             "   ]" +
-                            "}")))
-    })
+                            "}"))),
+            @ApiResponse(responseCode = "4001", description = "NOT_EXISTS_CROWTIT", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"4001\",\n \"message\": \"존재하지 않는 뱁새입니다..\"\n}")))
+})
     public ResponseEntity<? extends BaseResponseBody> getCharacter(@RequestHeader("Authorization") String accessToken,
                                                                    @PathVariable("charater_id") Long charater_id){
 
@@ -183,7 +186,8 @@ public class StoreController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description =  "CREATED", content = @Content(mediaType = "application/json",
                     examples = @ExampleObject(value = "{\n \"status\": 201,\n \"message\": \"캐릭터 구매 성공\"\n}"))),
-            @ApiResponse(responseCode = "CT-002", description = "FAIL_SEND_TO_MEMBER_CROWTIT", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"CT-002\",\n \"message\": \"멤버서버로 뱁새 정보 전송에 실패하였습니다.\"\n}")))}
+            @ApiResponse(responseCode = "4001", description = "NOT_EXISTS_CROWTIT", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"4001\",\n \"message\": \"존재하지 않는 뱁새입니다.\"\n}"))),
+            @ApiResponse(responseCode = "4002", description = "FAIL_SEND_TO_MEMBER_CROWTIT", content = @Content(examples = @ExampleObject(value = "{\n \"status\": \"4002\",\n \"message\": \"멤버서버로 뱁새 정보 전송에 실패하였습니다.\"\n}")))}
     )
     public ResponseEntity<? extends BaseResponseBody> buyCharacter(@RequestHeader("Authorization") String accessToken,
                                                                    @RequestBody CharacterBuyReqDto characterBuyReqDto){
