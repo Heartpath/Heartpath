@@ -12,7 +12,7 @@ private fun <T> Response<T>.isDelete(): Boolean {
 
 //@Suppress("UNCHECKED_CAST")
 fun <T> Response<T>.getValueOrThrow(): T {
-    Log.d(TAG, "getValueOrThrow: $isSuccessful")
+    Log.d(TAG, "getValueOrThrow: $isSuccessful ${code()}")
     if (this.isSuccessful) {
         if (this.isDelete()) { return Unit as T }
         return this.body() ?: throw NetworkThrowable.IllegalStateThrowable()
@@ -42,7 +42,7 @@ fun <T> Response<T>.getValueOrThrow(): T {
  */
 suspend fun <T> getValueOrThrow2(block: suspend () -> T): T{
     try{
-        Log.d(TAG, "getValueOrThrow2///")
+        Log.d(TAG, "getValueOrThrow2")
         return block()
     }catch (throwable: NetworkThrowable){
         throw throwable
