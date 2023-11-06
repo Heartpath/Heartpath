@@ -38,9 +38,9 @@
             android:id="@+id/action_homeFragment_to_myPageFragment"
             app:destination="@id/myPageFragment" />
         <action
-            android:id="@+id/action_homeFragment_to_selectLetterTypeFragment"
-            style="@style/SlideAnimation"
-            app:destination="@id/selectLetterTypeFragment" />
+            android:id="@+id/action_homeFragment_to_selectUserFragment"
+            app:destination="@id/selectUserFragment"
+            style="@style/SlideAnimation"/>
     </fragment>
 
     <fragment
@@ -134,5 +134,14 @@
         android:name="com.zootopia.presentation.writeletter.typingwrite.TypingWriteFragment"
         android:label="TypingWriteFragment"
         tools:layout="@layout/fragment_typing_write"/>
+    <fragment
+        android:id="@+id/selectUserFragment"
+        android:name="com.zootopia.presentation.writeletter.selectuser.SelectUserFragment"
+        android:label="SelectUserFragment" >
+        <action
+            android:id="@+id/action_selectUserFragment_to_selectLetterTypeFragment"
+            app:destination="@id/selectLetterTypeFragment"
+            style="@style/SlideAnimation"/>
+    </fragment>
 
 </navigation>
