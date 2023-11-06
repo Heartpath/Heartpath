@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -34,6 +35,7 @@ fun checkAllPermission(
         (fragment?:activity).registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
             var lastResult = false // 초기값을 false 설정
             results.forEach {
+                Log.d(TAG, "checkAllPermission: ${it.value}")
                 if(!it.value) {
                     mainViewModel.getPermissionRejected(it.key)
                 } else {

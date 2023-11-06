@@ -3,7 +3,9 @@ package com.zootopia.presentation.util
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -15,6 +17,7 @@ import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
+import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import kotlinx.coroutines.delay
 
@@ -60,6 +63,13 @@ class WalkWorker (context: Context, parameters: WorkerParameters) :
         createNotificationChannel()
         
         val title = applicationContext.getString(R.string.app_name)
+    
+        val intent = Intent(applicationContext, MainActivity::class.java)
+        intent.putExtra("fragment_id", R.id.action_homeFragment_to_mapFragment)
+        // flag 적용해야함 :  Android 31 이상의 버전에서 보안 및 호환성을 향상하기 위함
+        val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+    
+        Log.d(TAG, "createForegroundInfo: 인텐트 생성")
         
         val notification = NotificationCompat.Builder(applicationContext, FOREGROUND_SERVICE_ID.toString())
             .setContentTitle("지금은 산책중입니다~")
@@ -67,6 +77,7 @@ class WalkWorker (context: Context, parameters: WorkerParameters) :
             .setContentText(progress)
             .setSmallIcon(R.drawable.image_bird_delivery)
             .setOngoing(true)
+            .setContentIntent(pendingIntent)
             .build()
         
         return ForegroundInfo(FOREGROUND_SERVICE_ID, notification)
