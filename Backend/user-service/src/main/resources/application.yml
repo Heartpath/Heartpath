@@ -24,3 +24,6 @@ mybatis:
 kakao:
   prefix: "Bearer "
   url: https://kapi.kakao.com/v2/user/me
+
+jwt:
+  secret-key: VrxHJu7Y3LpTZURj4GhCWPqbYwy6fnATCFps28ZBD4dmZ6wu2dR5GvJQmh9WPfVHTbhF9NxrmB6sEgdWkVa5QDjC
