@@ -1,5 +1,8 @@
 package com.zootopia.userservice.kakao;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -47,5 +50,32 @@ public class KakaoOAuthService {
         log.info("ResponseBody: {} \n from Token: {}", responseBody, kakaoAccessToken);
 
         return responseBody;
+    }
+
+    /**
+     * 카카오 서버로부터 받은 사용자 정보 Parsing
+     *
+     * @param kakaoToken 카카오 토큰
+     * @return KakaoUserInfo 파싱된 사용자 정보
+     */
+    private KakaoUserInfo getUserInfoFromKakao(String kakaoToken) {
+
+        // 카카오 서버에게 요청 보내고 반환값 받기
+        String kakaoResponseBody = requestUserInfoToKakao(kakaoToken);
+
+        // deserialize JSON content
+        JsonNode jsonNode = null;
+        try {
+            jsonNode = new ObjectMapper().readTree(kakaoResponseBody);
+        } catch (JsonProcessingException e) {
+            log.error(e.getMessage());
+        }
+
+        // parsing JSON content
+        KakaoUserInfo kakaoUserInfo = new KakaoUserInfo();
+        kakaoUserInfo.fillDataFromJson(jsonNode);
+        log.info("파싱된 카카오 유저 정보: {}", kakaoUserInfo);
+
+        return kakaoUserInfo;
     }
 }
