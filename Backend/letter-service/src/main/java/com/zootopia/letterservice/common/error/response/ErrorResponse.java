@@ -8,10 +8,10 @@ import lombok.*;
 @RequiredArgsConstructor
 public class ErrorResponse {
     private String httpStatus;
-    private String errorCode;
+    private int errorCode;
     private String errorMessage;
 
-    public static ErrorResponse of(String httpStatus, String errorCode, String errorMessage) {
+    public static ErrorResponse of(String httpStatus, int errorCode, String errorMessage) {
         return ErrorResponse.builder()
                 .httpStatus(httpStatus)
                 .errorCode(errorCode)
