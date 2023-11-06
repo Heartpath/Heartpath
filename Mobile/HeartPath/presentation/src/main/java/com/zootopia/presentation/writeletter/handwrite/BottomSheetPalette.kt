@@ -1,11 +1,10 @@
-package com.zootopia.presentation.writeletter
+package com.zootopia.presentation.writeletter.handwrite
 
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -14,11 +13,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.zootopia.presentation.R
 import com.zootopia.presentation.databinding.BottomSheetPaletteBinding
 import com.zootopia.presentation.util.PenColorState
+import com.zootopia.presentation.writeletter.WriteLetterViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 private const val TAG = "BottomSheetPalette_HP"
-
 class BottomSheetPalette : BottomSheetDialogFragment() {
     private lateinit var binding: BottomSheetPaletteBinding
     private val writeLetterViewModel: WriteLetterViewModel by activityViewModels()
