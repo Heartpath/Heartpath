@@ -1,4 +1,4 @@
-package com.zootopia.presentation.writeletter
+package com.zootopia.presentation.writeletter.handwrite
 
 import android.view.LayoutInflater
 import android.view.View
