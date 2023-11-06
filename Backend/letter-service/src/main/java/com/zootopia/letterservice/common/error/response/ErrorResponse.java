@@ -8,14 +8,14 @@ import lombok.*;
 @RequiredArgsConstructor
 public class ErrorResponse {
     private String httpStatus;
-    private int errorCode;
-    private String errorMessage;
+    private int status;
+    private String message;
 
-    public static ErrorResponse of(String httpStatus, int errorCode, String errorMessage) {
+    public static ErrorResponse of(String httpStatus, int staus, String message) {
         return ErrorResponse.builder()
                 .httpStatus(httpStatus)
-                .errorCode(errorCode)
-                .errorMessage(errorMessage)
+                .status(staus)
+                .message(message)
                 .build();
     }
 }
