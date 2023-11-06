@@ -7,7 +7,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zootopia.domain.model.user.UserDto
+import com.zootopia.domain.usecase.writeletter.PostHandLetterUseCase
 import com.zootopia.presentation.R
+import com.zootopia.presentation.config.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,8 +20,8 @@ private const val TAG = "WriteLetterViewModel"
 
 @HiltViewModel
 class WriteLetterViewModel @Inject constructor(
-
-) : ViewModel() {
+    private val postHandLetterUseCase: PostHandLetterUseCase
+) : BaseViewModel() {
 
     private var _selectedLetterPaperUrl: MutableStateFlow<String> = MutableStateFlow("")
     val selectedLetterPaperUrl: StateFlow<String> = _selectedLetterPaperUrl
@@ -114,6 +116,13 @@ class WriteLetterViewModel @Inject constructor(
     }
 
     fun saveLetter(){
+        getApiResult(
+            block = {
 
+            },
+            success = {
+
+            }
+        )
     }
 }
