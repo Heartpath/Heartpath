@@ -108,4 +108,7 @@ dependencies {
     
     // WorkManager
     implementation("androidx.work:work-runtime-ktx:2.8.1")
+
+    // coordinatorlayout
+    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
 }

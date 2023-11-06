@@ -24,7 +24,9 @@
     <string name="select_letter_type_hand_write">손으로 편지쓰기</string>
     <string name="select_letter_type_typing_write">타이핑으로 편지쓰기</string>
     <string name="select_letter_paper_button">편지지 선택</string>
-
+    <string name="select_user_text">편지 보낼 사람을 검색하고 선택하세요</string>
+    <string name="select_user_search_notice">검색창에 입력값을 넣어주세요</string>
+    
     <string name="add_friend_dialog_question">친구로 추가할까요?</string>
     <string name="delete_friend_dialog_question">친구에서 삭제할까요?</string>
     <string name="report_friend_dialog_question">사용자를 신고할까요?</string>
@@ -45,4 +47,26 @@
     <string name="done">완료</string>
     <string name="add_friend_letter_dialog_content">하참새님은 김뱁새님의 친구가 아닙니다.</string>
     <string name="loading_message">잠시만 기다려 주세요!</string>
+
+    <!--    toolbar string values   -->
+    <string name="toolbar_default_title">Appbar</string>
+    <string name="toolbar_friend_search_title">친구 추가</string>
+    <string name="toolbar_point_history_title">포인트 정보</string>
+    <string name="toolbar_my_page_title">마이페이지</string>
+    <string name="toolbar_setting_title">설정</string>
+    <string name="toolbar_select_letter_type_title">편지 쓰기</string>
+    <string name="toolbar_select_letter_paper_title">편지지 선택</string>
+    <string name="toolbar_hand_write_title">손편지 쓰기</string>
+    <string name="toolbar_typing_title">편지 쓰기</string>
+    <string name="toolbar_letter_storage_title">보내지 않은 편지</string>
+    <string name="toolbar_receive_letter_title">내 편지 보관함</string>
+    <string name="toolbar_read_letter_title">편지 읽기</string>
+    <string name="toolbar_map_title">지도</string>
+    <string name="toolbar_put_letter_title">편지 배치</string>
+    <string name="toolbar_store_title">상점</string>
+    <string name="toolbar_character_encyclopedia_title">캐릭터 도감</string>
+
+    <string name="friend_edit">친구 수정</string>
+    <string name="friend_delete">삭제하기</string>
+    <string name="friend_report">신고하기</string>
 </resources>

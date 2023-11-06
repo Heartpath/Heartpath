@@ -27,11 +27,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     private val mainViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.Theme_Splash)
         super.onCreate(savedInstanceState)
         initNavHost()
         initCheckPermission()
         initCollect()
-
+        initAppbar()
         // 카카오 키 해시 값 가지고 오기
 //        Log.d(TAG, "KAKAO keyhash : ${Utility.getKeyHash(this)}")
     }
@@ -71,6 +72,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                 }
             }
         }
+    }
+
+    // Appbar 처리
+    private fun initAppbar() {
+        // home, login, signup 빼고
+
     }
 
     // 코틀린의 전역변수
