@@ -1,6 +1,9 @@
 package com.zootopia.presentation.writeletter
 
+import android.graphics.Bitmap
 import androidx.compose.runtime.MutableState
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zootopia.domain.model.user.UserDto
@@ -40,6 +43,9 @@ class WriteLetterViewModel @Inject constructor(
 
     private var _selectedUser: MutableStateFlow<UserDto> = MutableStateFlow<UserDto>(UserDto("", "", ""))
     val selectedUser: StateFlow<UserDto> = _selectedUser
+
+    private val _drawingBitmap = MutableStateFlow<Bitmap?>(null)
+    val drawingBitmap: StateFlow<Bitmap?> = _drawingBitmap
 
     fun setSelectedLetterPaperUrl(url: String) {
         viewModelScope.launch {
@@ -101,5 +107,13 @@ class WriteLetterViewModel @Inject constructor(
         viewModelScope.launch {
             _selectedColor.value = id
         }
+    }
+
+    fun setDrawingBitmap(bitmap: Bitmap) {
+        _drawingBitmap.value = bitmap
+    }
+
+    fun saveLetter(){
+
     }
 }

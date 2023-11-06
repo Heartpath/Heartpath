@@ -26,6 +26,8 @@
     <string name="select_letter_paper_button">편지지 선택</string>
     <string name="select_user_text">편지 보낼 사람을 검색하고 선택하세요</string>
     <string name="select_user_search_notice">검색창에 입력값을 넣어주세요</string>
+    <string name="add_letter_image_notice">추가하고 싶은 이미지를 추가해주세요</string>
+    <string name="add_letter_image_confirm_button">최종 저장</string>
     
     <string name="add_friend_dialog_question">친구로 추가할까요?</string>
     <string name="delete_friend_dialog_question">친구에서 삭제할까요?</string>
