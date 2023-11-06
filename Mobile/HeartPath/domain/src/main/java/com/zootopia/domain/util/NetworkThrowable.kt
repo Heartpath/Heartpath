@@ -14,6 +14,8 @@ sealed class NetworkThrowable(val code: Int, message: String) : Throwable(messag
     // 500번대 에러
     class Base500Throwable(code: Int, message: String) : NetworkThrowable(code, message)
 
+    class Base40000Throwable(code: Int, message: String) : NetworkThrowable(code, message)
+
     // body가 null일 때의 에러
     class IllegalStateThrowable : NetworkThrowable(ILLEGAL_STATE_THROWABLE_CODE, ILLEGAL_STATE_THROWABLE_MESSAGE)
 
