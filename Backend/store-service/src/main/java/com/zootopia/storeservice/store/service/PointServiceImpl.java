@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -26,6 +28,19 @@ public class PointServiceImpl implements PointService{
     @Override
     public void transactionPoint(String memberId, PointTransReqDto pointTransReqDto){
         List<Point> pointUsage = pointRepository.findByMemberId(memberId);
-//        int lastBalance =
+        // 포인트 사용 내역을 생성일자(`createdDate`)를 기준으로 내림차순으로 정렬
+        pointUsage.sort(Comparator.comparing(Point::getCreatedDate).reversed());
+        // 가장 최근의 포인트 사용 내역의 balance 가져오기
+        int lastBalance = pointUsage.isEmpty() ? 0 : pointUsage.get(0).getBalance();
+
+        Point point = Point.builder()
+                .memberId(memberId)
+                .outline("뱁새 잡기 성공")
+                .price(50)
+                .balance(lastBalance+50)
+                .createdDate(LocalDateTime.now())
+                .build();
+        pointRepository.save(point);
+        // member 완성시, 포인트 저장 후 쿼리문 날려서 멤버의 point 변경 필요
     }
 }
