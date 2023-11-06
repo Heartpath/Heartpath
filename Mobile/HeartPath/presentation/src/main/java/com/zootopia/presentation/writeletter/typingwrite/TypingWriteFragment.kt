@@ -1,10 +1,8 @@
-package com.zootopia.presentation.writeletter
+package com.zootopia.presentation.writeletter.typingwrite
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
@@ -16,17 +14,16 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.zootopia.presentation.MainActivity
-import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
-import com.zootopia.presentation.databinding.FragmentHandWriteBinding
+import com.zootopia.presentation.databinding.FragmentTypingWriteBinding
+import com.zootopia.presentation.R
+import com.zootopia.presentation.writeletter.WriteLetterViewModel
 import kotlinx.coroutines.launch
 
-
-private const val TAG = "HandWriteFragment_HP"
-
-class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
-    FragmentHandWriteBinding::bind,
-    R.layout.fragment_hand_write
+private const val TAG = "TypingWriteFragment"
+class TypingWriteFragment : BaseFragment<FragmentTypingWriteBinding>(
+    FragmentTypingWriteBinding::bind,
+    R.layout.fragment_typing_write
 ) {
     private lateinit var mainActivity: MainActivity
     private lateinit var navController: NavController
@@ -45,7 +42,7 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
 
         initViewReadyListener()
         initCollecter()
-        initClickListener()
+        initListener()
     }
 
     private fun initViewReadyListener() {
@@ -85,13 +82,9 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
                     // 이미지의 너비와 높이를 가져옴
                     val imageWidth = resource.intrinsicWidth.toFloat()
                     val imageHeight = resource.intrinsicHeight.toFloat()
-                    Log.d(TAG, "onResourceReady: image size ${imageWidth} ${imageHeight}")
-
-                    Log.d(TAG, "onResourceReady: canvas size ${imageViewWidth} ${imageViewHeight}")
 
                     // 이미지의 비율을 계산
                     val imageAspectRatio = imageWidth / imageHeight
-                    Log.d(TAG, "onResourceReady: ${imageAspectRatio}")
 
                     // 이미지의 비율에 따라 캔버스에 맞게 크기 조정
                     val newImageWidth: Float
@@ -106,13 +99,14 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
 
                     // 이미지뷰 크기와 이미지 크기 설정
                     imageviewLetterPaper.background = resource
-                    Log.d(
-                        TAG,
-                        "onResourceReady: new size ${newImageHeight.toInt()} ${newImageWidth.toInt()}"
-                    )
                     imageviewLetterPaper.layoutParams.width = newImageWidth.toInt()
                     imageviewLetterPaper.layoutParams.height = newImageHeight.toInt()
                     imageviewLetterPaper.requestLayout()
+                    textviewLetter.apply {
+                         maxWidth = newImageWidth.toInt()
+                        maxHeight = newImageHeight.toInt()
+                    }
+                    textviewLetter.requestLayout()
                 }
 
                 override fun onLoadCleared(placeholder: Drawable?) {
@@ -121,32 +115,14 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
             })
     }
 
-    private fun initClickListener() = with(binding) {
-        buttonPalette.setOnClickListener {
-            val bottomSheetPalette = BottomSheetPalette()
-            bottomSheetPalette.show(childFragmentManager, "BottomSheetPalette")
-        }
-    }
+    private fun initListener() = with(binding) {
+        textviewLetter.setOnScrollChangeListener { view, i, i2, i3, i4 ->
 
-    private fun convertDpToPixel(dp: Float): Float {
-        return if (context != null) {
-            val resources = requireContext().resources
-            val metrics = resources.displayMetrics
-
-            dp * (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
-        } else {
-            val metrics = Resources.getSystem().displayMetrics
-
-            dp * (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "onDestroy: ")
-        writeLetterViewModel.setSelectedColor(R.color.black)
         writeLetterViewModel.setSelectedLetterPaperUrl("")
-        writeLetterViewModel.setPenSize(10f)
-        writeLetterViewModel.setEraserState(false)
     }
 }
