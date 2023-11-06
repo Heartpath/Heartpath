@@ -10,6 +10,7 @@ import com.zootopia.domain.usecase.map.RequestTmapWalkRoadUseCase
 import com.zootopia.domain.usecase.testUseCase
 import com.zootopia.presentation.config.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -61,6 +62,11 @@ class MapViewModel @Inject constructor(
     val tmapWalkRoadInfo: SharedFlow<FeatureCollectionDto>
         get() = _tmapWalkRoadInfo.asSharedFlow()
     
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun resetTmapWalkRoadInfo() {
+        _tmapWalkRoadInfo.resetReplayCache()
+    }
+    
     fun requestTmapWalkRoad(
         mapLetterDto: MapLetterDto
     ) {
@@ -73,7 +79,7 @@ class MapViewModel @Inject constructor(
                         startY = lastLatitude,
                         endX = mapLetterDto.longitude,
                         endY = mapLetterDto.latitude,
-                        reqCoordType = "WGS84GEO",
+                        reqCoordType = "WGS84GEO", // 위경도 표현 타입 코드
                         resCoordType = "WGS84GEO",
                         startName = "내 위치",
                         endName = "편지"
