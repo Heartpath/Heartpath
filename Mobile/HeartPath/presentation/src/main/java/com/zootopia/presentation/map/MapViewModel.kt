@@ -59,6 +59,11 @@ class MapViewModel @Inject constructor(
         lastLatitude = latitude
         lastLongitude = longitude
     }
+    fun makeUserLocataion() {
+        lastLocation.latitude = lastLatitude
+        lastLocation.longitude = lastLongitude
+    }
+    
     
     // marker posi
     var dist: String = "--m"
@@ -66,7 +71,7 @@ class MapViewModel @Inject constructor(
     var goalLongitude: Double = 0.0
     val goalLocation = Location("goalProvider")
     
-    fun makeLocataion() {
+    fun makeGoalLocataion() {
         goalLocation.latitude = goalLatitude
         goalLocation.longitude = goalLongitude
     }
@@ -119,10 +124,8 @@ class MapViewModel @Inject constructor(
     val walkDistance: SharedFlow<Double>
         get() = _walkDistance.asSharedFlow()
     
-    fun calculateDistance(
-        userLocation: Location
-    ) {
-        val dist = userLocation.distanceTo(goalLocation)
+    fun calculateDistance() {
+        val dist = lastLocation.distanceTo(goalLocation)
         viewModelScope.launch {
             _walkDistance.emit(dist.toDouble())
         }

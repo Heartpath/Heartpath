@@ -149,7 +149,7 @@ class MapFragment :
                         mapViewModel.apply {
                             goalLatitude = mapLetterDto.latitude.toDouble()
                             goalLongitude = mapLetterDto.longitude.toDouble()
-                            mapViewModel.makeLocataion()
+                            mapViewModel.makeGoalLocataion()
     
                             // 마커 포지션
                             setMarkerLocation(
@@ -161,8 +161,8 @@ class MapFragment :
                             setCameraToIncludeMyLocationAndMarker(
                                 naverMap,
                                 LatLng(
-                                    lastLatitude.toDouble(),
-                                    lastLongitude.toDouble(),
+                                    lastLatitude,
+                                    lastLongitude,
                                 ),
                                 LatLng(
                                     goalLatitude,
@@ -171,7 +171,7 @@ class MapFragment :
                             )
                             
                             //
-//                            calculateDistance( userLocation = location )
+                            calculateDistance()
                         }
                         
                     } else {
@@ -315,9 +315,10 @@ class MapFragment :
                             latitude = location.latitude,
                             longitude = location.longitude,
                         )
+                        makeUserLocataion()
                         
                         if(mapViewModel.isStartWalk) {
-                            calculateDistance( userLocation = location )
+                            calculateDistance()
                         }
                     }
                 }
