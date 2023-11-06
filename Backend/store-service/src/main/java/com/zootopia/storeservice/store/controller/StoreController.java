@@ -84,6 +84,7 @@ public class StoreController {
                             "   ]" +
                             "}"))),
             @ApiResponse(responseCode = "4001", description = "NOT_EXISTS_LETTERPAPER", content = @Content(examples = @ExampleObject(value = "{\n \"status\": 4001,\n \"message\": \"존재하지 않는 편지지입니다..\"\n}")))
+
     })
     public ResponseEntity<? extends BaseResponseBody> getLetterPaper(@RequestHeader("Authorization") String accessToken,
                                                                      @PathVariable(value = "letterpaper_id") Long letterpaper_id){
