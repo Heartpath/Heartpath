@@ -44,7 +44,7 @@ public class StoreController {
 
     // 편지지 목록 조회
     @GetMapping("/letterpaper")
-    @Operation(summary = "편지지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수\\n\\n" +
+    @Operation(summary = "편지지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수\n\n " +
                                                         "isowned : 사용자가 가지고 있는 상품인지 아닌지 판단하는 boolean")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
@@ -127,7 +127,7 @@ public class StoreController {
 
     // 캐릭터 목록 조회
     @GetMapping("/character")
-    @Operation(summary = "캐릭터 목록 조회", description = "Authorization : Bearer {accessToken}, 필수\\n\\n" +
+    @Operation(summary = "캐릭터 목록 조회", description = "Authorization : Bearer {accessToken}, 필수\n\n " +
                                                         "isowned : 사용자가 가지고 있는 캐릭터인지 아닌지 판단하는 boolean")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
