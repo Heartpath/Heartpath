@@ -22,7 +22,17 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding> (
         initClickEvent()
     }
     private fun initAdapter() = with(binding) {
-        myPageFriendAdapter = MyPageFriendAdapter()
+        myPageFriendAdapter = MyPageFriendAdapter().apply {
+            itemClickListener = object : MyPageFriendAdapter.ItemClickListener {
+                override fun itemClick(view: View, position: Int) {
+                    TODO("Not yet implemented")
+                }
+                override fun itemLongClick(view: View, position: Int) {
+                    // 친구 수정 다이얼로그 띄우기
+                    MyPageEditFriendDialog().show(childFragmentManager, tag)
+                }
+            }
+        }
         recyclerviewMypageFriend.apply {
             adapter = myPageFriendAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
