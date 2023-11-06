@@ -1,5 +1,6 @@
 package com.zootopia.presentation.map
 
+import android.location.Location
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.zootopia.domain.model.navermap.MapLetterDto
@@ -50,12 +51,31 @@ class MapViewModel @Inject constructor(
         }
     }
     
-    var lastLatitude = ""
-    var lastLongitude = ""
+    // user posi
+    var lastLatitude:Double = 0.0
+    var lastLongitude: Double = 0.0
+    val lastLocation = Location("userProvider")
     fun setLocation(latitude: Double, longitude: Double) {
-        lastLatitude = latitude.toString()
-        lastLongitude = longitude.toString()
+        lastLatitude = latitude
+        lastLongitude = longitude
     }
+    
+    // marker posi
+    var dist: String = "--m"
+    var goalLatitude: Double = 0.0
+    var goalLongitude: Double = 0.0
+    val goalLocation = Location("goalProvider")
+    
+    fun makeLocataion() {
+        goalLocation.latitude = goalLatitude
+        goalLocation.longitude = goalLongitude
+    }
+    
+    // 길찾기 상태
+    var isStartWalk = false
+    private val _isWorkManager = MutableSharedFlow<Boolean>()
+    val isWorkManager: SharedFlow<Boolean>
+        get() = _isWorkManager
     
     // Tmap
     private val _tmapWalkRoadInfo = MutableSharedFlow<FeatureCollectionDto>()
@@ -75,8 +95,8 @@ class MapViewModel @Inject constructor(
                 Log.d(TAG, "requestTmapWalkRoad: Tmap 요청!!!!!!!!!!!!")
                 requestTmapWalkRoadUseCase.invoke(
                     RequestTmapWalkRoadDto(
-                        startX = lastLongitude,
-                        startY = lastLatitude,
+                        startX = lastLongitude.toString(),
+                        startY = lastLatitude.toString(),
                         endX = mapLetterDto.longitude,
                         endY = mapLetterDto.latitude,
                         reqCoordType = "WGS84GEO", // 위경도 표현 타입 코드
@@ -94,10 +114,21 @@ class MapViewModel @Inject constructor(
     }
     // Tmap - END
     
-    // 길찾기
-    private val _isWorkManager = MutableSharedFlow<Boolean>()
-    val isWorkManager: SharedFlow<Boolean>
-        get() = _isWorkManager
+    
+    private val _walkDistance = MutableSharedFlow<Double>()
+    val walkDistance: SharedFlow<Double>
+        get() = _walkDistance.asSharedFlow()
+    
+    fun calculateDistance(
+        userLocation: Location
+    ) {
+        val dist = userLocation.distanceTo(goalLocation)
+        viewModelScope.launch {
+            _walkDistance.emit(dist.toDouble())
+        }
+    }
+    
+
     
     
     // 임시 사용
