@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentSettingBinding
@@ -16,9 +17,19 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
         initClickEvent()
     }
 
+    private fun initView() = with(binding) {
+        // toolbar setting
+        toolbarHeartpathSetting.apply {
+            textviewCurrentPageTitle.text = resources.getString(R.string.toolbar_setting_title)
+            imageviewBackButton.setOnClickListener {
+                findNavController().popBackStack()
+            }
+        }
+    }
     private fun initClickEvent() = with(binding) {
         linearlayoutSetBgm.setOnClickListener {
             // TODO: bgm 설정
