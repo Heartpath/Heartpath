@@ -116,7 +116,7 @@ class MapFragment :
     }
     
     private fun initClickEvent() = with(binding) {
-        // 신고 버튼 클릭 이벤트
+        // 신고 버튼
         imageviewReport.setOnClickListener {
             Log.d(TAG, "initClickEvent: 신고버튼 클릭")
             mapViewModel.apply {
