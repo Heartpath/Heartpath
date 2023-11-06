@@ -4,6 +4,9 @@ spring:
     url: jdbc:mysql://localhost:3306/zootopia?serverTimezone=UTC&useUniCode=yes&characterEncoding=UTF-8
     username: ssafy
     password: ssafy
+  redis:
+    host: localhost
+    port: 6379
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
