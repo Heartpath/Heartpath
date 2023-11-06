@@ -27,5 +27,27 @@ class PreferenceRepositoryImpl @Inject constructor(
         preferenceDataSource.setBgmState(key = key, stateValue = stateValue)
     }
 
+    override fun getFcmToken(): Flow<String> {
+        return preferenceDataSource.getFcmToken()
+    }
 
+    override suspend fun setFcmToken(token: String) {
+        preferenceDataSource.setFcmToken(token = token)
+    }
+
+    override fun getAccessToken(): Flow<String> {
+        return preferenceDataSource.getAccessToken()
+    }
+
+    override suspend fun setAccessToken(accessToken: String) {
+        preferenceDataSource.setAccessToken(accessToken = accessToken)
+    }
+
+    override fun getRefreshToken(): Flow<String> {
+        return preferenceDataSource.getRefreshToken()
+    }
+
+    override suspend fun setRefreshToken(refreshToken: String) {
+        preferenceDataSource.setRefreshToken(refreshToken = refreshToken)
+    }
 }
