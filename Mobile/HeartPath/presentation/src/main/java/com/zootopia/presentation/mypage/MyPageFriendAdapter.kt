@@ -19,11 +19,15 @@ class MyPageFriendAdapter() :
             textviewFriendId.text = "@iam_babsae_friend"
             Glide.with(root).load(R.drawable.image_default_profile)
                 .into(imageviewFriendProfileImg)
+            linearlayoutFriendInfo.setOnClickListener {
+                itemClickListener.itemLongClick(it, layoutPosition)
+            }
         }
     }
 
     interface ItemClickListener {
         fun itemClick(view: View, position: Int)
+        fun itemLongClick(view: View, position: Int)
     }
     lateinit var itemClickListener: ItemClickListener
 
