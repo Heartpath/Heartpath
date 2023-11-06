@@ -1,11 +1,10 @@
-package com.zootopia.presentation.writeletter
+package com.zootopia.presentation.writeletter.handwrite
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
-import android.graphics.Point
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.util.AttributeSet
@@ -18,12 +17,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.zootopia.presentation.R
 import com.zootopia.presentation.util.PenPoint
+import com.zootopia.presentation.writeletter.WriteLetterViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-
 private const val TAG = "LetterPaperCanvas_HP"
-
 class LetterPaperCanvas(context: Context?, attrs: AttributeSet?) : ImageView(context, attrs) {
 
     private lateinit var viewModel: WriteLetterViewModel
@@ -106,14 +104,14 @@ class LetterPaperCanvas(context: Context?, attrs: AttributeSet?) : ImageView(con
             var x = motionEvent.x
             var y = motionEvent.y
 
-            if (motionEvent.action == android.view.MotionEvent.ACTION_DOWN) {
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
                 //mPath.moveTo(x, y)
                 pointList.add(PenPoint(x, y))
-            } else if (motionEvent.action == android.view.MotionEvent.ACTION_MOVE) {
+            } else if (motionEvent.action == MotionEvent.ACTION_MOVE) {
                // mPath.lineTo(x, y)
                // drawPathOnCanvas()
                 pointList.add(PenPoint(x, y))
-            } else if (motionEvent.action == android.view.MotionEvent.ACTION_UP) {
+            } else if (motionEvent.action == MotionEvent.ACTION_UP) {
 //                mPath.lineTo(x, y)
 //                drawPathOnCanvas()
 //                mPath.reset()
