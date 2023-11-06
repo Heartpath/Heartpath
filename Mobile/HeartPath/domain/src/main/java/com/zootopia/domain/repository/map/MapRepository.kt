@@ -20,4 +20,7 @@ interface MapRepository {
     suspend fun requestTmapWalkRoad(
         requestTmapWalkRoadDto: RequestTmapWalkRoadDto
     ): FeatureCollectionDto
+    
+    // 테스트
+    suspend fun test(): String
 }

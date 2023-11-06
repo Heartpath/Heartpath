@@ -2,6 +2,7 @@ package com.zootopia.heartpath.di
 
 import com.zootopia.data.datasource.remote.map.MapDataSource
 import com.zootopia.data.datasource.remote.map.MapDataSourceImpl
+import com.zootopia.data.service.BusinessService
 import com.zootopia.data.service.NaverService
 import com.zootopia.data.service.TmapService
 import dagger.Module
@@ -18,11 +19,13 @@ object DataSourceModule {
     @Provides
     fun provideMapDataSource(
         naverService: NaverService,
-        tmapService: TmapService
+        tmapService: TmapService,
+        businessService: BusinessService
     ): MapDataSource {
         return MapDataSourceImpl(
             naverService = naverService,
-            tmapService = tmapService
+            tmapService = tmapService,
+            businessService = businessService
         )
     }
 }
