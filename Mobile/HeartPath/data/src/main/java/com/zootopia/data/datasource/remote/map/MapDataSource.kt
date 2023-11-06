@@ -23,4 +23,7 @@ interface MapDataSource {
         tmapWalkRoadRequest: TmapWalkRoadRequest,
         appKey: String,
     ): FeatureCollectionResponse
+    
+    
+    suspend fun test(): String
 }
