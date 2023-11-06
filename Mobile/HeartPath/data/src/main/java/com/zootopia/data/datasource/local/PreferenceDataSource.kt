@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -26,6 +27,9 @@ class PreferenceDataSource @Inject constructor(
     private object PreferenceKeys {
         val PERMISSION_REJECTED = intPreferencesKey("permission_rejected")
         val BGM_STATE = booleanPreferencesKey("bgm_state")  // BGM 상태
+        val FCM_TOKEN = stringPreferencesKey("fcm_token")   // FCM 토큰값
+        val ACCESS_TOKEN = stringPreferencesKey("access_token") // access token
+        val REFRESH_TOKEN = stringPreferencesKey("refresh_token")   // refresh_token
     }
     
     fun getPermissionRejected(key: String): Flow<Int> {
@@ -74,4 +78,71 @@ class PreferenceDataSource @Inject constructor(
         }
     }
 
+    // FCM token 값 호출
+    fun getFcmToken() : Flow<String> {
+        val fcmTokenFlow: Flow<String> = context.dataStore.data
+            .catch { exception ->
+                // IOException이 발생하는 경우도 있기 때문에 throw-catch 처리
+                if (exception is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+            }
+            .map { preferences ->
+                preferences[stringPreferencesKey("fcm_token")] ?: ""
+            }
+        return fcmTokenFlow
+    }
+    // FCM token 값 수정
+    suspend fun setFcmToken(token: String) {
+        context.dataStore.edit {preferences ->
+            preferences[stringPreferencesKey("fcm_token")] = token
+        }
+    }
+
+    // access token 값 호출
+    fun getAccessToken() : Flow<String> {
+        return context.dataStore.data
+            .catch { exception ->
+                // IOException이 발생하는 경우도 있기 때문에 throw-catch 처리
+                if (exception is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+            }
+            .map { preferences ->
+                preferences[stringPreferencesKey("access_token")] ?: ""
+            }
+    }
+
+    // access token 값 수정
+    suspend fun setAccessToken(accessToken: String) {
+        context.dataStore.edit {preferences ->
+            preferences[stringPreferencesKey("access_token")] = accessToken
+        }
+    }
+    // refresh token 값 호출
+    fun getRefreshToken(): Flow<String> {
+        return context.dataStore.data
+            .catch { exception ->
+                // IOException이 발생하는 경우도 있기 때문에 throw-catch 처리
+                if (exception is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+            }
+            .map { preferences ->
+                preferences[stringPreferencesKey("refresh_token")] ?: ""
+            }
+    }
+
+    // refresh token 값 수정
+    suspend fun setRefreshToken(refreshToken: String) {
+        context.dataStore.edit {preferences ->
+            preferences[stringPreferencesKey("refresh_token")] = refreshToken
+        }
+    }
 }
