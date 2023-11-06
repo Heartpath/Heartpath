@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingVertical="@dimen/_12sdp"
+    android:background="@drawable/custom_round_dialog_view">
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/friend_edit"
+        android:textAlignment="textStart"
+        style="@style/DarkGray_14_ExtraBold_NanumText"
+        android:layout_marginHorizontal="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_12sdp"/>
+   <androidx.appcompat.widget.AppCompatButton
+       android:id="@+id/button_friend_edit_delete"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:text="@string/friend_delete"
+       android:textAlignment="textStart"
+       style="@style/DarkGray_12_Bold_NanumText"
+       android:background="@android:color/transparent"
+       android:layout_marginHorizontal="@dimen/_16sdp"
+       android:layout_marginBottom="@dimen/_8sdp"/>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_friend_edit_report"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/friend_report"
+        android:textAlignment="textStart"
+        style="@style/DarkGray_12_Bold_NanumText"
+        android:background="@android:color/transparent"
+        android:layout_marginHorizontal="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_4sdp"/>
+</androidx.appcompat.widget.LinearLayoutCompat>
