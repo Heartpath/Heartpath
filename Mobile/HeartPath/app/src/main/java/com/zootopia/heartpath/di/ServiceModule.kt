@@ -22,7 +22,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object ServiceModule {
-    private const val BUSINESS_BASE_URL = "https://naveropenapi.apigw.ntruss.com" // Business Base Url
+    private const val BUSINESS_BASE_URL = "https://www.heartpath.site" // Business Base Url
     private const val NAVER_BASE_URL = "https://naveropenapi.apigw.ntruss.com" // Naver Base Url
     private const val TMAP_BASE_URL = "https://apis.openapi.sk.com" // TMAP Base Url
     
@@ -37,6 +37,7 @@ object ServiceModule {
     
     @Singleton
     @Provides
+    @Named("business")
     fun provideBussinessRetrofit(okHttpClient: OkHttpClient): Retrofit {
         val gson : Gson = GsonBuilder()
             .setLenient()
@@ -86,7 +87,7 @@ object ServiceModule {
     @Singleton
     @Provides
     fun provideBusinessService (
-        retrofit: Retrofit,
+        @Named("business") retrofit: Retrofit,
     ): BusinessService = retrofit.create(BusinessService::class.java)
     
     @Singleton

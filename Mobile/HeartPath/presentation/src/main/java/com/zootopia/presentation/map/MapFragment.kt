@@ -16,6 +16,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -40,6 +45,7 @@ import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentMapBinding
+import com.zootopia.presentation.util.WalkWorker
 import com.zootopia.presentation.util.hasPermissions
 import com.zootopia.presentation.util.showPermissionDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -58,12 +64,25 @@ class MapFragment :
     private lateinit var navController: NavController
     private lateinit var mapLetterAdapter: MapLetterAdapter
     
+    // Map
     private var path: PathOverlay? = null
     private var marker: Marker? = null
     private val LOCATION_PERMISSION_REQUEST_CODE = 100
     private lateinit var locationSource: FusedLocationSource
     private lateinit var mapView: MapView
     private lateinit var naverMap: NaverMap
+    
+    // 내 위치를 가져오는 코드
+    lateinit var fusedLocationProviderClient: FusedLocationProviderClient // 자동으로 gps값을 받아온다.
+    lateinit var locationCallback: LocationCallback // gps응답 값을 가져온다.
+    
+    // marker posi
+    private var goalLatitude: Double = 0.0
+    private var goalLongitude: Double = 0.0
+    
+    // WorkManager
+    private lateinit var workManager: WorkManager
+    private lateinit var workRequest: WorkRequest
     
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -79,8 +98,8 @@ class MapFragment :
         initClickEvent()
         initData()
         
-        // todo 임시
-//        mapViewModel.requestTmapWalkRoad()
+        // 테스트 (임시)
+//        mapViewModel.test()
         
         mapView = binding.mapviewNaver
         if (initCheckPermission()) {
@@ -92,10 +111,12 @@ class MapFragment :
     
     private fun initData() {
         mapViewModel.getDummyList()
+        
+//        if(mapViewModel.tmapWalkRoadInfo.collect())
     }
     
     private fun initClickEvent() = with(binding) {
-        // 신고 버튼 클릭 이벤트
+        // 신고 버튼
         imageviewReport.setOnClickListener {
             Log.d(TAG, "initClickEvent: 신고버튼 클릭")
             mapViewModel.apply {
@@ -112,6 +133,12 @@ class MapFragment :
             initAdapter()
             initData()
         }
+        
+        // workManager 종료 버튼
+        buttonWorkStop.setOnClickListener {
+            stopWalk()
+            path?.map = null // 도보 초기화
+        }
     }
     
     private fun initAdapter() {
@@ -120,12 +147,14 @@ class MapFragment :
                 override fun itemClick(view: View, position: Int, mapLetterDto: MapLetterDto) {
                     Log.d(TAG, "itemClick: 받은 편지 item 클릭됨")
                     
-                    if(!mapViewModel.lastLatitude.isNullOrEmpty() && !mapViewModel.lastLongitude.isNullOrEmpty()) {
+                    if (!mapViewModel.lastLatitude.isNullOrEmpty() && !mapViewModel.lastLongitude.isNullOrEmpty()) {
+                        goalLatitude = mapLetterDto.latitude.toDouble()
+                        goalLongitude = mapLetterDto.longitude.toDouble()
                         // 마커 포지션
                         setMarkerLocation(
-                            mapLetterDto,
-                            latitude = mapLetterDto.latitude.toDouble(),
-                            longitude = mapLetterDto.longitude.toDouble()
+                            mapLetterDto = mapLetterDto,
+                            latitude = goalLatitude,
+                            longitude = goalLongitude
                         )
                         // 카메라 포커스 (맵, 시작, 도착)
                         setCameraToIncludeMyLocationAndMarker(
@@ -135,8 +164,8 @@ class MapFragment :
                                 mapViewModel.lastLongitude.toDouble(),
                             ),
                             LatLng(
-                                mapLetterDto.latitude.toDouble(),
-                                mapLetterDto.longitude.toDouble()
+                                goalLatitude,
+                                goalLongitude
                             ),
                         )
                     } else {
@@ -172,11 +201,19 @@ class MapFragment :
             }
         }
         
-        // 길 찾기 data 수신 Tmap
+        // 길 찾기 data 수신[Tmap] -> 경로 그리기 & WorkManager 실행
         viewLifecycleOwner.lifecycleScope.launch {
             mapViewModel.tmapWalkRoadInfo.collectLatest {
                 Log.d(TAG, "initCollect: $it")
                 DrawLoad(it) // 경로 그리기
+                startWalk() // WorkManager 실행
+            }
+        }
+        
+        // WorkManager
+        viewLifecycleOwner.lifecycleScope.launch {
+            mapViewModel.isWorkManager.collectLatest {
+            
             }
         }
     }
@@ -194,8 +231,8 @@ class MapFragment :
             for (path_cords_xy in pathList) {
                 path_container?.add(LatLng(path_cords_xy[1], path_cords_xy[0]))
             }
+            
         }
-        
         Log.d(TAG, "DrawLoad: $path_container")
         // 더미원소 드랍후 path.coords에 path들을 넣어줌.
         path!!.coords = path_container?.drop(1)!!
@@ -216,7 +253,8 @@ class MapFragment :
         naverMap.mapType = NaverMap.MapType.Basic // 지도 타입
         naverMap.locationSource = locationSource // 현재 위치
         naverMap.isIndoorEnabled = true // 실내지도
-        naverMap.locationTrackingMode = LocationTrackingMode.Follow // 위치를 추적하면서 카메라도 따라 움직인다.
+        naverMap.locationTrackingMode =
+            LocationTrackingMode.Follow // 위치를 추적하면서 카메라도 따라 움직인다. (구글 서비스 버전 21.0.1 이상 사용해야함)
         
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(mainActivity) // gps 자동으로 받아오기
@@ -239,24 +277,23 @@ class MapFragment :
         }
     }
     
-    // 내 위치를 가져오는 코드
-    lateinit var fusedLocationProviderClient: FusedLocationProviderClient // 자동으로 gps값을 받아온다.
-    lateinit var locationCallback: LocationCallback // gps응답 값을 가져온다.
-    
     // 좌표계를 주기적으로 갱신
     @SuppressLint("MissingPermission")
     fun setUpdateLocationListner() {
         val locationRequest = LocationRequest.create()
         locationRequest.run {
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY // 높은 정확도
-            interval = 1000 // 1초에 한번씩 GPS 요청
+            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            locationRequest.setInterval(1000)
         }
         
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 locationResult ?: return
                 for ((i, location) in locationResult.locations.withIndex()) {
-//                    Log.d(TAG, "latitude: ${location.latitude}, longitude: ${location.longitude}")
+                    Log.d(
+                        TAG,
+                        "mapOn -> latitude: ${location.latitude}, longitude: ${location.longitude}"
+                    )
                     mapViewModel.setLocation(
                         latitude = location.latitude,
                         longitude = location.longitude,
@@ -291,14 +328,13 @@ class MapFragment :
         }
         
         marker?.setOnClickListener {
-            if( it is Marker) {
+            if (it is Marker) {
                 // 확인 다이얼로그
                 val readyGoDialog = ReadyGoDialogFragment(mapLetterDto = mapLetterDto)
                 readyGoDialog.show(mainActivity.supportFragmentManager, "ReadyGoDialogFragment")
             }
             true
         }
-
     }
     
     // 카메라 포커스 이동
@@ -312,8 +348,8 @@ class MapFragment :
                 .include(myLocation) // 내 위치
                 .include(markerLocation) // 마커 위치
                 .build(),
-            300,0,300,400, // padding 값을 조정하여 여백을 설정할 수 있습니다.
-            
+            300, 0, 300, 400, // padding 값을 조정하여 여백을 설정할 수 있습니다.
+        
         )
         naverMap.moveCamera(cameraUpdate)
         naverMap.maxZoom = 21.0
@@ -322,11 +358,87 @@ class MapFragment :
     
     // 권한 Check
     private fun initCheckPermission(): Boolean = with(mainActivity) {
-        if (!hasPermissions(ACCESS_COARSE_LOCATION) && !hasPermissions(ACCESS_FINE_LOCATION)) {
+        if (!hasPermissions(ACCESS_COARSE_LOCATION)
+            && !hasPermissions(ACCESS_FINE_LOCATION)
+            && !hasPermissions(MainActivity.POST_NOTIFICATIONS)
+        ) {
             showPermissionDialog(mainActivity)
             return false
         }
         return true
+    }
+    
+    
+    // WorkManager
+    // 산책 종료
+    private fun stopWalk() {
+        mainActivity.showSnackbar("편지 찾기를 종료합니다.")
+        binding.apply {
+            presidentBottomSheet.visibility = View.VISIBLE
+            cardviewWork.visibility = View.GONE
+        }
+        workManager.cancelAllWork()
+        mapViewModel.resetTmapWalkRoadInfo()
+    }
+    
+    @SuppressLint("RestrictedApi")
+    private fun startWalk() {
+        mainActivity.showSnackbar("편지 찾기를 시작합니다.")
+        
+        // 현재 포그라운드에서 받아오는 위치서비스를 중단
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+        
+        binding.apply {
+            presidentBottomSheet.visibility = View.GONE
+            cardviewWork.visibility = View.VISIBLE
+        }
+        
+        walkDist = 0f
+        walkTime = 0
+        
+        val inputData = Data.Builder()
+            .putDouble("goalLatitude", goalLatitude)
+            .putDouble("goalLongitude", goalLongitude)
+            .build()
+        
+        workManager = WorkManager.getInstance(mainActivity)
+        workRequest = OneTimeWorkRequestBuilder<WalkWorker>()
+            .setInputData(inputData)
+            .build()
+        workManager.enqueue(workRequest)
+        workManager.getWorkInfoByIdLiveData(workRequest.id)
+            .observe(
+                mainActivity,
+            ) { workInfo ->
+                if (workInfo != null) {
+                    when (workInfo.state) {
+                        WorkInfo.State.RUNNING -> {
+                            Log.d(TAG, "startWalk:Running ")
+                        }
+                        
+                        WorkInfo.State.SUCCEEDED -> {
+                            // Work completed successfully
+                            Log.d(TAG, "onCreate: success")
+                        }
+                        
+                        WorkInfo.State.FAILED -> {
+                            // Work failed
+                            Log.d(TAG, "onCreate: fail")
+                        }
+                        
+                        WorkInfo.State.CANCELLED -> {
+                            // Work cancelled
+                            // WalkWorker는 Notification을 위해 무한반복하게 두고 WalkFragment에서 취소하면
+                            // companion object에 저장해둔 결과 호출하여 처리
+                            Log.d(TAG, "종료 - 거리: $walkDist / 시간: $walkTime")
+                        }
+                        
+                        else -> {
+                            Log.d(TAG, "onCreate: else")
+                        }
+                    }
+                }
+            }
     }
     
     override fun onStart() {
@@ -356,11 +468,17 @@ class MapFragment :
     
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.d(TAG, "onDestroyView: ")
         mapView.onDestroy()
     }
     
     override fun onLowMemory() {
         super.onLowMemory()
         mapView.onLowMemory()
+    }
+    
+    companion object {
+        var walkDist = 0F
+        var walkTime = 0
     }
 }
