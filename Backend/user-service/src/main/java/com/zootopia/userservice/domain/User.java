@@ -9,9 +9,9 @@ import javax.persistence.Id;
 import java.time.LocalDateTime;
 
 
-@Entity
 @Getter
 @ToString
+@Entity(name = "MEMBER")
 public class User {
 
     @Id

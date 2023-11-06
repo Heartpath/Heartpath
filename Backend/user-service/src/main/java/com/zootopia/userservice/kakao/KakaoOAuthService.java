@@ -3,6 +3,9 @@ package com.zootopia.userservice.kakao;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zootopia.userservice.domain.User;
+import com.zootopia.userservice.repository.RedisRepository;
+import com.zootopia.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -14,6 +17,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import com.zootopia.userservice.util.KakaoOAuthUtil;
 
+import java.util.Optional;
+
 
 @Slf4j
 @Service
@@ -21,6 +26,42 @@ import com.zootopia.userservice.util.KakaoOAuthUtil;
 public class KakaoOAuthService {
 
     private final KakaoOAuthUtil kakaoOAuthUtil;
+    private final UserRepository userRepository;
+    private final RedisRepository redisRepository;
+
+    /**
+     * 1. Get User KakaoID, Nickname, ProfileImageURL from The <b>KAKAO</b> via KakaoToken <br>
+     * 2. Verify if User is registered <br>
+     * If so, return AccessToken & RefreshToken <br>
+     * If not, save those in Redis <br>
+     *
+     * @param kakaoToken 카카오 토큰
+     * @return True if User is Registered, otherwise False
+     */
+    public boolean doKakaoLogin(String kakaoToken) {
+
+        // 반환값
+        boolean isRegistered = true;
+
+        // 카카오 서버로부터 사용자 정보 받기
+        KakaoUserInfo userInfoFromKakao = getUserInfoFromKakao(kakaoToken);
+        // 사용자 KakaoID
+        Long userKakaoID = userInfoFromKakao.getKakaoId();
+
+        // 이미 회원 가입한 사용자인지 DB에서 조회
+        Optional<User> oMember = userRepository.findByKakaoID(userKakaoID);
+
+        // 사용자가 회원 가입을 하지 않았을 경우
+        if (oMember.isEmpty()) {
+            isRegistered = false;
+
+            // Redis에 임시 저장
+            String kakaoID = userKakaoID.toString();
+            redisRepository.saveData(kakaoID, userInfoFromKakao);
+        }
+
+        return isRegistered;
+    }
 
     /**
      * 카카오 서버 요청 보내기
