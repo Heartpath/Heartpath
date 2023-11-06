@@ -5,7 +5,9 @@ import com.zootopia.letterservice.common.error.code.ErrorCode;
 import com.zootopia.letterservice.common.error.exception.BadRequestException;
 import com.zootopia.letterservice.common.global.BannedWords;
 import com.zootopia.letterservice.common.s3.S3Uploader;
+import com.zootopia.letterservice.letter.dto.request.LetterHandReqDto;
 import com.zootopia.letterservice.letter.dto.request.LetterPlaceReqDto;
+import com.zootopia.letterservice.letter.dto.request.LetterTextReqDto;
 import com.zootopia.letterservice.letter.dto.response.LetterReceivedDetailResDto;
 import com.zootopia.letterservice.letter.dto.response.LetterReceivedResDto;
 import com.zootopia.letterservice.letter.dto.response.LetterSendResDto;
@@ -47,7 +49,7 @@ public class LetterServiceImpl implements LetterService {
     // 수신자 확인 로직 추가 필요
     @Override
     @Transactional
-    public void createHandLetter(MultipartFile content, List<MultipartFile> files) {
+    public void createHandLetter(LetterHandReqDto letterHandReqDto, MultipartFile content, List<MultipartFile> files) {
         // content 파일
         if (content.isEmpty()) {
             throw new BadRequestException(ErrorCode.NOT_EXISTS_CONTENT);
@@ -76,13 +78,13 @@ public class LetterServiceImpl implements LetterService {
     // 수신자 확인 로직 추가 필요
     @Override
     @Transactional
-    public void createTextLetter(String text, MultipartFile content, List<MultipartFile> files) {
-        if (text.trim().isEmpty()) {
+    public void createTextLetter(LetterTextReqDto letterTextReqDto, MultipartFile content, List<MultipartFile> files) {
+        if (letterTextReqDto.getText().trim().isEmpty()) {
             throw new BadRequestException(ErrorCode.NOT_EXISTS_TEXT);
         }
 
         // text 금칙어 검사
-        if (bannedWords.isBannedWords(text)) {
+        if (bannedWords.isBannedWords(letterTextReqDto.getText())) {
             throw new BadRequestException(ErrorCode.EXISTS_FORBIDDEN_WORD);
         }
 
