@@ -91,4 +91,7 @@ dependencies {
     
     // multidex
     implementation("com.android.support:multidex:1.0.3")
+
+    // splash screen
+    implementation("androidx.core:core-splashscreen:1.0.0")
 }

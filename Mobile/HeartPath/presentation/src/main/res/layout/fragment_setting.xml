@@ -3,19 +3,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/PrimaryLightBlue"
-    tools:context=".settings.SettingFragment">
+    android:layout_height="match_parent">
+<include
+    android:id="@+id/toolbar_heartpath_setting"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    layout="@layout/toolbar_heartpath_custom"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_heartpath_setting"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/PrimaryLightBlue"
+        tools:context=".settings.SettingFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_32sdp"
+            android:layout_marginTop="@dimen/_24sdp"
+            android:background="@drawable/custom_round_card_view"
             android:paddingHorizontal="@dimen/_24sdp"
             android:paddingTop="@dimen/_24sdp"
             android:paddingBottom="@dimen/_24sdp"
-            android:background="@drawable/custom_round_card_view"
-            android:layout_marginHorizontal="@dimen/_32sdp"
-            android:layout_marginTop="@dimen/_24sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -24,9 +37,9 @@
                 android:id="@+id/imageview_two_bird_with_envelope"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_88sdp"
+                android:layout_marginTop="@dimen/_16sdp"
                 android:paddingVertical="0dp"
                 android:src="@drawable/image_two_bird_with_envelope"
-                android:layout_marginTop="@dimen/_16sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -142,11 +155,13 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.constraintlayout.widget.ConstraintLayout>
-    <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/_100sdp"
-        android:layout_marginBottom="@dimen/_16sdp"
-        android:src="@drawable/image_happy_bird_with_envelope"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_100sdp"
+            android:layout_marginBottom="@dimen/_16sdp"
+            android:src="@drawable/image_happy_bird_with_envelope"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
