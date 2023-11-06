@@ -1,7 +1,9 @@
 package com.zootopia.presentation.writeletter
 
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zootopia.domain.model.user.UserDto
 import com.zootopia.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +34,12 @@ class WriteLetterViewModel @Inject constructor(
 
     private var _isEraserSelected: MutableStateFlow<Boolean> = MutableStateFlow<Boolean>(false)
     val isEraserSelected: StateFlow<Boolean> = _isEraserSelected
+
+    private var _searchedUserList: MutableStateFlow<MutableList<UserDto>> = MutableStateFlow(mutableListOf<UserDto>())
+    val searchedUserList: StateFlow<MutableList<UserDto>> = _searchedUserList
+
+    private var _selectedUser: MutableStateFlow<UserDto> = MutableStateFlow<UserDto>(UserDto("", "", ""))
+    val selectedUser: StateFlow<UserDto> = _selectedUser
 
     fun setSelectedLetterPaperUrl(url: String) {
         viewModelScope.launch {
@@ -67,6 +75,25 @@ class WriteLetterViewModel @Inject constructor(
                 add("https://img.freepik.com/premium-photo/cute-gray-cat-kid-animal-with-interested-question-facial-face-expression-look-up-on-copy-space-small-tabby-kitten-on-white-background-vertical-format_221542-2278.jpg?w=360")
             }
             _letterPaperList.emit(list)
+        }
+    }
+
+    fun searchUser(searchKeyWord: String) {
+        //서버로 부터 유저 검색 결과를 받는다
+        viewModelScope.launch {
+            var list = mutableListOf<UserDto>().apply {
+                add(UserDto("dodo2504", "도연쓰", "https://picsum.photos/id/237/200/300"))
+                add(UserDto("dodo2504_2", "도연쓰2", "https://picsum.photos/id/237/200/300"))
+                add(UserDto("dodo2504_3", "도연쓰3", "https://picsum.photos/id/237/200/300"))
+                add(UserDto("dodo2504_4", "도연쓰4", "https://picsum.photos/id/237/200/300"))
+            }
+            _searchedUserList.emit(list)
+        }
+    }
+
+    fun setSelectedUser(user: UserDto){
+        viewModelScope.launch {
+            _selectedUser.emit(user)
         }
     }
 

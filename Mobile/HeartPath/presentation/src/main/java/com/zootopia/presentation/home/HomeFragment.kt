@@ -46,7 +46,7 @@ class HomeFragment :
         }
 
         buttonWriteLetter.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_selectLetterTypeFragment)
+            findNavController().navigate(R.id.action_homeFragment_to_selectUserFragment)
         }
     }
 
