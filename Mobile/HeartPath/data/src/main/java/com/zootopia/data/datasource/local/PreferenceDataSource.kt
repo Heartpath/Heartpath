@@ -3,6 +3,7 @@ package com.zootopia.data.datasource.local
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -24,6 +25,7 @@ class PreferenceDataSource @Inject constructor(
 ){
     private object PreferenceKeys {
         val PERMISSION_REJECTED = intPreferencesKey("permission_rejected")
+        val BGM_STATE = booleanPreferencesKey("bgm_state")  // BGM 상태
     }
     
     fun getPermissionRejected(key: String): Flow<Int> {
@@ -47,4 +49,29 @@ class PreferenceDataSource @Inject constructor(
             preferences[intPreferencesKey(key)] = stack + 1
         }
     }
+
+    // BGM 상태 확인
+    fun getBgmState(key: String): Flow<Boolean> {
+        val bgmStateFlow: Flow<Boolean> = context.dataStore.data
+            .catch { exception ->
+                // IOException이 발생하는 경우도 있기 때문에 throw-catch 처리
+                if (exception is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+            }
+            .map { preferences ->
+                preferences[booleanPreferencesKey(key)] ?: true
+            }
+        return bgmStateFlow
+    }
+
+    // BGM 상태 수정
+    suspend fun setBgmState(key: String, stateValue: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[booleanPreferencesKey(key)] = stateValue
+        }
+    }
+
 }
