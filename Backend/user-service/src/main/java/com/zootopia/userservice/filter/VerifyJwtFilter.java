@@ -30,6 +30,9 @@ public class VerifyJwtFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
 
+    // TODO: yaml 파일로 빼기
+    private static final String[] EXCLUDED_URLS = {"/user/health_check", "/user/login", "/user/register"};
+
     private String extractJwtFromHeader(Optional<String> authorizationToken) throws JwtException {
 
         if (authorizationToken.isEmpty()) {
@@ -73,7 +76,19 @@ public class VerifyJwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain
     ) throws ServletException, IOException {
 
-        // WhiteList
+        /*
+        WhiteList
+        Check if the request URI matches any of the excluded URLs
+        */
+        String requestURI = request.getRequestURI();
+        for (String excludedUrl : EXCLUDED_URLS) {
+
+            if (requestURI.startsWith(excludedUrl)) {
+                // Skip JWT validation for excluded URLs
+                filterChain.doFilter(request, response);
+                return;
+            }
+        }
 
         // JWT 확인
         try {
