@@ -56,8 +56,7 @@ public class KakaoOAuthService {
             isRegistered = false;
 
             // Redis에 임시 저장
-            String kakaoID = userKakaoID.toString();
-            redisRepository.saveData(kakaoID, userInfoFromKakao);
+            redisRepository.saveData(kakaoToken, userInfoFromKakao);
         }
 
         return isRegistered;
