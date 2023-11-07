@@ -1,46 +1,127 @@
 package com.zootopia.presentation.login
 
-import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
-import android.view.MotionEvent
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentSignUpBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
     FragmentSignUpBinding::bind,
     R.layout.fragment_sign_up
 ) {
-    private var originalImageColorFilter: Int = ContextCompat.getColor(requireContext(), R.color.Gray)
-    private var isButtonPressed = false
+    private lateinit var mainActivity: MainActivity
+    private val loginViewModel: LoginViewModel by activityViewModels()
+    private lateinit var toast: Toast
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mainActivity = context as MainActivity
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        initClickEvent()
         initAnimation()
     }
-    private fun initView() = with(binding){
+
+    private fun initView() = with(binding) {
+        buttonIdCheck.apply {
+            lifecycleScope.launch {
+                loginViewModel.checkIdDone.collect {isCheckDone ->
+                    if(isCheckDone) {
+                        // 완료된 상태라면
+                        text = CHECKDONE
+                        setTextColor(ContextCompat.getColor(context, R.color.DarkPink))
+                        background = ContextCompat.getDrawable(context, R.drawable.custom_signup_check_done_button_background)
+                    } else {
+                        // 아직 확인 필요한 경우
+                        text = CHECKUNDONE
+                        setTextColor(ContextCompat.getColor(context, R.color.DarkGray))
+                        background = ContextCompat.getDrawable(context, R.drawable.custom_signup_check_button_background)
+                    }
+                }
+            }
+        }
         // 만약에 값 없으면 X 버튼 gone, 값 있으면 띄우기
+        edittextNewId.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                imagebuttonIdInputCancel.visibility = View.GONE
+            }
+
+            override fun onTextChanged(
+                sequence: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                if(sequence != null) {
+                    if (sequence.isNotEmpty()) {
+                        imagebuttonIdInputCancel.visibility = View.VISIBLE
+                    } else {
+                        imagebuttonIdInputCancel.visibility = View.GONE
+                    }
+                    loginViewModel.setNewId(sequence.toString())
+                    loginViewModel.setCheckIdDone(value = false)
+                }
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+        })
     }
+
     private fun initAnimation() = with(binding) {   // 회원가입 새 애니메이션 적용
-        val animDownUp : Animation = AnimationUtils.loadAnimation(
-            requireContext(),
+        val animDownUp: Animation = AnimationUtils.loadAnimation(
+            mainActivity,
             R.anim.shaking_animation_down_and_up_3000
         )
         imageviewWelcomeBird.startAnimation(animDownUp)
     }
+
     private fun initClickEvent() = with(binding) {
         imagebuttonIdInputCancel.setOnClickListener {
-            // TODO: 값 다 지우기
+            // x 버튼 누르면 값 지우기
+            Log.d(TAG, "initClickEvent: delete button clicked")
+            edittextNewId.setText("")
         }
         buttonIdCheck.setOnClickListener {
-            // TODO: 아이디 중복 확인
+            loginViewModel.duplicateCheckId()
         }
         buttonSignupAccept.setOnClickListener {
             // TODO: 회원 가입하기
+            lifecycleScope.launch {
+                loginViewModel.checkIdDone.collect {isCheckDone ->
+                    if(isCheckDone) { // 아이디 중복 체크 확인 되었는 상태
+                        loginViewModel.signUp()
+                    } else {
+                        // 아이디 중복 체크 요구
+                        toast = Toast.makeText(mainActivity, R.string.toast_message_signup_check_id_plz, Toast.LENGTH_SHORT)
+                        toast.show()
+                    }
+                }
+            }
         }
+    }
+
+    companion object {
+        private const val TAG = "SignUpFragment_HP"
+        private const val CHECKDONE = "확인완료"
+        private const val CHECKUNDONE = "중복확인"
     }
 }
