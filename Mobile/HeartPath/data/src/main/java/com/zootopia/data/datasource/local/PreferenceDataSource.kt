@@ -23,15 +23,16 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
 
 class PreferenceDataSource @Inject constructor(
     @ApplicationContext private val context: Context, // Hilt를 사용하면서 앱 Context를 참고해야할 경우 사용해야함...
-){
+) {
     private object PreferenceKeys {
         val PERMISSION_REJECTED = intPreferencesKey("permission_rejected")
         val BGM_STATE = booleanPreferencesKey("bgm_state")  // BGM 상태
         val FCM_TOKEN = stringPreferencesKey("fcm_token")   // FCM 토큰값
         val ACCESS_TOKEN = stringPreferencesKey("access_token") // access token
         val REFRESH_TOKEN = stringPreferencesKey("refresh_token")   // refresh_token
+        val KAKAO_ACCESS_TOKEN = stringPreferencesKey("kakao_access_token")     // 카카오 access token
     }
-    
+
     fun getPermissionRejected(key: String): Flow<Int> {
         val rejectedPreferencesFlow: Flow<Int> = context.dataStore.data
             .catch { exception ->
@@ -44,10 +45,10 @@ class PreferenceDataSource @Inject constructor(
             .map { preferences ->
                 preferences[intPreferencesKey(key)] ?: 0
             }
-        
+
         return rejectedPreferencesFlow
     }
-    
+
     suspend fun setPermissionRejected(key: String, stack: Int) {
         context.dataStore.edit { preferences ->
             preferences[intPreferencesKey(key)] = stack + 1
@@ -79,7 +80,7 @@ class PreferenceDataSource @Inject constructor(
     }
 
     // FCM token 값 호출
-    fun getFcmToken() : Flow<String> {
+    fun getFcmToken(): Flow<String> {
         val fcmTokenFlow: Flow<String> = context.dataStore.data
             .catch { exception ->
                 // IOException이 발생하는 경우도 있기 때문에 throw-catch 처리
@@ -94,15 +95,16 @@ class PreferenceDataSource @Inject constructor(
             }
         return fcmTokenFlow
     }
+
     // FCM token 값 수정
     suspend fun setFcmToken(token: String) {
-        context.dataStore.edit {preferences ->
+        context.dataStore.edit { preferences ->
             preferences[stringPreferencesKey("fcm_token")] = token
         }
     }
 
     // access token 값 호출
-    fun getAccessToken() : Flow<String> {
+    fun getAccessToken(): Flow<String> {
         return context.dataStore.data
             .catch { exception ->
                 // IOException이 발생하는 경우도 있기 때문에 throw-catch 처리
@@ -119,10 +121,11 @@ class PreferenceDataSource @Inject constructor(
 
     // access token 값 수정
     suspend fun setAccessToken(accessToken: String) {
-        context.dataStore.edit {preferences ->
+        context.dataStore.edit { preferences ->
             preferences[stringPreferencesKey("access_token")] = accessToken
         }
     }
+
     // refresh token 값 호출
     fun getRefreshToken(): Flow<String> {
         return context.dataStore.data
@@ -141,8 +144,30 @@ class PreferenceDataSource @Inject constructor(
 
     // refresh token 값 수정
     suspend fun setRefreshToken(refreshToken: String) {
-        context.dataStore.edit {preferences ->
+        context.dataStore.edit { preferences ->
             preferences[stringPreferencesKey("refresh_token")] = refreshToken
+        }
+    }
+
+    // kakao access token 값 호출
+    fun getKakaoAccessToken(): Flow<String> {
+        return context.dataStore.data
+            .catch { exception ->
+                // IOException이 발생하는 경우도 있기 때문에 throw-catch 처리
+                if (exception is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+            }
+            .map { preferences ->
+                preferences[stringPreferencesKey("kakao_access_token")] ?: ""
+            }
+    }
+    // kakao access token 값 수정
+    suspend fun setKakaoAccessToken(accessToken: String) {
+        context.dataStore.edit {preferences ->
+            preferences[stringPreferencesKey("kakao_access_token")] = accessToken
         }
     }
 }
