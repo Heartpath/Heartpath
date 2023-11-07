@@ -11,6 +11,8 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.Window
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -44,13 +46,17 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.zootopia.domain.model.navermap.MapLetterDto
 import com.zootopia.domain.model.tmap.FeatureCollectionDto
 import com.zootopia.presentation.MainActivity
+import com.zootopia.presentation.MainActivity.Companion.CAMERA_PERMISSION_REJECTED
+import com.zootopia.presentation.MainActivity.Companion.IMAGE_PERMISSION_REJECTED
+import com.zootopia.presentation.MainViewModel
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentMapBinding
 import com.zootopia.presentation.util.WalkWorker
+import com.zootopia.presentation.util.checkAllPermission
 import com.zootopia.presentation.util.distanceIntToString
 import com.zootopia.presentation.util.hasPermissions
-import com.zootopia.presentation.util.showPermissionDialog
+import com.zootopia.presentation.util.requestPermissionsOnClick
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -63,9 +69,11 @@ class MapFragment :
     OnMapReadyCallback {
 
     private val mapViewModel: MapViewModel by activityViewModels()
+    private val mainViewModel: MainViewModel by activityViewModels()
     private lateinit var mainActivity: MainActivity
     private lateinit var navController: NavController
     private lateinit var mapLetterAdapter: MapLetterAdapter
+    private lateinit var requestMultiplePermission: ActivityResultLauncher<Array<String>>
 
     // Map
     private var path: PathOverlay? = null
@@ -87,6 +95,8 @@ class MapFragment :
     private lateinit var window : Window
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        requestMultiplePermission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+        }
         mainActivity = context as MainActivity
     }
 
@@ -104,10 +114,12 @@ class MapFragment :
 //        mapViewModel.test()
 
         mapView = binding.mapviewNaver
-        if (initCheckPermission()) {
+        if (checkBasePermission()) {
             mapView.onCreate(savedInstanceState)
             mapView.getMapAsync(this)
             locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
+        } else {
+            requestBasePermission()
         }
     }
 
@@ -157,6 +169,17 @@ class MapFragment :
             stopWalk()
             path?.map = null // 도보 초기화
         }
+        
+        // 카메라 버튼 
+        buttonCamera.setOnClickListener {
+            Log.d(TAG, "initClickEvent: 카메라 버튼 클릭!")
+            // 권한 확인
+            if(checkCameraPermission()) {
+            
+            } else {
+                requestCameraPermission()
+            }
+        }
     }
 
     private fun initAdapter() {
@@ -170,7 +193,9 @@ class MapFragment :
                             goalLatitude = mapLetterDto.latitude.toDouble()
                             goalLongitude = mapLetterDto.longitude.toDouble()
                             mapViewModel.makeGoalLocataion()
-    
+                            
+                            // 현재 위치와 마커위치를 계산
+                            calculateDistance()
                             // 마커 포지션
                             setMarkerLocation(
                                 mapLetterDto = mapLetterDto,
@@ -183,9 +208,6 @@ class MapFragment :
                                 LatLng(lastLatitude, lastLongitude),
                                 LatLng(goalLatitude, goalLongitude),
                             )
-                            
-                            //
-                            calculateDistance()
                         }
                         
                     } else {
@@ -237,16 +259,7 @@ class MapFragment :
                 mapViewModel.dist = distanceIntToString(it.toInt())
                 if(mapViewModel.isStartWalk) {
                     binding.textviewDistance.text = mapViewModel.dist
-                } else {
-                    binding.textviewTopDistance.text = mapViewModel.dist
                 }
-            }
-        }
-
-        // WorkManager
-        viewLifecycleOwner.lifecycleScope.launch {
-            mapViewModel.isWorkManager.collectLatest {
-
             }
         }
     }
@@ -331,7 +344,7 @@ class MapFragment :
                         )
                         makeUserLocataion()
                         
-                        if(mapViewModel.isStartWalk) {
+                        if(mapViewModel.isStartWalk) { // 편지 찾기 시작시에만 실시간으로 받아오는 위치와 편지 위치를 계산
                             calculateDistance()
                         }
                     }
@@ -359,18 +372,20 @@ class MapFragment :
             width = 100
             height = 160
             captionText = "Click!"
-//            subCaptionText = mapLetterDto.title
-//            subCaptionColor = ContextCompat.getColor(mainActivity, R.color.black)
+            subCaptionText = mapViewModel.dist
+            subCaptionColor = ContextCompat.getColor(mainActivity, R.color.black)
             setCaptionAligns(Align.Bottom)
             captionColor = ContextCompat.getColor(mainActivity, R.color.AlertRed)
             map = naverMap
         }
 
         marker?.setOnClickListener {
-            if (it is Marker && initCheckPermission()) {
+            if (it is Marker && checkBasePermission()) {
                 // 확인 다이얼로그
                 val readyGoDialog = ReadyGoDialogFragment(mapLetterDto = mapLetterDto)
                 readyGoDialog.show(mainActivity.supportFragmentManager, "ReadyGoDialogFragment")
+            } else {
+                requestBasePermission()
             }
             true
         }
@@ -395,25 +410,12 @@ class MapFragment :
         naverMap.minZoom = 5.0
     }
 
-    // 권한 Check
-    private fun initCheckPermission(): Boolean = with(mainActivity) {
-        if (!hasPermissions(ACCESS_COARSE_LOCATION)
-            && !hasPermissions(ACCESS_FINE_LOCATION)
-            && !hasPermissions(MainActivity.POST_NOTIFICATIONS)
-        ) {
-            showPermissionDialog(mainActivity)
-            return false
-        }
-        return true
-    }
-
     // WorkManager
     // 산책 종료
     private fun stopWalk() {
         mainActivity.showToast("편지 찾기를 종료합니다.")
         binding.apply {
             presidentBottomSheet.visibility = View.VISIBLE
-            textviewTopDistance.visibility = View.VISIBLE
             cardviewWork.visibility = View.GONE
         }
         workManager.cancelAllWork()
@@ -432,7 +434,6 @@ class MapFragment :
 
         binding.apply {
             presidentBottomSheet.visibility = View.GONE
-            textviewTopDistance.visibility = View.GONE
             cardviewWork.visibility = View.VISIBLE
         }
 
@@ -480,6 +481,38 @@ class MapFragment :
                     }
                 }
             }
+    }
+    
+    // 권한 Check
+    private fun checkBasePermission(): Boolean = with(mainActivity) {
+        return hasPermissions(ACCESS_COARSE_LOCATION) && hasPermissions(ACCESS_FINE_LOCATION) && hasPermissions(MainActivity.POST_NOTIFICATIONS)
+    }
+    
+    private fun checkCameraPermission(): Boolean = with(mainActivity) {
+        return hasPermissions(CAMERA_PERMISSION_REJECTED) && hasPermissions(IMAGE_PERMISSION_REJECTED)
+    }
+    
+    private fun requestBasePermission() {
+        checkAllPermission(
+            fragment = this@MapFragment,
+            activity = mainActivity,
+            mainViewModel = mainViewModel,
+            permissionList = MainActivity.INIT_PERMISSION_REQUEST,
+        )
+    }
+    private fun requestCameraPermission() {
+//        checkAllPermission(
+//            fragment = this@MapFragment,
+//            activity = mainActivity,
+//            mainViewModel = mainViewModel,
+//            permissionList = MainActivity.PERMISSION_LIST_UP33,
+//        )
+    
+        requestPermissionsOnClick(
+            activity = mainActivity,
+            mainViewModel = mainViewModel,
+            permissionList = MainActivity.PERMISSION_LIST_UP33
+        )
     }
 
     override fun onStart() {
