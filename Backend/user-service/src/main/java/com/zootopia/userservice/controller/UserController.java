@@ -2,14 +2,13 @@ package com.zootopia.userservice.controller;
 
 import com.zootopia.userservice.common.BaseResponse;
 import com.zootopia.userservice.dto.UserInfoDTO;
+import com.zootopia.userservice.dto.UserRegisterDTO;
 import com.zootopia.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @Slf4j
@@ -23,6 +22,11 @@ public class UserController {
     @GetMapping("/health_check")
     public String checkServer() {
         return "200 OK";
+    }
+
+    @PostMapping("/register")
+    public void registerUser(@RequestBody UserRegisterDTO userRegisterDTO) {
+        userService.registerUser(userRegisterDTO);
     }
 
     @GetMapping("/mypage")
