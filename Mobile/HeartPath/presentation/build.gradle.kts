@@ -111,4 +111,7 @@ dependencies {
 
     // coordinatorlayout
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
+    
+    // arcore - sceneview library
+    implementation("io.github.sceneview:arsceneview:1.2.2")
 }
