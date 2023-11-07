@@ -3,7 +3,9 @@ package com.zootopia.userservice.kakao;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zootopia.userservice.common.BaseResponse;
 import com.zootopia.userservice.domain.User;
+import com.zootopia.userservice.jwt.JwtProvider;
 import com.zootopia.userservice.repository.RedisRepository;
 import com.zootopia.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import com.zootopia.userservice.util.KakaoOAuthUtil;
 
+import java.util.HashMap;
 import java.util.Optional;
 
 
@@ -25,6 +28,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class KakaoOAuthService {
 
+    private final JwtProvider jwtProvider;
     private final KakaoOAuthUtil kakaoOAuthUtil;
     private final UserRepository userRepository;
     private final RedisRepository redisRepository;
@@ -38,10 +42,11 @@ public class KakaoOAuthService {
      * @param kakaoToken 카카오 토큰
      * @return True if User is Registered, otherwise False
      */
-    public boolean doKakaoLogin(String kakaoToken) {
+    public BaseResponse doKakaoLogin(String kakaoToken, String fcmToken) {
 
         // 반환값
-        boolean isRegistered = true;
+        String isRegistered = "true";
+        HashMap<String, String> res = new HashMap<>();
 
         // 카카오 서버로부터 사용자 정보 받기
         KakaoUserInfo userInfoFromKakao = getUserInfoFromKakao(kakaoToken);
@@ -53,13 +58,29 @@ public class KakaoOAuthService {
 
         // 사용자가 회원 가입을 하지 않았을 경우
         if (oMember.isEmpty()) {
-            isRegistered = false;
+            isRegistered = "false";
 
             // Redis에 임시 저장
             redisRepository.saveData(kakaoToken, userInfoFromKakao);
+        } else {
+            User user = oMember.get();
+
+            String memberID = user.getMemberID();
+            String accessToken = jwtProvider.createAccessToken(memberID);
+            String refreshToken = jwtProvider.createRefreshToken(memberID);
+
+            // TODO: save refreshToken in Redis
+            res.put("AccessToken", accessToken);
+            res.put("RefreshToken", refreshToken);
+
+            // Update user's FCM Token
+            user.updateFCMToken(fcmToken);
+            userRepository.save(user);
         }
 
-        return isRegistered;
+        BaseResponse baseResponse = new BaseResponse(200, isRegistered, res);
+
+        return baseResponse;
     }
 
     /**
