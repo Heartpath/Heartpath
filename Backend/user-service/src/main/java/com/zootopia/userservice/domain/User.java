@@ -40,4 +40,8 @@ public class User {
 
     @Column(name = "CREATED_DATE")
     private LocalDateTime createdDate;
+
+    public void updateFCMToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
 }
