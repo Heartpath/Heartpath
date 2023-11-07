@@ -6,10 +6,12 @@ server:
       charset: UTF-8
       enabled: true
       force: true
-  # ssl:
-  #   trust-store: /tmp/certs/rds-truststore.jks
-  #   trust-store-password: zootopia-admin
-  #   enabled: true
+
+javax:
+  net:
+    ssl:
+      trustStore: /tmp/certs/rds-truststore.jks
+      trustStorePassword: zootopia-admin
 
 spring:
   jackson:
@@ -29,10 +31,10 @@ spring:
 #    driver-class-name: org.h2.Driver
 
 #         MySQL
-      url: jdbc:mysql://zootopia-mysql.c2f2jpwzzxst.ap-northeast-2.rds.amazonaws.com:3306/zootopia
-      username: admin
-      password: zootopia-admin
-      driver-class-name: com.mysql.cj.jdbc.Driver
+      # url: jdbc:mysql://zootopia-mysql.c2f2jpwzzxst.ap-northeast-2.rds.amazonaws.com:3306/zootopia
+      # username: admin
+      # password: zootopia-admin
+      # driver-class-name: com.mysql.cj.jdbc.Driver
 
   # ?? ?? ??
   main:
