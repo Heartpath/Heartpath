@@ -16,4 +16,6 @@ interface PreferenceRepository {
 
     fun getRefreshToken() : Flow<String>
     suspend fun setRefreshToken(refreshToken: String)
+    fun getKakaoAccessToken(): Flow<String>
+    suspend fun setKakaoAccessToken(accessToken: String)
 }

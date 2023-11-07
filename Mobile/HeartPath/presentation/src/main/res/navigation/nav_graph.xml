@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/loginFragment"
@@ -127,7 +127,7 @@
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.zootopia.presentation.login.SignUpFragment"
-        android:label="fragment_sign_up"
+        android:label="SignUpFragment"
         tools:layout="@layout/fragment_sign_up" />
     <fragment
         android:id="@+id/typingWriteFragment"

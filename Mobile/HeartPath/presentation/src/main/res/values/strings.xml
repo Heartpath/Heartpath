@@ -73,4 +73,9 @@
     <!--  FCM  -->
     <string name="default_notification_channel_id">heart_path</string>
     <string name="default_notification_channel_name">HeartPath</string>
+
+    <!--    toast message   -->
+    <string name="toast_message_signup_check_id_plz">아이디 중복 확인은 필수입니다.</string>
+    
+    <string name="signup_check_id_done">확인완료</string>
 </resources>
