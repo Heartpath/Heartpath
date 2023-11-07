@@ -50,7 +50,7 @@ public class LetterController {
     })
     @PostMapping("/hand")
     public ResponseEntity<? extends BaseResponseBody> createHandLetter(@RequestHeader(value = "Authorization", required = false) String accessToken,
-                                                                       @RequestPart(value = "letterHandReqDto") LetterHandReqDto letterHandReqDto,
+                                                                       @RequestPart(value = "letterHandReqDto", required = false) LetterHandReqDto letterHandReqDto,
                                                                        @RequestPart(value = "content") MultipartFile content,
                                                                        @RequestPart(value = "files", required = false) List<MultipartFile> files) {
         // accessToken → 발신자, receiverId → 수신자 멤버 객체 찾아서 service 넘기기

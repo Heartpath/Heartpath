@@ -8,11 +8,11 @@ server:
       force: true
 
 spring:
-#  jackson:
-#    time-zone: Asia/Seoul
-#  data:
-#    mongodb:
-#      uri: mongodb://localhost:27017/zootopia
+  jackson:
+    time-zone: Asia/Seoul
+  data:
+    mongodb:
+      uri: mongodb://zootopia:zootopia-admin@zootopia-mongodb.cluster-c2f2jpwzzxst.ap-northeast-2.docdb.amazonaws.com:27017/heartpath
 
   servlet:
     multipart:
