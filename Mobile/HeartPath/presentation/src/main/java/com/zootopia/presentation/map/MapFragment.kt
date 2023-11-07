@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.Window
-import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -49,6 +48,7 @@ import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentMapBinding
 import com.zootopia.presentation.util.WalkWorker
+import com.zootopia.presentation.util.distanceIntToString
 import com.zootopia.presentation.util.hasPermissions
 import com.zootopia.presentation.util.showPermissionDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -78,10 +78,6 @@ class MapFragment :
     // 내 위치를 가져오는 코드
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient // 자동으로 gps값을 받아온다.
     lateinit var locationCallback: LocationCallback // gps응답 값을 가져온다.
-
-    // marker posi
-    private var goalLatitude: Double = 0.0
-    private var goalLongitude: Double = 0.0
 
     // WorkManager
     private lateinit var workManager: WorkManager
@@ -125,27 +121,16 @@ class MapFragment :
             toolbarHeartpath.setBackgroundColor(
                 ContextCompat.getColor(
                     requireContext(),
-                    R.color.white
+                    R.color.PrimaryLightBlue
                 )
             )
         }
-
-//        // status bar setting
-//        window = mainActivity.window
-//        window.addFlags(
-//            WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
-//        )
-//        window.clearFlags(
-//            WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-//        )
-//        window.statusBarColor = ContextCompat.getColor(mainActivity, R.color.white)
-
     }
 
     private fun initData() {
         mapViewModel.getDummyList()
-
-//        if(mapViewModel.tmapWalkRoadInfo.collect())
+        
+        binding.textviewDistance.text = distanceIntToString(walkDist.toInt())
     }
 
     private fun initClickEvent() = with(binding) {
@@ -179,28 +164,30 @@ class MapFragment :
             itemClickListener = object : MapLetterAdapter.ItemClickListener {
                 override fun itemClick(view: View, position: Int, mapLetterDto: MapLetterDto) {
                     Log.d(TAG, "itemClick: 받은 편지 item 클릭됨")
-
-                    if (!mapViewModel.lastLatitude.isNullOrEmpty() && !mapViewModel.lastLongitude.isNullOrEmpty()) {
-                        goalLatitude = mapLetterDto.latitude.toDouble()
-                        goalLongitude = mapLetterDto.longitude.toDouble()
-                        // 마커 포지션
-                        setMarkerLocation(
-                            mapLetterDto = mapLetterDto,
-                            latitude = goalLatitude,
-                            longitude = goalLongitude
-                        )
-                        // 카메라 포커스 (맵, 시작, 도착)
-                        setCameraToIncludeMyLocationAndMarker(
-                            naverMap,
-                            LatLng(
-                                mapViewModel.lastLatitude.toDouble(),
-                                mapViewModel.lastLongitude.toDouble(),
-                            ),
-                            LatLng(
-                                goalLatitude,
-                                goalLongitude
-                            ),
-                        )
+                    
+                    if (mapViewModel.lastLatitude != 0.0 && mapViewModel.lastLongitude != 0.0) {
+                        mapViewModel.apply {
+                            goalLatitude = mapLetterDto.latitude.toDouble()
+                            goalLongitude = mapLetterDto.longitude.toDouble()
+                            mapViewModel.makeGoalLocataion()
+    
+                            // 마커 포지션
+                            setMarkerLocation(
+                                mapLetterDto = mapLetterDto,
+                                latitude = goalLatitude,
+                                longitude = goalLongitude
+                            )
+                            // 카메라 포커스 (맵, 시작, 도착)
+                            setCameraToIncludeMyLocationAndMarker(
+                                naverMap,
+                                LatLng(lastLatitude, lastLongitude),
+                                LatLng(goalLatitude, goalLongitude),
+                            )
+                            
+                            //
+                            calculateDistance()
+                        }
+                        
                     } else {
                         mainActivity.showToast("사용자의 위치를 불러오는 중입니다.")
                     }
@@ -240,6 +227,19 @@ class MapFragment :
                 Log.d(TAG, "initCollect: $it")
                 DrawLoad(it) // 경로 그리기
                 startWalk() // WorkManager 실행
+                mapViewModel.isStartWalk = true
+            }
+        }
+        
+        // 목적지 까지 거리 계산
+        viewLifecycleOwner.lifecycleScope.launch{
+            mapViewModel.walkDistance.collectLatest {
+                mapViewModel.dist = distanceIntToString(it.toInt())
+                if(mapViewModel.isStartWalk) {
+                    binding.textviewDistance.text = mapViewModel.dist
+                } else {
+                    binding.textviewTopDistance.text = mapViewModel.dist
+                }
             }
         }
 
@@ -264,8 +264,8 @@ class MapFragment :
             for (path_cords_xy in pathList) {
                 path_container?.add(LatLng(path_cords_xy[1], path_cords_xy[0]))
             }
-
         }
+        
         Log.d(TAG, "DrawLoad: $path_container")
         // 더미원소 드랍후 path.coords에 path들을 넣어줌.
         path!!.coords = path_container?.drop(1)!!
@@ -316,21 +316,25 @@ class MapFragment :
         val locationRequest = LocationRequest.create()
         locationRequest.run {
             locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            locationRequest.setInterval(1000)
+            locationRequest.setInterval(2000)
         }
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 locationResult ?: return
                 for ((i, location) in locationResult.locations.withIndex()) {
-                    Log.d(
-                        TAG,
-                        "mapOn -> latitude: ${location.latitude}, longitude: ${location.longitude}"
-                    )
-                    mapViewModel.setLocation(
-                        latitude = location.latitude,
-                        longitude = location.longitude,
-                    )
+                    Log.d(TAG, "mapOn -> latitude: ${location.latitude}, longitude: ${location.longitude}")
+                    mapViewModel.apply {
+                        setLocation(
+                            latitude = location.latitude,
+                            longitude = location.longitude,
+                        )
+                        makeUserLocataion()
+                        
+                        if(mapViewModel.isStartWalk) {
+                            calculateDistance()
+                        }
+                    }
                 }
             }
         }
@@ -355,13 +359,15 @@ class MapFragment :
             width = 100
             height = 160
             captionText = "Click!"
+//            subCaptionText = mapLetterDto.title
+//            subCaptionColor = ContextCompat.getColor(mainActivity, R.color.black)
             setCaptionAligns(Align.Bottom)
             captionColor = ContextCompat.getColor(mainActivity, R.color.AlertRed)
             map = naverMap
         }
 
         marker?.setOnClickListener {
-            if (it is Marker) {
+            if (it is Marker && initCheckPermission()) {
                 // 확인 다이얼로그
                 val readyGoDialog = ReadyGoDialogFragment(mapLetterDto = mapLetterDto)
                 readyGoDialog.show(mainActivity.supportFragmentManager, "ReadyGoDialogFragment")
@@ -401,37 +407,40 @@ class MapFragment :
         return true
     }
 
-
     // WorkManager
     // 산책 종료
     private fun stopWalk() {
-        mainActivity.showSnackbar("편지 찾기를 종료합니다.")
+        mainActivity.showToast("편지 찾기를 종료합니다.")
         binding.apply {
             presidentBottomSheet.visibility = View.VISIBLE
+            textviewTopDistance.visibility = View.VISIBLE
             cardviewWork.visibility = View.GONE
         }
         workManager.cancelAllWork()
         mapViewModel.resetTmapWalkRoadInfo()
+        setUpdateLocationListner()
+        mapViewModel.isStartWalk = false
     }
 
     @SuppressLint("RestrictedApi")
     private fun startWalk() {
-        mainActivity.showSnackbar("편지 찾기를 시작합니다.")
 
+        mainActivity.showToast("편지 찾기를 시작합니다.")
+        
         // 현재 포그라운드에서 받아오는 위치서비스를 중단
-        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+//        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
 
         binding.apply {
             presidentBottomSheet.visibility = View.GONE
+            textviewTopDistance.visibility = View.GONE
             cardviewWork.visibility = View.VISIBLE
         }
 
-        walkDist = 0f
-        walkTime = 0
-
         val inputData = Data.Builder()
-            .putDouble("goalLatitude", goalLatitude)
-            .putDouble("goalLongitude", goalLongitude)
+            .putDouble("goalLatitude", mapViewModel.goalLatitude)
+            .putDouble("goalLongitude", mapViewModel.goalLongitude)
+            .putDouble("userLatitude", mapViewModel.lastLatitude.toDouble())
+            .putDouble("userLongitude", mapViewModel.lastLongitude.toDouble())
             .build()
 
         workManager = WorkManager.getInstance(mainActivity)
@@ -444,26 +453,25 @@ class MapFragment :
                 mainActivity,
             ) { workInfo ->
                 if (workInfo != null) {
+                    val outputData = workInfo.outputData
                     when (workInfo.state) {
                         WorkInfo.State.RUNNING -> {
                             Log.d(TAG, "startWalk:Running ")
                         }
 
                         WorkInfo.State.SUCCEEDED -> {
-                            // Work completed successfully
                             Log.d(TAG, "onCreate: success")
+                            mapViewModel.isStartWalk = false
                         }
 
                         WorkInfo.State.FAILED -> {
-                            // Work failed
                             Log.d(TAG, "onCreate: fail")
+                            mapViewModel.isStartWalk = false
                         }
 
                         WorkInfo.State.CANCELLED -> {
-                            // Work cancelled
-                            // WalkWorker는 Notification을 위해 무한반복하게 두고 WalkFragment에서 취소하면
-                            // companion object에 저장해둔 결과 호출하여 처리
                             Log.d(TAG, "종료 - 거리: $walkDist / 시간: $walkTime")
+                            mapViewModel.isStartWalk = false
                         }
 
                         else -> {
