@@ -1,7 +1,6 @@
 package com.zootopia.userservice.domain;
 
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +9,10 @@ import java.time.LocalDateTime;
 
 
 @Getter
+@Builder
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "MEMBER")
 public class User {
 
@@ -18,7 +20,7 @@ public class User {
     @Column(name = "MEMBER_ID")
     private String memberID;
 
-    @Column(name = "KAKAO_ID")
+    @Column(name = "kakao_id")
     private Long kakaoID;
 
     @Column(name = "FCM_TOKEN")
