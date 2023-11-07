@@ -160,14 +160,8 @@ class MapFragment :
                             // 카메라 포커스 (맵, 시작, 도착)
                             setCameraToIncludeMyLocationAndMarker(
                                 naverMap,
-                                LatLng(
-                                    lastLatitude,
-                                    lastLongitude,
-                                ),
-                                LatLng(
-                                    goalLatitude,
-                                    goalLongitude
-                                ),
+                                LatLng(lastLatitude, lastLongitude),
+                                LatLng(goalLatitude, goalLongitude),
                             )
                             
                             //
