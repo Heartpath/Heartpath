@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
@@ -30,6 +31,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         imagebuttonLogin.setOnClickListener {
             it.clickAnimation(lifeCycleOwner = viewLifecycleOwner)
             loginViewModel.loginByKakao(context = requireContext())
+//            findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
         }
     }
     private fun initView() = with(binding) {

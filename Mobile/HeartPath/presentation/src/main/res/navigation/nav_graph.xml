@@ -127,7 +127,7 @@
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.zootopia.presentation.login.SignUpFragment"
-        android:label="fragment_sign_up"
+        android:label="SignUpFragment"
         tools:layout="@layout/fragment_sign_up" />
     <fragment
         android:id="@+id/typingWriteFragment"
