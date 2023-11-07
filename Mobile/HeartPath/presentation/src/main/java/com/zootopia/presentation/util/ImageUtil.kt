@@ -1,64 +1,56 @@
 package com.zootopia.presentation.util
 
+import android.content.ContentResolver
+import android.content.ContentValues
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Environment
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
+import android.provider.MediaStore
 import java.io.File
 import java.io.FileOutputStream
-import java.util.Calendar
+import java.io.OutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.UUID
 
-object FileUtil {
-    // 임시 파일 생성
-    fun createTempFile(context: Context, fileName: String): File {
-        val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File(storageDir, fileName)
+fun getRealPathFromUri(context: Context, contentUri: Uri): String? {
+    var result: String? = null
+    context.contentResolver.openInputStream(contentUri)?.use { stream ->
+        val tempFile = File(context.cacheDir, "${UUID.randomUUID()}_${SimpleDateFormat("yyMMdd_HHmmss").format(Date())}.jpg")
+        val outputStream = FileOutputStream(tempFile)
+        stream.copyTo(outputStream)
+        result = tempFile.absolutePath
+    }
+    return result
+}
+
+fun saveImageToGallery(context: Context, bitmap: Bitmap): Uri? {
+    val contentResolver: ContentResolver = context.contentResolver
+    val displayName = "${UUID.randomUUID()}_${SimpleDateFormat("yyMMdd_HHmmss").format(Date())}"
+    val contentValues = ContentValues().apply {
+        put(MediaStore.Images.Media.DISPLAY_NAME, displayName)
+        put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+        put(MediaStore.Images.Media.WIDTH, bitmap.width)
+        put(MediaStore.Images.Media.HEIGHT, bitmap.height)
     }
 
-    // 파일 내용 스트림 복사
-    fun copyToFile(context: Context, uri: Uri, file: File) {
-        val inputStream = context.contentResolver.openInputStream(uri)
-        val outputStream = FileOutputStream(file)
-
-        val buffer = ByteArray(4 * 1024)
-        while (true) {
-            val byteCount = inputStream!!.read(buffer)
-            if (byteCount < 0) break
-            outputStream.write(buffer, 0, byteCount)
+    var outputStream: OutputStream? = null
+    try {
+        val collection =
+            MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+        val imageUri = contentResolver.insert(collection, contentValues)
+        if (imageUri != null) {
+            outputStream = contentResolver.openOutputStream(imageUri)
+            if (outputStream != null) {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+                return imageUri
+            }
         }
-
-        outputStream.flush()
+    } catch (e: Exception) {
+        // 저장 실패 시 예외 처리
+        e.printStackTrace()
+    } finally {
+        outputStream?.close()
     }
-}
-
-object UriUtil {
-    // URI -> File
-    fun toFile(context: Context, uri: Uri): File {
-        val fileName = getFileName(context, uri)
-
-        val file = FileUtil.createTempFile(context, fileName)
-        FileUtil.copyToFile(context, uri, file)
-
-        return File(file.absolutePath)
-    }
-
-    // get file name & extension
-    fun getFileName(context: Context, uri: Uri): String {
-        val name = uri.toString().split("/").last()
-        val ext = context.contentResolver.getType(uri)!!.split("/").last()
-
-        return "$name.$ext"
-    }
-}
-
-object MultipartUtil {
-    //멀티파트로 변환
-    fun getImageBody(file: File): MultipartBody.Part {
-        val requestFile = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file)
-        return MultipartBody.Part.createFormData("image", file.name, requestFile)
-    }
+    return null
 }

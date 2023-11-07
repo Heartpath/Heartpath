@@ -62,9 +62,9 @@ object MultipartUtil {
         val requestFile = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file)
         return MultipartBody.Part.createFormData("image", file.name, requestFile)
     }
-    fun createMultipartBodyPartOnePhoto(imagePath: String): MultipartBody.Part {
+    fun createMultipartBodyPartOnePhoto(imagePath: String, fileName: String): MultipartBody.Part {
         val file = File(imagePath)
         val requestFile = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-        return requestFile.let { MultipartBody.Part.createFormData("file", file.name, it) }
+        return requestFile.let { MultipartBody.Part.createFormData(fileName, file.name, it) }
     }
 }

@@ -14,9 +14,9 @@ class BusinessRepositoryImpl @Inject constructor(
     override suspend fun postHandWriteLetter(handLetterRequestDto: HandLetterRequestDto, content: String, fileList: MutableList<String>){
         getValueOrThrow2 {
             var postHandLetterRequest = handLetterRequestDto.toData()
-            var contentMultipart = MultipartUtil.createMultipartBodyPartOnePhoto(content)
+            var contentMultipart = MultipartUtil.createMultipartBodyPartOnePhoto(content, "content")
             var multipartFileList = fileList.map {
-                MultipartUtil.createMultipartBodyPartOnePhoto(it)
+                MultipartUtil.createMultipartBodyPartOnePhoto(it, "files")
             }
             businessDataSource.postHandLetter(postHandLetterRequest, contentMultipart, multipartFileList)
         }

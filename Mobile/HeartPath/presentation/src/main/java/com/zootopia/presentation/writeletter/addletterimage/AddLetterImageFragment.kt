@@ -15,6 +15,8 @@ import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentAddLetterImageBinding
+import com.zootopia.presentation.util.getRealPathFromUri
+import com.zootopia.presentation.util.saveImageToGallery
 import com.zootopia.presentation.writeletter.WriteLetterViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -54,6 +56,14 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
 
     private fun initClickListener() = with(binding) {
         buttonLetterConfirm.setOnClickListener {
+            if(writeLetterViewModel.drawingBitmap.value != null){
+                val letterUri = saveImageToGallery(mainActivity, writeLetterViewModel.drawingBitmap.value!!)
+                if(letterUri != null){
+                    val realPath = getRealPathFromUri(mainActivity, letterUri)
+                    if(realPath != null)
+                        writeLetterViewModel.saveLetter(realPath, mutableListOf())
+                }
+            }
 
         }
     }
