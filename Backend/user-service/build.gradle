@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.zootopia'
-version = '0.0.1-SNAPSHOT'
+version = 'SNAPSHOT'
 
 java {
     sourceCompatibility = '11'
@@ -54,3 +54,8 @@ dependencies {
 //tasks.named('test') {
 //    useJUnitPlatform()
 //}
+
+jar {
+    archiveClassifier = ''
+    enabled = false
+}
