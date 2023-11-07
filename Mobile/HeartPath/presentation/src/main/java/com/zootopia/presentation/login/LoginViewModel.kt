@@ -89,7 +89,7 @@ BaseViewModel() {
     // 아이디 중복 체크
     fun duplicateCheckId() = viewModelScope.launch {
         // 만약에 중복 되지 않았으면 true 값으로 변경
-
+        Log.d(TAG, "duplicateCheckId: check button clicked")
     }
 
     fun setCheckIdDone(value: Boolean) = viewModelScope.launch {
