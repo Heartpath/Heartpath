@@ -1,15 +1,13 @@
 package com.zootopia.presentation.writeletter
 
 import android.graphics.Bitmap
-import androidx.compose.runtime.MutableState
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zootopia.domain.model.user.UserDto
+import com.zootopia.domain.model.writeletter.HandLetterRequestDto
 import com.zootopia.domain.usecase.writeletter.PostHandLetterUseCase
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseViewModel
+import com.zootopia.presentation.util.getRealPathFromUri
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,10 +38,12 @@ class WriteLetterViewModel @Inject constructor(
     private var _isEraserSelected: MutableStateFlow<Boolean> = MutableStateFlow<Boolean>(false)
     val isEraserSelected: StateFlow<Boolean> = _isEraserSelected
 
-    private var _searchedUserList: MutableStateFlow<MutableList<UserDto>> = MutableStateFlow(mutableListOf<UserDto>())
+    private var _searchedUserList: MutableStateFlow<MutableList<UserDto>> =
+        MutableStateFlow(mutableListOf<UserDto>())
     val searchedUserList: StateFlow<MutableList<UserDto>> = _searchedUserList
 
-    private var _selectedUser: MutableStateFlow<UserDto> = MutableStateFlow<UserDto>(UserDto("", "", ""))
+    private var _selectedUser: MutableStateFlow<UserDto> =
+        MutableStateFlow<UserDto>(UserDto("", "", ""))
     val selectedUser: StateFlow<UserDto> = _selectedUser
 
     private val _drawingBitmap = MutableStateFlow<Bitmap?>(null)
@@ -99,7 +99,7 @@ class WriteLetterViewModel @Inject constructor(
         }
     }
 
-    fun setSelectedUser(user: UserDto){
+    fun setSelectedUser(user: UserDto) {
         viewModelScope.launch {
             _selectedUser.emit(user)
         }
@@ -115,10 +115,15 @@ class WriteLetterViewModel @Inject constructor(
         _drawingBitmap.value = bitmap
     }
 
-    fun saveLetter(){
+    fun saveLetter(contentUri: String, imageList: MutableList<String>) {
+
         getApiResult(
             block = {
-
+                postHandLetterUseCase.invoke(
+                    handLetterRequestDto = HandLetterRequestDto(_selectedUser.value.memberId),
+                    content = contentUri,
+                    fileList = imageList
+                )
             },
             success = {
 
