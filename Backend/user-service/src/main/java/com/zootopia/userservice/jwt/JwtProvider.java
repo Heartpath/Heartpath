@@ -2,8 +2,7 @@ package com.zootopia.userservice.jwt;
 
 import com.zootopia.userservice.util.DateUtil;
 import com.zootopia.userservice.util.JwtUtil;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -49,12 +48,35 @@ public class JwtProvider {
         SEVEN_DAYS = DateUtil.toDate(durationOfSevenDays);
     }
 
+    public boolean validateToken(String token) {
+
+        boolean res = true;
+
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
+        } catch (ExpiredJwtException e) {
+            // 유효 기간이 지난 토큰
+            res = false;
+            log.error("JWT 유효 기간 경과");
+        } catch (CompressionException | MalformedJwtException | UnsupportedJwtException e) {
+            // 압축 오류, 키 틀림 오류, 해당 토큰과 맞지 않는 토큰 타입 오류
+            res = false;
+            log.error("JWT ERROR: {}", e.toString());
+        }
+
+        return res;
+    }
+
     public String createAccessToken(String memberID) {
 
         String accessToken = Jwts.builder()
                 .setHeaderParams(JwtUtil.getHeaderMap())
                 .setIssuedAt(DateUtil.getCurrentDate())
-                .setExpiration(ONE_DAY)
+//                .setExpiration(ONE_DAY)
+                .setExpiration(new Date(System.currentTimeMillis() + 1000))
                 .claim("email", memberID)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
