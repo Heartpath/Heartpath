@@ -19,6 +19,7 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
+import com.zootopia.presentation.map.MapFragment
 import kotlinx.coroutines.delay
 
 private const val TAG = "WalkWorker_HP"
@@ -46,7 +47,10 @@ class WalkWorker (context: Context, parameters: WorkerParameters) :
         userLocation = Location("userProvider")
         goalLocation.latitude = inputData.getDouble("goalLatitude", 0.0) // 목표 위치의 경도
         goalLocation.longitude = inputData.getDouble("goalLongitude", 0.0) // 목표 위치의 위도
-        Log.d(TAG, "doWork: ${goalLocation.latitude}, ${goalLocation.longitude}")
+        userLocation.latitude = inputData.getDouble("userLatitude",0.0)
+        userLocation.longitude = inputData.getDouble("userLongitude",0.0)
+        dist = userLocation.distanceTo(goalLocation)
+        Log.d(TAG, "doWork: ${dist}")
         
         val foregroundInfo = createForegroundInfo(notificationContent)
         setForegroundAsync(foregroundInfo)
@@ -68,8 +72,6 @@ class WalkWorker (context: Context, parameters: WorkerParameters) :
         intent.putExtra("fragment_id", R.id.action_homeFragment_to_mapFragment)
         // flag 적용해야함 :  Android 31 이상의 버전에서 보안 및 호환성을 향상하기 위함
         val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-    
-        Log.d(TAG, "createForegroundInfo: 인텐트 생성")
         
         val notification = NotificationCompat.Builder(applicationContext, FOREGROUND_SERVICE_ID.toString())
             .setContentTitle("지금은 산책중입니다~")
@@ -98,11 +100,17 @@ class WalkWorker (context: Context, parameters: WorkerParameters) :
     
     private suspend fun simulateLocationUpdates() {
         while (true) {
-            delay(1000) // Simulate delay between updates
+            delay(2000) // Simulate delay between updates
             dist = userLocation.distanceTo(goalLocation)
             time++
+            
+            MapFragment.apply {
+                walkDist = dist
+                walkTime = time
+            }
+            
             Log.d(TAG, "simulateLocationUpdates: time: $time  / dist: $dist")
-            updateNotification("time: $time \n 거리: ${distanceIntToString(dist.toInt())}")
+            updateNotification("시간: ${timeIntToString(time)} \n 거리: ${distanceIntToString(dist.toInt())}")
         }
     }
     
