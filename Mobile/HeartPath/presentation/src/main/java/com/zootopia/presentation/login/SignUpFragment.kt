@@ -10,14 +10,12 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentSignUpBinding
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
@@ -40,6 +38,7 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
     }
 
     private fun initView() = with(binding) {
+        // 중복확인 버튼 중복 여부 확인에 따라 UI 변경
         buttonIdCheck.apply {
             lifecycleScope.launch {
                 loginViewModel.checkIdDone.collect {isCheckDone ->
@@ -57,7 +56,8 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
                 }
             }
         }
-        // 만약에 값 없으면 X 버튼 gone, 값 있으면 띄우기
+
+        // 아이디 입력 edit text
         edittextNewId.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 imagebuttonIdInputCancel.visibility = View.GONE
@@ -70,12 +70,17 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
                 count: Int
             ) {
                 if(sequence != null) {
+                    // 만약에 값 없으면 X 버튼 gone, 값 있으면 띄우기
                     if (sequence.isNotEmpty()) {
                         imagebuttonIdInputCancel.visibility = View.VISIBLE
                     } else {
                         imagebuttonIdInputCancel.visibility = View.GONE
                     }
+
+                    // 입력 값 갱신
                     loginViewModel.setNewId(sequence.toString())
+
+                    // 입력 값 수정하면 중복확인 false 처리
                     loginViewModel.setCheckIdDone(value = false)
                 }
             }
@@ -95,14 +100,17 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
     }
 
     private fun initClickEvent() = with(binding) {
+        // X 버튼
         imagebuttonIdInputCancel.setOnClickListener {
-            // x 버튼 누르면 값 지우기
+            // x 버튼 누르면 입력한 값 지우기
             Log.d(TAG, "initClickEvent: delete button clicked")
             edittextNewId.setText("")
         }
+        // 중복 확인 버튼
         buttonIdCheck.setOnClickListener {
             loginViewModel.duplicateCheckId()
         }
+        // 회원 가입 버튼
         buttonSignupAccept.setOnClickListener {
             // TODO: 회원 가입하기
             lifecycleScope.launch {
