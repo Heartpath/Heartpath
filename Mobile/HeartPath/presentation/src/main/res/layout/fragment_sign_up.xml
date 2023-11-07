@@ -76,6 +76,7 @@
                 android:paddingStart="@dimen/_8sdp"
                 android:paddingEnd="@dimen/_4sdp"
                 android:hint="@string/signup_id_input_hint"
+                android:imeOptions="actionDone"
                 android:singleLine="true"
                 style="@style/SignUp_Id_Input_EditText_Style"
                 android:inputType="textVisiblePassword"
