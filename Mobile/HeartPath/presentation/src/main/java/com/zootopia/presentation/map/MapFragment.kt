@@ -10,11 +10,13 @@ import android.os.Looper
 import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.view.Window
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
@@ -59,12 +61,12 @@ private const val TAG = "MapFragment_HP"
 class MapFragment :
     BaseFragment<FragmentMapBinding>(FragmentMapBinding::bind, R.layout.fragment_map),
     OnMapReadyCallback {
-    
+
     private val mapViewModel: MapViewModel by activityViewModels()
     private lateinit var mainActivity: MainActivity
     private lateinit var navController: NavController
     private lateinit var mapLetterAdapter: MapLetterAdapter
-    
+
     // Map
     private var path: PathOverlay? = null
     private var marker: Marker? = null
@@ -72,33 +74,35 @@ class MapFragment :
     private lateinit var locationSource: FusedLocationSource
     private lateinit var mapView: MapView
     private lateinit var naverMap: NaverMap
-    
+
     // 내 위치를 가져오는 코드
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient // 자동으로 gps값을 받아온다.
     lateinit var locationCallback: LocationCallback // gps응답 값을 가져온다.
-    
-    
+
     // WorkManager
     private lateinit var workManager: WorkManager
     private lateinit var workRequest: WorkRequest
-    
+
+    // window
+    private lateinit var window : Window
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-        
+
+        initView()
         initAdapter()
         initCollect()
         initClickEvent()
         initData()
-        
+
         // 테스트 (임시)
 //        mapViewModel.test()
-        
+
         mapView = binding.mapviewNaver
         if (initCheckPermission()) {
             mapView.onCreate(savedInstanceState)
@@ -106,13 +110,29 @@ class MapFragment :
             locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
         }
     }
-    
+
+    private fun initView() = with(binding) {
+        // toolbar setting
+        toolbarHeartpathMap.apply {
+            textviewCurrentPageTitle.text = resources.getString(R.string.toolbar_map_title)
+            imageviewBackButton.setOnClickListener {
+                findNavController().popBackStack()
+            }
+            toolbarHeartpath.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.PrimaryLightBlue
+                )
+            )
+        }
+    }
+
     private fun initData() {
         mapViewModel.getDummyList()
         
         binding.textviewDistance.text = distanceIntToString(walkDist.toInt())
     }
-    
+
     private fun initClickEvent() = with(binding) {
         // 신고 버튼
         imageviewReport.setOnClickListener {
@@ -131,14 +151,14 @@ class MapFragment :
             initAdapter()
             initData()
         }
-        
+
         // workManager 종료 버튼
         buttonWorkStop.setOnClickListener {
             stopWalk()
             path?.map = null // 도보 초기화
         }
     }
-    
+
     private fun initAdapter() {
         mapLetterAdapter = MapLetterAdapter(mapViewModel = mapViewModel).apply {
             itemClickListener = object : MapLetterAdapter.ItemClickListener {
@@ -171,21 +191,21 @@ class MapFragment :
                     } else {
                         mainActivity.showToast("사용자의 위치를 불러오는 중입니다.")
                     }
-                    
+
                 }
-                
+
                 override fun reportClick(view: View, position: Int) {
                     Log.d(TAG, "itemClick: 받은 편지 신고버튼 클릭됨")
                 }
             }
         }
-        
+
         binding.recyclerviewLetterList.apply {
             adapter = mapLetterAdapter
             layoutManager = LinearLayoutManager(mainActivity, LinearLayoutManager.VERTICAL, false)
         }
     }
-    
+
     private fun initCollect() {
         // error 처리
         viewLifecycleOwner.lifecycleScope.launch {
@@ -193,14 +213,14 @@ class MapFragment :
                 mainActivity.showToast(it.message.toString())
             }
         }
-        
+
         // 편지 리스트
         viewLifecycleOwner.lifecycleScope.launch {
             mapViewModel.mapLetterList.collectLatest {
                 mapLetterAdapter.submitList(it.toMutableList())
             }
         }
-        
+
         // 길 찾기 data 수신[Tmap] -> 경로 그리기 & WorkManager 실행
         viewLifecycleOwner.lifecycleScope.launch {
             mapViewModel.tmapWalkRoadInfo.collectLatest {
@@ -222,25 +242,25 @@ class MapFragment :
                 }
             }
         }
-        
+
         // WorkManager
         viewLifecycleOwner.lifecycleScope.launch {
             mapViewModel.isWorkManager.collectLatest {
-            
+
             }
         }
     }
-    
+
     private fun DrawLoad(featureCollectionDto: FeatureCollectionDto) {
         path?.map = null
-        
+
         val featureList = featureCollectionDto.features
         path = PathOverlay()
         // MutableList에 add 기능 쓰기 위해 더미 원소 하나 넣어둠
         val path_container: MutableList<LatLng>? = mutableListOf(LatLng(0.1, 0.1))
         for (feature in featureList) {
             val pathList = feature.geometry.coordinates as? List<List<Double>> ?: emptyList()
-            
+
             for (path_cords_xy in pathList) {
                 path_container?.add(LatLng(path_cords_xy[1], path_cords_xy[0]))
             }
@@ -252,7 +272,7 @@ class MapFragment :
         path!!.color = Color.RED
         path!!.map = naverMap
     }
-    
+
     override fun onMapReady(naverMap: NaverMap) {
         val cameraPosition = CameraPosition(
             LatLng(37.5666102, 126.9783881), // 위치 지정
@@ -260,20 +280,20 @@ class MapFragment :
         )
         this.naverMap = naverMap
         naverMap.cameraPosition = cameraPosition
-        
+
         initNaverMapSetting()
-        
+
         naverMap.mapType = NaverMap.MapType.Basic // 지도 타입
         naverMap.locationSource = locationSource // 현재 위치
         naverMap.isIndoorEnabled = true // 실내지도
         naverMap.locationTrackingMode =
             LocationTrackingMode.Follow // 위치를 추적하면서 카메라도 따라 움직인다. (구글 서비스 버전 21.0.1 이상 사용해야함)
-        
+
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(mainActivity) // gps 자동으로 받아오기
         setUpdateLocationListner() // 내위치를 가져오는 코드
     }
-    
+
     private fun initNaverMapSetting() {
         naverMap.uiSettings.apply {
             isCompassEnabled = false
@@ -283,13 +303,13 @@ class MapFragment :
             logoGravity = Gravity.LEFT or Gravity.TOP
             setLogoMargin(20, 20, 0, 0)
         }
-        
+
         binding.apply {
             zoom.map = naverMap
             location.map = naverMap
         }
     }
-    
+
     // 좌표계를 주기적으로 갱신
     @SuppressLint("MissingPermission")
     fun setUpdateLocationListner() {
@@ -298,7 +318,7 @@ class MapFragment :
             locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             locationRequest.setInterval(2000)
         }
-        
+
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 locationResult ?: return
@@ -318,18 +338,18 @@ class MapFragment :
                 }
             }
         }
-        
+
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
             Looper.myLooper(),
         )
     }
-    
+
     fun setMarkerLocation(mapLetterDto: MapLetterDto, latitude: Double, longitude: Double) {
         // 기존 마커가 존재하는 경우 제거합니다
         marker?.map = null
-        
+
         val myLocation = LatLng(latitude, longitude)
         // 새로운 마커를 생성합니다
         marker = Marker()
@@ -345,7 +365,7 @@ class MapFragment :
             captionColor = ContextCompat.getColor(mainActivity, R.color.AlertRed)
             map = naverMap
         }
-        
+
         marker?.setOnClickListener {
             if (it is Marker && initCheckPermission()) {
                 // 확인 다이얼로그
@@ -355,7 +375,7 @@ class MapFragment :
             true
         }
     }
-    
+
     // 카메라 포커스 이동
     fun setCameraToIncludeMyLocationAndMarker(
         naverMap: NaverMap,
@@ -368,13 +388,13 @@ class MapFragment :
                 .include(markerLocation) // 마커 위치
                 .build(),
             300, 0, 300, 400, // padding 값을 조정하여 여백을 설정할 수 있습니다.
-        
+
         )
         naverMap.moveCamera(cameraUpdate)
         naverMap.maxZoom = 21.0
         naverMap.minZoom = 5.0
     }
-    
+
     // 권한 Check
     private fun initCheckPermission(): Boolean = with(mainActivity) {
         if (!hasPermissions(ACCESS_COARSE_LOCATION)
@@ -386,7 +406,7 @@ class MapFragment :
         }
         return true
     }
-    
+
     // WorkManager
     // 산책 종료
     private fun stopWalk() {
@@ -401,28 +421,28 @@ class MapFragment :
         setUpdateLocationListner()
         mapViewModel.isStartWalk = false
     }
-    
+
     @SuppressLint("RestrictedApi")
     private fun startWalk() {
+
         mainActivity.showToast("편지 찾기를 시작합니다.")
         
         // 현재 포그라운드에서 받아오는 위치서비스를 중단
 //        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
-        
-        
+
         binding.apply {
             presidentBottomSheet.visibility = View.GONE
             textviewTopDistance.visibility = View.GONE
             cardviewWork.visibility = View.VISIBLE
         }
-        
+
         val inputData = Data.Builder()
             .putDouble("goalLatitude", mapViewModel.goalLatitude)
             .putDouble("goalLongitude", mapViewModel.goalLongitude)
             .putDouble("userLatitude", mapViewModel.lastLatitude.toDouble())
             .putDouble("userLongitude", mapViewModel.lastLongitude.toDouble())
             .build()
-        
+
         workManager = WorkManager.getInstance(mainActivity)
         workRequest = OneTimeWorkRequestBuilder<WalkWorker>()
             .setInputData(inputData)
@@ -438,22 +458,22 @@ class MapFragment :
                         WorkInfo.State.RUNNING -> {
                             Log.d(TAG, "startWalk:Running ")
                         }
-                        
+
                         WorkInfo.State.SUCCEEDED -> {
                             Log.d(TAG, "onCreate: success")
                             mapViewModel.isStartWalk = false
                         }
-                        
+
                         WorkInfo.State.FAILED -> {
                             Log.d(TAG, "onCreate: fail")
                             mapViewModel.isStartWalk = false
                         }
-                        
+
                         WorkInfo.State.CANCELLED -> {
                             Log.d(TAG, "종료 - 거리: $walkDist / 시간: $walkTime")
                             mapViewModel.isStartWalk = false
                         }
-                        
+
                         else -> {
                             Log.d(TAG, "onCreate: else")
                         }
@@ -461,43 +481,46 @@ class MapFragment :
                 }
             }
     }
-    
+
     override fun onStart() {
         super.onStart()
         mapView.onStart()
     }
-    
+
     override fun onResume() {
         super.onResume()
         mapView.onResume()
     }
-    
+
     override fun onPause() {
         super.onPause()
         mapView.onPause()
     }
-    
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         mapView.onSaveInstanceState(outState)
     }
-    
+
     override fun onStop() {
         super.onStop()
         mapView.onStop()
     }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         Log.d(TAG, "onDestroyView: ")
         mapView.onDestroy()
+
+//        // status bar 색상 되돌리기
+//        window.statusBarColor = ContextCompat.getColor(mainActivity, R.color.PrimaryLightBlue)
     }
-    
+
     override fun onLowMemory() {
         super.onLowMemory()
         mapView.onLowMemory()
     }
-    
+
     companion object {
         var walkDist = 0F
         var walkTime = 0
