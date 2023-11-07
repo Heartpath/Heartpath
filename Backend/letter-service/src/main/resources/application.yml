@@ -6,23 +6,28 @@ server:
       charset: UTF-8
       enabled: true
       force: true
+  ssl:
+    trust-store: /tmp/certs/rds-truststore.jks
+    trust-store-password: zootopia-admin
+    enabled: true
+
 
 spring:
-  jackson:
-    time-zone: Asia/Seoul
-  data:
-    mongodb:
-      uri: mongodb://zootopia:zootopia-admin@zootopia-mongodb.cluster-c2f2jpwzzxst.ap-northeast-2.docdb.amazonaws.com:27017/heartpath
+  #  jackson:
+  #    time-zone: Asia/Seoul
+  #  data:
+  #    mongodb:
+  #      uri: mongodb://localhost:27017/zootopia
 
   servlet:
     multipart:
       max-file-size: 500MB
       max-request-size: 500MB
-#  datasource:
-#    url: jdbc:h2:tcp://localhost/~/heartpath
-#    username: zootopia
-#    password:
-#    driver-class-name: org.h2.Driver
+    #  datasource:
+    #    url: jdbc:h2:tcp://localhost/~/heartpath
+    #    username: zootopia
+    #    password:
+    #    driver-class-name: org.h2.Driver
 
     #     MySQL
   #    url: jdbc:mysql://zootopia-mysql.c2f2jpwzzxst.ap-northeast-2.rds.amazonaws.com:3306/zootopia
