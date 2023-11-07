@@ -16,7 +16,7 @@ spring:
     time-zone: Asia/Seoul
   data:
     mongodb:
-      uri: mongodb://zootopia:zootopia-admin@zootopia-mongodb.cluster-c2f2jpwzzxst.ap-northeast-2.docdb.amazonaws.com:27017/heartpath
+      uri: mongodb://zootopia:zootopia-admin@zootopia-mongodb.cluster-c2f2jpwzzxst.ap-northeast-2.docdb.amazonaws.com:27017/heartpath?tls=true&tlsCAFile=global-bundle.pem&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false
 
   servlet:
     multipart:
