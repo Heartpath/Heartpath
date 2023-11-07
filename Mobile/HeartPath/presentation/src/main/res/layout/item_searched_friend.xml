@@ -58,7 +58,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingHorizontal="@dimen/_32sdp"
-    android:paddingVertical="@dimen/_4sdp"/>
+    android:paddingVertical="@dimen/_4sdp"
+    />
     <!--    android:background="@drawable/custom_shadow_layer"-->
 </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.cardview.widget.CardView>

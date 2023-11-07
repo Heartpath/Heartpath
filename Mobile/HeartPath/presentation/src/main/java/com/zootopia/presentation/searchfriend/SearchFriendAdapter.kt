@@ -1,17 +1,17 @@
 package com.zootopia.presentation.searchfriend
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zootopia.presentation.R
 import com.zootopia.presentation.databinding.ItemSearchedFriendBinding
+import com.zootopia.presentation.util.clickAnimation
 
-private const val TAG = "FriendSearchAdapter_HP"
-class FriendSearchAdapter():
-RecyclerView.Adapter<FriendSearchAdapter.FriendSearchViewHolder>()
+class SearchFriendAdapter():
+RecyclerView.Adapter<SearchFriendAdapter.FriendSearchViewHolder>()
 {
     inner class FriendSearchViewHolder(val binding: ItemSearchedFriendBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -21,6 +21,8 @@ RecyclerView.Adapter<FriendSearchAdapter.FriendSearchViewHolder>()
             textviewFriendSearchFriendName.text = "김뱁새 친구"
             textviewFriendSearchFriendId.text = "@iam_babsae_friend"
             buttonAddFriend.setOnClickListener {
+                this@FriendSearchViewHolder.itemView.findViewTreeLifecycleOwner()
+                    ?.let { it1 -> it.clickAnimation(lifeCycleOwner = it1) }
                 itemClickListener.itemClick(it, layoutPosition)
             }
         }
@@ -42,6 +44,10 @@ RecyclerView.Adapter<FriendSearchAdapter.FriendSearchViewHolder>()
 
     override fun onBindViewHolder(holder: FriendSearchViewHolder, position: Int) {
         holder.bindInfo()
+    }
+
+    companion object {
+        private const val TAG = "FriendSearchAdapter_HP"
     }
 
 }

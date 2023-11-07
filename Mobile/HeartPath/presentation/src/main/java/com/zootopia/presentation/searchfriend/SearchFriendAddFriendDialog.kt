@@ -1,20 +1,20 @@
 package com.zootopia.presentation.searchfriend
 
-import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import com.zootopia.presentation.R
 import com.zootopia.presentation.databinding.DialogAddFriendBinding
 
 
-class FriendSearchFriendAddDialog(context: Context) : DialogFragment() {
+class SearchFriendAddFriendDialog(context: Context) : DialogFragment() {
     private lateinit var binding: DialogAddFriendBinding
+    private val searchFriendViewModel: SearchFriendViewModel by activityViewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isCancelable = true // 화면 밖에 클릭하면 dismiss 되도록
@@ -37,7 +37,7 @@ class FriendSearchFriendAddDialog(context: Context) : DialogFragment() {
                 dismiss()
             }
             buttonFriendAddAccept.setOnClickListener {
-                // TODO: 친구 추가
+                searchFriendViewModel.addFriend()
                 dismiss()
             }
         }
