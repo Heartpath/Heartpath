@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
@@ -58,37 +60,57 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
         }
 
         // 아이디 입력 edit text
-        edittextNewId.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                imagebuttonIdInputCancel.visibility = View.GONE
+        edittextNewId.apply {
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    imagebuttonIdInputCancel.visibility = View.GONE
+                }
+
+                override fun onTextChanged(
+                    sequence: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int
+                ) {
+                    if(sequence != null) {
+                        // 만약에 값 없으면 X 버튼 gone, 값 있으면 띄우기
+                        if (sequence.isNotEmpty()) {
+                            imagebuttonIdInputCancel.visibility = View.VISIBLE
+                        } else {
+                            imagebuttonIdInputCancel.visibility = View.GONE
+                        }
+
+                        // 입력 값 갱신
+                        loginViewModel.setNewId(sequence.toString())
+                        // 입력 값 수정하면 중복확인 false 처리
+                        loginViewModel.setCheckIdDone(value = false)
+                    }
+                }
+
+                override fun afterTextChanged(p0: Editable?) {
+
+                }
+            })
+
+            // 입력한 키 확인 event
+            setOnKeyListener { view, keyCode, keyEvent ->
+                if (keyEvent.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                    buttonIdCheck.performClick()
+                    keyboardEvent() // 엔터 누르면 키보드 내리기
+                    setCancelButton()// 키보드 내리면 x button도 gone 시키기
+                    true
+                }
+                false
             }
 
-            override fun onTextChanged(
-                sequence: CharSequence?,
-                start: Int,
-                before: Int,
-                count: Int
-            ) {
-                if(sequence != null) {
-                    // 만약에 값 없으면 X 버튼 gone, 값 있으면 띄우기
-                    if (sequence.isNotEmpty()) {
-                        imagebuttonIdInputCancel.visibility = View.VISIBLE
-                    } else {
-                        imagebuttonIdInputCancel.visibility = View.GONE
-                    }
-
-                    // 입력 값 갱신
-                    loginViewModel.setNewId(sequence.toString())
-
-                    // 입력 값 수정하면 중복확인 false 처리
-                    loginViewModel.setCheckIdDone(value = false)
+            // focus 확인 event
+            setOnFocusChangeListener { view, gainFocus ->
+                if(gainFocus) {
+                    // focus를 받았을 때 값 있으면 x 버튼 visible 처리
+                    setButtonByFocus()
                 }
             }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
-        })
+        }
     }
 
     private fun initAnimation() = with(binding) {   // 회원가입 새 애니메이션 적용
@@ -109,6 +131,7 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
         // 중복 확인 버튼
         buttonIdCheck.setOnClickListener {
             loginViewModel.duplicateCheckId()
+            setCancelButton()
         }
         // 회원 가입 버튼
         buttonSignupAccept.setOnClickListener {
@@ -123,6 +146,22 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
                         toast.show()
                     }
                 }
+            }
+        }
+    }
+
+    private fun setCancelButton() = with(binding) {
+        imagebuttonIdInputCancel.visibility =  View.GONE
+    }
+    private fun keyboardEvent() = with(binding){
+        val inputMethodManager = mainActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(edittextNewId.windowToken, 0)
+    }
+    private fun setButtonByFocus() = with(binding) {
+        // focus를 받았을 때 값 있으면 x 버튼 visible 처리
+        lifecycleScope.launch {
+            loginViewModel.newId.collect {value ->
+                if(value.isNotEmpty()) imagebuttonIdInputCancel.visibility = View.VISIBLE
             }
         }
     }
