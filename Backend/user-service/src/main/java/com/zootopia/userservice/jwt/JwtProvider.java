@@ -75,8 +75,7 @@ public class JwtProvider {
         String accessToken = Jwts.builder()
                 .setHeaderParams(JwtUtil.getHeaderMap())
                 .setIssuedAt(DateUtil.getCurrentDate())
-//                .setExpiration(ONE_DAY)
-                .setExpiration(new Date(System.currentTimeMillis() + 1000))
+                .setExpiration(ONE_DAY)
                 .claim("email", memberID)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
