@@ -1,5 +1,8 @@
 package com.zootopia.presentation
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
@@ -32,7 +35,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         initNavHost()
         initCheckPermission()
         initCollect()
-        initAppbar()
+        initNotification()
         // 카카오 키 해시 값 가지고 오기
 //        Log.d(TAG, "KAKAO keyhash : ${Utility.getKeyHash(this)}")
     }
@@ -74,10 +77,28 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         }
     }
 
-    // Appbar 처리
-    private fun initAppbar() {
-        // home, login, signup 빼고
+    // noticiation manager 초기화
+    private fun initNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create channel to show notifications.
+            val channelId = getString(R.string.default_notification_channel_id)
+            val channelName = getString(R.string.default_notification_channel_name)
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager?.createNotificationChannel(
+                NotificationChannel(
+                    channelId,
+                    channelName,
+                    NotificationManager.IMPORTANCE_LOW,
+                ),
+            )
+        }
 
+        intent.extras?.let {
+            for (key in it.keySet()) {
+                val value = intent.extras?.getString(key)
+                Log.d(TAG, "Key: $key Value: $value")
+            }
+        }
     }
 
     // 코틀린의 전역변수

@@ -46,6 +46,16 @@
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="${NAVER_MAP_CLIENT_ID}" />
+        <service
+            android:name="com.zootopia.data.service.FCMService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+            <meta-data
+                android:name="@string/default_notification_channel_name"
+                android:value="@string/default_notification_channel_id" />
+        </service>
     </application>
 
 </manifest>
