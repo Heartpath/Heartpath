@@ -1,6 +1,8 @@
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,node,vuejs
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,node,vuejs
 *.
+*.yml
+heartpath-adminsdk.json
 ### Node ###
 # Logs
 logs
