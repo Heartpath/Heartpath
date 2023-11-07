@@ -1,0 +1,93 @@
+package com.zootopia.userservice.filter;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zootopia.userservice.common.ErrorResponse;
+import com.zootopia.userservice.exception.JwtErrorCode;
+import com.zootopia.userservice.exception.JwtException;
+import com.zootopia.userservice.jwt.JwtProvider;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Optional;
+
+import static com.zootopia.userservice.exception.JwtErrorCode.NOT_SUPPORTED_TOKEN;
+import static com.zootopia.userservice.exception.JwtErrorCode.TOKEN_NOT_FOUND;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
+
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class VerifyJwtFilter extends OncePerRequestFilter {
+
+    private final JwtProvider jwtProvider;
+
+    private String extractJwtFromHeader(Optional<String> authorizationToken) throws JwtException {
+
+        if (authorizationToken.isEmpty()) {
+            throw new JwtException(TOKEN_NOT_FOUND);
+        }
+
+        String accessToken = authorizationToken.get();
+        if (!accessToken.startsWith("Bearer ")) {
+            throw new JwtException(NOT_SUPPORTED_TOKEN);
+        }
+
+        accessToken = accessToken.substring(7);
+
+        return accessToken;
+    }
+
+    private void setErrorResponse(
+            HttpServletResponse response,
+            JwtException error
+    ) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        response.setStatus(error.getJwtErrorCode().getHttpStatus().value());
+        response.setContentType(APPLICATION_JSON_VALUE);
+        ErrorResponse errorResponse = ErrorResponse.of(
+                error.getJwtErrorCode().getHttpStatus().toString(),
+                error.getJwtErrorCode().getHttpStatus().value(),
+                error.getJwtErrorCode().getMessage()
+        );
+
+        try {
+            response.setCharacterEncoding("utf-8");
+            response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
+        } catch (IOException e) {
+            log.error(e.toString());
+        }
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain
+    ) throws ServletException, IOException {
+
+        // WhiteList
+
+        // JWT 확인
+        try {
+            Optional<String> authorizationToken = Optional.ofNullable(request.getHeader("Authorization"));
+            String accessToken = extractJwtFromHeader(authorizationToken);
+
+            // JWT 검증
+            jwtProvider.validateToken(accessToken);
+        } catch (JwtException e) {
+            log.error(e.toString());
+            setErrorResponse(response, e);
+            return;
+        }
+
+        filterChain.doFilter(request, response);
+    }
+}
