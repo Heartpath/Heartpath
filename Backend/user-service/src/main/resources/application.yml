@@ -1,12 +1,13 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/zootopia?serverTimezone=UTC&useUniCode=yes&characterEncoding=UTF-8
-    username: ssafy
-    password: ssafy
+    url: jdbc:mysql://zootopia-mysql.c2f2jpwzzxst.ap-northeast-2.rds.amazonaws.com:3306/zootopia
+    username: admin
+    password: ENC(aZhyo9Zn2KY/LzJYoqXgwY4bCKai+uW+)
   redis:
-    host: localhost
+    host: ENC(VXjy6MiylvpTkGupRZ+zKBkO4+G2S34sBWUx9Nb3y7w=)
     port: 6379
+    password: ENC(Jw9sypS0yEWh6L2uZflvGs7VoWsnb7QV)
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
