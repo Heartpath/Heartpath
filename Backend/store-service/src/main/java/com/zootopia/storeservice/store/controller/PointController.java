@@ -23,9 +23,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @RequestMapping(value = "/user")
 public class PointController {
 
-    @Autowired
     private WebClient webClient;
-
     private final PointService pointService;
 
     @GetMapping("/point")
