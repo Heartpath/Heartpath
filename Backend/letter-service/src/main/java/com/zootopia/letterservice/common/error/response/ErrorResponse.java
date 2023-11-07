@@ -11,10 +11,10 @@ public class ErrorResponse {
     private int status;
     private String message;
 
-    public static ErrorResponse of(String httpStatus, int staus, String message) {
+    public static ErrorResponse of(String httpStatus, int status, String message) {
         return ErrorResponse.builder()
                 .httpStatus(httpStatus)
-                .status(staus)
+                .status(status)
                 .message(message)
                 .build();
     }
