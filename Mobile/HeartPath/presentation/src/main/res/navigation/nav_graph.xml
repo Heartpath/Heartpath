@@ -82,7 +82,7 @@
         tools:layout="@layout/fragment_setting" />
     <fragment
         android:id="@+id/friendSearchFragment"
-        android:name="com.zootopia.presentation.searchfriend.FriendSearchFragment"
+        android:name="com.zootopia.presentation.searchfriend.SearchFriendFragment"
         android:label="fragment_friend_search"
         tools:layout="@layout/fragment_friend_search" />
     <fragment
