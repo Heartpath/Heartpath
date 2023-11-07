@@ -93,17 +93,16 @@ class MapFragment :
 
     // window
     private lateinit var window : Window
+    
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        requestMultiplePermission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-        }
         mainActivity = context as MainActivity
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-
+        
         initView()
         initAdapter()
         initCollect()
