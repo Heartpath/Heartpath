@@ -6,17 +6,17 @@ server:
       charset: UTF-8
       enabled: true
       force: true
+  ssl:
+    trust-store: /tmp/certs/rds-truststore.jks
+    trust-store-password: zootopia-admin
+    enabled: true
 
 spring:
   jackson:
     time-zone: Asia/Seoul
   data:
     mongodb:
-<<<<<<< HEAD
-      uri: mongodb://zootopia:zootopia-admin@zootopia-mongodb.cluster-c2f2jpwzzxst.ap-northeast-2.docdb.amazonaws.com:27017/?tls=true&tlsCAFile=global-bundle.pem&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false
-=======
       uri: mongodb://zootopia:zootopia-admin@zootopia-mongodb.cluster-c2f2jpwzzxst.ap-northeast-2.docdb.amazonaws.com:27017/heartpath
->>>>>>> a0a740ef0678ff031af990e8eaf0e8e2e517b7b7
 
   servlet:
     multipart:
@@ -28,11 +28,11 @@ spring:
 #    password:
 #    driver-class-name: org.h2.Driver
 
-    #     MySQL
-  #    url: jdbc:mysql://zootopia-mysql.c2f2jpwzzxst.ap-northeast-2.rds.amazonaws.com:3306/zootopia
-  #    username: admin
-  #    password: zootopia-admin
-  #    driver-class-name: com.mysql.cj.jdbc.Driver
+#         MySQL
+      url: jdbc:mysql://zootopia-mysql.c2f2jpwzzxst.ap-northeast-2.rds.amazonaws.com:3306/zootopia
+      username: admin
+      password: zootopia-admin
+      driver-class-name: com.mysql.cj.jdbc.Driver
 
   # ?? ?? ??
   main:
