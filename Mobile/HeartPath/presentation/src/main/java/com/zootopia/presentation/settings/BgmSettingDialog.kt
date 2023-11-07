@@ -2,20 +2,26 @@ package com.zootopia.presentation.settings
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.zootopia.presentation.R
 import com.zootopia.presentation.databinding.DialogBgmSettingBinding
+import kotlinx.coroutines.flow.collectLatest
 
 class BgmSettingDialog : DialogFragment() {
     private lateinit var binding: DialogBgmSettingBinding
+    private val settingViewModel : SettingViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isCancelable = true // 화면 밖에 클릭하면 dismiss 되도록
+        Log.d(TAG, "onCreate: bgm dialog oncreate")
     }
 
     override fun onCreateView(
@@ -30,9 +36,11 @@ class BgmSettingDialog : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        settingViewModel.getBgmState()
         binding.apply {
+            switchBgmSetting.isChecked = settingViewModel.switchState.value
             buttonDone.setOnClickListener {
-                //TODO: 상태 저장
+                settingViewModel.saveBgmState()
                 dismiss()
             }
         }
@@ -51,9 +59,13 @@ class BgmSettingDialog : DialogFragment() {
             dialog.window?.setGravity(Gravity.BOTTOM)
         }
         // switch custom 값 동적으로 주기
-        binding.apply {
-            switchBgmSetting.trackDrawable = context?.getDrawable(R.drawable.custom_switch_track)
-            switchBgmSetting.thumbDrawable = context?.getDrawable(R.drawable.custom_switch_thumb)
+        binding.switchBgmSetting.apply {
+            trackDrawable = context?.getDrawable(R.drawable.custom_switch_track)
+            thumbDrawable = context?.getDrawable(R.drawable.custom_switch_thumb)
+            setOnClickListener {
+                Log.d(TAG, "onResume: switch button clicked")
+                settingViewModel.changeBgmState()
+            }
         }
     }
 
