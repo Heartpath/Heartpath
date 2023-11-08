@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.work.WorkManager
+import com.kakao.sdk.common.util.Utility
 import com.zootopia.presentation.config.BaseActivity
 import com.zootopia.presentation.databinding.ActivityMainBinding
 import com.zootopia.presentation.util.checkAllPermission
