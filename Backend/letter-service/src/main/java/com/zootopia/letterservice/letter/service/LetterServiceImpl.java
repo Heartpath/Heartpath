@@ -3,15 +3,14 @@ package com.zootopia.letterservice.letter.service;
 import com.zootopia.letterservice.common.FCM.FCMService;
 import com.zootopia.letterservice.common.error.code.ErrorCode;
 import com.zootopia.letterservice.common.error.exception.BadRequestException;
+import com.zootopia.letterservice.common.error.exception.ServerException;
 import com.zootopia.letterservice.common.global.BannedWords;
 import com.zootopia.letterservice.common.s3.S3Uploader;
+import com.zootopia.letterservice.letter.dto.request.FriendReqDto;
 import com.zootopia.letterservice.letter.dto.request.LetterHandReqDto;
 import com.zootopia.letterservice.letter.dto.request.LetterPlaceReqDto;
 import com.zootopia.letterservice.letter.dto.request.LetterTextReqDto;
-import com.zootopia.letterservice.letter.dto.response.LetterReceivedDetailResDto;
-import com.zootopia.letterservice.letter.dto.response.LetterReceivedResDto;
-import com.zootopia.letterservice.letter.dto.response.LetterSendResDto;
-import com.zootopia.letterservice.letter.dto.response.LetterUnsendResDto;
+import com.zootopia.letterservice.letter.dto.response.*;
 import com.zootopia.letterservice.letter.entity.LetterImage;
 import com.zootopia.letterservice.letter.entity.LetterMongo;
 import com.zootopia.letterservice.letter.entity.LetterMySQL;
@@ -22,9 +21,15 @@ import com.zootopia.letterservice.letter.repository.LetterMongoRepository;
 import com.zootopia.letterservice.letter.repository.PlaceImageRepository;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.server.ServerErrorException;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,7 +54,7 @@ public class LetterServiceImpl implements LetterService {
     // 수신자 확인 로직 추가 필요
     @Override
     @Transactional
-    public void createHandLetter(LetterHandReqDto letterHandReqDto, MultipartFile content, List<MultipartFile> files) {
+    public void createHandLetter(String accessToken, LetterHandReqDto letterHandReqDto, MultipartFile content, List<MultipartFile> files) {
         // content 파일
         if (content.isEmpty()) {
             throw new BadRequestException(ErrorCode.NOT_EXISTS_CONTENT);
@@ -250,5 +255,40 @@ public class LetterServiceImpl implements LetterService {
         return letter;
     }
 
+    // accessToken으로 해당 member에 대한 정보 받기
+    private UserResDto accessTokenToMember(String accessToken) {
+        WebClient webClient = WebClient.builder().build();
+
+        UserResDto res = webClient.get()
+                .uri("https://www.heartpath.site/user/")
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .retrieve() // ResponseEntity를 받아 디코딩, exchange() : ClientResponse를 상태값, 헤더 제공
+                .onStatus(HttpStatus::is4xxClientError, clientResponse -> {
+                    throw new BadRequestException(ErrorCode.INVALID_USER_REQUEST);
+                })
+                .onStatus(HttpStatus::is5xxServerError, clientResponse -> {
+                    throw new ServerException(ErrorCode.UNSTABLE_SERVER);
+                })
+                .bodyToMono(UserResDto.class)
+                .block();
+
+        return res;
+    }
+
+    // member_Id 2개를 보냈을 때 차단되있는지 안되어있는지 판별
+    private FriendResDto FiendIsBlocked(String accessToken, String senderId, String receiverId) {
+        WebClient webClient = WebClient.builder().build();
+
+        FriendReqDto req = new FriendReqDto(senderId, receiverId);
+        FriendResDto res = webClient.post()
+                .uri("https://www.heartpath.site/user/")
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .body(Mono.just(req), FriendReqDto.class)
+                .retrieve()
+                .bodyToMono(FriendResDto.class)
+                .block();
+
+        return res;
+    }
 
 }
