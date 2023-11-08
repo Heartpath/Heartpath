@@ -51,9 +51,9 @@ public class UserController {
 
         boolean res = userService.checkIfDuplicatedUserID(memberID);
 
-        BaseResponse baseResponse = new BaseResponse(200, "사용할 수 있는 아이디입니다.", res);
+        BaseResponse baseResponse = new BaseResponse(200, "사용할 수 없는 아이디입니다.", res);
         if (!res) {
-            baseResponse.setMessage("사용할 수 없는 아이디입니다.");
+            baseResponse.setMessage("사용할 수 있는 아이디입니다.");
         }
 
         return ResponseEntity.status(200).body(baseResponse);
