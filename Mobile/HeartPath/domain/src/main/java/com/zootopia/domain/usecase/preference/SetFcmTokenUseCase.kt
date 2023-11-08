@@ -13,6 +13,6 @@ class SetFcmTokenUseCase @Inject constructor(
     }
 
     companion object{
-        private const val TAG = "싸피"
+        private const val TAG = "SetFcmTokenUseCase_HP"
     }
 }

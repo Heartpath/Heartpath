@@ -38,12 +38,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
                 loginViewModel.loginResult.collect { result ->
                     if(result.accessToken != "") {
                         // 성공 -> home으로 이동
-                        Log.d(TAG, "initClickEvent: ${result.accessToken}")
-//                        findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                        loginViewModel.storeToken(type = "login")
+                        findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
                     } else {
                         // 성공 못함 -> 회원가입 시키기
-//                        findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
-                        Log.d(TAG, "initClickEvent: ${result.accessToken}")
+                        findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
                     }
                 }
             }
