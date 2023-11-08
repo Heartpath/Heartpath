@@ -7,5 +7,7 @@ public interface UserService {
 
     UserInfoDTO loadUserInfo(String memberID);
 
+    boolean checkIfDuplicatedUserID(String memberID);
+
     void registerUser(UserRegisterDTO userRegisterDTO);
 }
