@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+
 
 @Slf4j
 @RestController
@@ -39,8 +41,11 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public void registerUser(@RequestBody UserRegisterDTO userRegisterDTO) {
+    public ResponseEntity<BaseResponse> registerUser(@RequestBody UserRegisterDTO userRegisterDTO) {
         userService.registerUser(userRegisterDTO);
+
+        BaseResponse baseResponse = new BaseResponse(200, "회원가입이 완료되었습니다.", new ArrayList<>());
+        return ResponseEntity.status(200).body(baseResponse);
     }
 
     @GetMapping("/mypage")
