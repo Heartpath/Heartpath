@@ -47,8 +47,8 @@ cloud:
     s3:
       bucket: zootopia-s3
     credentials:
-      access-key: ENC(t71C2F1P8bVdxgOqPw1hk+3e37ptKhzNQvti3psjaJw=)
-      secret-key: ENC(tkveJu9WE+40f++hMhhT0QsYiO9zhPsC4PznAAUr9bkt9n2INQ/+R9sFogukHcVM63Kqy0a862Y=)
+      access-key: AKIAT2IXRZPUG2OFXNRM
+      secret-key: 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
     region:
       static: ap-northeast-2
       auto: false
