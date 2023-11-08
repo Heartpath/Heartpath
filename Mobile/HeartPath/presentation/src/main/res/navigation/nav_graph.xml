@@ -59,7 +59,11 @@
         android:id="@+id/mapFragment"
         android:name="com.zootopia.presentation.map.MapFragment"
         android:label="fragment_map"
-        tools:layout="@layout/fragment_map" />
+        tools:layout="@layout/fragment_map" >
+        <action
+            android:id="@+id/action_mapFragment_to_arCoreFragment"
+            app:destination="@id/arCoreFragment" />
+    </fragment>
     <fragment
         android:id="@+id/myPageFragment"
         android:name="com.zootopia.presentation.mypage.MyPageFragment"
@@ -143,5 +147,10 @@
             app:destination="@id/selectLetterTypeFragment"
             style="@style/SlideAnimation"/>
     </fragment>
+    <fragment
+        android:id="@+id/arCoreFragment"
+        android:name="com.zootopia.presentation.arcore.ArCoreFragment"
+        android:label="fragment_ar_core"
+        tools:layout="@layout/fragment_ar_core" />
 
 </navigation>

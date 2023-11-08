@@ -57,7 +57,9 @@
             android:value="${NAVER_MAP_CLIENT_ID}" />
 
         <!-- ARCore 사용 명시 및 ARCore 사용이 필수(required)인지 선택(optional)인지 명시  -->
-        <meta-data android:name="com.google.ar.core" android:value="required" />
+        <meta-data
+            android:name="com.google.ar.core"
+            android:value="optional" />
     </application>
 
 </manifest>
