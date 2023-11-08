@@ -1,6 +1,7 @@
 package com.zootopia.userservice.controller;
 
 import com.zootopia.userservice.common.BaseResponse;
+import com.zootopia.userservice.dto.MypageDTO;
 import com.zootopia.userservice.dto.UserInfoDTO;
 import com.zootopia.userservice.dto.UserLoginDTO;
 import com.zootopia.userservice.dto.UserRegisterDTO;
@@ -143,10 +144,10 @@ public class UserController {
     }
 
     @GetMapping("/mypage")
-    public ResponseEntity<BaseResponse> getUserInfo() {
+    public ResponseEntity<BaseResponse> getUserInfo(HttpServletRequest request) {
 
-        UserInfoDTO userInfoDTO = userService.loadUserInfo("MEMBER_ID");
+        MypageDTO mypageDTO = userService.loadUserInfo("ssafyA");
 
-        return ResponseEntity.status(200).body(new BaseResponse(HttpStatus.OK.value(), "유저 불러오기", userInfoDTO));
+        return ResponseEntity.status(200).body(new BaseResponse(HttpStatus.OK.value(), "유저 불러오기", mypageDTO));
     }
 }
