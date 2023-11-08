@@ -1,20 +1,28 @@
 package com.zootopia.data.service
 
+import com.zootopia.data.model.login.request.LoginRequest
+import com.zootopia.data.model.login.response.LoginResponse
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Query
 
 interface BusinessService {
     @GET("/user/health_check")
     suspend fun test(): Response<String>
 
     @POST("/user/login")
-    suspend fun login(kakaoAccessToken: String)
+    suspend fun login(
+        @Body loginRequest: LoginRequest
+    ): Response<LoginResponse>
 
     // 아이디 중복 체크
-    @GET("/user/check/{id}")
-    suspend fun checkId()
+    @GET("/user/check")
+    suspend fun checkId(
+        @Query("id") id: String
+    )
 
     // 회원 탈퇴
     @POST("/user/unregist")
