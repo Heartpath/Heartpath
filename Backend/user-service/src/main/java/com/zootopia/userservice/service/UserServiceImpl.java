@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Optional;
 
 
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void registerUser(UserRegisterDTO userRegisterDTO) {
+    public HashMap<String, String> registerUser(UserRegisterDTO userRegisterDTO) {
 
         String kakaoToken = userRegisterDTO.getKakaoToken();
         Optional<KakaoUserInfo> oKakaoUserInfo = redisRepository.getData(kakaoToken, KakaoUserInfo.class);
@@ -55,7 +56,17 @@ public class UserServiceImpl implements UserService {
                 .build();
         log.info("save user: {}", user);
 
+        String memberID = user.getMemberID();
         userRepository.save(user);
+
+        String accessToken = jwtProvider.createAccessToken(memberID);
+        String refreshToken = jwtProvider.createRefreshToken(memberID);
+
+        HashMap<String, String> res = new HashMap<>();
+        res.put("AccessToken", accessToken);
+        res.put("RefreshToken", refreshToken);
+
+        return res;
     }
 
     @Override
