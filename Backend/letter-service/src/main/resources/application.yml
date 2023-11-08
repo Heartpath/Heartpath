@@ -7,12 +7,6 @@ server:
       enabled: true
       force: true
 
-javax:
-  net:
-    ssl:
-      trustStore: /tmp/certs/rds-truststore.jks
-      trustStorePassword: zootopia-admin
-
 spring:
   jackson:
     time-zone: Asia/Seoul
