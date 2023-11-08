@@ -6,37 +6,25 @@ server:
       charset: UTF-8
       enabled: true
       force: true
-#  ssl:
-#    trust-store: /tmp/certs/rds-truststore.jks
-#    trust-store-password: zootopia-admin
-#    enabled: true
-
 
 spring:
   jackson:
     time-zone: Asia/Seoul
   data:
     mongodb:
-      # uri: mongodb://zootopia:zootopia-admin@zootopia-mongodb.cluster-c2f2jpwzzxst.ap-northeast-2.docdb.amazonaws.com:27017/heartpath?tls=true&tlsCAFile=global-bundle.pem&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false
-      uri: mongodb://zootopia:zootopia-admin@zootopia-mongodb.cluster-c2f2jpwzzxst.ap-northeast-2.docdb.amazonaws.com:27017/heartpath?tls=true&tlsCAFile=/tmp/certs/rds-truststore.jks&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false
+      uri: mongodb://ENC(4T9464NaUPzLWEYgXJr7gNVBnHxZirJP):ENC(nBkcVV0WrHAC/Zoli8QEnTH5EvLX2nuR)@zootopia-mongodb.cluster-c2f2jpwzzxst.ap-northeast-2.docdb.amazonaws.com:27017/heartpath?tls=true&tlsCAFile=/tmp/certs/rds-truststore.jks&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false
 
   servlet:
     multipart:
       max-file-size: 500MB
       max-request-size: 500MB
-    #  datasource:
-    #    url: jdbc:h2:tcp://localhost/~/heartpath
-    #    username: zootopia
-    #    password:
-    #    driver-class-name: org.h2.Driver
+    datasource:
+       # MySQL
+       url: jdbc:mysql://zootopia-mysql.c2f2jpwzzxst.ap-northeast-2.rds.amazonaws.com:3306/zootopia
+       username: admin
+       password: ENC(QKSALTRM1ZEsabOf6sAJQOcI+ybspvsP)
+       driver-class-name: com.mysql.cj.jdbc.Driver
 
-#         MySQL
-      # url: jdbc:mysql://zootopia-mysql.c2f2jpwzzxst.ap-northeast-2.rds.amazonaws.com:3306/zootopia
-      # username: admin
-      # password: zootopia-admin
-      # driver-class-name: com.mysql.cj.jdbc.Driver
-
-  # ?? ?? ??
   main:
     allow-circular-references: true
 
@@ -59,8 +47,8 @@ cloud:
     s3:
       bucket: zootopia-s3
     credentials:
-      access-key: AKIAT2IXRZPUG2OFXNRM
-      secret-key: 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
+      access-key: ENC(t71C2F1P8bVdxgOqPw1hk+3e37ptKhzNQvti3psjaJw=)
+      secret-key: ENC(tkveJu9WE+40f++hMhhT0QsYiO9zhPsC4PznAAUr9bkt9n2INQ/+R9sFogukHcVM63Kqy0a862Y=)
     region:
       static: ap-northeast-2
       auto: false
@@ -70,7 +58,3 @@ cloud:
 jasypt:
   encryptor:
     bean: jasyptStringEncryptor
-    password: zootopiaD203!
-
-#env:
-#  USER_URL
