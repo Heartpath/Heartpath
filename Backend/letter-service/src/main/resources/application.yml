@@ -23,6 +23,7 @@ spring:
       readPreference: secondaryPreferred
       retryWrites: false
 
+
   servlet:
     multipart:
       max-file-size: 500MB
@@ -50,7 +51,6 @@ spring:
         show_sql: true
         format_sql: true
 
-
 cloud:
   aws:
     s3:
@@ -64,3 +64,8 @@ cloud:
       auto: false
     stack:
       auto: false
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    password: zootopia-admin

@@ -5,8 +5,13 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class FriendReqDto {
-    private String senderId;
-    private String receiverId;
+    private String from;
+    private String to;
+
+    @Builder
+    public FriendReqDto(String from, String to) {
+        this.from = from;
+        this.to = to;
+    }
 }
