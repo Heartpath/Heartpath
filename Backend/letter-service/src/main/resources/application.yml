@@ -12,19 +12,28 @@ spring:
     time-zone: Asia/Seoul
   data:
     mongodb:
-      uri: mongodb://zootopia:zootopia-admin@zootopia-mongodb.cluster-c2f2jpwzzxst.ap-northeast-2.docdb.amazonaws.com:27017/heartpath?tls=true&tlsCAFile=/tmp/certs/rds-truststore.jks&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false
+      host: zootopia-mongodb.cluster-c2f2jpwzzxst.ap-northeast-2.docdb.amazonaws.com
+      port: 27017
+      username: ENC(G9EP7CfdVqJTzaOf8fJX6DXCUPQHkX7d)
+      password: ENC(/O+ahTimYNdEdgePNwsVhHP9zNMhWKWH)
+      database: heartpath
+      tls: true
+      tlsCAFile: /tmp/certs/rds-truststore.jks
+      replicaSet: rs0
+      readPreference: secondaryPreferred
+      retryWrites: false
 
   servlet:
     multipart:
       max-file-size: 500MB
       max-request-size: 500MB
     datasource:
+      # MySQL
       url: jdbc:mysql://zootopia-mysql.c2f2jpwzzxst.ap-northeast-2.rds.amazonaws.com:3306/zootopia
       username: admin
-      password: zootopia-admin
+      password: ENC(Gvm4XgQFXVwb3fpfTmdSxnd88htlJ/zV)
       driver-class-name: com.mysql.cj.jdbc.Driver
 
-  # ?? ?? ??
   main:
     allow-circular-references: true
 
@@ -33,7 +42,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
@@ -47,18 +56,11 @@ cloud:
     s3:
       bucket: zootopia-s3
     credentials:
-      access-key: AKIAT2IXRZPUG2OFXNRM
-      secret-key: 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
+      access-key: ENC(QjAZdSmPEbtCqu5y+s89uIJns8S+fjbkTx1o2ptn9TY=)
+      secret-key: ENC(HembcJ68NF7PAmofcbLEh6Y3Spe2kRAQL1J3RIz4RX6Vy3mVYqi3RUPUl3AbgPmXYdi9it0jpFQ=)
+
     region:
       static: ap-northeast-2
       auto: false
     stack:
       auto: false
-
-jasypt:
-  encryptor:
-    bean: jasyptStringEncryptor
-    password: zootopiaD203!
-
-#env:
-#  USER_URL
