@@ -3,6 +3,7 @@ package com.zootopia.userservice.service;
 import com.zootopia.userservice.domain.User;
 import com.zootopia.userservice.dto.UserInfoDTO;
 import com.zootopia.userservice.dto.UserRegisterDTO;
+import com.zootopia.userservice.jwt.JwtProvider;
 import com.zootopia.userservice.kakao.KakaoUserInfo;
 import com.zootopia.userservice.mapper.UserMapper;
 import com.zootopia.userservice.repository.RedisRepository;
@@ -20,8 +21,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private final JwtProvider jwtProvider;
+
     private final UserMapper userMapper;
     private final UserRepository userRepository;
+
     private final RedisRepository redisRepository;
 
     @Override
@@ -58,5 +62,21 @@ public class UserServiceImpl implements UserService {
     public UserInfoDTO loadUserInfo(String memberID) {
         UserInfoDTO userInfoDTO = userMapper.readUserInfo(memberID);
         return userInfoDTO;
+    }
+
+    @Override
+    public String reissueAccessToken(String refreshToken) {
+
+        String res = "";
+        if (refreshToken == null) {
+            return res;
+        }
+
+        String memberIDFromToken = jwtProvider.getMemberIDFromToken(refreshToken);
+        if (memberIDFromToken.isEmpty()) {
+            res = jwtProvider.createAccessToken(memberIDFromToken);
+        }
+
+        return res;
     }
 }

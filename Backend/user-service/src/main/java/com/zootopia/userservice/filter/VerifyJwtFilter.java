@@ -31,7 +31,9 @@ public class VerifyJwtFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
 
     // TODO: yaml 파일로 빼기
-    private static final String[] EXCLUDED_URLS = {"/user/health_check", "/user/login", "/user/register", "/user/check",
+    private static final String[] EXCLUDED_URLS = {"/user/health_check",
+            "/user/login", "/user/register", "/user/check",
+            "/user/token",
             "/swagger-ui", "/v3/api-docs"};
 
     private String extractJwtFromHeader(Optional<String> authorizationToken) throws JwtException {
