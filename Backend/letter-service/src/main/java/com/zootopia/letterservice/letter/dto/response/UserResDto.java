@@ -2,12 +2,16 @@ package com.zootopia.letterservice.letter.dto.response;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class UserResDto {
     private String memberId;
+    private String fcmToken;
     private String nickname;
-    private String FCMToken;
+    private String profileImagePath;
+    private int point;
+    private LocalDateTime createdDateTime;
 }

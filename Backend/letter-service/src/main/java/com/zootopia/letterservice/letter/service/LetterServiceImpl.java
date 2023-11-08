@@ -260,7 +260,7 @@ public class LetterServiceImpl implements LetterService {
         WebClient webClient = WebClient.builder().build();
 
         UserResDto res = webClient.get()
-                .uri("https://www.heartpath.site/user/")
+                .uri("https://www.heartpath.site/api/user")
                 .header(HttpHeaders.AUTHORIZATION, accessToken)
                 .retrieve() // ResponseEntity를 받아 디코딩, exchange() : ClientResponse를 상태값, 헤더 제공
                 .onStatus(HttpStatus::is4xxClientError, clientResponse -> {
@@ -279,11 +279,15 @@ public class LetterServiceImpl implements LetterService {
     private FriendResDto FiendIsBlocked(String accessToken, String senderId, String receiverId) {
         WebClient webClient = WebClient.builder().build();
 
-        FriendReqDto req = new FriendReqDto(senderId, receiverId);
+        FriendReqDto req = FriendReqDto.builder()
+                .from(senderId)
+                .to(receiverId)
+                .build();
+
         FriendResDto res = webClient.post()
-                .uri("https://www.heartpath.site/user/")
+                .uri("https://www.heartpath.site/api/friend")
                 .header(HttpHeaders.AUTHORIZATION, accessToken)
-                .body(Mono.just(req), FriendReqDto.class)
+                .bodyValue(req)
                 .retrieve()
                 .bodyToMono(FriendResDto.class)
                 .block();
