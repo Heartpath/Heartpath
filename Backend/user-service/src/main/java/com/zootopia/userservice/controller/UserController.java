@@ -6,6 +6,11 @@ import com.zootopia.userservice.dto.UserLoginDTO;
 import com.zootopia.userservice.dto.UserRegisterDTO;
 import com.zootopia.userservice.kakao.KakaoOAuthService;
 import com.zootopia.userservice.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,13 +33,31 @@ public class UserController {
 
     @GetMapping("/health_check")
     public String checkServer(HttpServletRequest request) {
-        
+
         String remoteAddr = request.getRemoteAddr();
         log.info("Get Request From '{}'", remoteAddr);
 
         return String.format("200 OK to %s", remoteAddr);
     }
 
+    @Operation(summary = "회원 로그인")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "회원 가입을 해야하는 경우", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{\n" +
+                            "        \"status\": 204,\n" +
+                            "        \"message\": \"false\",\n" +
+                            "        \"data\": {}\n" +
+                            "}"))),
+            @ApiResponse(responseCode = "200", description = "회원 가입이 되어있을 경우", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{\n" +
+                            "        \"status\": 200,\n" +
+                            "        \"message\": \"true\",\n" +
+                            "        \"data\": {\n" +
+                            "                \"AccessToken\": \"AccessTokenValue\",\n" +
+                            "                \"RefreshToken\": \"RefreshTokenValue\"\n" +
+                            "        }\n" +
+                            "}")))
+    })
     @PostMapping("/login")
     public ResponseEntity<BaseResponse> loginUser(@RequestBody UserLoginDTO userLoginDTO) {
 
@@ -42,10 +65,34 @@ public class UserController {
         String userKakaoToken = userLoginDTO.getKakaoToken();
         String userFCMToken = userLoginDTO.getFcmToken();
 
+        // 카카오 로그인 진행
         BaseResponse baseResponse = kakaoOAuthService.doKakaoLogin(userKakaoToken, userFCMToken);
-        return ResponseEntity.status(200).body(baseResponse);
+
+        // 회원 가입 여부에 따라 status 변경
+        int status = 200;
+        if (baseResponse.getMessage().equals("false")) {
+            status = 204;
+            baseResponse.setStatus(status);
+        }
+
+        return ResponseEntity.status(status).body(baseResponse);
     }
 
+    @Operation(summary = "아이디 중복 검사", description = "쿼리 파라미터로 중복 검사할 아이디 넘겨주세요.")
+    @ApiResponses(value = {
+            @ApiResponse(description = "아이디가 중복되지 않을 경우", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{\n" +
+                            "        \"status\": 200,\n" +
+                            "        \"message\": \"사용할 수 없는 아이디입니다.\",\n" +
+                            "        \"data\": true\n" +
+                            "}\n"))),
+            @ApiResponse(responseCode = "200", description = "아이디가 중복됐을 경우", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{\n" +
+                            "        \"status\": 200,\n" +
+                            "        \"message\": \"사용할 수 있는 아이디입니다.\",\n" +
+                            "        \"data\": false\n" +
+                            "}\n"))),
+    })
     @GetMapping("/check")
     public ResponseEntity<BaseResponse> checkDuplicatedUserID(@RequestParam(name = "id") String memberID) {
 
@@ -59,6 +106,15 @@ public class UserController {
         return ResponseEntity.status(200).body(baseResponse);
     }
 
+    @Operation(summary = "회원 가입", description = "로그인 때 전달했던 동일한 KakaoToken을 전달해주세요.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{\n" +
+                            "        \"status\": 200,\n" +
+                            "        \"message\": \"회원가입이 완료되었습니다.\",\n" +
+                            "        \"data\": []\n" +
+                            "}\n"))),
+    })
     @PostMapping("/register")
     public ResponseEntity<BaseResponse> registerUser(@RequestBody UserRegisterDTO userRegisterDTO) {
         userService.registerUser(userRegisterDTO);

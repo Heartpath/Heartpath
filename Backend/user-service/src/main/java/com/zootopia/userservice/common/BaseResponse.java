@@ -19,4 +19,8 @@ public class BaseResponse {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 }
