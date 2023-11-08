@@ -1,6 +1,7 @@
 package com.zootopia.data.datasource.local
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -151,9 +152,11 @@ class PreferenceDataSource @Inject constructor(
 
     // kakao access token 값 호출
     fun getKakaoAccessToken(): Flow<String> {
+        Log.d(TAG, "getKakaoAccessToken: 여기까지 도달")
         return context.dataStore.data
             .catch { exception ->
                 // IOException이 발생하는 경우도 있기 때문에 throw-catch 처리
+                Log.d(TAG, "getKakaoAccessToken: 캐치문에 도달")
                 if (exception is IOException) {
                     emit(emptyPreferences())
                 } else {
@@ -161,6 +164,7 @@ class PreferenceDataSource @Inject constructor(
                 }
             }
             .map { preferences ->
+                Log.d(TAG, "getKakaoAccessToken: 카카오 토큰 받아옴")
                 preferences[stringPreferencesKey("kakao_access_token")] ?: ""
             }
     }
@@ -169,5 +173,8 @@ class PreferenceDataSource @Inject constructor(
         context.dataStore.edit {preferences ->
             preferences[stringPreferencesKey("kakao_access_token")] = accessToken
         }
+    }
+    companion object {
+        private const val TAG = "PreferenceDataSource_HP"
     }
 }
