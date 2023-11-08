@@ -20,7 +20,7 @@ public class User {
     @Column(name = "MEMBER_ID")
     private String memberID;
 
-    @Column(name = "kakao_id")
+    @Column(name = "KAKAO_ID")
     private Long kakaoID;
 
     @Column(name = "FCM_TOKEN")
