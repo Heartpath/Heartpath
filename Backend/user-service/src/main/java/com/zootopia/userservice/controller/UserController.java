@@ -123,6 +123,24 @@ public class UserController {
         return ResponseEntity.status(200).body(baseResponse);
     }
 
+    @GetMapping("/token")
+    public ResponseEntity<BaseResponse> reissueAccessToken(@RequestParam(name = "refreshToken") String refreshToken) {
+
+        int status = 200;
+        String reissuedAccessToken = userService.reissueAccessToken(refreshToken);
+
+        BaseResponse baseResponse = new BaseResponse(status, "AccessToken이 재발급되었습니다.", reissuedAccessToken);
+        if (reissuedAccessToken.isEmpty()) {
+
+            status = 400;
+
+            baseResponse.setMessage("오류가 발생했습니다.");
+            baseResponse.setStatus(status);
+        }
+
+        return ResponseEntity.status(status).body(baseResponse);
+    }
+
     @GetMapping("/mypage")
     public ResponseEntity<BaseResponse> getUserInfo() {
 
