@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zootopia.userservice.mapper.FriendMapper">
+
+    <select id="getRelationshipWithFriends" parameterType="String" resultType="FriendShipDTO">
+        SELECT f.FROM_MEMBER_ID as `from`, f.TO_MEMBER_ID as `to`, f.IS_BLOCKED as `isBlocked`
+        FROM FRIEND f
+        WHERE f.FROM_MEMBER_ID = #{from}
+          AND f.TO_MEMBER_ID = #{to}
+        UNION ALL
+        SELECT f.FROM_MEMBER_ID as `from`, f.TO_MEMBER_ID as `to`, f.IS_BLOCKED as `isBlocked`
+        FROM FRIEND f
+        WHERE f.FROM_MEMBER_ID = #{to}
+          AND f.TO_MEMBER_ID = #{from}
+    </select>
+
+</mapper>
