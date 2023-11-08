@@ -22,10 +22,10 @@ private const val TAG = "MainActivity_HeartPath"
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
-
+    
     lateinit var navController: NavController
     private val mainViewModel: MainViewModel by viewModels()
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_Splash)
         super.onCreate(savedInstanceState)
@@ -33,6 +33,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         initCheckPermission()
         initCollect()
         initAppbar()
+        
         // 카카오 키 해시 값 가지고 오기
 //        Log.d(TAG, "KAKAO keyhash : ${Utility.getKeyHash(this)}")
     }

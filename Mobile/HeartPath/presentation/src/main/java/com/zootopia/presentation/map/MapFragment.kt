@@ -12,7 +12,6 @@ import android.view.Gravity
 import android.view.View
 import android.view.Window
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -174,7 +173,7 @@ class MapFragment :
             Log.d(TAG, "initClickEvent: 카메라 버튼 클릭!")
             // 권한 확인
             if(checkCameraPermission()) {
-            
+                findNavController().navigate(R.id.action_mapFragment_to_arCoreFragment)
             } else {
                 requestCameraPermission()
             }
