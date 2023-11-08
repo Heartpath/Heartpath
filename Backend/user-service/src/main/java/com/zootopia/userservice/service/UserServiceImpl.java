@@ -1,6 +1,7 @@
 package com.zootopia.userservice.service;
 
 import com.zootopia.userservice.domain.User;
+import com.zootopia.userservice.dto.MypageDTO;
 import com.zootopia.userservice.dto.UserInfoDTO;
 import com.zootopia.userservice.dto.UserRegisterDTO;
 import com.zootopia.userservice.jwt.JwtProvider;
@@ -70,8 +71,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInfoDTO loadUserInfo(String memberID) {
-        UserInfoDTO userInfoDTO = userMapper.readUserInfo(memberID);
+    public MypageDTO loadUserInfo(String memberID) {
+        MypageDTO userInfoDTO = userMapper.readUserInfo(memberID);
         return userInfoDTO;
     }
 
