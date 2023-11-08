@@ -8,20 +8,21 @@ import org.springframework.context.annotation.Bean;
 
 public class JasyptConfig {
     @Value("${jasypt.encryptor.password}")
-    private String PASSWORD;
+    private String PASSWORD_KEY;
 
-    @Bean("jasyptStringEncryptor")
+    @Bean(name = "jasyptStringEncryptor")
     public StringEncryptor stringEncryptor() {
         PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
         SimpleStringPBEConfig config = new SimpleStringPBEConfig();
 
-        config.setPassword(PASSWORD);
+        config.setPassword(PASSWORD_KEY);
         config.setPoolSize("1");
         config.setAlgorithm("PEBWithMD5AndDES");
         config.setStringOutputType("base64");
         config.setKeyObtentionIterations("1000");
         config.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator");
 
+        encryptor.setConfig(config);
         return encryptor;
     }
 }
