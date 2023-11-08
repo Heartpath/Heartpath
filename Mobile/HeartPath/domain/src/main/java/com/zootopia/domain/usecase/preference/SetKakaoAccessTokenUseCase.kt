@@ -8,7 +8,6 @@ class SetKakaoAccessTokenUseCase @Inject constructor(
     private val preferenceRepository: PreferenceRepository
 ) {
     suspend operator fun invoke(accessToken: String) {
-        Log.d(TAG, "usecase kakao token: $accessToken")
         preferenceRepository.setKakaoAccessToken(accessToken = accessToken)
     }
 
