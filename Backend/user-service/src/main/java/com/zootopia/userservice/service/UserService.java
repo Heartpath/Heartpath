@@ -10,4 +10,6 @@ public interface UserService {
     boolean checkIfDuplicatedUserID(String memberID);
 
     void registerUser(UserRegisterDTO userRegisterDTO);
+
+    String reissueAccessToken(String refreshToken);
 }
