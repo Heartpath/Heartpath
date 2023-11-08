@@ -24,7 +24,7 @@ spring:
       password: zootopia-admin
       driver-class-name: com.mysql.cj.jdbc.Driver
 
-  # ?? ?? ??
+
   main:
     allow-circular-references: true
 
@@ -33,7 +33,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
@@ -58,7 +58,7 @@ cloud:
 jasypt:
   encryptor:
     bean: jasyptStringEncryptor
-    password: zootopiaD203!
+    password: zootopia-admin
 
 #env:
 #  USER_URL
