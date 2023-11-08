@@ -6,6 +6,11 @@ server:
       charset: UTF-8
       enabled: true
       force: true
+#  ssl:
+#    trust-store: /tmp/certs/rds-truststore.jks
+#    trust-store-password: zootopia-admin
+#    enabled: true
+
 
 spring:
   jackson:
@@ -19,11 +24,11 @@ spring:
     multipart:
       max-file-size: 500MB
       max-request-size: 500MB
-#  datasource:
-#    url: jdbc:h2:tcp://localhost/~/heartpath
-#    username: zootopia
-#    password:
-#    driver-class-name: org.h2.Driver
+    #  datasource:
+    #    url: jdbc:h2:tcp://localhost/~/heartpath
+    #    username: zootopia
+    #    password:
+    #    driver-class-name: org.h2.Driver
 
 #         MySQL
       # url: jdbc:mysql://zootopia-mysql.c2f2jpwzzxst.ap-northeast-2.rds.amazonaws.com:3306/zootopia
