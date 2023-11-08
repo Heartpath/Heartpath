@@ -8,11 +8,10 @@ class SetFcmTokenUseCase @Inject constructor(
     private val preferenceRepository: PreferenceRepository
 ){
     suspend operator fun invoke(token: String) {
-        Log.d(TAG, "usecase fcm token: $token")
         preferenceRepository.setFcmToken(token = token)
     }
 
     companion object{
-        private const val TAG = "싸피"
+        private const val TAG = "SetFcmTokenUseCase_HP"
     }
 }
