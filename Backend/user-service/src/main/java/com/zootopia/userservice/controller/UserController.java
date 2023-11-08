@@ -46,6 +46,19 @@ public class UserController {
         return ResponseEntity.status(200).body(baseResponse);
     }
 
+    @GetMapping("/check")
+    public ResponseEntity<BaseResponse> checkDuplicatedUserID(@RequestParam(name = "id") String memberID) {
+
+        boolean res = userService.checkIfDuplicatedUserID(memberID);
+
+        BaseResponse baseResponse = new BaseResponse(200, "사용할 수 있는 아이디입니다.", res);
+        if (!res) {
+            baseResponse.setMessage("사용할 수 없는 아이디입니다.");
+        }
+
+        return ResponseEntity.status(200).body(baseResponse);
+    }
+
     @PostMapping("/register")
     public ResponseEntity<BaseResponse> registerUser(@RequestBody UserRegisterDTO userRegisterDTO) {
         userService.registerUser(userRegisterDTO);

@@ -2,10 +2,11 @@ package com.zootopia.userservice.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
+import lombok.NoArgsConstructor;
 
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class BaseResponse {
 
@@ -14,4 +15,8 @@ public class BaseResponse {
     private String message;
 
     private Object data;
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

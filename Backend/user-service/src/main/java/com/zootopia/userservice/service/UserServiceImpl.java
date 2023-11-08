@@ -25,6 +25,11 @@ public class UserServiceImpl implements UserService {
     private final RedisRepository redisRepository;
 
     @Override
+    public boolean checkIfDuplicatedUserID(String memberID) {
+        return userRepository.existsByMemberID(memberID);
+    }
+
+    @Override
     public void registerUser(UserRegisterDTO userRegisterDTO) {
 
         String kakaoToken = userRegisterDTO.getKakaoToken();
