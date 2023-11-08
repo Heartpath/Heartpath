@@ -42,9 +42,9 @@ public class UserController {
 
     @Operation(summary = "회원 로그인")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "회원 가입을 해야하는 경우", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "202", description = "회원 가입을 해야하는 경우", content = @Content(mediaType = "application/json",
                     examples = @ExampleObject(value = "{\n" +
-                            "        \"status\": 204,\n" +
+                            "        \"status\": 202,\n" +
                             "        \"message\": \"false\",\n" +
                             "        \"data\": {}\n" +
                             "}"))),
@@ -71,7 +71,7 @@ public class UserController {
         // 회원 가입 여부에 따라 status 변경
         int status = 200;
         if (baseResponse.getMessage().equals("false")) {
-            status = 204;
+            status = 202;
             baseResponse.setStatus(status);
         }
 
