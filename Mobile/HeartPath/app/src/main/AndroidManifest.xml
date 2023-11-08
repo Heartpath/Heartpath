@@ -48,7 +48,7 @@
             android:value="${NAVER_MAP_CLIENT_ID}" />
         <service
             android:name="com.zootopia.data.service.FCMService"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
