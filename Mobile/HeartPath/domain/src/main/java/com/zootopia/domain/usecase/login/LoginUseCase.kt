@@ -8,7 +8,7 @@ import kotlin.math.log
 class LoginUseCase @Inject constructor(
     private val loginRepository: LoginRepository
 ) {
-    suspend operator fun invoke(kakaoAccessToken: String, fcmToken: String): TokenDto {
+    suspend operator fun invoke(kakaoAccessToken: String, fcmToken: String): TokenDto? {
         return loginRepository.login(kakaoAccessToken = kakaoAccessToken, fcmToken = fcmToken)
     }
 }

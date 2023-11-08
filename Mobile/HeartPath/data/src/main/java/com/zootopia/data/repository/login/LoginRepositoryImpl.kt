@@ -5,6 +5,7 @@ import com.zootopia.data.datasource.local.PreferenceDataSource
 import com.zootopia.data.datasource.remote.login.LoginDataSource
 import com.zootopia.data.mapper.toData
 import com.zootopia.data.mapper.toDomain
+import com.zootopia.data.model.login.request.SignupRequest
 import com.zootopia.domain.model.login.LoginDto
 import com.zootopia.domain.model.login.TokenDto
 import com.zootopia.domain.repository.login.LoginRepository
@@ -21,7 +22,7 @@ class LoginRepositoryImpl(
     private val loginDataSource: LoginDataSource,
     private val preferenceDataSource: PreferenceDataSource
 ) : LoginRepository {
-    override suspend fun login(kakaoAccessToken: String, fcmToken: String): TokenDto {
+    override suspend fun login(kakaoAccessToken: String, fcmToken: String): TokenDto? {
         return getValueOrThrow2{
             loginDataSource.login(
                 LoginDto(
@@ -31,6 +32,27 @@ class LoginRepositoryImpl(
             ).toDomain()
         }
     }
+
+    override suspend fun checkId(newId: String): Boolean {
+        return getValueOrThrow2 {
+            loginDataSource.checkId(newId = newId).toDomain()
+        }
+    }
+
+    override suspend fun signup(
+        memberId: String,
+        kakaoAccessToken: String,
+        fcmToken: String
+    ): TokenDto? {
+        return getValueOrThrow2 {
+            loginDataSource.signup(signupRequest = SignupRequest(
+                memberID = memberId,
+                kakaoToken = kakaoAccessToken,
+                fcmToken = fcmToken
+            )).toDomain()
+        }
+    }
+
     companion object {
         private const val TAG = "LoginRepositoryImpl_HP"
     }

@@ -14,11 +14,14 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentSignUpBinding
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlin.math.log
 
 class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
     FragmentSignUpBinding::bind,
@@ -43,17 +46,23 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
         // 중복확인 버튼 중복 여부 확인에 따라 UI 변경
         buttonIdCheck.apply {
             lifecycleScope.launch {
-                loginViewModel.checkIdDone.collect {isCheckDone ->
-                    if(isCheckDone) {
+                loginViewModel.checkIdDone.collect { isCheckDone ->
+                    if (isCheckDone) {
                         // 완료된 상태라면
                         text = CHECKDONE
                         setTextColor(ContextCompat.getColor(context, R.color.DarkPink))
-                        background = ContextCompat.getDrawable(context, R.drawable.custom_signup_check_done_button_background)
+                        background = ContextCompat.getDrawable(
+                            context,
+                            R.drawable.custom_signup_check_done_button_background
+                        )
                     } else {
                         // 아직 확인 필요한 경우
                         text = CHECKUNDONE
                         setTextColor(ContextCompat.getColor(context, R.color.DarkGray))
-                        background = ContextCompat.getDrawable(context, R.drawable.custom_signup_check_button_background)
+                        background = ContextCompat.getDrawable(
+                            context,
+                            R.drawable.custom_signup_check_button_background
+                        )
                     }
                 }
             }
@@ -72,7 +81,7 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
                     before: Int,
                     count: Int
                 ) {
-                    if(sequence != null) {
+                    if (sequence != null) {
                         // 만약에 값 없으면 X 버튼 gone, 값 있으면 띄우기
                         if (sequence.isNotEmpty()) {
                             imagebuttonIdInputCancel.visibility = View.VISIBLE
@@ -105,7 +114,7 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
 
             // focus 확인 event
             setOnFocusChangeListener { view, gainFocus ->
-                if(gainFocus) {
+                if (gainFocus) {
                     // focus를 받았을 때 값 있으면 x 버튼 visible 처리
                     setButtonByFocus()
                 }
@@ -130,20 +139,46 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
         }
         // 중복 확인 버튼
         buttonIdCheck.setOnClickListener {
-            loginViewModel.duplicateCheckId()
-            setCancelButton()
-        }
-        // 회원 가입 버튼
-        buttonSignupAccept.setOnClickListener {
-            // TODO: 회원 가입하기
-            lifecycleScope.launch {
-                loginViewModel.checkIdDone.collect {isCheckDone ->
-                    if(isCheckDone) { // 아이디 중복 체크 확인 되었는 상태
+            if (loginViewModel.newId.value == "") {
+                // 빈 값은 처리하지 않음
+                signupToast(message = getString(R.string.toast_message_signup_check_id_enter_letter))
+            } else {
+                loginViewModel.duplicateCheckId()
+                setCancelButton()
+                lifecycleScope.launch {
+                    loginViewModel.checkIdResult.collectLatest { result ->
+                        Log.d(TAG, "initClickEvent: 중복 확인 결과 $result")
+                        if (!result) {
+                            // 사용 가능
+                            signupToast(message = getString(R.string.toast_message_signup_check_id_can_use))
+                            loginViewModel.setCheckIdDone(value = true)
+                        } else {
+                            // 사용 불가능
+                            signupToast(message = getString(R.string.toast_message_signup_check_id_cant_use))
+                            loginViewModel.setCheckIdDone(value = false)
+                        }
+                    }
+                }
+            }
+            // 회원 가입 버튼
+            buttonSignupAccept.setOnClickListener {
+                lifecycleScope.launch {
+                    val isCheckDone = loginViewModel.checkIdDone.value
+                    Log.d(TAG, "회원가입 버튼 $isCheckDone")
+                    if (isCheckDone) { // 아이디 중복 체크 확인 되었는 상태
                         loginViewModel.signUp()
+                        loginViewModel.signupResult.collectLatest { result ->
+                            if (result.accessToken != "") {
+                                signupToast(message = getString(R.string.toast_message_signup_done))
+                                loginViewModel.storeToken(type = "signup")
+                                findNavController().navigate(R.id.action_signUpFragment_to_homeFragment)
+                            } else {
+                                signupToast(message = getString(R.string.toast_message_signup_fail))
+                            }
+                        }
                     } else {
                         // 아이디 중복 체크 요구
-                        toast = Toast.makeText(mainActivity, R.string.toast_message_signup_check_id_plz, Toast.LENGTH_SHORT)
-                        toast.show()
+                        signupToast(message = getString(R.string.toast_message_signup_check_id_plz))
                     }
                 }
             }
@@ -151,19 +186,27 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
     }
 
     private fun setCancelButton() = with(binding) {
-        imagebuttonIdInputCancel.visibility =  View.GONE
+        imagebuttonIdInputCancel.visibility = View.GONE
     }
-    private fun keyboardEvent() = with(binding){
-        val inputMethodManager = mainActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+    private fun keyboardEvent() = with(binding) {
+        val inputMethodManager =
+            mainActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(edittextNewId.windowToken, 0)
     }
+
     private fun setButtonByFocus() = with(binding) {
         // focus를 받았을 때 값 있으면 x 버튼 visible 처리
         lifecycleScope.launch {
-            loginViewModel.newId.collect {value ->
-                if(value.isNotEmpty()) imagebuttonIdInputCancel.visibility = View.VISIBLE
+            loginViewModel.newId.collect { value ->
+                if (value.isNotEmpty()) imagebuttonIdInputCancel.visibility = View.VISIBLE
             }
         }
+    }
+
+    private fun signupToast(message: String) {
+        toast = Toast.makeText(mainActivity, message, Toast.LENGTH_SHORT)
+        toast.show()
     }
 
     companion object {
