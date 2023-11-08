@@ -19,6 +19,7 @@ import com.zootopia.domain.usecase.preference.SetKakaoAccessTokenUseCase
 import com.zootopia.domain.usecase.preference.SetTokenUseCase
 import com.zootopia.presentation.config.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -38,16 +39,14 @@ class LoginViewModel @Inject constructor(
     private val checkIdUseCase: CheckIdUseCase,
     private val signupUseCase: SignupUseCase,
     private val setTokenUseCase: SetTokenUseCase,
-    private val getKakaoAccessTokenUseCase: GetKakaoAccessTokenUseCase,
-    private val getFcmTokenUseCase: GetFcmTokenUseCase,
 ) :
-BaseViewModel() {
+    BaseViewModel() {
 
-    private val _kakaoAccessToken = MutableSharedFlow<String>()
-    var kakaoAccessToken = _kakaoAccessToken.asSharedFlow()
+    private val _kakaoAccessToken = MutableStateFlow("")
+    var kakaoAccessToken = _kakaoAccessToken.asStateFlow()
 
-    private val _fcmToken = MutableSharedFlow<String>()
-    var fcmToken = _fcmToken.asSharedFlow()
+    private val _fcmToken = MutableStateFlow("")
+    var fcmToken = _fcmToken.asStateFlow()
 
     // 로그인 결과
     private val _loginResult = MutableSharedFlow<TokenDto>()
@@ -66,11 +65,11 @@ BaseViewModel() {
     private val _signupResult = MutableSharedFlow<TokenDto>()
     var signupResult = _signupResult.asSharedFlow()
 
-    private val _accessToken = MutableSharedFlow<String>()
-    var accessToken = _accessToken.asSharedFlow()
+    private val _accessToken = MutableStateFlow("")
+    var accessToken = _accessToken.asStateFlow()
 
-    private val _refreshToken = MutableSharedFlow<String>()
-    var refreshToken = _refreshToken.asSharedFlow()
+    private val _refreshToken = MutableStateFlow("")
+    var refreshToken = _refreshToken.asStateFlow()
 
     fun loginByKakao(context: Context) {
         val kakaoCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
@@ -80,9 +79,9 @@ BaseViewModel() {
             } else if (token != null) {
                 Log.d(TAG, "웹으로 카카오 로그인 성공 kakao access token: ${token.accessToken}")
                 // Firebase FCM token 가지고 오기
-                FirebaseMessaging.getInstance().token.addOnCompleteListener {fcmTask ->
+                FirebaseMessaging.getInstance().token.addOnCompleteListener { fcmTask ->
                     Log.d(TAG, "FCM token result: ${fcmTask.result}")
-                    if(fcmTask.isSuccessful) {
+                    if (fcmTask.isSuccessful) {
                         // fcm 토큰 받아오기 성공
                         viewModelScope.launch {
                             // 카카오 access token 값 넣어주기
@@ -109,20 +108,23 @@ BaseViewModel() {
                 if (error != null) {
                     Log.e(TAG, "로그인 실패 $error")
                     // 사용자가 취소
-                    if (error is ClientError && error.reason == ClientErrorCause.Cancelled ) {
+                    if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                         return@loginWithKakaoTalk
                     }
                     // 다른 오류
                     else {
-                        UserApiClient.instance.loginWithKakaoAccount(context = context, callback = kakaoCallback) // 카카오 이메일 로그인
+                        UserApiClient.instance.loginWithKakaoAccount(
+                            context = context,
+                            callback = kakaoCallback
+                        ) // 카카오 이메일 로그인
                     }
                 }
                 // 로그인 성공 부분
                 else if (token != null) {
                     Log.d(TAG, "카카오 앱으로 로그인 성공 kakao access token: ${token.accessToken}")
-                    FirebaseMessaging.getInstance().token.addOnCompleteListener {fcmTask ->
+                    FirebaseMessaging.getInstance().token.addOnCompleteListener { fcmTask ->
                         Log.d(TAG, "FCM token result: ${fcmTask.result}")
-                        if(fcmTask.isSuccessful) {
+                        if (fcmTask.isSuccessful) {
                             // fcm 토큰 가지고 오기 성공
                             viewModelScope.launch {
                                 // 카카오 access token 값 넣어주기
@@ -141,21 +143,18 @@ BaseViewModel() {
                 }
             }
         } else {
-            UserApiClient.instance.loginWithKakaoAccount(context = context, callback = kakaoCallback) // 카카오 이메일 로그인
+            UserApiClient.instance.loginWithKakaoAccount(
+                context = context,
+                callback = kakaoCallback
+            ) // 카카오 이메일 로그인
         }
     }
-    
 
 
     // 로그인 - 카카오 access token 넣어서 전송
     fun login() = viewModelScope.launch {
-        kakaoAccessToken.collect{kakaoValue ->
-            fcmToken.collect {fcmValue ->
-                loginUseCase.invoke(kakaoAccessToken = kakaoValue, fcmToken = fcmValue)
-                    ?.let { _loginResult.emit(it) }
-                Log.d(TAG, "login: ${loginResult}")
-            }
-        }
+        loginUseCase.invoke(kakaoAccessToken = kakaoAccessToken.value, fcmToken = fcmToken.value)
+            ?.let { _loginResult.emit(it) }
     }
 
     // id 입력 값 수정
@@ -178,39 +177,27 @@ BaseViewModel() {
 
     // 회원가입 요청
     fun signUp() = viewModelScope.launch {
-        launch {
-            getKakaoAccessTokenUseCase.invoke().collectLatest {
-                _kakaoAccessToken.emit(it)
-            }
-        }
-        launch {
-            getFcmTokenUseCase.invoke().collectLatest {
-                _fcmToken.emit(it)
-            }
-        }
-        kakaoAccessToken.collect {kakaoValue ->
-            fcmToken.collect {fcmValue ->
-                signupUseCase.invoke(memberId = newId.value, kakaoAccessToken = kakaoValue, fcmToken = fcmValue)
-                    ?.let { _signupResult.emit(it) }
-            }
-        }
+        Log.d(TAG, "signUp: ${kakaoAccessToken.value} ${fcmToken.value}")
+        signupUseCase.invoke(
+            memberId = newId.value,
+            kakaoAccessToken = kakaoAccessToken.value,
+            fcmToken = fcmToken.value
+        )
+            ?.let { _signupResult.emit(it) }
+
     }
 
-    // token 저장
-    fun storeToken(type: String) = viewModelScope.launch {
-        if(type == "login") {
-            loginResult.collect {value ->
-                _accessToken.emit(value.accessToken)
-                _refreshToken.emit(value.refreshToken)
-            }
-        }
-        else {
-            signupResult.collect {value ->
-                _accessToken.emit(value.accessToken)
-                _refreshToken.emit(value.refreshToken)
-            }
-        }
+    fun setToken(token: TokenDto) = viewModelScope.launch {
+        Log.d(TAG, "setToken: here")
+        _accessToken.emit(token.accessToken)
+        _refreshToken.emit(token.refreshToken)
     }
+    // token 저장
+    fun storeToken() = viewModelScope.launch {
+        Log.d(TAG, "storeToken: here")
+        setTokenUseCase.invoke(accessToken = accessToken.value, refreshToken = refreshToken.value)
+    }
+
     companion object {
         private const val TAG = "LoginViewModel_HP"
     }

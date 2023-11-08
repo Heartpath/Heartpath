@@ -137,6 +137,35 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
             Log.d(TAG, "initClickEvent: delete button clicked")
             edittextNewId.setText("")
         }
+
+        // 회원 가입 버튼
+        buttonSignupAccept.setOnClickListener {
+            Log.d(TAG, "initClickEvent: clicked accept")
+            if (loginViewModel.newId.value.isNullOrEmpty()) signupToast(message = getString(R.string.toast_message_signup_check_id_plz))
+            else {
+                Log.d(TAG, "initClickEvent: clicked")
+                val isCheckDone = loginViewModel.checkIdDone.value
+                Log.d(TAG, "회원가입 버튼 $isCheckDone")
+                if (isCheckDone) { // 아이디 중복 체크 확인 되었는 상태
+                    lifecycleScope.launch {
+                        loginViewModel.signUp()
+                        loginViewModel.signupResult.collectLatest { result ->
+                            if (result.accessToken != "") {
+                                signupToast(message = getString(R.string.toast_message_signup_done))
+                                loginViewModel.setToken(result)
+                                loginViewModel.storeToken()
+                                findNavController().navigate(R.id.action_signUpFragment_to_homeFragment)
+                            } else {
+                                signupToast(message = getString(R.string.toast_message_signup_fail))
+                            }
+                        }
+                    }
+                } else {
+                    // 아이디 중복 체크 요구
+                    signupToast(message = getString(R.string.toast_message_signup_check_id_plz))
+                }
+            }
+        }
         // 중복 확인 버튼
         buttonIdCheck.setOnClickListener {
             if (loginViewModel.newId.value == "") {
@@ -160,28 +189,7 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
                     }
                 }
             }
-            // 회원 가입 버튼
-            buttonSignupAccept.setOnClickListener {
-                lifecycleScope.launch {
-                    val isCheckDone = loginViewModel.checkIdDone.value
-                    Log.d(TAG, "회원가입 버튼 $isCheckDone")
-                    if (isCheckDone) { // 아이디 중복 체크 확인 되었는 상태
-                        loginViewModel.signUp()
-                        loginViewModel.signupResult.collectLatest { result ->
-                            if (result.accessToken != "") {
-                                signupToast(message = getString(R.string.toast_message_signup_done))
-                                loginViewModel.storeToken(type = "signup")
-                                findNavController().navigate(R.id.action_signUpFragment_to_homeFragment)
-                            } else {
-                                signupToast(message = getString(R.string.toast_message_signup_fail))
-                            }
-                        }
-                    } else {
-                        // 아이디 중복 체크 요구
-                        signupToast(message = getString(R.string.toast_message_signup_check_id_plz))
-                    }
-                }
-            }
+
         }
     }
 
