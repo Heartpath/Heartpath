@@ -15,10 +15,11 @@ fun <T> Response<T>.getValueOrThrow(): T {
     Log.d(TAG, "getValueOrThrow: $isSuccessful ${code()}")
     if (this.isSuccessful) {
         if (this.isDelete()) { return Unit as T }
+        Log.d(TAG, "getValueOrThrow: ${this.body()}")
         return this.body() ?: throw NetworkThrowable.IllegalStateThrowable()
     }
 
-    
+
     // TODO 서버에 따라 다를수도?
     val errorResponse = errorBody()?.string()
     val jsonObject = errorResponse?.let { JSONObject(it) }
