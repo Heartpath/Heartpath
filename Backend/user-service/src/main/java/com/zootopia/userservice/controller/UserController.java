@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -117,9 +118,9 @@ public class UserController {
     })
     @PostMapping("/register")
     public ResponseEntity<BaseResponse> registerUser(@RequestBody UserRegisterDTO userRegisterDTO) {
-        userService.registerUser(userRegisterDTO);
+        HashMap<String, String> tokens = userService.registerUser(userRegisterDTO);
 
-        BaseResponse baseResponse = new BaseResponse(200, "회원가입이 완료되었습니다.", new ArrayList<>());
+        BaseResponse baseResponse = new BaseResponse(200, "회원가입이 완료되었습니다.", tokens);
         return ResponseEntity.status(200).body(baseResponse);
     }
 
