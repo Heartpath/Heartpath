@@ -6,10 +6,10 @@ server:
       charset: UTF-8
       enabled: true
       force: true
-  ssl:
-    trust-store: /tmp/certs/rds-truststore.jks
-    trust-store-password: zootopia-admin
-    enabled: true
+#  ssl:
+#    trust-store: /tmp/certs/rds-truststore.jks
+#    trust-store-password: zootopia-admin
+#    enabled: true
 
 
 spring:
