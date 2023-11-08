@@ -4,10 +4,35 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/zootopia?serverTimezone=UTC&useUniCode=yes&characterEncoding=UTF-8
-    username: ssafy
-    password: ssafy
+    url: jdbc:mysql://zootopia-mysql.c2f2jpwzzxst.ap-northeast-2.rds.amazonaws.com:3306/zootopia
+    username: admin
+    password: ENC(aZhyo9Zn2KY/LzJYoqXgwY4bCKai+uW+)
+  redis:
+    host: ENC(VXjy6MiylvpTkGupRZ+zKBkO4+G2S34sBWUx9Nb3y7w=)
+    port: 6379
+    password: ENC(Jw9sypS0yEWh6L2uZflvGs7VoWsnb7QV)
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.zootopia.userservice.dto
+
+kakao:
+  prefix: "Bearer "
+  url: https://kapi.kakao.com/v2/user/me
+
+jwt:
+  secret-key: VrxHJu7Y3LpTZURj4GhCWPqbYwy6fnATCFps28ZBD4dmZ6wu2dR5GvJQmh9WPfVHTbhF9NxrmB6sEgdWkVa5QDjC
+  expiration: 1
+  refresh-token:
+    expiration: 7
