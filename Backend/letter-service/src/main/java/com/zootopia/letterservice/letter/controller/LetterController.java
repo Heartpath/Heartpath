@@ -73,7 +73,7 @@ public class LetterController {
     })
     @PostMapping("/text")
     public ResponseEntity<? extends BaseResponseBody> createTextLetter(@RequestHeader(value = "Authorization", required = false) String accessToken,
-                                                                       @RequestPart(value = "letterTextReqDto") LetterTextReqDto letterTextReqDto,
+                                                                       @RequestPart(value = "letterTextReqDto", required = false) LetterTextReqDto letterTextReqDto,
                                                                        @RequestPart(value = "content") MultipartFile content,
                                                                        @RequestPart(value = "files", required = false) List<MultipartFile> files) {
         // accessToken → 발신자, receiverId → 수신자 멤버 객체 찾아서 service 넘기기
