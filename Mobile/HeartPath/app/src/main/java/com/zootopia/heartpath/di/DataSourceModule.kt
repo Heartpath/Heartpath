@@ -2,8 +2,12 @@ package com.zootopia.heartpath.di
 
 import com.zootopia.data.datasource.remote.business.BusinessDataSource
 import com.zootopia.data.datasource.remote.business.BusinessDataSourceImpl
+import com.zootopia.data.datasource.remote.login.LoginDataSource
+import com.zootopia.data.datasource.remote.login.LoginDataSourceImpl
 import com.zootopia.data.datasource.remote.map.MapDataSource
 import com.zootopia.data.datasource.remote.map.MapDataSourceImpl
+import com.zootopia.data.datasource.remote.user.UserDataSource
+import com.zootopia.data.datasource.remote.user.UserDataSourceImpl
 import com.zootopia.data.service.BusinessService
 import com.zootopia.data.service.NaverService
 import com.zootopia.data.service.TmapService
@@ -35,7 +39,27 @@ object DataSourceModule {
     @Provides
     fun provideBusinessDataSource(
         businessService: BusinessService
-    ): BusinessDataSource{
+    ): BusinessDataSource {
         return BusinessDataSourceImpl(businessService)
+    }
+
+    @Singleton
+    @Provides
+    fun provideLoginDataSource(
+        businessService: BusinessService
+    ): LoginDataSource {
+        return LoginDataSourceImpl(
+            businessService = businessService
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideUserDataSource(
+        businessService: BusinessService
+    ): UserDataSource{
+        return UserDataSourceImpl(
+            businessService = businessService
+        )
     }
 }

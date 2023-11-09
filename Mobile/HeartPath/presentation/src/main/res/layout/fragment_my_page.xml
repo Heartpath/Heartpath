@@ -51,6 +51,8 @@
                         android:layout_height="@dimen/_88sdp"
                         android:layout_marginStart="@dimen/_16sdp"
                         android:src="@drawable/image_default_profile"
+                        android:scaleType="centerCrop"
+
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 

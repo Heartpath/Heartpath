@@ -136,6 +136,7 @@
         <item name="iconGravity">textEnd</item>
         <item name="cornerRadius">@dimen/_8sdp</item>
         <item name="android:elevation">@dimen/_2sdp</item>
+        <item name="rippleColor">@android:color/transparent</item>
     </style>
     <style name="Cancel_Button_Style" parent="@style/Widget.Material3.Button.TextButton">
         <item name="fontFamily">@font/nanum_square_round_otf_extra_bold</item>

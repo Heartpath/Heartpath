@@ -16,8 +16,10 @@ fun <T> Response<T>.getValueOrThrow(): T {
     Log.d(TAG, "getValueOrThrow: ${this.body()}")
     if (this.isSuccessful) {
         if (this.isDelete()) { return Unit as T }
+        Log.d(TAG, "getValueOrThrow: ${this.body()}")
         return this.body() ?: throw NetworkThrowable.IllegalStateThrowable()
     }
+
     Log.d(TAG, "getValueOrThrow: err code ${this.code()}")
 
     // TODO 서버에 따라 다를수도?
@@ -25,10 +27,10 @@ fun <T> Response<T>.getValueOrThrow(): T {
     val jsonObject = errorResponse?.let { JSONObject(it) }
     val status = jsonObject?.getInt("status") ?: 0
     val message = jsonObject?.getString("message") ?: ""
-    
-    Log.e(TAG, "getValueOrThrow: Error code : ${status}, message : ${message}")
 
-    when (status) {// 4000 ~ 4050
+    Log.e(TAG, "getValueOrThrow: Error status : ${status}, message : ${message}")
+    
+    when (status) {
         in 100..199 -> { throw NetworkThrowable.Base100Throwable(status, message) }
         in 300..399 -> { throw NetworkThrowable.Base300Throwable(status, message) }
         in 400..499 -> { throw NetworkThrowable.Base400Throwable(status, message) }

@@ -1,13 +1,17 @@
 package com.zootopia.heartpath.di
 
+import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.zootopia.data.datasource.local.PreferenceDataSource
+import com.zootopia.data.intercepter.AuthInterceptor
 import com.zootopia.data.service.BusinessService
 import com.zootopia.data.service.NaverService
 import com.zootopia.data.service.TmapService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -28,10 +32,10 @@ object ServiceModule {
     
     @Singleton
     @Provides
-    fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
+    fun provideOkHttpClient(preferenceDataSource: PreferenceDataSource): OkHttpClient = OkHttpClient.Builder()
         .readTimeout(5000, TimeUnit.MILLISECONDS)
         .connectTimeout(5000, TimeUnit.MILLISECONDS)
-//        .addInterceptor(AuthInterceptor()) // TODO interceptor 추가 필요 (주석 해제)
+        .addInterceptor(AuthInterceptor(preferenceDataSource)) // TODO interceptor 추가 필요 (주석 해제)
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
         .build()
     
