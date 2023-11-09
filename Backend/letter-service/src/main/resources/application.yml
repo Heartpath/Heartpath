@@ -23,16 +23,17 @@ spring:
       readPreference: secondaryPreferred
       retryWrites: false
 
+
   servlet:
     multipart:
       max-file-size: 500MB
       max-request-size: 500MB
     datasource:
-       # MySQL
-       url: jdbc:mysql://zootopia-mysql.c2f2jpwzzxst.ap-northeast-2.rds.amazonaws.com:3306/zootopia
-       username: admin
-       password: ENC(Gvm4XgQFXVwb3fpfTmdSxnd88htlJ/zV)
-       driver-class-name: com.mysql.cj.jdbc.Driver
+      # MySQL
+      url: jdbc:mysql://zootopia-mysql.c2f2jpwzzxst.ap-northeast-2.rds.amazonaws.com:3306/zootopia
+      username: admin
+      password: ENC(Gvm4XgQFXVwb3fpfTmdSxnd88htlJ/zV)
+      driver-class-name: com.mysql.cj.jdbc.Driver
 
   main:
     allow-circular-references: true
@@ -42,14 +43,13 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
       hibernate:
         show_sql: true
         format_sql: true
-
 
 cloud:
   aws:
@@ -64,3 +64,8 @@ cloud:
       auto: false
     stack:
       auto: false
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    password: zootopia-admin
