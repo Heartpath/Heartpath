@@ -2,15 +2,18 @@ package com.zootopia.storeservice.store.controller;
 
 import com.zootopia.storeservice.common.dto.BaseResponseBody;
 import com.zootopia.storeservice.store.dto.request.CharacterBuyReqDto;
-import com.zootopia.storeservice.store.dto.request.CrowTitReqDto;
 import com.zootopia.storeservice.store.dto.request.LetterPaperBuyReqDto;
+import com.zootopia.storeservice.store.dto.response.CrowTitResDto;
+import com.zootopia.storeservice.store.dto.response.LetterPaperResDto;
 import com.zootopia.storeservice.store.dto.response.UserResDto;
 import com.zootopia.storeservice.store.entity.CrowTit;
 import com.zootopia.storeservice.store.entity.CrowTitBook;
 import com.zootopia.storeservice.store.entity.LetterPaper;
 import com.zootopia.storeservice.store.entity.LetterPaperBook;
 import com.zootopia.storeservice.store.repository.CrowTitBookRepository;
+import com.zootopia.storeservice.store.repository.CrowTitRepository;
 import com.zootopia.storeservice.store.repository.LetterPaperBookRepository;
+import com.zootopia.storeservice.store.repository.LetterPaperRepository;
 import com.zootopia.storeservice.store.service.MemberService;
 import com.zootopia.storeservice.store.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,16 +23,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.lang.reflect.Member;
 import java.util.List;
 
 @Slf4j
@@ -40,7 +39,9 @@ public class StoreController {
 
     private final StoreService storeService;
     private final MemberService memberService;
+    private final LetterPaperRepository letterPaperRepository;
     private final LetterPaperBookRepository letterPaperBookRepository;
+    private final CrowTitRepository crowTitRepository;
     private final CrowTitBookRepository crowTitBookRepository;
 
 
@@ -53,8 +54,7 @@ public class StoreController {
 
     // 편지지 목록 조회
     @GetMapping("/letterpaper")
-    @Operation(summary = "편지지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수\n\n " +
-                                                        "isowned : 사용자가 가지고 있는 상품인지 아닌지 판단하는 boolean")
+    @Operation(summary = "편지지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
                     examples = @ExampleObject(value = "{" +
@@ -77,6 +77,35 @@ public class StoreController {
         String memberId = userResDto.getData().getMemberID();
 
         List<LetterPaperBook> letterPaperBookList = letterPaperBookRepository.findAllByMemberId(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "편지지 목록 조회 성공", letterPaperBookList));
+    }
+
+    @GetMapping("/letterpaper/all")
+    @Operation(summary = "편지지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수\n\n " +
+            "isowned : 사용자가 가지고 있는 상품인지 아닌지 판단하는 boolean")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{" +
+                            " \"status\": 200," +
+                            " \"message\": \"편지지 목록 조회 성공\"," +
+                            " \"data\": [" +
+                            "       {" +
+                            "           \"index\": 1," +
+                            "           \"name\": \"빨간 편지지\"," +
+                            "           \"price\": 300," +
+                            "           \"image\": \"url\"," +
+                            "           \"isowned\": \"true\"" +
+                            "       }" +
+                            "   ]" +
+                            "}")))
+    })
+    public ResponseEntity<? extends BaseResponseBody> getLetterPaperListAll(@RequestHeader("Authorization") String accessToken){
+
+        UserResDto userResDto = memberService.accessTokenToMember(accessToken);
+        String memberId = userResDto.getData().getMemberID();
+
+        List<LetterPaperResDto> letterPaperBookList = storeService.getLetterPaperAll(memberId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "편지지 목록 조회 성공", letterPaperBookList));
     }
@@ -134,8 +163,7 @@ public class StoreController {
 
     // 캐릭터 목록 조회
     @GetMapping("/character")
-    @Operation(summary = "캐릭터 목록 조회", description = "Authorization : Bearer {accessToken}, 필수\n\n " +
-                                                        "isowned : 사용자가 가지고 있는 캐릭터인지 아닌지 판단하는 boolean")
+    @Operation(summary = "사용자가 가지고 있는 캐릭터 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
                     examples = @ExampleObject(value = "{" +
@@ -161,6 +189,34 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "캐릭터 목록 조회 성공", crowTitBookList));
     }
 
+    @GetMapping("/character/all")
+    @Operation(summary = "캐릭터 목록 전체 조회", description = "Authorization : Bearer {accessToken}, 필수\n\n " +
+            "isowned : 사용자가 가지고 있는 캐릭터인지 아닌지 판단하는 boolean")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{" +
+                            " \"status\": 200," +
+                            " \"message\": \"캐릭터 목록 조회 성공\"," +
+                            " \"data\": [" +
+                            "       {" +
+                            "           \"index\": 1," +
+                            "           \"name\": \"일반 뱁새\"," +
+                            "           \"price\": 100," +
+                            "           \"image\": \"url\"," +
+                            "           \"isowned\": \"true\"" +
+                            "       }" +
+                            "   ]" +
+                            "}")))
+    })
+    public ResponseEntity<? extends BaseResponseBody> getCharacterListAll(@RequestHeader("Authorization") String accessToken){
+        UserResDto userResDto = memberService.accessTokenToMember(accessToken);
+        String memberId = userResDto.getData().getMemberID();
+
+        List<CrowTitResDto> crowTitList = storeService.getCrowTitListAll(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "캐릭터 목록 조회 성공", crowTitList));
+    }
+
     // 캐릭터 상세 조회
     @GetMapping("/character/{charater_id}")
     @Operation(summary = "캐릭터 상세 조회", description = "Authorization : Bearer {accessToken}, 필수")
@@ -184,7 +240,7 @@ public class StoreController {
     public ResponseEntity<? extends BaseResponseBody> getCharacter(@RequestHeader("Authorization") String accessToken,
                                                                    @PathVariable("charater_id") Long charater_id){
 
-        CrowTit crowTitInfo = storeService.getCharacterInfo(charater_id);
+        CrowTit crowTitInfo = storeService.getCrowTitInfo(charater_id);
 
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "캐릭터 상세 조회 성공", crowTitInfo));
     }
@@ -204,7 +260,7 @@ public class StoreController {
         UserResDto userResDto = memberService.accessTokenToMember(accessToken);
         String memberId = userResDto.getData().getMemberID();
 
-        storeService.buyCharacter(memberId, characterBuyReqDto);
+        storeService.buyCrowTit(memberId, characterBuyReqDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponseBody<>(201, "캐릭터 구매 성공"));
     }

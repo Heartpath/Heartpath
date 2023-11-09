@@ -1,21 +1,23 @@
-package com.zootopia.storeservice.store.dto.request;
+package com.zootopia.storeservice.store.dto.response;
 
 import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class CrowTitReqDto {
+public class LetterPaperResDto {
     private String name;
-    private Long price;
+    private int price;
     private String description;
     private String imagePath;
+    private boolean isOwned;
 
     @Builder
-    public CrowTitReqDto(String name, Long price, String description, String imagePath) {
+    public LetterPaperResDto(String name, int price, String description, String imagePath, boolean isOwned) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.imagePath = imagePath;
+        this.isOwned = isOwned;
     }
 }
