@@ -3,8 +3,10 @@ package com.zootopia.userservice.common;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
+@Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,12 +17,4 @@ public class BaseResponse {
     private String message;
 
     private Object data;
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
 }
