@@ -1,13 +1,21 @@
 package com.zootopia.data.intercepter
 
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.zootopia.data.datasource.local.PreferenceDataSource
 import com.zootopia.data.model.auth.AuthResponse
 import com.zootopia.data.model.error.ErrorResponse
 import com.zootopia.domain.util.NetworkThrowable
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
@@ -21,6 +29,7 @@ import okhttp3.internal.closeQuietly
 import org.json.JSONObject
 import java.io.IOException
 import javax.inject.Inject
+import kotlin.coroutines.suspendCoroutine
 
 class AuthInterceptor @Inject constructor(
     private val preferenceDataSource: PreferenceDataSource
@@ -33,31 +42,46 @@ class AuthInterceptor @Inject constructor(
         val accessToken = getAccessToken() ?: return chain.proceed(chain.request())
 
         // 헤더에 토큰 담기
-        val headerAddedRequest = chain.request().newBuilder().addHeader(AUTHORIZATION, accessToken).build()
+        val headerAddedRequest =
+            chain.request().newBuilder().addHeader(AUTHORIZATION, BEARER + accessToken).build()
         // 리스폰스 받기
         val response: Response = chain.proceed(headerAddedRequest)
 
         // 에러 코드가 왔을 떄, RefreshToken으로 AccessToken을 다시 얻어오는 로직
         if (response.code == AUTH_TOKEN_EXPIRE_ERROR) {
-            val newAccessToken = getAccessTokenAfterRefresh(accessToken).getOrElse { return response }
+            val newAccessToken =
+                getAccessTokenAfterRefresh(accessToken).getOrElse { return response }
             response.closeQuietly()
-            return chain.proceed(chain.request().newBuilder().addHeader(AUTHORIZATION, newAccessToken).build())
+            return chain.proceed(
+                chain.request().newBuilder().addHeader(AUTHORIZATION, newAccessToken).build()
+            )
         }
         return response
     }
 
     // AccessToken을 가져옵니다.
-    private fun getAccessToken() : String? = runBlocking {
-        return@runBlocking preferenceDataSource.getAccessToken().last()
+    private fun getAccessToken(): String? {
+        var result: String? = null
+        runBlocking {
+            result = preferenceDataSource.getAccessToken().first()
+            Log.d(TAG, "getAccessToken: here $result")
+        }
+        return result
     }
 
     // RefreshToken을 가져옵니다.
-    private fun getRefreshToken(): String = runBlocking {
-        return@runBlocking requireNotNull(preferenceDataSource.getRefreshToken().last()) { NO_REFRESH_TOKEN }
+    private fun getRefreshToken(): String {
+        var result: String = ""
+        runBlocking {
+            preferenceDataSource.getRefreshToken().first()
+            Log.d(TAG, "getRefreshToken: here $result")
+        }
+        return result
     }
 
     // Token을 저장합니다.
     private fun storeToken(accessToken: String, refreshToken: String) = runBlocking {
+        Log.d(TAG, "storeToken: $accessToken $refreshToken")
         preferenceDataSource.setAccessToken(accessToken)
         preferenceDataSource.setRefreshToken(refreshToken)
     }
@@ -108,14 +132,19 @@ class AuthInterceptor @Inject constructor(
         }
         val failedResponse = response.getDto<ErrorResponse>() // TODO 서버에서 ErrorResponse 객체
         if (failedResponse.httpStatusCode == AUTH_TOKEN_ERROR) { // TODO 서버에서 주는 코드 입력
-            return Result.failure(NetworkThrowable.Base400Throwable(failedResponse.httpStatusCode, failedResponse.message))
+            return Result.failure(
+                NetworkThrowable.Base400Throwable(
+                    failedResponse.httpStatusCode,
+                    failedResponse.message
+                )
+            )
         }
         return Result.failure(IllegalStateException(REFRESH_FAILURE))
     }
 
     companion object {
         private const val AUTHORIZATION = "Authorization"
-        private const val AUTH_REFRESH = "refreshToken"
+        private const val AUTH_REFRESH = "RefreshToken"
 
         private const val AUTH_REFRESH_PATH = "/user/token"
 
@@ -127,6 +156,7 @@ class AuthInterceptor @Inject constructor(
         private const val AUTH_TOKEN_EXPIRE_ERROR = 1002 // TODO 서버에 맞게 수정
         private const val AUTH_TOKEN_ERROR = 1000 // TODO 서버에 맞게 수정
 
-        private const val BASE_URL = "https://www.heartpath.site/"
+        private const val BASE_URL = "https://www.heartpath.site"
+        private const val TAG = "AuthInterceptor_HP"
     }
 }

@@ -4,6 +4,8 @@ import com.zootopia.data.datasource.remote.login.LoginDataSource
 import com.zootopia.data.datasource.remote.login.LoginDataSourceImpl
 import com.zootopia.data.datasource.remote.map.MapDataSource
 import com.zootopia.data.datasource.remote.map.MapDataSourceImpl
+import com.zootopia.data.datasource.remote.user.UserDataSource
+import com.zootopia.data.datasource.remote.user.UserDataSourceImpl
 import com.zootopia.data.service.BusinessService
 import com.zootopia.data.service.NaverService
 import com.zootopia.data.service.TmapService
@@ -37,6 +39,16 @@ object DataSourceModule {
         businessService: BusinessService
     ): LoginDataSource {
         return LoginDataSourceImpl(
+            businessService = businessService
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideUserDataSource(
+        businessService: BusinessService
+    ): UserDataSource{
+        return UserDataSourceImpl(
             businessService = businessService
         )
     }
