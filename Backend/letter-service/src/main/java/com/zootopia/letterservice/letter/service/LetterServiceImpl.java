@@ -196,7 +196,7 @@ public class LetterServiceImpl implements LetterService {
 
             placeImageRepository.save(placeImage);
         }
-        letterMongoRepository.delete(letterMongo);
+        letterMongoRepository.deleteById(letterMongo.getId());
 
         // Receiver, FCM 알림 발송 추가 필요
     }
