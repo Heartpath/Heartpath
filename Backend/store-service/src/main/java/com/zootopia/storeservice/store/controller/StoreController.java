@@ -194,8 +194,7 @@ public class StoreController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description =  "CREATED", content = @Content(mediaType = "application/json",
                     examples = @ExampleObject(value = "{\n \"status\": 201,\n \"message\": \"캐릭터 구매 성공\"\n}"))),
-            @ApiResponse(responseCode = "4001", description =  "NOT_EXISTS_CROWTIT", content = @Content(examples = @ExampleObject(value = "{\n \"httpStatus\": \"400 BAD_REQUEST\",\n \"status\": 4001,\n \"message\": \"존재하지 않는 뱁새입니다.\"\n}"))),
-            @ApiResponse(responseCode = "4002", description = "FAIL_SEND_TO_MEMBER_CROWTIT", content = @Content(examples = @ExampleObject(value = "{\n \"httpStatus\": \"500 INTERNAL_SERVER_ERROR\", \n \"status\": \"4002\",\n \"message\": \"멤버서버로 뱁새 정보 전송에 실패하였습니다.\"\n}")))}
+            @ApiResponse(responseCode = "4001", description =  "NOT_EXISTS_CROWTIT", content = @Content(examples = @ExampleObject(value = "{\n \"httpStatus\": \"400 BAD_REQUEST\",\n \"status\": 4001,\n \"message\": \"존재하지 않는 뱁새입니다.\"\n}")))}
     )
     public ResponseEntity<? extends BaseResponseBody> buyCharacter(@RequestHeader("Authorization") String accessToken,
                                                                    @RequestBody CharacterBuyReqDto characterBuyReqDto){
