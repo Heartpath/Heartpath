@@ -3,6 +3,7 @@ package com.zootopia.userservice.api;
 import com.zootopia.userservice.common.BaseResponse;
 import com.zootopia.userservice.dto.FriendShipDTO;
 import com.zootopia.userservice.dto.UserInfoDTO;
+import com.zootopia.userservice.exception.FriendException;
 import com.zootopia.userservice.jwt.JwtProvider;
 import com.zootopia.userservice.service.APIService;
 import com.zootopia.userservice.util.JwtUtil;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -27,7 +29,7 @@ public class APIController {
     private final JwtProvider jwtProvider;
 
     @GetMapping("/user")
-    public ResponseEntity<BaseResponse> getMemberInfo(HttpServletRequest request) {
+    public ResponseEntity<BaseResponse> getMemberInfoByJWT(HttpServletRequest request) {
 
         String accessToken = JwtUtil.getTokenFromHeader(request);
 
@@ -36,6 +38,30 @@ public class APIController {
                 200,
                 userInfo.getNickname().concat("의 회원 정보입니다."),
                 userInfo);
+
+        return ResponseEntity.status(200).body(baseResponse);
+    }
+
+    @GetMapping("/user/{memberID}")
+    public ResponseEntity<BaseResponse> getMemberInfoByMemberID(@PathVariable String memberID) {
+
+        UserInfoDTO userInfo = apiService.loadUserInfoByMemberID(memberID);
+        BaseResponse baseResponse = new BaseResponse();
+
+        if (userInfo == null) {
+            baseResponse.setStatus(400);
+            baseResponse.setMessage("해당 유저가 없습니다.");
+            baseResponse.setData(null);
+            return ResponseEntity.status(400).body(baseResponse);
+        }
+
+        HashMap<String, String> res = new HashMap<>();
+        res.put("fcmToken", userInfo.getFcmToken());
+        res.put("nickname", userInfo.getNickname());
+
+        baseResponse.setStatus(200);
+        baseResponse.setMessage("FCM 토큰, 닉네임 반환되었습니다.");
+        baseResponse.setData(res);
 
         return ResponseEntity.status(200).body(baseResponse);
     }

@@ -11,5 +11,7 @@ public interface APIService {
 
     UserInfoDTO loadUserInfo(String token);
 
+    UserInfoDTO loadUserInfoByMemberID(String memberID);
+
     List<FriendShipDTO> checkRelationshipWithFriends(String from, String to);
 }
