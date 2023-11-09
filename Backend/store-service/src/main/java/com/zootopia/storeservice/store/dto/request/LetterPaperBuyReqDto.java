@@ -11,7 +11,4 @@ public class LetterPaperBuyReqDto {
 
     private Long letterpaperId;
 
-    public LetterPaperBuyReqDto(Long letterpaperId){
-        this.letterpaperId = letterpaperId;
-    }
 }
