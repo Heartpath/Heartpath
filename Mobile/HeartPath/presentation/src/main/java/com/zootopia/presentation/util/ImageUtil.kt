@@ -4,8 +4,10 @@ import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.net.Uri
 import android.provider.MediaStore
+import android.view.View
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -53,4 +55,11 @@ fun saveImageToGallery(context: Context, bitmap: Bitmap): Uri? {
         outputStream?.close()
     }
     return null
+}
+
+fun viewToBitmap(view: View): Bitmap {
+    val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    view.draw(canvas)
+    return bitmap
 }
