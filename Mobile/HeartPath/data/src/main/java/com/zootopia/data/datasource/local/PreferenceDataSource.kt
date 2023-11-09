@@ -122,6 +122,7 @@ class PreferenceDataSource @Inject constructor(
 
     // access token 값 수정
     suspend fun setAccessToken(accessToken: String) {
+        Log.d(TAG, "setAccessToken: $accessToken")
         context.dataStore.edit { preferences ->
             preferences[stringPreferencesKey("access_token")] = accessToken
         }
@@ -145,6 +146,7 @@ class PreferenceDataSource @Inject constructor(
 
     // refresh token 값 수정
     suspend fun setRefreshToken(refreshToken: String) {
+        Log.d(TAG, "setRefreshToken: $refreshToken")
         context.dataStore.edit { preferences ->
             preferences[stringPreferencesKey("refresh_token")] = refreshToken
         }
