@@ -39,11 +39,13 @@ public class LetterMongo {
 
 
     @Builder
-    public LetterMongo(String content, List<String> files, String senderId, String receiverId) {
+    public LetterMongo(String content, List<String> files) {
         this.content = content;
         this.files = files;
-        this.senderId = senderId;
-        this.receiverId = receiverId;
+//        this.senderId = senderId;
+//        this.receiverId = receiverId;
     }
+
+
 
 }
