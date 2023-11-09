@@ -45,6 +45,22 @@ public class APIServiceImpl implements APIService {
     }
 
     @Override
+    public UserInfoDTO loadUserInfoByMemberID(String memberID) {
+
+        Optional<User> findUser = userRepository.findByMemberID(memberID);
+        if (findUser.isEmpty()) {
+            return null;
+        }
+
+        User user = findUser.get();
+
+        UserInfoDTO userInfoDTO = new UserInfoDTO();
+        userInfoDTO.ofEntity(user);
+
+        return userInfoDTO;
+    }
+
+    @Override
     public List<FriendShipDTO> checkRelationshipWithFriends(String from, String to) {
         List<FriendShipDTO> relationshipWithFriendsDTO = friendMapper.getRelationshipWithFriends(from, to);
         return relationshipWithFriendsDTO;
