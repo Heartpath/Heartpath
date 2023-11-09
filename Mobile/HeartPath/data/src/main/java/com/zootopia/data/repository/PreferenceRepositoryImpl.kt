@@ -39,16 +39,13 @@ class PreferenceRepositoryImpl @Inject constructor(
         return preferenceDataSource.getAccessToken()
     }
 
-    override suspend fun setAccessToken(accessToken: String) {
+    override suspend fun setToken(accessToken: String, refreshToken: String) {
         preferenceDataSource.setAccessToken(accessToken = accessToken)
+        preferenceDataSource.setRefreshToken(refreshToken = refreshToken)
     }
 
     override fun getRefreshToken(): Flow<String> {
         return preferenceDataSource.getRefreshToken()
-    }
-
-    override suspend fun setRefreshToken(refreshToken: String) {
-        preferenceDataSource.setRefreshToken(refreshToken = refreshToken)
     }
 
     override fun getKakaoAccessToken(): Flow<String> {

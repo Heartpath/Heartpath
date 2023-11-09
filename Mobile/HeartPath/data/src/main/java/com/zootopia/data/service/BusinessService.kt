@@ -1,7 +1,11 @@
 package com.zootopia.data.service
 
+import com.zootopia.data.model.common.MessageResponse
 import com.zootopia.data.model.login.request.LoginRequest
+import com.zootopia.data.model.login.request.SignupRequest
+import com.zootopia.data.model.login.response.CheckIdResponse
 import com.zootopia.data.model.login.response.LoginResponse
+import com.zootopia.data.model.user.response.UserInfoResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -22,15 +26,21 @@ interface BusinessService {
     @GET("/user/check")
     suspend fun checkId(
         @Query("id") id: String
-    )
+    ): Response<CheckIdResponse>
+
+    // 회원가입
+    @POST("/user/register")
+    suspend fun signup(
+        @Body signupRequest: SignupRequest
+    ): Response<LoginResponse>
 
     // 회원 탈퇴
     @POST("/user/unregist")
-    suspend fun unregister()
+    suspend fun unregister(): Response<MessageResponse>
 
     // 사용자 정보 조회
     @GET("/user/mypage")
-    suspend fun getUserInfo()
+    suspend fun getUserInfo(): Response<UserInfoResponse>
 
     // 사용자 정보 수정
     @PUT("/user/mypage")
@@ -43,5 +53,8 @@ interface BusinessService {
     // 사용자 포인트 적립
     @POST("/user/point")
     suspend fun earnedPoint()
+
+//    @GET("/api/user")
+//    suspend fun getUserInfoTest(): Response<UserInfoResponse>
 
 }

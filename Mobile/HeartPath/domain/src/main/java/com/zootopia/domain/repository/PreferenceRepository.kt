@@ -12,10 +12,9 @@ interface PreferenceRepository {
     suspend fun setFcmToken(token: String)
 
     fun getAccessToken() : Flow<String>
-    suspend fun setAccessToken(accessToken: String)
+    suspend fun setToken(accessToken: String, refreshToken: String)
 
     fun getRefreshToken() : Flow<String>
-    suspend fun setRefreshToken(refreshToken: String)
     fun getKakaoAccessToken(): Flow<String>
     suspend fun setKakaoAccessToken(accessToken: String)
 }
