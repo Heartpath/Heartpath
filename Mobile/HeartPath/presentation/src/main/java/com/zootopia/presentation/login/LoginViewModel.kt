@@ -71,85 +71,16 @@ class LoginViewModel @Inject constructor(
     private val _refreshToken = MutableStateFlow("")
     var refreshToken = _refreshToken.asStateFlow()
 
-    fun loginByKakao(context: Context) {
-        val kakaoCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-            Log.d(TAG, "loginByKakao: here is callback")
-            if (error != null) {
-                Log.d(TAG, "로그인 실패 $error")
-            } else if (token != null) {
-                Log.d(TAG, "웹으로 카카오 로그인 성공 kakao access token: ${token.accessToken}")
-                // Firebase FCM token 가지고 오기
-                FirebaseMessaging.getInstance().token.addOnCompleteListener { fcmTask ->
-                    Log.d(TAG, "FCM token result: ${fcmTask.result}")
-                    if (fcmTask.isSuccessful) {
-                        // fcm 토큰 받아오기 성공
-                        viewModelScope.launch {
-                            // 카카오 access token 값 넣어주기
-                            setFcmTokenUseCase.invoke(fcmTask.result)
-                            setKakaoAccessTokenUseCase.invoke(token.accessToken)
-                            _kakaoAccessToken.emit(token.accessToken)
-                            _fcmToken.emit(fcmTask.result)
-                            login()
 
-                        }
-                    } else {
-                        // fcm 토큰 받아 오기 실패
-                        return@addOnCompleteListener
-                    }
-                }
-
-            }
-        }
-        // 카카오톡 설치 확인
-        if (UserApiClient.instance.isKakaoTalkLoginAvailable(context = context)) {
-            // 카카오톡 로그인
-            UserApiClient.instance.loginWithKakaoTalk(context = context) { token, error ->
-                // 로그인 실패 부분
-                if (error != null) {
-                    Log.e(TAG, "로그인 실패 $error")
-                    // 사용자가 취소
-                    if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                        return@loginWithKakaoTalk
-                    }
-                    // 다른 오류
-                    else {
-                        UserApiClient.instance.loginWithKakaoAccount(
-                            context = context,
-                            callback = kakaoCallback
-                        ) // 카카오 이메일 로그인
-                    }
-                }
-                // 로그인 성공 부분
-                else if (token != null) {
-                    Log.d(TAG, "카카오 앱으로 로그인 성공 kakao access token: ${token.accessToken}")
-                    FirebaseMessaging.getInstance().token.addOnCompleteListener { fcmTask ->
-                        Log.d(TAG, "FCM token result: ${fcmTask.result}")
-                        if (fcmTask.isSuccessful) {
-                            // fcm 토큰 가지고 오기 성공
-                            viewModelScope.launch {
-                                // 카카오 access token 값 넣어주기
-                                setFcmTokenUseCase.invoke(fcmTask.result)
-                                setKakaoAccessTokenUseCase.invoke(token.accessToken)
-                                _kakaoAccessToken.emit(token.accessToken)
-                                _fcmToken.emit(fcmTask.result)
-                                login()
-                            }
-                        } else {
-                            // fcm 토큰 가지고 오기 실패
-                            return@addOnCompleteListener
-                        }
-                    }
-
-                }
-            }
-        } else {
-            UserApiClient.instance.loginWithKakaoAccount(
-                context = context,
-                callback = kakaoCallback
-            ) // 카카오 이메일 로그인
-        }
+    fun setKakaoAccessToken(kakaoToken: String) = viewModelScope.launch {
+        _kakaoAccessToken.emit(kakaoToken)
+        setKakaoAccessTokenUseCase.invoke(accessToken = kakaoToken)
     }
 
+    fun setFCMToken(fcmToken: String) = viewModelScope.launch {
+        _fcmToken.emit(fcmToken)
+        setFcmTokenUseCase.invoke(token = fcmToken)
+    }
 
     // 로그인 - 카카오 access token 넣어서 전송
     fun login() = viewModelScope.launch {
