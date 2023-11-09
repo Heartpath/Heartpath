@@ -2,6 +2,8 @@ package com.zootopia.presentation.writeletter.handwrite
 
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -19,7 +21,9 @@ import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentHandWriteBinding
+import com.zootopia.presentation.util.LetterType
 import com.zootopia.presentation.writeletter.WriteLetterViewModel
+import com.zootopia.presentation.writeletter.selecttype.SelectLetterTypeFragmentDirections
 import kotlinx.coroutines.launch
 
 private const val TAG = "HandWriteFragment_HP"
@@ -33,6 +37,7 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
     private val writeLetterViewModel: WriteLetterViewModel by activityViewModels()
     private var imageViewHeight: Float = 0F
     private var imageViewWidth: Float = 0F
+    private var bmp: Bitmap? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -135,6 +140,11 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
             val bottomSheetPalette = BottomSheetPalette()
             bottomSheetPalette.show(childFragmentManager, "BottomSheetPalette")
         }
+        buttonSave.setOnClickListener {
+            bmp = viewToBitmap(imageviewLetterPaper)
+            writeLetterViewModel.setDrawingBitmap(bmp!!)
+            navController.navigate(HandWriteFragmentDirections.actionHandWriteFragmentToAddLetterImageFragment())
+        }
     }
 
     private fun convertDpToPixel(dp: Float): Float {
@@ -148,6 +158,13 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
 
             dp * (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
         }
+    }
+
+    private fun viewToBitmap(view: View): Bitmap {
+        val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        view.draw(canvas)
+        return bitmap
     }
 
     override fun onDestroy() {
