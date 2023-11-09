@@ -1,7 +1,5 @@
 package com.zootopia.data.datasource.remote.login
 
-import android.util.Log
-import com.zootopia.data.model.common.MessageResponse
 import com.zootopia.data.model.login.request.LoginRequest
 import com.zootopia.data.model.login.request.SignupRequest
 import com.zootopia.data.model.login.response.CheckIdResponse
