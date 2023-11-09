@@ -1,11 +1,11 @@
 package com.zootopia.userservice.mapper;
 
-import com.zootopia.userservice.dto.UserInfoDTO;
+import com.zootopia.userservice.dto.MypageDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 
 @Mapper
 public interface UserMapper {
 
-    UserInfoDTO readUserInfo(String memberID);
+    MypageDTO readUserInfo(String memberID);
 }

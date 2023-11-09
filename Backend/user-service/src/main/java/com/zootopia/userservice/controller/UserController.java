@@ -1,6 +1,7 @@
 package com.zootopia.userservice.controller;
 
 import com.zootopia.userservice.common.BaseResponse;
+import com.zootopia.userservice.dto.MypageDTO;
 import com.zootopia.userservice.dto.UserInfoDTO;
 import com.zootopia.userservice.dto.UserLoginDTO;
 import com.zootopia.userservice.dto.UserRegisterDTO;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -117,9 +119,9 @@ public class UserController {
     })
     @PostMapping("/register")
     public ResponseEntity<BaseResponse> registerUser(@RequestBody UserRegisterDTO userRegisterDTO) {
-        userService.registerUser(userRegisterDTO);
+        HashMap<String, String> tokens = userService.registerUser(userRegisterDTO);
 
-        BaseResponse baseResponse = new BaseResponse(200, "회원가입이 완료되었습니다.", new ArrayList<>());
+        BaseResponse baseResponse = new BaseResponse(200, "회원가입이 완료되었습니다.", tokens);
         return ResponseEntity.status(200).body(baseResponse);
     }
 
@@ -142,10 +144,10 @@ public class UserController {
     }
 
     @GetMapping("/mypage")
-    public ResponseEntity<BaseResponse> getUserInfo() {
+    public ResponseEntity<BaseResponse> getUserInfo(HttpServletRequest request) {
 
-        UserInfoDTO userInfoDTO = userService.loadUserInfo("MEMBER_ID");
+        MypageDTO mypageDTO = userService.loadUserInfo("ssafyA");
 
-        return ResponseEntity.status(200).body(new BaseResponse(HttpStatus.OK.value(), "유저 불러오기", userInfoDTO));
+        return ResponseEntity.status(200).body(new BaseResponse(HttpStatus.OK.value(), "유저 불러오기", mypageDTO));
     }
 }
