@@ -15,4 +15,15 @@
           AND f.TO_MEMBER_ID = #{from}
     </select>
 
+    <select id="getFriendInfoList" parameterType="String" resultType="FriendInfoDTO">
+        SELECT m.MEMBER_ID          AS `memberID`,
+               m.NICKNAME           AS `nickname`,
+               m.PROFILE_IMAGE_PATH AS `profileImagePath`
+        FROM `MEMBER` m
+        WHERE m.MEMBER_ID in (SELECT f.TO_MEMBER_ID
+                              FROM `MEMBER` m
+                                       LEFT JOIN FRIEND f ON m.MEMBER_ID = f.FROM_MEMBER_ID
+                              WHERE m.MEMBER_ID = #{memberID});
+    </select>
+
 </mapper>
