@@ -111,4 +111,14 @@ dependencies {
 
     // coordinatorlayout
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
+    
+    // arcore - sceneview library
+    implementation("io.github.sceneview:arsceneview:1.2.2")
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
+
+    // Add the dependency for the Firebase SDK for Google Analytics
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-messaging-ktx")
 }

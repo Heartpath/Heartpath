@@ -13,6 +13,11 @@
         <action
             android:id="@+id/action_loginFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
@@ -59,7 +64,11 @@
         android:id="@+id/mapFragment"
         android:name="com.zootopia.presentation.map.MapFragment"
         android:label="fragment_map"
-        tools:layout="@layout/fragment_map" />
+        tools:layout="@layout/fragment_map" >
+        <action
+            android:id="@+id/action_mapFragment_to_arCoreFragment"
+            app:destination="@id/arCoreFragment" />
+    </fragment>
     <fragment
         android:id="@+id/myPageFragment"
         android:name="com.zootopia.presentation.mypage.MyPageFragment"
@@ -82,7 +91,7 @@
         tools:layout="@layout/fragment_setting" />
     <fragment
         android:id="@+id/friendSearchFragment"
-        android:name="com.zootopia.presentation.searchfriend.FriendSearchFragment"
+        android:name="com.zootopia.presentation.searchfriend.SearchFriendFragment"
         android:label="fragment_friend_search"
         tools:layout="@layout/fragment_friend_search" />
     <fragment
@@ -131,8 +140,14 @@
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.zootopia.presentation.login.SignUpFragment"
-        android:label="fragment_sign_up"
-        tools:layout="@layout/fragment_sign_up" />
+        android:label="SignUpFragment"
+        tools:layout="@layout/fragment_sign_up" >
+        <action
+            android:id="@+id/action_signUpFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/typingWriteFragment"
         android:name="com.zootopia.presentation.writeletter.typingwrite.TypingWriteFragment"
@@ -157,5 +172,10 @@
         android:name="com.zootopia.presentation.writeletter.addletterimage.AddLetterImageFragment"
         android:label="AddLetterImageFragment"
         tools:layout="@layout/fragment_add_letter_image"/>
+    <fragment
+        android:id="@+id/arCoreFragment"
+        android:name="com.zootopia.presentation.arcore.ArCoreFragment"
+        android:label="fragment_ar_core"
+        tools:layout="@layout/fragment_ar_core" />
 
 </navigation>
