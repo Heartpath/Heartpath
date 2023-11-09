@@ -122,6 +122,7 @@ class PreferenceDataSource @Inject constructor(
 
     // access token 값 수정
     suspend fun setAccessToken(accessToken: String) {
+        Log.d(TAG, "setAccessToken: $accessToken")
         context.dataStore.edit { preferences ->
             preferences[stringPreferencesKey("access_token")] = accessToken
         }
@@ -145,6 +146,7 @@ class PreferenceDataSource @Inject constructor(
 
     // refresh token 값 수정
     suspend fun setRefreshToken(refreshToken: String) {
+        Log.d(TAG, "setRefreshToken: $refreshToken")
         context.dataStore.edit { preferences ->
             preferences[stringPreferencesKey("refresh_token")] = refreshToken
         }
@@ -152,11 +154,9 @@ class PreferenceDataSource @Inject constructor(
 
     // kakao access token 값 호출
     fun getKakaoAccessToken(): Flow<String> {
-        Log.d(TAG, "getKakaoAccessToken: 여기까지 도달")
         return context.dataStore.data
             .catch { exception ->
                 // IOException이 발생하는 경우도 있기 때문에 throw-catch 처리
-                Log.d(TAG, "getKakaoAccessToken: 캐치문에 도달")
                 if (exception is IOException) {
                     emit(emptyPreferences())
                 } else {
@@ -164,7 +164,6 @@ class PreferenceDataSource @Inject constructor(
                 }
             }
             .map { preferences ->
-                Log.d(TAG, "getKakaoAccessToken: 카카오 토큰 받아옴")
                 preferences[stringPreferencesKey("kakao_access_token")] ?: ""
             }
     }
