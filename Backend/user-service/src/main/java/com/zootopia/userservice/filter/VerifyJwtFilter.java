@@ -34,6 +34,7 @@ public class VerifyJwtFilter extends OncePerRequestFilter {
     private static final String[] EXCLUDED_URLS = {"/user/health_check",
             "/user/login", "/user/register", "/user/check",
             "/user/token",
+            "/api/token",
             "/swagger-ui", "/v3/api-docs"};
 
     private String extractJwtFromHeader(Optional<String> authorizationToken) throws JwtException {
