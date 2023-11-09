@@ -69,4 +69,18 @@
     <string name="friend_edit">친구 수정</string>
     <string name="friend_delete">삭제하기</string>
     <string name="friend_report">신고하기</string>
+    
+    <!--  FCM  -->
+    <string name="default_notification_channel_id">heart_path</string>
+    <string name="default_notification_channel_name">HeartPath</string>
+
+    <!--    toast message   -->
+    <string name="toast_message_signup_check_id_plz">아이디 중복 확인은 필수입니다.</string>
+    <string name="toast_message_signup_check_id_enter_letter">빈 값으로 설정할 수 없습니다.</string>
+    <string name="toast_message_signup_check_id_can_use">사용할 수 있는 아이디입니다.</string>
+    <string name="toast_message_signup_check_id_cant_use">사용할 수 없는 아이디입니다.</string>
+    <string name="toast_message_signup_done">회원가입이 완료되었습니다.</string>
+    <string name="toast_message_signup_fail">회원가입 실패했습니다.</string>
+
+    <string name="signup_check_id_done">확인완료</string>
 </resources>
