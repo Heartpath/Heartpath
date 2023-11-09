@@ -3,6 +3,7 @@ package com.zootopia.userservice.api;
 import com.zootopia.userservice.common.BaseResponse;
 import com.zootopia.userservice.dto.FriendShipDTO;
 import com.zootopia.userservice.dto.UserInfoDTO;
+import com.zootopia.userservice.jwt.JwtProvider;
 import com.zootopia.userservice.service.APIService;
 import com.zootopia.userservice.util.JwtUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,6 +24,7 @@ import java.util.List;
 public class APIController {
 
     private final APIService apiService;
+    private final JwtProvider jwtProvider;
 
     @GetMapping("/user")
     public ResponseEntity<BaseResponse> getMemberInfo(HttpServletRequest request) {
@@ -53,5 +55,10 @@ public class APIController {
                 res);
 
         return ResponseEntity.status(200).body(baseResponse);
+    }
+
+    @GetMapping("/token/{memberID}")
+    public String getTmpToken(@PathVariable String memberID) {
+        return jwtProvider.createAccessToken(memberID);
     }
 }
