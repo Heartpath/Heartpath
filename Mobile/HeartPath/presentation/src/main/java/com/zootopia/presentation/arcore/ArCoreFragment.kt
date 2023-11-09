@@ -99,19 +99,24 @@ class ArCoreFragment
                     frame.getUpdatedPlanes()
                         .firstOrNull { it.type == Plane.Type.HORIZONTAL_UPWARD_FACING }
                         ?.let { plane ->
+                            Log.d(TAG, "initView: plane $plane")
                             // plane 활성화 & 버튼 클릭시
                             binding.buttonSetItem.setOnClickListener {
                                 Log.d(TAG, "initView: ->> $anchorNode")
+                                
                                 // 모델 올리기+
                                 addAnchorNode(plane.createAnchor(plane.centerPose))
                                 
                                 //카메라 부터 모델까지 거리 구하기 (dist는 m 단위)
+                                Log.d(TAG, "initView: ${frame.camera.pose}")
                                 currentFrame = frame
                                 measureDistanceFromCamera()
                             }
                         }
+                    
                 }
             }
+
             onTrackingFailureChanged = { reason ->
                 this@ArCoreFragment.trackingFailureReason = reason
             }
@@ -120,12 +125,12 @@ class ArCoreFragment
     
     
     fun addAnchorNode(anchor: Anchor) {
+    
+        removeModelNode()
         
         binding.sceneView.addChildNode(
             AnchorNode(binding.sceneView.engine, anchor).apply {
                     isEditable = true
-                    
-                    anchorNode?.let { binding.sceneView.removeChildNode(it) }
                 
                     lifecycleScope.launch {
                         isLoading = true
@@ -148,6 +153,24 @@ class ArCoreFragment
                 },
         )
     }
+    
+    fun removeModelNode() {
+        
+        anchorNode?.let { anchorNode ->
+            binding.sceneView.removeChildNode(anchorNode) // AnchorNode를 제거하여 하위의 ModelNode도 함께 제거
+            anchorNode.anchor.detach() // Anchor를 분리합니다.
+//            anchorNode.isEditable = false // 선택 사항: 모델 노드가 더 이상 편집되지 않도록 설정
+//            anchorNode.detachAnchor() // 선택 사항: 비활성화하여 모델 노드가 더 이상 렌더링되지 않도록 합니다.
+            anchorNode.parent = null // 선택 사항: 부모 노드에서 제거합니다.
+
+            
+            // 모델을 삭제했으므로 anchorNode를 null로
+            // 설정하여 참조를 제거
+            this.anchorNode = null
+            Log.d(TAG, "removeModelNode: 앵커 초기화 실행")
+        }
+    }
+    
     
     
     private fun measureDistanceFromCamera() {
