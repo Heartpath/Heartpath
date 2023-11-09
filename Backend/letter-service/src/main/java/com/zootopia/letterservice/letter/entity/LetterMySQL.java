@@ -64,7 +64,9 @@ public class LetterMySQL {
     private List<PlaceImage> placeImages;
 
     @Builder
-    public LetterMySQL(String content, String type, Double lat, Double lng) {
+    public LetterMySQL(String senderId, String receiverId, String content, String type, Double lat, Double lng) {
+        this.senderId = senderId;
+        this.receiverId = receiverId;
         this.content = content;
         this.type = type;
         this.lat = lat;

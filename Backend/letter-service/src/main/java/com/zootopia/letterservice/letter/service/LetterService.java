@@ -17,21 +17,19 @@ import java.util.List;
 @Service
 public interface LetterService {
 
-    // Member 추가해야 함.
-//    void createHandLetter (LetterHandReqDto letterHandReqDto, MultipartFile content, List<MultipartFile> files);
-    void createHandLetter (LetterHandReqDto letterHandReqDto, MultipartFile content, List<MultipartFile> files);
+    void createHandLetter (String accessToken, LetterHandReqDto letterHandReqDto, MultipartFile content, List<MultipartFile> files);
 
-    void createTextLetter (LetterTextReqDto letterTextReqDto, MultipartFile content, List<MultipartFile> files);
+    void createTextLetter (String accessToken, LetterTextReqDto letterTextReqDto, MultipartFile content, List<MultipartFile> files);
 
-    void placeLetter(LetterPlaceReqDto letterPlaceReqDto, List<MultipartFile> files);
+    void placeLetter(String accessToken, LetterPlaceReqDto letterPlaceReqDto, List<MultipartFile> files);
 
-    List<LetterSendResDto> getSendLetters();
+    List<LetterSendResDto> getSendLetters(String accessToken);
 
-    List<LetterUnsendResDto> getUnsendLetters();
+    List<LetterUnsendResDto> getUnsendLetters(String accessToken);
 
-    List<LetterReceivedResDto> getReadLetters();
+    List<LetterReceivedResDto> getReadLetters(String accessToken);
 
-    List<LetterReceivedResDto> getUnreadLetters();
+    List<LetterReceivedResDto> getUnreadLetters(String accessToken);
 
-    LetterReceivedDetailResDto getLetter(Long letter_id);
+    LetterReceivedDetailResDto getLetter(String accessToken, Long letter_id);
 }
