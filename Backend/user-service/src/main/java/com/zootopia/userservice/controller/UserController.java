@@ -2,7 +2,6 @@ package com.zootopia.userservice.controller;
 
 import com.zootopia.userservice.common.BaseResponse;
 import com.zootopia.userservice.dto.MypageDTO;
-import com.zootopia.userservice.dto.UserInfoDTO;
 import com.zootopia.userservice.dto.UserLoginDTO;
 import com.zootopia.userservice.dto.UserRegisterDTO;
 import com.zootopia.userservice.jwt.JwtProvider;
@@ -20,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,11 +36,7 @@ public class UserController {
 
     @GetMapping("/health_check")
     public String checkServer(HttpServletRequest request) {
-
-        String remoteAddr = request.getRemoteAddr();
-        log.info("Get Request From '{}'", remoteAddr);
-
-        return String.format("200 OK to %s", remoteAddr);
+        return String.format("200 OK to %s", request.getRemoteAddr());
     }
 
     @Operation(summary = "회원 로그인")
