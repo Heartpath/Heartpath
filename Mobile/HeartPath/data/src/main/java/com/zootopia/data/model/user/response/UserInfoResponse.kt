@@ -9,5 +9,5 @@ data class UserInfoResponse (
     @SerializedName("message")
     val message: String,
     @SerializedName("data")
-    val data: UserInfoDto,
+    val data: UserInfoDto?,
 )
