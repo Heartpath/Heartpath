@@ -1,5 +1,8 @@
 package com.zootopia.data.service
 
+import com.zootopia.data.model.business.request.PostHandLetterRequest
+import com.zootopia.data.model.business.response.BusinessResponse
+import okhttp3.MultipartBody
 import com.zootopia.data.model.common.MessageResponse
 import com.zootopia.data.model.login.request.LoginRequest
 import com.zootopia.data.model.login.request.SignupRequest
@@ -9,13 +12,23 @@ import com.zootopia.data.model.user.response.UserInfoResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.PUT
 import retrofit2.http.Query
 
 interface BusinessService {
     @GET("/user/health_check")
     suspend fun test(): Response<String>
+
+    @Multipart
+    @POST("/letter/hand")
+    suspend fun postHandLetter(
+        @Part("letterHandReqDto") postHandLetterRequest: PostHandLetterRequest,
+        @Part content: MultipartBody.Part,
+        @Part files: List<MultipartBody.Part>?
+    ): Response<BusinessResponse>
 
     @POST("/user/login")
     suspend fun login(

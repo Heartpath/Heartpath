@@ -35,10 +35,6 @@ class MapViewModel @Inject constructor(
         MapLetterDto(1,false, "하동혁님이 보낸 편지1", "2023.11.01", "36.1094880", "128.420560"),
         MapLetterDto(2,false, "하동혁님이 보낸 편지2", "2023.11.01","36.1051004", "128.422769"),
         MapLetterDto(3,false, "하동혁님이 보낸 편지3", "2023.11.01","36.111282119957956", "128.42349987855764 "),
-        MapLetterDto(4,false, "하동혁님이 보낸 편지4", "2023.11.01"),
-        MapLetterDto(5,false, "하동혁님이 보낸 편지5", "2023.11.01"),
-        MapLetterDto(6,false, "하동혁님이 보낸 편지6", "2023.11.01"),
-        MapLetterDto(7, false, "하동혁님이 보낸 편지7", "2023.11.01"),
     )
     
     private val _mapLetterList = MutableSharedFlow<MutableList<MapLetterDto>>()
