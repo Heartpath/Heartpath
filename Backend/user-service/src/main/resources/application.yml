@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/zootopia?serverTimezone=UTC&useUniCode=yes&characterEncoding=UTF-8
+    username: ssafy
+    password: ssafy
+  redis:
+    host: localhost
+    port: 6379
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.zootopia.userservice.dto
+
+kakao:
+  prefix: "Bearer "
+  url: https://kapi.kakao.com/v2/user/me
+
+jwt:
+  secret-key: VrxHJu7Y3LpTZURj4GhCWPqbYwy6fnATCFps28ZBD4dmZ6wu2dR5GvJQmh9WPfVHTbhF9NxrmB6sEgdWkVa5QDjC
+  expiration: 1
+  refresh-token:
+    expiration: 7
