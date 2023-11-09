@@ -204,7 +204,7 @@ public class LetterServiceImpl implements LetterService {
     // 첨부된 파일이 이미지 파일인지 확인
     private boolean isImageFile(String filename) {
         String extenstion = filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
-        String[] allowedExtensions = {"png", "jpg", "jpeg", "heif", "hevc", "gif"};
+        String[] allowedExtensions = {"png", "jpg", "jpeg", "heif", "hevc", "gif", "jfif"};
 
         for (String allowedExtension : allowedExtensions) {
             if (extenstion.equals(allowedExtension)) {
