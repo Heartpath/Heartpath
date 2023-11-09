@@ -13,16 +13,16 @@ import java.util.stream.Collectors;
 public class LetterReceivedResDto {
 
     private Long index;
-    private String sender;
+//    private String sender;
     private LocalDateTime time;
     private Double lat;
     private Double lng;
 
     private List<String> location;
 
-    public LetterReceivedResDto(LetterMySQL letter, String sender) {
+    public LetterReceivedResDto(LetterMySQL letter) {
         this.index = letter.getId();
-        this.sender = sender;
+//        this.sender = letter.getSender().getNickname();
         this.time = letter.getCreatedDate();
         this.lat = letter.getLat();
         this.lng = letter.getLng();
