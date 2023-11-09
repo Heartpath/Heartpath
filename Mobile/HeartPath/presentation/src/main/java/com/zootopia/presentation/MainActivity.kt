@@ -13,7 +13,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.work.WorkManager
-import com.kakao.sdk.common.util.Utility
 import com.zootopia.presentation.config.BaseActivity
 import com.zootopia.presentation.databinding.ActivityMainBinding
 import com.zootopia.presentation.util.checkAllPermission
@@ -26,17 +25,21 @@ private const val TAG = "MainActivity_HeartPath"
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
-
+    
     lateinit var navController: NavController
     private val mainViewModel: MainViewModel by viewModels()
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_Splash)
         super.onCreate(savedInstanceState)
         initNavHost()
         initCheckPermission()
         initCollect()
+
+//        initAppbar()
+        
         initNotification()
+
         // 카카오 키 해시 값 가지고 오기
 //        Log.d(TAG, "KAKAO keyhash : ${Utility.getKeyHash(this)}")
     }
