@@ -13,4 +13,6 @@ public interface FriendMapper {
     List<FriendShipDTO> getRelationshipWithFriends(String from, String to);
 
     List<FriendInfoDTO> getFriendInfoList(String memberID);
+
+    int addFriend(String from, String to);
 }
