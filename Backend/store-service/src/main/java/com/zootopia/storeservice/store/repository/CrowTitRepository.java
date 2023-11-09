@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface CrowTitRepository extends JpaRepository<CrowTit, Long> {
 
-    Optional<CrowTit> findById(Long crow_tit_id);
+    Optional<CrowTit> findById(Long crowtitId);
 }
