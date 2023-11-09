@@ -308,7 +308,7 @@ public class LetterServiceImpl implements LetterService {
          isFriend 변수 추가
          해당 요청을 보낸 멤버가 ReceivedId와 일치하면 IS_READ = true로 변경
          */
-        Boolean flag = null;
+        boolean flag = false;
         if (letterMySQL.getReceiverId().equals(user.getMemberID())) {
             letterJpaRepository.setLetterIsReadTrue(letterMySQL.getId());
             List<FriendDetailResDto> friends = FriendIsBlocked(accessToken, letterMySQL.getReceiverId(), letterMySQL.getSenderId()).getData();
