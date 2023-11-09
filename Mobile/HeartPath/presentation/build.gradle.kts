@@ -101,7 +101,8 @@ dependencies {
     implementation("com.android.support:multidex:1.0.3")
 
     // Kakao
-    implementation("com.kakao.sdk:v2-all:2.14.0")
+    implementation("com.kakao.sdk:v2-all:2.15.0")
+    implementation("com.kakao.sdk:v2-user:2.15.0")
 
     // SSP
     implementation("com.intuit.ssp:ssp-android:1.1.0")
