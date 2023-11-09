@@ -21,7 +21,7 @@ spring:
       tlsCAFile: /tmp/certs/rds-truststore.jks
       replicaSet: rs0
       readPreference: secondaryPreferred
-      retry_writes: false
+      retryWrites: false
 
 
   servlet:
