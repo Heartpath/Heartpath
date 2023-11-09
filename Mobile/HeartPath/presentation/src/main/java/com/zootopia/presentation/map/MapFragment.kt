@@ -173,7 +173,7 @@ class MapFragment :
             Log.d(TAG, "initClickEvent: 카메라 버튼 클릭!")
             // 권한 확인
             if(checkCameraPermission()) {
-                findNavController().navigate(R.id.action_mapFragment_to_arCoreFragment)
+                findNavController().navigate(R.id.action_mapFragment_to_arCoreReadFragment)
             } else {
                 requestCameraPermission()
             }
@@ -499,13 +499,6 @@ class MapFragment :
         )
     }
     private fun requestCameraPermission() {
-//        checkAllPermission(
-//            fragment = this@MapFragment,
-//            activity = mainActivity,
-//            mainViewModel = mainViewModel,
-//            permissionList = MainActivity.PERMISSION_LIST_UP33,
-//        )
-    
         requestPermissionsOnClick(
             activity = mainActivity,
             mainViewModel = mainViewModel,
