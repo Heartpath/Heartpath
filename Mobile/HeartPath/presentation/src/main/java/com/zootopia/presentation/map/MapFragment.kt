@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.Window
+import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
@@ -84,24 +85,25 @@ class MapFragment :
 
     // 내 위치를 가져오는 코드
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient // 자동으로 gps값을 받아온다.
-    lateinit var locationCallback: LocationCallback // gps응답 값을 가져온다.
+    private var locationCallback: LocationCallback? = null // gps응답 값을 가져온다.
 
     // WorkManager
     private lateinit var workManager: WorkManager
     private lateinit var workRequest: WorkRequest
 
     // window
-    private lateinit var window : Window
-    
+    private lateinit var window: Window
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        Log.d(TAG, "onAttach: ")
         mainActivity = context as MainActivity
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-        
+
         initView()
         initAdapter()
         initCollect()
@@ -126,21 +128,28 @@ class MapFragment :
         toolbarHeartpathMap.apply {
             textviewCurrentPageTitle.text = resources.getString(R.string.toolbar_map_title)
             imageviewBackButton.setOnClickListener {
+                stopWalk()
+                stopLocationUpdates()
                 findNavController().popBackStack()
             }
             toolbarHeartpath.setBackgroundColor(
                 ContextCompat.getColor(
                     requireContext(),
-                    R.color.PrimaryLightBlue
-                )
+                    R.color.PrimaryLightBlue,
+                ),
             )
         }
     }
 
     private fun initData() {
         mapViewModel.getDummyList()
-        
+
+        // 워커 매니저 초기화
+        workManager = WorkManager.getInstance(mainActivity)
         binding.textviewDistance.text = distanceIntToString(walkDist.toInt())
+    }
+
+    private fun initSetView() {
     }
 
     private fun initClickEvent() = with(binding) {
@@ -167,17 +176,27 @@ class MapFragment :
             stopWalk()
             path?.map = null // 도보 초기화
         }
-        
-        // 카메라 버튼 
+
+        // 카메라 버튼
         buttonCamera.setOnClickListener {
             Log.d(TAG, "initClickEvent: 카메라 버튼 클릭!")
             // 권한 확인
-            if(checkCameraPermission()) {
+            if (checkCameraPermission()) {
                 findNavController().navigate(R.id.action_mapFragment_to_arCoreReadFragment)
             } else {
                 requestCameraPermission()
             }
         }
+
+        // 이 콜백은 MyFragment가 최소한 Started일 때만 호출됩니다.
+        val callback = mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            // 뒤로 버튼 이벤트 처리
+            Log.e(TAG, "뒤로가기 클릭")
+            stopWalk()
+            stopLocationUpdates()
+            findNavController().popBackStack()
+        }
+        mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
     private fun initAdapter() {
@@ -185,20 +204,20 @@ class MapFragment :
             itemClickListener = object : MapLetterAdapter.ItemClickListener {
                 override fun itemClick(view: View, position: Int, mapLetterDto: MapLetterDto) {
                     Log.d(TAG, "itemClick: 받은 편지 item 클릭됨")
-                    
+
                     if (mapViewModel.lastLatitude != 0.0 && mapViewModel.lastLongitude != 0.0) {
                         mapViewModel.apply {
                             goalLatitude = mapLetterDto.latitude.toDouble()
                             goalLongitude = mapLetterDto.longitude.toDouble()
                             mapViewModel.makeGoalLocataion()
-                            
+
                             // 현재 위치와 마커위치를 계산
                             calculateDistance()
                             // 마커 포지션
                             setMarkerLocation(
                                 mapLetterDto = mapLetterDto,
                                 latitude = goalLatitude,
-                                longitude = goalLongitude
+                                longitude = goalLongitude,
                             )
                             // 카메라 포커스 (맵, 시작, 도착)
                             setCameraToIncludeMyLocationAndMarker(
@@ -207,11 +226,9 @@ class MapFragment :
                                 LatLng(goalLatitude, goalLongitude),
                             )
                         }
-                        
                     } else {
                         mainActivity.showToast("사용자의 위치를 불러오는 중입니다.")
                     }
-
                 }
 
                 override fun reportClick(view: View, position: Int) {
@@ -250,12 +267,12 @@ class MapFragment :
                 mapViewModel.isStartWalk = true
             }
         }
-        
+
         // 목적지 까지 거리 계산
-        viewLifecycleOwner.lifecycleScope.launch{
+        viewLifecycleOwner.lifecycleScope.launch {
             mapViewModel.walkDistance.collectLatest {
                 mapViewModel.dist = distanceIntToString(it.toInt())
-                if(mapViewModel.isStartWalk) {
+                if (mapViewModel.isStartWalk) {
                     binding.textviewDistance.text = mapViewModel.dist
                 }
             }
@@ -276,7 +293,7 @@ class MapFragment :
                 path_container?.add(LatLng(path_cords_xy[1], path_cords_xy[0]))
             }
         }
-        
+
         Log.d(TAG, "DrawLoad: $path_container")
         // 더미원소 드랍후 path.coords에 path들을 넣어줌.
         path!!.coords = path_container?.drop(1)!!
@@ -329,21 +346,22 @@ class MapFragment :
             locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             locationRequest.setInterval(2000)
         }
+        if (locationCallback == null) {
+            locationCallback = object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
+                    locationResult ?: return
+                    for ((i, location) in locationResult.locations.withIndex()) {
+                        Log.d(TAG, " $locationCallback    mapOn -> latitude: ${location.latitude}, longitude: ${location.longitude}")
+                        mapViewModel.apply {
+                            setLocation(
+                                latitude = location.latitude,
+                                longitude = location.longitude,
+                            )
+                            makeUserLocataion()
 
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                locationResult ?: return
-                for ((i, location) in locationResult.locations.withIndex()) {
-                    Log.d(TAG, "mapOn -> latitude: ${location.latitude}, longitude: ${location.longitude}")
-                    mapViewModel.apply {
-                        setLocation(
-                            latitude = location.latitude,
-                            longitude = location.longitude,
-                        )
-                        makeUserLocataion()
-                        
-                        if(mapViewModel.isStartWalk) { // 편지 찾기 시작시에만 실시간으로 받아오는 위치와 편지 위치를 계산
-                            calculateDistance()
+                            if (mapViewModel.isStartWalk) { // 편지 찾기 시작시에만 실시간으로 받아오는 위치와 편지 위치를 계산
+                                calculateDistance()
+                            }
                         }
                     }
                 }
@@ -352,9 +370,15 @@ class MapFragment :
 
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
-            locationCallback,
+            locationCallback!!,
             Looper.myLooper(),
         )
+    }
+
+    fun stopLocationUpdates() {
+        if (locationCallback != null) {
+            fusedLocationProviderClient.removeLocationUpdates(locationCallback!!)
+        }
     }
 
     fun setMarkerLocation(mapLetterDto: MapLetterDto, latitude: Double, longitude: Double) {
@@ -400,7 +424,10 @@ class MapFragment :
                 .include(myLocation) // 내 위치
                 .include(markerLocation) // 마커 위치
                 .build(),
-            300, 0, 300, 400, // padding 값을 조정하여 여백을 설정할 수 있습니다.
+            300,
+            0,
+            300,
+            400, // padding 값을 조정하여 여백을 설정할 수 있습니다.
 
         )
         naverMap.moveCamera(cameraUpdate)
@@ -424,9 +451,8 @@ class MapFragment :
 
     @SuppressLint("RestrictedApi")
     private fun startWalk() {
-
         mainActivity.showToast("편지 찾기를 시작합니다.")
-        
+
         // 현재 포그라운드에서 받아오는 위치서비스를 중단
 //        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
 
@@ -442,7 +468,6 @@ class MapFragment :
             .putDouble("userLongitude", mapViewModel.lastLongitude.toDouble())
             .build()
 
-        workManager = WorkManager.getInstance(mainActivity)
         workRequest = OneTimeWorkRequestBuilder<WalkWorker>()
             .setInputData(inputData)
             .build()
@@ -480,16 +505,16 @@ class MapFragment :
                 }
             }
     }
-    
+
     // 권한 Check
     private fun checkBasePermission(): Boolean = with(mainActivity) {
         return hasPermissions(ACCESS_COARSE_LOCATION) && hasPermissions(ACCESS_FINE_LOCATION) && hasPermissions(MainActivity.POST_NOTIFICATIONS)
     }
-    
+
     private fun checkCameraPermission(): Boolean = with(mainActivity) {
         return hasPermissions(CAMERA_PERMISSION_REJECTED) && hasPermissions(IMAGE_PERMISSION_REJECTED)
     }
-    
+
     private fun requestBasePermission() {
         checkAllPermission(
             fragment = this@MapFragment,
@@ -502,7 +527,7 @@ class MapFragment :
         requestPermissionsOnClick(
             activity = mainActivity,
             mainViewModel = mainViewModel,
-            permissionList = MainActivity.PERMISSION_LIST_UP33
+            permissionList = MainActivity.PERMISSION_LIST_UP33,
         )
     }
 
@@ -533,11 +558,8 @@ class MapFragment :
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d(TAG, "onDestroyView: ")
+        Log.d(TAG, "onDestroyView: MapFragment")
         mapView.onDestroy()
-
-//        // status bar 색상 되돌리기
-//        window.statusBarColor = ContextCompat.getColor(mainActivity, R.color.PrimaryLightBlue)
     }
 
     override fun onLowMemory() {

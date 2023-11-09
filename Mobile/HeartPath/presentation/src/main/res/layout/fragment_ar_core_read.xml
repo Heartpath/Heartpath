@@ -51,4 +51,22 @@
         app:layout_constraintTop_toTopOf="@+id/sceneView"
         app:layout_constraintVertical_bias="0.8" />
 
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/button_get_letter"
+        android:layout_width="@dimen/_80sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginBottom="@dimen/_50sdp"
+        android:text="편지 담기"
+        android:paddingVertical="@dimen/_2sdp"
+        android:paddingHorizontal="@dimen/_4sdp"
+        android:gravity="center"
+        app:strokeColor="@color/PrimaryLightBlue"
+        app:strokeWidth="@dimen/_2sdp"
+        android:visibility="gone"
+        android:backgroundTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

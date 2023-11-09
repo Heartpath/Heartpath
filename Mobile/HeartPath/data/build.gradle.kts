@@ -19,10 +19,10 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-    
-        buildConfigField("String", "DATA_NAVER_MAP_CLIENT_ID",localProperties.getProperty("data_naver_map_client_id"))
-        buildConfigField("String", "DATA_NAVER_MAP_API_KEY",localProperties.getProperty("data_naver_map_api_key"))
-        buildConfigField("String","TMAP_APP_KEY", localProperties.getProperty("tmap_app_key"))
+
+        buildConfigField("String", "DATA_NAVER_MAP_CLIENT_ID", localProperties.getProperty("data_naver_map_client_id"))
+        buildConfigField("String", "DATA_NAVER_MAP_API_KEY", localProperties.getProperty("data_naver_map_api_key"))
+        buildConfigField("String", "TMAP_APP_KEY", localProperties.getProperty("tmap_app_key"))
     }
 
     buildTypes {
@@ -74,10 +74,10 @@ dependencies {
     // Add the dependency for the Firebase SDK for Google Analytics
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-messaging-ktx")
-    
+
     // datastore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     // gson
-    implementation ("com.google.code.gson:gson:2.8.9")
+    implementation("com.google.code.gson:gson:2.8.9")
 }
