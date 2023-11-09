@@ -26,4 +26,12 @@
                               WHERE m.MEMBER_ID = #{memberID});
     </select>
 
+    <insert id="addFriend" parameterType="String">
+        INSERT INTO FRIEND (FROM_MEMBER_ID, TO_MEMBER_ID)
+        SELECT #{from}, #{to}
+        WHERE NOT EXISTS (
+            SELECT f.FRIEND_ID FROM FRIEND f WHERE f.FROM_MEMBER_ID = #{from} AND f.TO_MEMBER_ID = #{to}
+        );
+    </insert>
+
 </mapper>

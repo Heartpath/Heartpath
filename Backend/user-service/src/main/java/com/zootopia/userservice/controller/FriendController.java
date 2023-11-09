@@ -2,13 +2,12 @@ package com.zootopia.userservice.controller;
 
 import com.zootopia.userservice.common.BaseResponse;
 import com.zootopia.userservice.dto.FriendInfoDTO;
+import com.zootopia.userservice.dto.OpponentIDDTO;
 import com.zootopia.userservice.service.FriendService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,6 +35,14 @@ public class FriendController {
         }
 
         BaseResponse baseResponse = new BaseResponse(200, "친구 목록", friendInfoList);
+        return ResponseEntity.status(200).body(baseResponse);
+    }
+
+    @PostMapping("/friend")
+    public ResponseEntity<BaseResponse> addFriend(@RequestBody OpponentIDDTO opponentIDDTO) {
+
+        String opponentID = opponentIDDTO.getOpponentID();
+        BaseResponse baseResponse = friendService.addFriend(memberID, opponentID);
         return ResponseEntity.status(200).body(baseResponse);
     }
 }
