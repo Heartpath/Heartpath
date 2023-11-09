@@ -82,48 +82,46 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
     }
 
     private fun setLetterPaper(url: String) = with(binding) {
-        if(writeLetterViewModel.drawingBitmap.value == null){
-            Glide.with(mainActivity).load(url)
-                .into(object : CustomTarget<Drawable>() {
-                    override fun onResourceReady(
-                        resource: Drawable,
-                        transition: Transition<in Drawable>?
-                    ) {
-                        // 이미지의 너비와 높이를 가져옴
-                        val imageWidth = resource.intrinsicWidth.toFloat()
-                        val imageHeight = resource.intrinsicHeight.toFloat()
 
-                        // 이미지의 비율을 계산
-                        val imageAspectRatio = imageWidth / imageHeight
+        Glide.with(mainActivity).load(url)
+            .into(object : CustomTarget<Drawable>() {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    transition: Transition<in Drawable>?
+                ) {
+                    // 이미지의 너비와 높이를 가져옴
+                    val imageWidth = resource.intrinsicWidth.toFloat()
+                    val imageHeight = resource.intrinsicHeight.toFloat()
 
-                        // 이미지의 비율에 따라 캔버스에 맞게 크기 조정
-                        val newImageWidth: Float
-                        val newImageHeight: Float
-                        if (imageAspectRatio > imageViewWidth / imageViewHeight) {
-                            newImageWidth = imageViewWidth
-                            newImageHeight = imageViewWidth / imageAspectRatio
-                        } else {
-                            newImageWidth = imageViewHeight * imageAspectRatio
-                            newImageHeight = imageViewHeight
-                        }
+                    // 이미지의 비율을 계산
+                    val imageAspectRatio = imageWidth / imageHeight
 
-                        // 이미지뷰 크기와 이미지 크기 설정
-                        imageviewLetterPaper.background = resource
-                        writeLetterViewModel.setLetterPaperSize(newImageWidth, newImageHeight)
-                        imageviewLetterPaper.layoutParams.width = newImageWidth.toInt()
-                        imageviewLetterPaper.layoutParams.height = newImageHeight.toInt()
-                        imageviewLetterPaper.requestLayout()
+                    // 이미지의 비율에 따라 캔버스에 맞게 크기 조정
+                    val newImageWidth: Float
+                    val newImageHeight: Float
+                    if (imageAspectRatio > imageViewWidth / imageViewHeight) {
+                        newImageWidth = imageViewWidth
+                        newImageHeight = imageViewWidth / imageAspectRatio
+                    } else {
+                        newImageWidth = imageViewHeight * imageAspectRatio
+                        newImageHeight = imageViewHeight
                     }
 
-                    override fun onLoadCleared(placeholder: Drawable?) {
-                    }
+                    // 이미지뷰 크기와 이미지 크기 설정
+                    imageviewLetterPaper.background = resource
+                    writeLetterViewModel.setLetterPaperSize(newImageWidth, newImageHeight)
+                    imageviewLetterPaper.layoutParams.width = newImageWidth.toInt()
+                    imageviewLetterPaper.layoutParams.height = newImageHeight.toInt()
+                    imageviewLetterPaper.requestLayout()
+                }
 
-                })
-        }else{
-            imageviewLetterPaper.layoutParams.width = writeLetterViewModel.letterPaperWith.value.toInt()
-            imageviewLetterPaper.layoutParams.height = writeLetterViewModel.letterPaperHeight.value.toInt()
-            imageviewLetterPaper.background=BitmapDrawable(writeLetterViewModel.drawingBitmap.value)
-        }
+                override fun onLoadCleared(placeholder: Drawable?) {
+                }
+
+            })
+
+
+       
         
     }
 
