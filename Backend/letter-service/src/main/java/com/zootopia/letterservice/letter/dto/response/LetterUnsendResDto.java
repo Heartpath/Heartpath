@@ -7,10 +7,10 @@ import lombok.*;
 @Setter
 public class LetterUnsendResDto {
     private String index;
-    private String receiver;
+//    private String receiverId;
 
-    public LetterUnsendResDto(LetterMongo letter, String receiver) {
+    public LetterUnsendResDto(LetterMongo letter) {
         this.index = letter.getId();
-        this.receiver = receiver;
+//        this.receiverId = letter.getReceiverId();
     }
 }
