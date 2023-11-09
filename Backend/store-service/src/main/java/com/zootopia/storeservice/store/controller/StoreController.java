@@ -4,6 +4,7 @@ import com.zootopia.storeservice.common.dto.BaseResponseBody;
 import com.zootopia.storeservice.store.dto.request.CharacterBuyReqDto;
 import com.zootopia.storeservice.store.dto.request.LetterPaperBuyReqDto;
 import com.zootopia.storeservice.store.dto.response.CrowTitResDto;
+import com.zootopia.storeservice.store.dto.response.LetterPaperResDto;
 import com.zootopia.storeservice.store.dto.response.UserResDto;
 import com.zootopia.storeservice.store.entity.CrowTit;
 import com.zootopia.storeservice.store.entity.CrowTitBook;
@@ -51,8 +52,7 @@ public class StoreController {
 
     // 편지지 목록 조회
     @GetMapping("/letterpaper")
-    @Operation(summary = "편지지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수\n\n " +
-                                                        "isowned : 사용자가 가지고 있는 상품인지 아닌지 판단하는 boolean")
+    @Operation(summary = "편지지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
                     examples = @ExampleObject(value = "{" +
@@ -75,6 +75,35 @@ public class StoreController {
         String memberId = userResDto.getData().getMemberID();
 
         List<LetterPaperBook> letterPaperBookList = letterPaperBookRepository.findAllByMemberId(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "편지지 목록 조회 성공", letterPaperBookList));
+    }
+
+    @GetMapping("/letterpaper/all")
+    @Operation(summary = "편지지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수\n\n " +
+            "isowned : 사용자가 가지고 있는 상품인지 아닌지 판단하는 boolean")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{" +
+                            " \"status\": 200," +
+                            " \"message\": \"편지지 목록 조회 성공\"," +
+                            " \"data\": [" +
+                            "       {" +
+                            "           \"index\": 1," +
+                            "           \"name\": \"빨간 편지지\"," +
+                            "           \"price\": 300," +
+                            "           \"image\": \"url\"," +
+                            "           \"isowned\": \"true\"" +
+                            "       }" +
+                            "   ]" +
+                            "}")))
+    })
+    public ResponseEntity<? extends BaseResponseBody> getLetterPaperListAll(@RequestHeader("Authorization") String accessToken){
+
+        UserResDto userResDto = memberService.accessTokenToMember(accessToken);
+        String memberId = userResDto.getData().getMemberID();
+
+        List<LetterPaperResDto> letterPaperBookList = storeService.getLetterPaperAll(memberId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "편지지 목록 조회 성공", letterPaperBookList));
     }

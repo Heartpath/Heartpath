@@ -6,6 +6,7 @@ import com.zootopia.storeservice.common.error.exception.BadRequestException;
 import com.zootopia.storeservice.store.dto.request.CharacterBuyReqDto;
 import com.zootopia.storeservice.store.dto.request.LetterPaperBuyReqDto;
 import com.zootopia.storeservice.store.dto.response.CrowTitResDto;
+import com.zootopia.storeservice.store.dto.response.LetterPaperResDto;
 import com.zootopia.storeservice.store.entity.*;
 import com.zootopia.storeservice.store.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -68,6 +69,34 @@ public class StoreServiceImpl implements StoreService {
         }
 
     }
+
+    public List<LetterPaperResDto> getLetterPaperAll(String memberId){
+        List<LetterPaper> letterPaperList = letterPaperRepository.findAll();
+        List<LetterPaperBook> letterPaperBookList = letterPaperBookRepository.findAllByMemberId(memberId);
+
+        List<LetterPaperResDto> result = new ArrayList<>();
+
+        for (LetterPaper letterPaper:letterPaperList){
+            boolean isOwned = false;
+            for (LetterPaperBook letterpaperBook:letterPaperBookList){
+                if (letterPaper.getId()==letterpaperBook.getLetterPaperId()){
+                    isOwned=true;
+                    break;
+                }
+            }
+            LetterPaperResDto letterPaperResDto = LetterPaperResDto.builder()
+                    .name(letterPaper.getName())
+                    .price(letterPaper.getPrice())
+                    .description(letterPaper.getDescription())
+                    .imagePath(letterPaper.getImagePath())
+                    .isOwned(isOwned)
+                    .build();
+            result.add(letterPaperResDto);
+        }
+
+        return result;
+    }
+
 
     public LetterPaper getLetterPaperDetail(Long letterpaperId){
         LetterPaper letterPaper = letterPaperRepository.findById(letterpaperId)
