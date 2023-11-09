@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CharacterBuyReqDto {
 
-    private Long characterId;
+    private Long crowtitId;
 
-    public CharacterBuyReqDto(Long characterId){
-        this.characterId = characterId;
+    public CharacterBuyReqDto(Long crowtitId){
+        this.crowtitId = crowtitId;
     }
 }
