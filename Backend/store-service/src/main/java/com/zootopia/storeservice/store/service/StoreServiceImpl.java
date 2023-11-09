@@ -2,17 +2,12 @@ package com.zootopia.storeservice.store.service;
 
 import com.zootopia.storeservice.common.error.code.ErrorCode;
 import com.zootopia.storeservice.common.error.exception.BadRequestException;
-import com.zootopia.storeservice.common.s3.S3Uploader;
+//import com.zootopia.storeservice.common.s3.S3Uploader;
 import com.zootopia.storeservice.store.dto.request.CharacterBuyReqDto;
 import com.zootopia.storeservice.store.dto.request.CrowTitReqDto;
 import com.zootopia.storeservice.store.dto.request.LetterPaperBuyReqDto;
-import com.zootopia.storeservice.store.entity.CrowTit;
-import com.zootopia.storeservice.store.entity.LetterPaper;
-import com.zootopia.storeservice.store.entity.LetterPaperBook;
-import com.zootopia.storeservice.store.entity.Point;
-import com.zootopia.storeservice.store.repository.CrowTitRepository;
-import com.zootopia.storeservice.store.repository.LetterPaperRepository;
-import com.zootopia.storeservice.store.repository.PointRepository;
+import com.zootopia.storeservice.store.entity.*;
+import com.zootopia.storeservice.store.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,14 +26,14 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 public class StoreServiceImpl implements StoreService {
-    @Autowired
-    private WebClient webClient;
 
     private final LetterPaperRepository letterPaperRepository;
+    private final LetterPaperBookRepository letterPaperBookRepository;
     private final CrowTitRepository crowTitRepository;
+    private final CrowTitBookRepository crowTitBookRepository;
     private final PointRepository pointRepository;
 
-    private final S3Uploader s3Uploader;
+//    private final S3Uploader s3Uploader;
 
     public void buyLetterPaper(String memberId, LetterPaperBuyReqDto letterPaperBuyReqDto){
         LetterPaper letterPaper = letterPaperRepository.findById(letterPaperBuyReqDto.getLetterpaperId())
@@ -53,8 +48,10 @@ public class StoreServiceImpl implements StoreService {
 
         LetterPaperBook letterPaperBook = LetterPaperBook.builder()
                 .letterPaper(letterPaper)
+                .memberId(memberId)
                 .acquisitionDate(LocalDateTime.now())
                 .build();
+        letterPaperBookRepository.save(letterPaperBook);
 
         Point point = Point.builder()
                 .memberId(memberId)
@@ -83,20 +80,14 @@ public class StoreServiceImpl implements StoreService {
         int lastBalance = pointUsage.isEmpty() ? 0 : pointUsage.get(0).getBalance();
         int currentBalance = lastBalance+crowTit.getPrice();
 
-        // ** 구매한 뱁새정보 멤버 서버로 전송
+        CrowTitBook crowTitBook = CrowTitBook.builder()
+                .crowTit(crowTit)
+                .memberId(memberId)
+                .isMain(false)
+                .acquisitionDate(LocalDateTime.now())
+                .build();
 
-//        try {
-//            ResponseEntity<String> result = webClient.post()
-//                    .uri("/crowtit/save")
-//                    .contentType(MediaType.APPLICATION_JSON)
-//                    .bodyValue(crowTit)
-//                    .retrieve()
-//                    .toEntity(String.class)
-//                    .block();
-//            return;
-//        }catch (Exception e){
-//            throw new BadRequestException(ErrorCode.FAIL_SEND_TO_MEMBER_CROWTIT);
-//        }
+        crowTitBookRepository.save(crowTitBook);
 
         Point point = Point.builder()
                 .memberId(memberId)
@@ -115,47 +106,47 @@ public class StoreServiceImpl implements StoreService {
         return crowTit;
     }
 
-    public void upload(CrowTitReqDto crowTitReqDto, List<MultipartFile> files) {
-//        if (letterPaperReqDto.getName().isEmpty() || letterPaperReqDto.getPrice() == null || letterPaperReqDto.getDescription().isEmpty() || letterPaperReqDto == null) {
-//            throw new StoreBadRequestException(StoreErrorCode.FAIL);
+//    public void upload(CrowTitReqDto crowTitReqDto, List<MultipartFile> files) {
+////        if (letterPaperReqDto.getName().isEmpty() || letterPaperReqDto.getPrice() == null || letterPaperReqDto.getDescription().isEmpty() || letterPaperReqDto == null) {
+////            throw new StoreBadRequestException(StoreErrorCode.FAIL);
+////        }
+//
+//        if (crowTitReqDto.getName().isEmpty() || crowTitReqDto.getPrice() == null || crowTitReqDto.getDescription().isEmpty() || crowTitReqDto == null) {
+//            throw new BadRequestException(ErrorCode.FAIL);
 //        }
-
-        if (crowTitReqDto.getName().isEmpty() || crowTitReqDto.getPrice() == null || crowTitReqDto.getDescription().isEmpty() || crowTitReqDto == null) {
-            throw new BadRequestException(ErrorCode.FAIL);
-        }
-
-        if (files != null) {
-            for (MultipartFile file : files) {
-                String fileUrl = uploadFileToS3(file, "crowtit");
-
-//                LetterPaper letterPaper = LetterPaper.builder()
-//                        .name(letterPaperReqDto.getName())
-//                        .price(letterPaperReqDto.getPrice())
-//                        .description(letterPaperReqDto.getDescription())
+//
+//        if (files != null) {
+//            for (MultipartFile file : files) {
+//                String fileUrl = uploadFileToS3(file, "crowtit");
+//
+////                LetterPaper letterPaper = LetterPaper.builder()
+////                        .name(letterPaperReqDto.getName())
+////                        .price(letterPaperReqDto.getPrice())
+////                        .description(letterPaperReqDto.getDescription())
+////                        .imagePath(fileUrl)
+////                        .build();
+////
+////                letterPaperRepository.save(letterPaper);
+//
+//                CrowTit crowTit = CrowTit.builder()
+//                        .name(crowTitReqDto.getName())
+//                        .price(Math.toIntExact(crowTitReqDto.getPrice()))
+//                        .description(crowTitReqDto.getDescription())
 //                        .imagePath(fileUrl)
 //                        .build();
 //
-//                letterPaperRepository.save(letterPaper);
-
-                CrowTit crowTit = CrowTit.builder()
-                        .name(crowTitReqDto.getName())
-                        .price(Math.toIntExact(crowTitReqDto.getPrice()))
-                        .description(crowTitReqDto.getDescription())
-                        .imagePath(fileUrl)
-                        .build();
-
-                crowTitRepository.save(crowTit);
-            }
-        } else {
-            throw new BadRequestException(ErrorCode.FAIL);
-        }
-    }
-
-    private String uploadFileToS3(MultipartFile file, String s3Folder) {
-        try {
-            return s3Uploader.uploadFiles(file, s3Folder);
-        } catch (IOException e) {
-            throw new BadRequestException(ErrorCode.FAIL_UPLOAD_FILE);
-        }
-    }
+//                crowTitRepository.save(crowTit);
+//            }
+//        } else {
+//            throw new BadRequestException(ErrorCode.FAIL);
+//        }
+//    }
+//
+//    private String uploadFileToS3(MultipartFile file, String s3Folder) {
+//        try {
+//            return s3Uploader.uploadFiles(file, s3Folder);
+//        } catch (IOException e) {
+//            throw new BadRequestException(ErrorCode.FAIL_UPLOAD_FILE);
+//        }
+//    }
 }

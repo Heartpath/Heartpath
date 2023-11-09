@@ -4,8 +4,14 @@ import com.zootopia.storeservice.common.dto.BaseResponseBody;
 import com.zootopia.storeservice.store.dto.request.CharacterBuyReqDto;
 import com.zootopia.storeservice.store.dto.request.CrowTitReqDto;
 import com.zootopia.storeservice.store.dto.request.LetterPaperBuyReqDto;
+import com.zootopia.storeservice.store.dto.response.UserResDto;
 import com.zootopia.storeservice.store.entity.CrowTit;
+import com.zootopia.storeservice.store.entity.CrowTitBook;
 import com.zootopia.storeservice.store.entity.LetterPaper;
+import com.zootopia.storeservice.store.entity.LetterPaperBook;
+import com.zootopia.storeservice.store.repository.CrowTitBookRepository;
+import com.zootopia.storeservice.store.repository.LetterPaperBookRepository;
+import com.zootopia.storeservice.store.service.MemberService;
 import com.zootopia.storeservice.store.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,6 +27,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Member;
 import java.util.List;
 
 @Slf4j
@@ -29,10 +37,17 @@ import java.util.List;
 @RequestMapping(value = "/store")
 public class StoreController {
 
-    @Autowired
-    private WebClient webClient;
-
     private final StoreService storeService;
+    private final MemberService memberService;
+    private final LetterPaperBookRepository letterPaperBookRepository;
+    private final CrowTitBookRepository crowTitBookRepository;
+
+    @GetMapping("/health_check")
+    public String checkServer(HttpServletRequest request) {
+        String remoteAddr = request.getRemoteAddr();
+
+        return String.format("200 OK to %s", remoteAddr);
+    }
 
     // 편지지 목록 조회
     @GetMapping("/letterpaper")
@@ -56,13 +71,12 @@ public class StoreController {
     })
     public ResponseEntity<? extends BaseResponseBody> getLetterPaperList(@RequestHeader("Authorization") String accessToken){
 
-//        String memberId = webClient
-//                .post()
-//                .header("Authorization", accessToken)
-//                .retrieve()
-//                .bodyToMono(Object.class.getId());
+        UserResDto userResDto = memberService.accessTokenToMember(accessToken);
+        String memberId = userResDto.getData().getMemberID();
 
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "편지지 목록 조회 성공"));
+        List<LetterPaperBook> letterPaperBookList = letterPaperBookRepository.findAllByMemberId(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "편지지 목록 조회 성공", letterPaperBookList));
     }
 
     // 편지지 상세 조회
@@ -104,13 +118,10 @@ public class StoreController {
     public ResponseEntity<? extends BaseResponseBody> buyLetterPaper(@RequestHeader("Authorization") String accessToken,
                                                                      @RequestBody LetterPaperBuyReqDto letterPaperBuyReqDto){
 
-//        String memberId = webClient
-//            .post()
-//            .header("Authorization", accessToken)
-//            .retrieve()
-//            .bodyToMono(Object.class.getId());
-//
-//        storeService.buyLetterPaper(memberId, letterPaperBuyReqDto);
+        UserResDto userResDto = memberService.accessTokenToMember(accessToken);
+        String memberId = userResDto.getData().getMemberID();
+
+        storeService.buyLetterPaper(memberId, letterPaperBuyReqDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponseBody<>(201, "편지 구매 성공"));
     }
@@ -140,7 +151,12 @@ public class StoreController {
                             "}")))
     })
     public ResponseEntity<? extends BaseResponseBody> getCharacterList(@RequestHeader("Authorization") String accessToken){
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "캐릭터 목록 조회 성공"));
+        UserResDto userResDto = memberService.accessTokenToMember(accessToken);
+        String memberId = userResDto.getData().getMemberID();
+
+        List<CrowTitBook> crowTitBookList = crowTitBookRepository.findAllByMemberId(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "캐릭터 목록 조회 성공", crowTitBookList));
     }
 
     // 캐릭터 상세 조회
@@ -184,39 +200,38 @@ public class StoreController {
     public ResponseEntity<? extends BaseResponseBody> buyCharacter(@RequestHeader("Authorization") String accessToken,
                                                                    @RequestBody CharacterBuyReqDto characterBuyReqDto){
 
-//        String memberId = webClient
-//            .post()
-//            .header("Authorization", accessToken)
-//            .retrieve()
-//            .bodyToMono(Object.class.getId());
-//
-//        storeService.buyCharacter(memberId, characterBuyReqDto);
+        UserResDto userResDto = memberService.accessTokenToMember(accessToken);
+        String memberId = userResDto.getData().getMemberID();
+
+        storeService.buyCharacter(memberId, characterBuyReqDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponseBody<>(201, "캐릭터 구매 성공"));
     }
 
-    @PostMapping("/upload")
-    @Operation(summary = "캐릭터 및 편지지 S3 업로드용")
-    public ResponseEntity<? extends BaseResponseBody> upload(@RequestPart(value = "name") String name,
-                                                                           @RequestPart(value = "price") Long price,
-                                                                           @RequestPart(value = "description") String description,
-                                                                           @RequestPart List<MultipartFile> files) {
-//        LetterPaperReqDto letterPaperReqDto = LetterPaperReqDto.builder()
+    // ##############################################################################
+
+//    @PostMapping("/upload")
+//    @Operation(summary = "캐릭터 및 편지지 S3 업로드용")
+//    public ResponseEntity<? extends BaseResponseBody> upload(@RequestPart(value = "name") String name,
+//                                                                           @RequestPart(value = "price") Long price,
+//                                                                           @RequestPart(value = "description") String description,
+//                                                                           @RequestPart List<MultipartFile> files) {
+////        LetterPaperReqDto letterPaperReqDto = LetterPaperReqDto.builder()
+////                .name(name)
+////                .price(price)
+////                .description(description)
+////                .build();
+//
+//        CrowTitReqDto crowTitReqDto = CrowTitReqDto.builder()
 //                .name(name)
 //                .price(price)
 //                .description(description)
 //                .build();
-
-        CrowTitReqDto crowTitReqDto = CrowTitReqDto.builder()
-                .name(name)
-                .price(price)
-                .description(description)
-                .build();
-
-        storeService.upload(crowTitReqDto, files);
-
+//
 //        storeService.upload(crowTitReqDto, files);
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "s3 이미지 업로드 성공"));
-    }
+//
+////        storeService.upload(crowTitReqDto, files);
+//        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "s3 이미지 업로드 성공"));
+//    }
 
 }
