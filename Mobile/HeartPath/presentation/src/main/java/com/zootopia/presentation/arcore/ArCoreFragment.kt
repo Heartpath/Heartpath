@@ -80,7 +80,7 @@ class ArCoreFragment
         this@ArCoreFragment.setFullScreen(
             fullScreen = true,
             hideSystemBars = false,
-            fitsSystemWindows = false,
+            fitsSystemWindows = true,
         )
         
         binding.sceneView.apply {
