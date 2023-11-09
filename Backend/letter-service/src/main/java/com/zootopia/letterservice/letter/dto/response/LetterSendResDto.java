@@ -7,10 +7,10 @@ import lombok.*;
 @Setter
 public class LetterSendResDto {
     private Long index;
-    private String receiver;
+//    private String receiver;
 
-    public LetterSendResDto(LetterMySQL letter, String receiver) {
+    public LetterSendResDto(LetterMySQL letter) {
         this.index = letter.getId();
-        this.receiver = receiver;
+//        this.receiver = letter.getReceiverId;
     }
 }
