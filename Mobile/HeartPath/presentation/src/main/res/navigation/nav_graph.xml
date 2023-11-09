@@ -56,7 +56,11 @@
         android:id="@+id/receiveLetterFragment"
         android:name="com.zootopia.presentation.receiveletter.ReceiveLetterFragment"
         android:label="ReceiveLetterFragment"
-        tools:layout="@layout/fragment_receive_letter" />
+        tools:layout="@layout/fragment_receive_letter" >
+        <action
+            android:id="@+id/action_receiveLetterFragment_to_readLetterFragment"
+            app:destination="@id/readLetterFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/mapFragment"
@@ -146,5 +150,10 @@
             app:destination="@id/selectLetterTypeFragment"
             style="@style/SlideAnimation"/>
     </fragment>
+    <fragment
+        android:id="@+id/readLetterFragment"
+        android:name="com.zootopia.presentation.readletter.ReadLetterFragment"
+        android:label="fragment_read_letter"
+        tools:layout="@layout/fragment_read_letter" />
 
 </navigation>
