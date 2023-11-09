@@ -26,10 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.server.ServerErrorException;
-import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,10 +48,13 @@ public class LetterServiceImpl implements LetterService {
     private final BannedWords bannedWords;
     private final S3Uploader s3Uploader;
 
-    // 수신자 확인 로직 추가 필요
     @Override
     @Transactional
     public void createHandLetter(String accessToken, LetterHandReqDto letterHandReqDto, MultipartFile content, List<MultipartFile> files) {
+        UserDetailResDto user = accessTokenToMember(accessToken).getData();
+        if (letterHandReqDto.getReceiverId().isEmpty()) {
+            throw new BadRequestException(ErrorCode.NOT_EXISTS_RECEIVER_ID);
+        }
         // content 파일
         if (content.isEmpty()) {
             throw new BadRequestException(ErrorCode.NOT_EXISTS_CONTENT);
@@ -72,6 +72,8 @@ public class LetterServiceImpl implements LetterService {
         }
 
         LetterMongo letterMongo = LetterMongo.builder()
+                .senderId(user.getMemberId())
+                .receiverId(letterHandReqDto.getReceiverId())
                 .content(contentUrl)
                 .files(fileUrls)
                 .type("HandWritten")
@@ -83,7 +85,12 @@ public class LetterServiceImpl implements LetterService {
     // 수신자 확인 로직 추가 필요
     @Override
     @Transactional
-    public void createTextLetter(LetterTextReqDto letterTextReqDto, MultipartFile content, List<MultipartFile> files) {
+    public void createTextLetter(String accessToken, LetterTextReqDto letterTextReqDto, MultipartFile content, List<MultipartFile> files) {
+        UserDetailResDto user = accessTokenToMember(accessToken).getData();
+        if (letterTextReqDto.getReceiverId().isEmpty()) {
+            throw new BadRequestException(ErrorCode.NOT_EXISTS_RECEIVER_ID);
+        }
+
         if (letterTextReqDto.getText().trim().isEmpty()) {
             throw new BadRequestException(ErrorCode.NOT_EXISTS_TEXT);
         }
@@ -117,11 +124,16 @@ public class LetterServiceImpl implements LetterService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void placeLetter(LetterPlaceReqDto letterPlaceReqDto, List<MultipartFile> files) {
-        // accessToken으로 지금 요청을 보낸 유저랑 편지의 발신자랑 맞는지 확인하는 작업 필요함.
+    public void placeLetter(String accessToken, LetterPlaceReqDto letterPlaceReqDto, List<MultipartFile> files) {
         LetterMongo letterMongo = letterMongoRepository.findById(letterPlaceReqDto.getId()).orElseThrow(() -> {
             return new BadRequestException(ErrorCode.NOT_EXISTS_LETTER);
         });
+
+        // 편지 작성 유저와 요청을 보낸 유저가 같은 유저인지 확인
+        UserDetailResDto user = accessTokenToMember(accessToken).getData();
+        if (!letterMongo.getSenderId().equals(user.getMemberId())) {
+            throw new BadRequestException(ErrorCode.NOT_EQUAL_USER);
+        }
 
         Double lat = letterPlaceReqDto.getLat();
         Double lng = letterPlaceReqDto.getLng();
@@ -129,7 +141,11 @@ public class LetterServiceImpl implements LetterService {
             throw new BadRequestException(ErrorCode.NOT_EXISTS_LAT_OR_LNG);
         }
 
+        // 차단 확인 필요
+
         LetterMySQL letterMySQL = LetterMySQL.builder()
+                .senderId(letterMongo.getSenderId())
+                .receiverId(letterMongo.getReceiverId())
                 .content(letterMongo.getContent())
                 .type(letterMongo.getType())
                 .lat(lat)
@@ -260,7 +276,7 @@ public class LetterServiceImpl implements LetterService {
         WebClient webClient = WebClient.builder().build();
 
         UserResDto res = webClient.get()
-                .uri("https://www.heartpath.site/api/user")
+                .uri("http://3.34.86.93/api/user")
                 .header(HttpHeaders.AUTHORIZATION, accessToken)
                 .retrieve() // ResponseEntity를 받아 디코딩, exchange() : ClientResponse를 상태값, 헤더 제공
                 .onStatus(HttpStatus::is4xxClientError, clientResponse -> {
@@ -285,7 +301,7 @@ public class LetterServiceImpl implements LetterService {
                 .build();
 
         FriendResDto res = webClient.post()
-                .uri("https://www.heartpath.site/api/friend")
+                .uri("http://3.34.86.93/api/friend")
                 .header(HttpHeaders.AUTHORIZATION, accessToken)
                 .bodyValue(req)
                 .retrieve()
