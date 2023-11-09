@@ -5,8 +5,10 @@ import com.zootopia.userservice.dto.MypageDTO;
 import com.zootopia.userservice.dto.UserInfoDTO;
 import com.zootopia.userservice.dto.UserLoginDTO;
 import com.zootopia.userservice.dto.UserRegisterDTO;
+import com.zootopia.userservice.jwt.JwtProvider;
 import com.zootopia.userservice.kakao.KakaoOAuthService;
 import com.zootopia.userservice.service.UserService;
+import com.zootopia.userservice.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -31,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 public class UserController {
 
     private final UserService userService;
+    private final JwtProvider jwtProvider;
     private final KakaoOAuthService kakaoOAuthService;
 
     @GetMapping("/health_check")
@@ -146,7 +149,10 @@ public class UserController {
     @GetMapping("/mypage")
     public ResponseEntity<BaseResponse> getUserInfo(HttpServletRequest request) {
 
-        MypageDTO mypageDTO = userService.loadUserInfo("ssafyA");
+        String accessToken = JwtUtil.getTokenFromHeader(request);
+        String memberID = jwtProvider.getMemberIDFromToken(accessToken);
+
+        MypageDTO mypageDTO = userService.loadUserInfo(memberID);
 
         return ResponseEntity.status(200).body(new BaseResponse(HttpStatus.OK.value(), "유저 불러오기", mypageDTO));
     }
