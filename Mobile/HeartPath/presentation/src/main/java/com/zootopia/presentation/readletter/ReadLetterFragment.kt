@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
@@ -14,7 +15,7 @@ class ReadLetterFragment : BaseFragment<FragmentReadLetterBinding>(
     R.layout.fragment_read_letter,
 ) {
     private lateinit var mainActivity: MainActivity
-
+    private val friendRelation = false
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
@@ -23,6 +24,7 @@ class ReadLetterFragment : BaseFragment<FragmentReadLetterBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        initClickEvent()
     }
 
     private fun initView() = with(binding) {
@@ -34,7 +36,26 @@ class ReadLetterFragment : BaseFragment<FragmentReadLetterBinding>(
             }
         }
 
+        // image view 이미지 값 설정
+        Glide
+            .with(mainActivity)
+            .load("https://postfiles.pstatic.net/MjAyMzEwMjhfNjcg/MDAxNjk4NDI0ODE5NjI4.kPCHa288iH5JCl8arHKkxb-X5vq_zph7A8N7B6YTiJIg.56HHDL7-Jb3xGtjdMpdNnUPltZkV7HVZ0Hhk-AosBBEg.PNG.vmfpel0425/export202310280139235243.png?type=w773")
+            .into(imageviewLetterResult)
 
+        // 친구 관계에 따라 floating button 보여 주기 설정
+        if (friendRelation) {
+            // 친구 관계라면
+            floatingbuttonAddFriend.visibility = View.GONE
+        } else {
+            // 친구 관계가 아니라면
+            floatingbuttonAddFriend.visibility = View.VISIBLE
+        }
     }
 
+    private fun initClickEvent() = with(binding) {
+        // 친구 추가 floating button 클릭 다이얼로그 띄우기
+        floatingbuttonAddFriend.setOnClickListener {
+            ReadLetterAddFriendDialog().show(childFragmentManager, tag)
+        }
+    }
 }
