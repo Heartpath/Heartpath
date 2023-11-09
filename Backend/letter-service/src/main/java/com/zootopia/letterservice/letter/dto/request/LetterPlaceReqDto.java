@@ -11,8 +11,8 @@ import java.util.List;
 @NoArgsConstructor
 public class LetterPlaceReqDto {
     private String id;
-//    private String senderId;
-//    private String receiverId;
+    private String senderId;
+    private String receiverId;
     private Double lat;
     private Double lng;
 

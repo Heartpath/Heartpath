@@ -75,7 +75,7 @@ public class LetterController {
                                                                        @RequestPart(value = "content") MultipartFile content,
                                                                        @RequestPart(value = "files", required = false) List<MultipartFile> files) {
         // accessToken → 발신자, receiverId → 수신자 멤버 객체 찾아서 service 넘기기
-        letterService.createTextLetter(letterTextReqDto, content, files);
+        letterService.createTextLetter(accessToken, letterTextReqDto, content, files);
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponseBody<>(201, "편지 생성 성공"));
     }
 
@@ -94,7 +94,7 @@ public class LetterController {
     public ResponseEntity<? extends BaseResponseBody> placeLetter(@RequestHeader(value = "Authorization") String accessToken,
                                                                   @RequestPart(value = "letterPlaceReqDto") LetterPlaceReqDto letterPlaceReqDto,
                                                                   @RequestPart(value = "files") List<MultipartFile> files) {
-        letterService.placeLetter(letterPlaceReqDto, files);
+        letterService.placeLetter(accessToken, letterPlaceReqDto, files);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponseBody<>(201, "편지 배치 성공"));
     }

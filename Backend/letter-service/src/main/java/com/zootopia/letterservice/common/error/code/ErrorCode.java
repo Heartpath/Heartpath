@@ -20,6 +20,7 @@ public enum ErrorCode {
     NOT_EXISTS_LAT_OR_LNG(HttpStatus.BAD_REQUEST, 4007, "위도, 경도는 필수 항목입니다."),
     NOT_EXISTS_PLACE_IMAGES(HttpStatus.BAD_REQUEST, 4008, "배치 장소에 대한 이미지 파일은 필수 항목입니다."),
 
+
     // API 통신
     INVALID_USER_REQUEST(HttpStatus.BAD_REQUEST, 4009, "유효하지 않은 사용자의 요청입니다."),
     UNSTABLE_SERVER(HttpStatus.INTERNAL_SERVER_ERROR, 5002, "서버 오류입니다. 잠시 후에 다시 시도해주세요.");
