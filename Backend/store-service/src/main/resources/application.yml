@@ -10,19 +10,6 @@ server:
 spring:
   jackson:
     time-zone: Asia/Seoul
-  data:
-    mongodb:
-      host: zootopia-mongodb.cluster-c2f2jpwzzxst.ap-northeast-2.docdb.amazonaws.com
-      port: 27017
-      username: ENC(G9EP7CfdVqJTzaOf8fJX6DXCUPQHkX7d)
-      password: ENC(/O+ahTimYNdEdgePNwsVhHP9zNMhWKWH)
-      database: heartpath
-      tls: true
-      tlsCAFile: /tmp/certs/rds-truststore.jks
-      replicaSet: rs0
-      readPreference: secondaryPreferred
-      retryWrites: false
-
   servlet:
     multipart:
       max-file-size: 500MB
