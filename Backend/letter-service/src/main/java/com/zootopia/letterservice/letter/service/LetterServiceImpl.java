@@ -298,7 +298,7 @@ public class LetterServiceImpl implements LetterService {
 
         // SendId, ReceivedId가 해당 맴버인 것만 열람 가능
         if (!letterMySQL.getSenderId().equals(user.getMemberID()) && (!letterMySQL.getReceiverId().equals(user.getMemberID()))) {
-            throw new BadRequestException(ErrorCode.NOT_EQUAL_SENDER_AND_RECEIVER);
+            throw new BadRequestException(ErrorCode.NOT_EQUAL_SENDER_OR_RECEIVER);
         }
 
         String senderNickname = findByUserId(letterMySQL.getSenderId()).getNickname();

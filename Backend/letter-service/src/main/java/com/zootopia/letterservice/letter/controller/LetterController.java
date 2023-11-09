@@ -210,7 +210,9 @@ public class LetterController {
                             "           \"friend\": true" +
                             "       }" +
                             "   ]" +
-                            "}")))
+                            "}"))),
+            @ApiResponse(responseCode = "4006", description =  "NOT_EXISTS_LETTER", content = @Content(examples = @ExampleObject(value = "{\n \"httpStatus\": \"400 BAD_REQUEST\",\n \"status\": 4006,\n \"message\": \"존재하지 않는 편지입니다.\"\n}"))),
+            @ApiResponse(responseCode = "4009", description =  "NOT_EQUAL_SENDER_OR_RECEIVER", content = @Content(examples = @ExampleObject(value = "{\n \"httpStatus\": \"400 BAD_REQUEST\",\n \"status\": 4009,\n \"message\": \"편지의 발신자와 수신자가 아닌 사용자는 상세 내용을 조회할 수 없습니다.\"\n}")))
     })
     @GetMapping("/{letter_id}")
     public ResponseEntity<? extends BaseResponseBody> getLetter(@PathVariable Long letter_id,
