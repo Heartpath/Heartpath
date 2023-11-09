@@ -15,6 +15,7 @@ import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentMyPageBinding
+import com.zootopia.presentation.util.makeComma
 import kotlinx.coroutines.launch
 
 class MyPageFragment : BaseFragment<FragmentMyPageBinding>(
@@ -59,7 +60,7 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(
             myPageViewModel.userInfo.collect {user ->
                 textviewProfileId.text = user.memberID
                 textviewProfileName.text = user.nickname
-                textviewPoint.text = user.point.toString()
+                textviewPoint.text = makeComma(user.point)
                 Glide.with(mainActivity).load(user.profileImagePath).circleCrop().into(imageviewProfileImg)
             }
         }
