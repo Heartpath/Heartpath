@@ -55,12 +55,16 @@ class WriteLetterViewModel @Inject constructor(
     private val _letterPaperHeight = MutableStateFlow<Float>(0F)
     val letterPaperHeight = _letterPaperHeight
 
+    private val _penBitmap = MutableStateFlow<Bitmap?>(null)
+    var penBitmap: StateFlow<Bitmap?> = _penBitmap
+
     init {
         resetBitmap()
     }
 
     fun resetBitmap(){
         _drawingBitmap.value = null
+        _penBitmap.value = null
     }
 
     fun setSelectedLetterPaperUrl(url: String) {
@@ -134,6 +138,10 @@ class WriteLetterViewModel @Inject constructor(
 
     fun setDrawingBitmap(bitmap: Bitmap) {
         _drawingBitmap.value = bitmap
+    }
+
+    fun setPenBitmap(bitmap: Bitmap){
+        _penBitmap.value = bitmap
     }
 
     fun saveLetter(contentUri: String, imageList: MutableList<String>) {
