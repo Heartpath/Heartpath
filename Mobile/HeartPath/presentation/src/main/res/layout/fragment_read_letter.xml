@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/PrimaryLightBlue"
     tools:context=".readletter.ReadLetterFragment">
     <include
         android:id="@+id/toolbar_heartpath_read_letter"
@@ -11,4 +12,30 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         layout="@layout/toolbar_heartpath_custom"/>
+    
+    <com.github.chrisbanes.photoview.PhotoView
+        android:id="@+id/imageview_letter_result"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:src="@drawable/image_happy_bird_with_envelope"
+        android:scaleType="fitCenter"
+        android:background="@color/DarkBackground"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_heartpath_read_letter"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingbutton_add_friend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:backgroundTint="@color/PrimaryLightBlue"
+        android:layout_marginBottom="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:src="@drawable/icon_add_person"
+        app:tint="@color/DarkGray"
+        app:rippleColor="@android:color/transparent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
