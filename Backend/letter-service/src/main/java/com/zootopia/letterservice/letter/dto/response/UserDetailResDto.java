@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class UserDetailResDto {
-    private String memberId;
+    private String memberID;
     private String fcmToken;
     private String nickname;
     private String profileImagePath;

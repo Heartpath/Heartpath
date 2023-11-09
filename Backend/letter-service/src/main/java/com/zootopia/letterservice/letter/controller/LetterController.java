@@ -115,7 +115,7 @@ public class LetterController {
     })
     @GetMapping("/placed")
     public ResponseEntity<? extends BaseResponseBody> getSendLetters(@RequestHeader(value = "Authorization") String accessToken) {
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "발송 편지 목록 조회 성공", letterService.getSendLetters()));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "발송 편지 목록 조회 성공", letterService.getSendLetters(accessToken)));
     }
 
     @Operation(summary = "미발송 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
@@ -134,7 +134,7 @@ public class LetterController {
     })
     @GetMapping("/unplaced")
     public ResponseEntity<? extends BaseResponseBody> getUnsendLetters(@RequestHeader(value = "Authorization") String accessToken) {
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "미발송 편지 목록 조회 성공", letterService.getUnsendLetters()));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "미발송 편지 목록 조회 성공", letterService.getUnsendLetters(accessToken)));
     }
 
     @Operation(summary = "열람한 수신 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
@@ -160,7 +160,7 @@ public class LetterController {
     @GetMapping("/checked")
     public ResponseEntity<? extends BaseResponseBody> getReadLetters(@RequestHeader(value = "Authorization") String accessToken) {
         // accessToken으로 멤버 객체 찾기 → SendId가 해당 맴버인 것 중 isRead = true인 값들만 반환
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "열람한 편지 목록 조회 성공", letterService.getReadLetters()));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "열람한 편지 목록 조회 성공", letterService.getReadLetters(accessToken)));
     }
 
     @Operation(summary = "미열람한 수신 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
@@ -186,7 +186,7 @@ public class LetterController {
     @GetMapping("/unchecked")
     public ResponseEntity<? extends BaseResponseBody> getUnReadLetters(@RequestHeader(value = "Authorization") String accessToken) {
         // accessToken으로 멤버 객체 찾기 → SendId가 해당 맴버인 것 중 isRead = false인 값들만 반환
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "미열람한 편지 목록 조회 성공", letterService.getUnreadLetters()));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "미열람한 편지 목록 조회 성공", letterService.getUnreadLetters(accessToken)));
     }
 
     @Operation(summary = "편지 상세조회", description = "Authorization : Bearer {accessToken}, 필수")
@@ -215,6 +215,6 @@ public class LetterController {
     @GetMapping("/{letter_id}")
     public ResponseEntity<? extends BaseResponseBody> getLetter(@PathVariable Long letter_id,
                                                                 @RequestHeader(value = "Authorization") String accessToken) {
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "편지 상세 조회 성공", letterService.getLetter(letter_id)));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "편지 상세 조회 성공", letterService.getLetter(accessToken, letter_id)));
     }
 }

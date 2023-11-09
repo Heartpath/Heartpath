@@ -23,13 +23,13 @@ public interface LetterService {
 
     void placeLetter(String accessToken, LetterPlaceReqDto letterPlaceReqDto, List<MultipartFile> files);
 
-    List<LetterSendResDto> getSendLetters();
+    List<LetterSendResDto> getSendLetters(String accessToken);
 
-    List<LetterUnsendResDto> getUnsendLetters();
+    List<LetterUnsendResDto> getUnsendLetters(String accessToken);
 
-    List<LetterReceivedResDto> getReadLetters();
+    List<LetterReceivedResDto> getReadLetters(String accessToken);
 
-    List<LetterReceivedResDto> getUnreadLetters();
+    List<LetterReceivedResDto> getUnreadLetters(String accessToken);
 
-    LetterReceivedDetailResDto getLetter(Long letter_id);
+    LetterReceivedDetailResDto getLetter(String accessToken, Long letter_id);
 }

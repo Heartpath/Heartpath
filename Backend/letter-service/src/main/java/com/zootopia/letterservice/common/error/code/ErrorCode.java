@@ -19,6 +19,7 @@ public enum ErrorCode {
     NOT_EXISTS_LETTER(HttpStatus.BAD_REQUEST, 4006, "존재하지 않는 편지입니다."),
     NOT_EXISTS_LAT_OR_LNG(HttpStatus.BAD_REQUEST, 4007, "위도, 경도는 필수 항목입니다."),
     NOT_EXISTS_PLACE_IMAGES(HttpStatus.BAD_REQUEST, 4008, "배치 장소에 대한 이미지 파일은 필수 항목입니다."),
+    NOT_EQUAL_SENDER_AND_RECEIVER(HttpStatus.BAD_REQUEST, 4009, "편지의 발신자와 수신자가 아닌 사용자는 상세 내용을 조회할 수 없습니다."),
 
 
     // API 통신
