@@ -15,24 +15,25 @@ public class LetterReceivedDetailResDto {
 
     private Long index;
     private String content;
-//    private String sender;
-//    private String receiver;
+    private String sender;
+    private String receiver;
     private LocalDateTime time;
     private Double lat;
     private Double lng;
     private List<String> files;
-//    private boolean isFriend;
+    private boolean isFriend;
 
-    public LetterReceivedDetailResDto(LetterMySQL letter) {
+    public LetterReceivedDetailResDto(LetterMySQL letter, String sender, String receiver, boolean flag) {
         this.index = letter.getId();
         this.content = letter.getContent();
-//        this.sender = letter.getSender();
-//        this.receiver = letter.getReceiver();
+        this.sender = sender;
+        this.receiver = receiver;
         this.time = letter.getCreatedDate();
         this.lat = letter.getLat();
         this.lng = letter.getLng();
         this.files = letter.getLetterImages().stream()
                 .map(LetterImage::getImagePath)
                 .collect(Collectors.toList());
+        this.isFriend = flag;
     }
 }
