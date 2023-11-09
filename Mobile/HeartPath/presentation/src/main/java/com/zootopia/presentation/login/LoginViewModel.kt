@@ -1,32 +1,20 @@
 package com.zootopia.presentation.login
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.messaging.FirebaseMessaging
-import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
-import com.kakao.sdk.user.UserApiClient
 import com.zootopia.domain.model.login.TokenDto
 import com.zootopia.domain.usecase.login.CheckIdUseCase
 import com.zootopia.domain.usecase.login.LoginUseCase
 import com.zootopia.domain.usecase.login.SignupUseCase
-import com.zootopia.domain.usecase.preference.GetFcmTokenUseCase
-import com.zootopia.domain.usecase.preference.GetKakaoAccessTokenUseCase
 import com.zootopia.domain.usecase.preference.SetFcmTokenUseCase
 import com.zootopia.domain.usecase.preference.SetKakaoAccessTokenUseCase
 import com.zootopia.domain.usecase.preference.SetTokenUseCase
 import com.zootopia.presentation.config.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
