@@ -39,7 +39,7 @@ public class LetterMongo {
 
 
     @Builder
-    public LetterMongo(String content, List<String> files) {
+    public LetterMongo(String content, List<String> files, String senderId, String receiverId) {
         this.content = content;
         this.files = files;
         this.senderId = senderId;
