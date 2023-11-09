@@ -28,10 +28,10 @@ spring:
     multipart:
       max-file-size: 500MB
       max-request-size: 500MB
-      
+
   datasource:
     # MySQL
-    url: jdbc:mysql://zootopia-mysql.c2f2jpwzzxst.ap-northeast-2.rds.amazonaws.com:3306/zootopia
+    url: jdbc:mysql://zootopia-mysql.c2f2jpwzzxst.ap-northeast-2.rds.amazonaws.com:3306/zootopia?serverTimezone=Asia/Seoul
     username: admin
     password: ENC(Gvm4XgQFXVwb3fpfTmdSxnd88htlJ/zV)
     driver-class-name: com.mysql.cj.jdbc.Driver
