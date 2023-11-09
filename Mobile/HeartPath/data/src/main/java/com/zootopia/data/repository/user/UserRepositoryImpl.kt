@@ -9,9 +9,9 @@ import com.zootopia.domain.util.getValueOrThrow2
 class UserRepositoryImpl(
     private val userDataSource: UserDataSource,
 ): UserRepository {
-    override suspend fun getUserInfo(): UserInfoDto {
+    override suspend fun getUserInfo(): UserInfoDto? {
         return getValueOrThrow2 {
-            userDataSource.getUserInfo().toDomain()
+            userDataSource.getUserInfo()?.toDomain()
         }
     }
 

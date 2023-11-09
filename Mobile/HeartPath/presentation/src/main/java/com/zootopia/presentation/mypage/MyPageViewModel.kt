@@ -21,7 +21,9 @@ class MyPageViewModel @Inject constructor(
                 getUserInfoUseCase.invoke()
             },
             success = { result ->
-                _userInfo.emit(result)
+                if (result != null) {
+                    _userInfo.emit(result)
+                }
             }
         )
     }
