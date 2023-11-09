@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,20 +15,20 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@IdClass(CrowTitBookId.class)
 public class CrowTitBook {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "CROW_TIT_ID")
+    private Long crowtitId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CROW_TIT_ID")
-    private CrowTit crowTit;
-
+    @Id
     @Column(name = "MEMBER_ID")
     private String memberId;
     @Column(name = "IS_MAIN")
     private Boolean isMain;
     @Column(name = "ACQUISITION_DATE")
     private LocalDateTime acquisitionDate;
+
+
 }

@@ -1,24 +1,21 @@
 package com.zootopia.storeservice.store.service;
 
-import com.amazonaws.services.kms.model.NotFoundException;
 import com.zootopia.storeservice.common.error.code.ErrorCode;
 import com.zootopia.storeservice.common.error.exception.BadRequestException;
 //import com.zootopia.storeservice.common.s3.S3Uploader;
 import com.zootopia.storeservice.store.dto.request.CharacterBuyReqDto;
-import com.zootopia.storeservice.store.dto.request.CrowTitReqDto;
 import com.zootopia.storeservice.store.dto.request.LetterPaperBuyReqDto;
+import com.zootopia.storeservice.store.dto.response.CrowTitResDto;
+import com.zootopia.storeservice.store.dto.response.LetterPaperResDto;
 import com.zootopia.storeservice.store.entity.*;
 import com.zootopia.storeservice.store.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -52,7 +49,7 @@ public class StoreServiceImpl implements StoreService {
             int currentBalance = lastBalance + letterPaper.getPrice();
 
             LetterPaperBook letterPaperBook = LetterPaperBook.builder()
-                    .letterPaper(letterPaper)
+                    .letterPaperId(letterPaper.getId())
                     .memberId(memberId)
                     .acquisitionDate(LocalDateTime.now())
                     .build();
@@ -73,13 +70,41 @@ public class StoreServiceImpl implements StoreService {
 
     }
 
+    public List<LetterPaperResDto> getLetterPaperAll(String memberId){
+        List<LetterPaper> letterPaperList = letterPaperRepository.findAll();
+        List<LetterPaperBook> letterPaperBookList = letterPaperBookRepository.findAllByMemberId(memberId);
+
+        List<LetterPaperResDto> result = new ArrayList<>();
+
+        for (LetterPaper letterPaper:letterPaperList){
+            boolean isOwned = false;
+            for (LetterPaperBook letterpaperBook:letterPaperBookList){
+                if (letterPaper.getId()==letterpaperBook.getLetterPaperId()){
+                    isOwned=true;
+                    break;
+                }
+            }
+            LetterPaperResDto letterPaperResDto = LetterPaperResDto.builder()
+                    .name(letterPaper.getName())
+                    .price(letterPaper.getPrice())
+                    .description(letterPaper.getDescription())
+                    .imagePath(letterPaper.getImagePath())
+                    .isOwned(isOwned)
+                    .build();
+            result.add(letterPaperResDto);
+        }
+
+        return result;
+    }
+
+
     public LetterPaper getLetterPaperDetail(Long letterpaperId){
         LetterPaper letterPaper = letterPaperRepository.findById(letterpaperId)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTS_LETTERPAPER));
         return letterPaper;
     }
 
-    public void buyCharacter(String memberId, CharacterBuyReqDto characterBuyReqDto){
+    public void buyCrowTit(String memberId, CharacterBuyReqDto characterBuyReqDto){
         CrowTit crowTit = crowTitRepository.findById(characterBuyReqDto.getCrowtitId())
                 .orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTS_CROWTIT));
 
@@ -93,7 +118,7 @@ public class StoreServiceImpl implements StoreService {
         int currentBalance = lastBalance+crowTit.getPrice();
 
         CrowTitBook crowTitBook = CrowTitBook.builder()
-                .crowTit(crowTit)
+                .crowtitId(crowTit.getId())
                 .memberId(memberId)
                 .isMain(false)
                 .acquisitionDate(LocalDateTime.now())
@@ -111,8 +136,36 @@ public class StoreServiceImpl implements StoreService {
 
     }
 
-    public CrowTit getCharacterInfo(Long charater_id){
-        CrowTit crowTit = crowTitRepository.findById(charater_id)
+    public List<CrowTitResDto> getCrowTitListAll(String memberId){
+        List<CrowTit> crowTitList = crowTitRepository.findAll();
+        List<CrowTitBook> crowTitBookList = crowTitBookRepository.findAllByMemberId(memberId);
+
+        List<CrowTitResDto> result = new ArrayList<>();
+
+        for (CrowTit crowTit:crowTitList){
+            boolean isOwned = false;
+            for (CrowTitBook crowTitBook:crowTitBookList){
+                if (crowTit.getId()==crowTitBook.getCrowtitId()){
+                    isOwned=true;
+                    break;
+                }
+            }
+            CrowTitResDto crowTitResDto = CrowTitResDto.builder()
+                    .name(crowTit.getName())
+                    .price(crowTit.getPrice())
+                    .description(crowTit.getDescription())
+                    .imagePath(crowTit.getImagePath())
+                    .isOwned(isOwned)
+                    .build();
+            result.add(crowTitResDto);
+        }
+
+        return result;
+
+    }
+
+    public CrowTit getCrowTitInfo(Long crowTit_id){
+        CrowTit crowTit = crowTitRepository.findById(crowTit_id)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTS_CROWTIT));
         return crowTit;
     }
