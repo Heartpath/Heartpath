@@ -3,8 +3,10 @@ package com.zootopia.presentation.arcore
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.isGone
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.ar.core.Anchor
 import com.google.ar.core.Config
@@ -15,7 +17,8 @@ import com.google.ar.core.TrackingFailureReason
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
-import com.zootopia.presentation.databinding.FragmentArCoreBinding
+import com.zootopia.presentation.databinding.FragmentArCoreReadBinding
+import com.zootopia.presentation.map.MapViewModel
 import com.zootopia.presentation.util.setFullScreen
 import io.github.sceneview.ar.arcore.getUpdatedPlanes
 import io.github.sceneview.ar.getDescription
@@ -26,13 +29,18 @@ import kotlinx.coroutines.launch
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-private const val TAG = "ArCoreFragment_HP"
 
-class ArCoreFragment
-    : BaseFragment<FragmentArCoreBinding>(FragmentArCoreBinding::bind, R.layout.fragment_ar_core) {
+private const val TAG = "ArCoreReadFragment_HP"
+
+class ArCoreReadFragment
+    : BaseFragment<FragmentArCoreReadBinding>(
+    FragmentArCoreReadBinding::bind,
+    R.layout.fragment_ar_core_read
+) {
     
     private lateinit var mainActivity: MainActivity
     private lateinit var currentFrame: Frame
+    private val mapViewModel: MapViewModel by activityViewModels()
     
     var isLoading = false
         set(value) {
@@ -77,11 +85,12 @@ class ArCoreFragment
     }
     
     private fun initView() {
-        this@ArCoreFragment.setFullScreen(
+        this@ArCoreReadFragment.setFullScreen(
             fullScreen = true,
             hideSystemBars = false,
-            fitsSystemWindows = false,
+            fitsSystemWindows = true,
         )
+        
         
         binding.sceneView.apply {
             planeRenderer.isEnabled = true
@@ -99,42 +108,38 @@ class ArCoreFragment
                     frame.getUpdatedPlanes()
                         .firstOrNull { it.type == Plane.Type.HORIZONTAL_UPWARD_FACING }
                         ?.let { plane ->
-                            Log.d(TAG, "initView: plane $plane")
-                            // plane 활성화 & 버튼 클릭시
-                            binding.buttonSetItem.setOnClickListener {
-                                Log.d(TAG, "initView: ->> $anchorNode")
-                                
-                                // 모델 올리기+
-                                addAnchorNode(plane.createAnchor(plane.centerPose))
-                                
-                                //카메라 부터 모델까지 거리 구하기 (dist는 m 단위)
-                                Log.d(TAG, "initView: ${frame.camera.pose}")
-                                currentFrame = frame
-                                measureDistanceFromCamera()
-                            }
+                            // 모델 올리기 (plane 정 중앙)
+                            addAnchorNode(plane.createAnchor(plane.centerPose))
+                            
+                            //카메라 부터 모델까지 거리 구하기 (dist는 m 단위)
+                            currentFrame = frame
+                            measureDistanceFromCamera()
                         }
-                    
                 }
             }
-
+            
+            
             onTrackingFailureChanged = { reason ->
-                this@ArCoreFragment.trackingFailureReason = reason
+                this@ArCoreReadFragment.trackingFailureReason = reason
             }
+    
+//            anchorNode?.onTap?.apply {
+//                this.invoke(modelClickEvent())
+//            }
+//
+//            anchorNode.
         }
     }
     
-    
     fun addAnchorNode(anchor: Anchor) {
-    
-        removeModelNode()
-        
         binding.sceneView.addChildNode(
             AnchorNode(binding.sceneView.engine, anchor).apply {
-                    isEditable = true
-                
-                    lifecycleScope.launch {
-                        isLoading = true
-                        binding.sceneView.modelLoader.loadModelInstance("models/lamborghini.glb")?.let { modelInstance ->
+                isEditable = true
+                Log.d(TAG, "addAnchorNode: $this")
+                lifecycleScope.launch {
+                    isLoading = true
+                    binding.sceneView.modelLoader.loadModelInstance("models/lamborghini.glb")
+                        ?.let { modelInstance ->
                             addChildNode(
                                 ModelNode(
                                     modelInstance = modelInstance,
@@ -146,32 +151,22 @@ class ArCoreFragment
                                     isEditable = true
                                 },
                             )
+    
+                            // Model이 나타났으므로 PlaneRenderer를 비활성화
+                            binding.sceneView.planeRenderer.isEnabled = false
                         }
-                        isLoading = false
-                    }
-                    anchorNode = this
-                },
+                    isLoading = false
+                }
+                anchorNode = this
+            },
         )
     }
     
-    fun removeModelNode() {
+    fun modelClickEvent(): MotionEvent {
+        Log.d(TAG, "modelClickEvent: 모델 클릭!!")
         
-        anchorNode?.let { anchorNode ->
-            binding.sceneView.removeChildNode(anchorNode) // AnchorNode를 제거하여 하위의 ModelNode도 함께 제거
-            anchorNode.anchor.detach() // Anchor를 분리합니다.
-//            anchorNode.isEditable = false // 선택 사항: 모델 노드가 더 이상 편집되지 않도록 설정
-//            anchorNode.detachAnchor() // 선택 사항: 비활성화하여 모델 노드가 더 이상 렌더링되지 않도록 합니다.
-            anchorNode.parent = null // 선택 사항: 부모 노드에서 제거합니다.
-
-            
-            // 모델을 삭제했으므로 anchorNode를 null로
-            // 설정하여 참조를 제거
-            this.anchorNode = null
-            Log.d(TAG, "removeModelNode: 앵커 초기화 실행")
-        }
+        return TODO("Provide the return value")
     }
-    
-    
     
     private fun measureDistanceFromCamera() {
         if (anchorNode != null) {
@@ -198,13 +193,4 @@ class ArCoreFragment
             objectPose0.z - objectPose1.tz()
         )
     }
-    
-    private fun changeUnit(distanceMeter: Float, unit: String): Float {
-        return when (unit) {
-            "cm" -> distanceMeter * 100
-            "mm" -> distanceMeter * 1000
-            else -> distanceMeter
-        }
-    }
-    
 }

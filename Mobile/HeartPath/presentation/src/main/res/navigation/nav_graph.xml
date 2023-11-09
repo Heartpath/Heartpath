@@ -66,8 +66,8 @@
         android:label="fragment_map"
         tools:layout="@layout/fragment_map" >
         <action
-            android:id="@+id/action_mapFragment_to_arCoreFragment"
-            app:destination="@id/arCoreFragment" />
+            android:id="@+id/action_mapFragment_to_arCoreReadFragment"
+            app:destination="@id/arCoreReadFragment" />
     </fragment>
     <fragment
         android:id="@+id/myPageFragment"
@@ -159,9 +159,8 @@
             style="@style/SlideAnimation"/>
     </fragment>
     <fragment
-        android:id="@+id/arCoreFragment"
-        android:name="com.zootopia.presentation.arcore.ArCoreFragment"
-        android:label="fragment_ar_core"
-        tools:layout="@layout/fragment_ar_core" />
+        android:id="@+id/arCoreReadFragment"
+        android:name="com.zootopia.presentation.arcore.ArCoreReadFragment"
+        android:label="ArCoreReadFragment" />
 
 </navigation>

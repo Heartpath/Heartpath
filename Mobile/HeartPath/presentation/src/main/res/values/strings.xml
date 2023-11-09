@@ -69,7 +69,7 @@
     <string name="friend_edit">친구 수정</string>
     <string name="friend_delete">삭제하기</string>
     <string name="friend_report">신고하기</string>
-    
+
     <!--  FCM  -->
     <string name="default_notification_channel_id">heart_path</string>
     <string name="default_notification_channel_name">HeartPath</string>
