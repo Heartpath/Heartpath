@@ -1,5 +1,6 @@
 package com.zootopia.data.datasource.remote.user
 
+import com.zootopia.data.model.user.response.FriendListResponse
 import com.zootopia.data.model.user.response.PointInfoResponse
 import com.zootopia.data.model.user.response.UserInfoResponse
 import com.zootopia.data.service.BusinessService
@@ -14,5 +15,9 @@ class UserDataSourceImpl(
 
     override suspend fun getPointInfo(): PointInfoResponse {
         return handleApi { businessService.getPointInfo() }
+    }
+
+    override suspend fun getFriendList(): FriendListResponse {
+        return handleApi { businessService.getFriendList() }
     }
 }
