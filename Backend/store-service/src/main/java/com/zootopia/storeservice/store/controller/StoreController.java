@@ -1,8 +1,8 @@
 package com.zootopia.storeservice.store.controller;
 
 import com.zootopia.storeservice.common.dto.BaseResponseBody;
-import com.zootopia.storeservice.store.dto.request.CharacterBuyReqDto;
-import com.zootopia.storeservice.store.dto.request.LetterPaperBuyReqDto;
+import com.zootopia.storeservice.store.dto.request.CrowTitReqDto;
+import com.zootopia.storeservice.store.dto.request.LetterPaperReqDto;
 import com.zootopia.storeservice.store.dto.response.CrowTitResDto;
 import com.zootopia.storeservice.store.dto.response.LetterPaperResDto;
 import com.zootopia.storeservice.store.dto.response.UserResDto;
@@ -11,9 +11,7 @@ import com.zootopia.storeservice.store.entity.CrowTitBook;
 import com.zootopia.storeservice.store.entity.LetterPaper;
 import com.zootopia.storeservice.store.entity.LetterPaperBook;
 import com.zootopia.storeservice.store.repository.CrowTitBookRepository;
-import com.zootopia.storeservice.store.repository.CrowTitRepository;
 import com.zootopia.storeservice.store.repository.LetterPaperBookRepository;
-import com.zootopia.storeservice.store.repository.LetterPaperRepository;
 import com.zootopia.storeservice.store.service.MemberService;
 import com.zootopia.storeservice.store.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -38,9 +37,7 @@ public class StoreController {
 
     private final StoreService storeService;
     private final MemberService memberService;
-    private final LetterPaperRepository letterPaperRepository;
     private final LetterPaperBookRepository letterPaperBookRepository;
-    private final CrowTitRepository crowTitRepository;
     private final CrowTitBookRepository crowTitBookRepository;
 
     @GetMapping("/health_check")
@@ -52,7 +49,8 @@ public class StoreController {
 
     // 편지지 목록 조회
     @GetMapping("/letterpaper")
-    @Operation(summary = "편지지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
+    @Operation(summary = "편지지 목록 조회 (편지 작성용)", description = "Authorization : Bearer {accessToken}, 필수\n\n"
+                                                                    +"사용자가 가지고 있는 편지지 목록을 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
                     examples = @ExampleObject(value = "{" +
@@ -80,8 +78,9 @@ public class StoreController {
     }
 
     @GetMapping("/letterpaper/all")
-    @Operation(summary = "편지지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수\n\n " +
-            "isowned : 사용자가 가지고 있는 상품인지 아닌지 판단하는 boolean")
+    @Operation(summary = "편지지 전체 목록 조회 (상점용)", description = "Authorization : Bearer {accessToken}, 필수\n\n " +
+                                                                    "isowned : 사용자가 가지고 있는 상품인지 아닌지 판단하는 boolean\n\n" +
+                                                                    "편지지를 구매하는 페이지에 사용하는 API입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
                     examples = @ExampleObject(value = "{" +
@@ -129,7 +128,7 @@ public class StoreController {
             @ApiResponse(responseCode = "4001", description =  "NOT_EXISTS_LETTERPAPER", content = @Content(examples = @ExampleObject(value = "{\n \"httpStatus\": \"400 BAD_REQUEST\",\n \"status\": 4001,\n \"message\": \"존재하지 않는 편지지입니다.\"\n}"))),
     })
     public ResponseEntity<? extends BaseResponseBody> getLetterPaper(@RequestHeader("Authorization") String accessToken,
-                                                                     @PathVariable(value = "letterpaper_id") Long letterpaper_id){
+                                                                     @PathVariable(value = "letterpaper_id") int letterpaper_id){
 
         LetterPaper letterPaperInfo = storeService.getLetterPaperDetail(letterpaper_id);
 
@@ -138,14 +137,15 @@ public class StoreController {
 
     // 편지지 구매
     @PostMapping("/letterpaper/buy")
-    @Operation(summary = "편지지 구매", description = "Authorization : Bearer {accessToken}, 필수")
+    @Operation(summary = "편지지 구매", description = "Authorization : Bearer {accessToken}, 필수 \n\n" +
+                                                    "letterPaperBuyReqDto : {letterpaperId : int}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description =  "CREATED", content = @Content(mediaType = "application/json",
                     examples = @ExampleObject(value = "{\n \"status\": 201,\n \"message\": \"편지지 구매 성공\"\n}"))),
             @ApiResponse(responseCode = "4001", description =  "NOT_EXISTS_LETTERPAPER", content = @Content(examples = @ExampleObject(value = "{\n \"httpStatus\": \"400 BAD_REQUEST\",\n \"status\": 4001,\n \"message\": \"존재하지 않는 편지지입니다.\"\n}")))}
     )
     public ResponseEntity<? extends BaseResponseBody> buyLetterPaper(@RequestHeader("Authorization") String accessToken,
-                                                                     @RequestBody LetterPaperBuyReqDto letterPaperBuyReqDto){
+                                                                     @RequestBody LetterPaperReqDto letterPaperBuyReqDto){
 
         UserResDto userResDto = memberService.accessTokenToMember(accessToken);
         String memberId = userResDto.getData().getMemberID();
@@ -160,8 +160,8 @@ public class StoreController {
 
 
     // 캐릭터 목록 조회
-    @GetMapping("/character")
-    @Operation(summary = "사용자가 가지고 있는 캐릭터 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
+    @GetMapping("/crowtit")
+    @Operation(summary = "사용자가 가지고 있는 캐릭터 목록 조회 (도감용)", description = "Authorization : Bearer {accessToken}, 필수")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
                     examples = @ExampleObject(value = "{" +
@@ -187,9 +187,36 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "캐릭터 목록 조회 성공", crowTitBookList));
     }
 
-    @GetMapping("/character/all")
-    @Operation(summary = "캐릭터 목록 전체 조회", description = "Authorization : Bearer {accessToken}, 필수\n\n " +
-            "isowned : 사용자가 가지고 있는 캐릭터인지 아닌지 판단하는 boolean")
+    @GetMapping("/crowtit/main")
+    @Operation(summary = "사용자의 메인 뱁새 반환", description = "Authorization : Bearer {accessToken}, 필수")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{" +
+                            " \"status\": 200," +
+                            " \"message\": \"캐릭터 목록 조회 성공\"," +
+                            " \"data\": [" +
+                            "       {" +
+                            "           \"index\": 1," +
+                            "           \"name\": \"일반 뱁새\"," +
+                            "           \"price\": 100," +
+                            "           \"image\": \"url\"," +
+                            "           \"isowned\": \"true\"" +
+                            "       }" +
+                            "   ]" +
+                            "}")))
+    })
+    public ResponseEntity<? extends BaseResponseBody> getMainCrowTit(@RequestHeader("Authorization") String accessToken){
+        UserResDto userResDto = memberService.accessTokenToMember(accessToken);
+        String memberId = userResDto.getData().getMemberID();
+
+        Optional<CrowTitBook> mainCrowTit = crowTitBookRepository.findByMemberIdAndIsMain(memberId, true);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "메인 캐릭터 조회 성공", mainCrowTit));
+    }
+
+    @GetMapping("/crowtit/all")
+    @Operation(summary = "캐릭터 목록 전체 조회 (상점용)", description = "Authorization : Bearer {accessToken}, 필수\n\n " +
+                                                                    "isowned : 사용자가 가지고 있는 캐릭터인지 아닌지 판단하는 boolean")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
                     examples = @ExampleObject(value = "{" +
@@ -212,11 +239,11 @@ public class StoreController {
 
         List<CrowTitResDto> crowTitList = storeService.getCrowTitListAll(memberId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "캐릭터 목록 조회 성공", crowTitList));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "메인 캐릭터 조회 성공", crowTitList));
     }
 
     // 캐릭터 상세 조회
-    @GetMapping("/character/{charater_id}")
+    @GetMapping("/crowtit/{crowtit_id}")
     @Operation(summary = "캐릭터 상세 조회", description = "Authorization : Bearer {accessToken}, 필수")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
@@ -236,33 +263,51 @@ public class StoreController {
             @ApiResponse(responseCode = "4001", description =  "NOT_EXISTS_CROWTIT", content = @Content(examples = @ExampleObject(value = "{\n \"httpStatus\": \"400 BAD_REQUEST\",\n \"status\": 4001,\n \"message\": \"존재하지 않는 뱁새입니다.\"\n}"))),
 })
     public ResponseEntity<? extends BaseResponseBody> getCharacter(@RequestHeader("Authorization") String accessToken,
-                                                                   @PathVariable("charater_id") Long charater_id){
+                                                                   @PathVariable("crowtit_id") int crowTitId){
 
-        CrowTit crowTitInfo = storeService.getCrowTitInfo(charater_id);
+        CrowTit crowTitInfo = storeService.getCrowTitInfo(crowTitId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "캐릭터 상세 조회 성공", crowTitInfo));
     }
 
     // 캐릭터 구매
-    @PostMapping("/charater/buy")
+    @PostMapping("/crowtit/buy")
     @Operation(summary = "캐릭터 구매", description = "Authorization : Bearer {accessToken}, 필수\\n\\n " +
-            "characterBuyReqDto : { character_id : int }")
+                                                    "crowTitReqDto : { crowtit_id : int }")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description =  "CREATED", content = @Content(mediaType = "application/json",
                     examples = @ExampleObject(value = "{\n \"status\": 201,\n \"message\": \"캐릭터 구매 성공\"\n}"))),
             @ApiResponse(responseCode = "4001", description =  "NOT_EXISTS_CROWTIT", content = @Content(examples = @ExampleObject(value = "{\n \"httpStatus\": \"400 BAD_REQUEST\",\n \"status\": 4001,\n \"message\": \"존재하지 않는 뱁새입니다.\"\n}")))}
     )
     public ResponseEntity<? extends BaseResponseBody> buyCharacter(@RequestHeader("Authorization") String accessToken,
-                                                                   @RequestBody CharacterBuyReqDto characterBuyReqDto){
+                                                                   @RequestBody CrowTitReqDto crowTitBuyReqDto){
 
         UserResDto userResDto = memberService.accessTokenToMember(accessToken);
         String memberId = userResDto.getData().getMemberID();
 
-        storeService.buyCrowTit(memberId, characterBuyReqDto);
+        storeService.buyCrowTit(memberId, crowTitBuyReqDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponseBody<>(201, "캐릭터 구매 성공"));
     }
 
+    @PostMapping("/crowtit/change")
+    @Operation(summary = "캐릭터 변경", description = "Authorization : Bearer {accessToken}, 필수\\n\\n " +
+                                                     "crowTitBuyReqDto : { character_id : int }")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description =  "CREATED", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{\n \"status\": 201,\n \"message\": \"캐릭터 구매 성공\"\n}"))),
+            @ApiResponse(responseCode = "4001", description =  "NOT_EXISTS_CROWTIT", content = @Content(examples = @ExampleObject(value = "{\n \"httpStatus\": \"400 BAD_REQUEST\",\n \"status\": 4001,\n \"message\": \"존재하지 않는 뱁새입니다.\"\n}")))}
+    )
+    public ResponseEntity<? extends BaseResponseBody> changeMainCharacter(@RequestHeader(value = "Authorization") String accessToken,
+                                                                      @RequestBody CrowTitReqDto crowTitChangeReqDto){
+        UserResDto userResDto = memberService.accessTokenToMember(accessToken);
+        String memberId = userResDto.getData().getMemberID();
+
+        storeService.changeMainCrowTit(memberId, crowTitChangeReqDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "캐릭터 변경 성공"));
+
+    }
     // ##############################################################################
 
 //    @PostMapping("/upload")

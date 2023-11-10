@@ -14,11 +14,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
@@ -50,7 +48,6 @@ public class PointController {
     })
     public ResponseEntity<? extends BaseResponseBody> getPointUsage(@RequestHeader("Authorization") String accessToken){
 
-//        UserResDto userResDto = memberService.accessTokenToMember(accessToken);
         String memberId = memberService.accessTokenToMember(accessToken).getData().getMemberID();
         log.warn(memberId);
         List<Point> pointUsage = pointService.getPointUsage(memberId);
@@ -59,7 +56,8 @@ public class PointController {
 
     @PostMapping("/point")
     @Operation(summary = "포인트 적립", description = "Authorization : Bearer {accessToken}, 필수\n\n " +
-    "pointTransReqDto : { point : int }")
+    "pointTransReqDto : { point : int }\n\n"+
+    "뱁새를 잡으면 포인트가 적립됩니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description =  "CREATED", content = @Content(mediaType = "application/json",
                     examples = @ExampleObject(value = "{\n \"status\": 201,\n \"message\": \"포인트 적립 성공\"\n}")))}
