@@ -3,15 +3,16 @@ package com.zootopia.presentation.pointhistory
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.zootopia.domain.model.user.PointDto
 import com.zootopia.presentation.databinding.ItemPointHistoryBinding
 
-class PointHistoryAdapter():
+class PointHistoryAdapter(var list: MutableList<PointDto>):
 RecyclerView.Adapter<PointHistoryAdapter.PointHistoryViewHolder>(){
     inner class PointHistoryViewHolder(val binding: ItemPointHistoryBinding) :
     RecyclerView.ViewHolder(binding.root) {
-        fun bindInfo() = with(binding) {
-            textviewPointHistory.text = "10포인트를 수령했습니다"
-            textviewPointHistoryDate.text = "2023.10.25"
+        fun bindInfo(point: PointDto) = with(binding) {
+            textviewPointHistory.text = point.outline
+            textviewPointHistoryDate.text = point.date
         }
     }
 
@@ -22,11 +23,11 @@ RecyclerView.Adapter<PointHistoryAdapter.PointHistoryViewHolder>(){
     }
 
     override fun getItemCount(): Int {
-        return 10
+        return list.size
     }
 
     override fun onBindViewHolder(holder: PointHistoryViewHolder, position: Int) {
-        holder.bindInfo()
+        holder.bindInfo(list[position])
     }
 
 }
