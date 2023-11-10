@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -23,11 +20,9 @@ public class ApiController {
     private final MemberService memberService;
     private final ApiService apiService;
 
-    @PostMapping("/default")
+    @PostMapping("/default/{memberId}")
     @Operation(summary = "기본 캐릭터 설정", description = "Authorization : Bearer {accessToken}, 필수")
-    public ResponseEntity<? extends BaseResponseBody> setDefaultCrowtit(@RequestHeader(value = "Authorization") String accessToken){
-        UserResDto userResDto = memberService.accessTokenToMember(accessToken);
-        String memberId = userResDto.getData().getMemberID();
+    public ResponseEntity<? extends BaseResponseBody> setDefaultCrowtit(@PathVariable String memberId){
 
         apiService.setDefaultCrowTit(memberId);
 
