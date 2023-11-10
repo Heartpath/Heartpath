@@ -23,7 +23,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/store")
 public class PointController {
 
     private final MemberService memberService;
