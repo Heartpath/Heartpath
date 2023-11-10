@@ -3,6 +3,7 @@ package com.zootopia.data.service
 import com.zootopia.data.model.business.request.PostHandLetterRequest
 import com.zootopia.data.model.business.response.BusinessResponse
 import com.zootopia.data.model.common.MessageResponse
+import com.zootopia.data.model.letter.response.StoredLetterListResponse
 import com.zootopia.data.model.letter.response.UnplacedLetterListResponse
 import com.zootopia.data.model.login.request.LoginRequest
 import com.zootopia.data.model.login.request.SignupRequest
@@ -84,4 +85,7 @@ interface BusinessService {
     // 미발송 편지 목록 조회
     @GET("/letter/unplaced")
     suspend fun getUnplacedLetter(): Response<UnplacedLetterListResponse>
+    // 열람한 수신 편지 목록 조회
+    @GET("/letter/checked")
+    suspend fun getStoredLetterList(): Response<StoredLetterListResponse>
 }
