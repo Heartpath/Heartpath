@@ -91,7 +91,7 @@ class SelectLetterPaperFragment : BaseFragment<FragmentSelectLetterPaperBinding>
 
     fun initClickListener() = with(binding) {
         buttonSelectLetterPaper.setOnClickListener {
-            writeLetterViewModel.setSelectedLetterPaperUrl(letterPaperList[viewPagerLetterPaper.currentItem].imageUrl)
+            writeLetterViewModel.setSelectedLetterPaperUrl(letterPaperList[viewPagerLetterPaper.currentItem].imagePath)
             if (args.letterType == LetterType.HAND_WRITE) {
                 navController.navigate(R.id.action_selectLetterPaperFragment_to_handWriteFragment)
             } else {
