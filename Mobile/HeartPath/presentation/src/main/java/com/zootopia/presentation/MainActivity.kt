@@ -11,6 +11,7 @@ import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph
 import androidx.navigation.fragment.NavHostFragment
 import androidx.work.WorkManager
 import com.zootopia.presentation.config.BaseActivity
@@ -18,6 +19,7 @@ import com.zootopia.presentation.databinding.ActivityMainBinding
 import com.zootopia.presentation.util.checkAllPermission
 import com.zootopia.presentation.util.showPermissionDialog
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -27,6 +29,7 @@ private const val TAG = "MainActivity_HeartPath"
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
 
     lateinit var navController: NavController
+    lateinit var navGraph: NavGraph
     private val mainViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,9 +54,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
     private fun initNavHost() {
-        val navHostFragmentManager =
-            supportFragmentManager.findFragmentById(R.id.main_container) as NavHostFragment
-        navController = navHostFragmentManager.navController
+        lifecycleScope.launch {
+            val navHostFragmentManager =
+                supportFragmentManager.findFragmentById(R.id.main_container) as NavHostFragment
+            navController = navHostFragmentManager.navController
+            navGraph = navController.graph
+            initCheck()
+        }
     }
 
     // 초기 권한 요청
@@ -147,5 +154,20 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             currentFocus!!.clearFocus()
         }
         return super.dispatchTouchEvent(ev)
+    }
+
+    private fun initCheck() {
+        mainViewModel.getAccessToken()
+        lifecycleScope.launch {
+            mainViewModel.accessToken.collect {value ->
+                Log.d(TAG, "initCheck: access token $value")
+                if(value != "") {
+                    navGraph.setStartDestination(R.id.homeFragment)
+                } else {
+                    navGraph.setStartDestination(R.id.loginFragment)
+                }
+                navController.graph = navGraph
+            }
+        }
     }
 }
