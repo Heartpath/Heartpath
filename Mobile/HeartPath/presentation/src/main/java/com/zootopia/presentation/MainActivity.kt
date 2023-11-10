@@ -5,9 +5,11 @@ import android.app.NotificationManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -25,10 +27,10 @@ private const val TAG = "MainActivity_HeartPath"
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
-    
+
     lateinit var navController: NavController
     private val mainViewModel: MainViewModel by viewModels()
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_Splash)
         super.onCreate(savedInstanceState)
@@ -37,13 +39,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         initCollect()
 
 //        initAppbar()
-        
+
         initNotification()
 
         // 카카오 키 해시 값 가지고 오기
 //        Log.d(TAG, "KAKAO keyhash : ${Utility.getKeyHash(this)}")
     }
-    
+
     override fun onDestroy() {
         // 앱이 종료되면 백그라운드 서비스 취소하기
         WorkManager.getInstance(applicationContext).cancelAllWork()
@@ -65,9 +67,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             permissionList = INIT_PERMISSION_REQUEST,
         )
     }
-    
+
     // 권한 확인 다이얼로그
-    private fun initCollect(){
+    private fun initCollect() {
         mainViewModel.apply {
             lifecycleScope.launch {
                 isShowPermissionDialog.collectLatest {
@@ -112,11 +114,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         const val IMAGE_PERMISSION_REJECTED = android.Manifest.permission.READ_MEDIA_IMAGES
         val PERMISSION_LIST_UNDER32 = arrayOf(
             CAMERA_PERMISSION_REJECTED,
-            GALLERY_PERMISSION_REJECTED
+            GALLERY_PERMISSION_REJECTED,
         )
         val PERMISSION_LIST_UP33 = arrayOf(
             CAMERA_PERMISSION_REJECTED,
-            IMAGE_PERMISSION_REJECTED
+            IMAGE_PERMISSION_REJECTED,
         )
 
         // Location
@@ -124,12 +126,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         const val ACCESS_FINE_LOCATION = android.Manifest.permission.ACCESS_FINE_LOCATION
         val PERMISSION_LOCATION = arrayOf(
             ACCESS_COARSE_LOCATION,
-            ACCESS_FINE_LOCATION
+            ACCESS_FINE_LOCATION,
         )
-        
+
         // Notification
         const val POST_NOTIFICATIONS = android.Manifest.permission.POST_NOTIFICATIONS
-        
+
         // init permission request
         val INIT_PERMISSION_REQUEST = arrayOf(
             ACCESS_COARSE_LOCATION,
@@ -143,7 +145,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         val inputMethodManager: InputMethodManager =
             getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
-        if(currentFocus is EditText) {  // 외부에 클릭했을 때 edit text focus 제거
+        if (currentFocus is EditText) { // 외부에 클릭했을 때 edit text focus 제거
             currentFocus!!.clearFocus()
         }
         return super.dispatchTouchEvent(ev)
