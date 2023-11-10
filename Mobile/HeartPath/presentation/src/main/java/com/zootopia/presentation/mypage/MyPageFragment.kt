@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.zootopia.domain.model.user.FriendDto
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
@@ -26,20 +27,25 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(
     private lateinit var mainActivity: MainActivity
     private lateinit var myPageFriendAdapter: MyPageFriendAdapter
     private val myPageViewModel: MyPageViewModel by activityViewModels()
+    private var myFriendList: MutableList<FriendDto> = mutableListOf()
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        myPageViewModel.getUserInfo()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initData()
+        initCollector()
         initView()
         initAdapter()
         initClickEvent()
@@ -58,20 +64,30 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(
             }
         }
         lifecycleScope.launch {
-            myPageViewModel.userInfo.collect {user ->
+            myPageViewModel.userInfo.collect { user ->
                 textviewProfileId.text = user.memberID
                 textviewProfileName.text = user.nickname
                 textviewPoint.text = makeComma(user.point)
-                Glide.with(mainActivity).load(user.profileImagePath).circleCrop().into(imageviewProfileImg)
+                if(user.profileImagePath == "") { // 이미지 빈 값일 때
+                    Glide
+                        .with(root)
+                        .load(R.drawable.image_default_profile)
+                        .into(imageviewProfileImg)
+                } else {    // 이미지 값 있을 때
+                    Glide.with(mainActivity)
+                        .load(user.profileImagePath)
+                        .error(R.drawable.image_default_profile)
+                        .circleCrop()
+                        .into(imageviewProfileImg)
+                }
             }
         }
     }
 
     private fun initAdapter() = with(binding) {
-        myPageFriendAdapter = MyPageFriendAdapter().apply {
+        myPageFriendAdapter = MyPageFriendAdapter(list = myFriendList).apply {
             itemClickListener = object : MyPageFriendAdapter.ItemClickListener {
                 override fun itemClick(view: View, position: Int) {
-                    TODO("Not yet implemented")
                 }
 
                 override fun itemLongClick(view: View, position: Int) {
@@ -92,6 +108,20 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(
         }
         linearlayoutPoint.setOnClickListener {
             findNavController().navigate(R.id.action_myPageFragment_to_pointHistoryFragment)
+        }
+    }
+
+    private fun initData() {
+        myPageViewModel.getUserInfo()
+        myPageViewModel.getFriendList()
+    }
+
+    private fun initCollector() {
+        lifecycleScope.launch {
+            myPageViewModel.friendListInfo.collect { value ->
+                myFriendList.clear()
+                myFriendList.addAll(value)
+            }
         }
     }
 }
