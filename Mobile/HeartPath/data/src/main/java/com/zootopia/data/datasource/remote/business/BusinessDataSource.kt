@@ -1,7 +1,7 @@
 package com.zootopia.data.datasource.remote.business
 
-import com.zootopia.data.model.business.request.PostHandLetterRequest
-import com.zootopia.data.model.business.response.BusinessResponse
+import com.zootopia.data.model.letter.request.PostHandLetterRequest
+import com.zootopia.data.model.letter.response.BusinessResponse
 import okhttp3.MultipartBody
 
 interface BusinessDataSource {

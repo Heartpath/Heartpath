@@ -1,4 +1,4 @@
-package com.zootopia.data.model.business.request
+package com.zootopia.data.model.letter.request
 
 data class PostHandLetterRequest (
     val receiverId: String
