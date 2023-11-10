@@ -5,3 +5,4 @@ data class BusinessResponse (
     val message: String,
     val data: Any?
 )
+

@@ -8,4 +8,5 @@ interface UserRepository {
     suspend fun getUserInfo(): UserInfoDto?
     suspend fun getPointInfo(): List<PointDto>?
     suspend fun getFriendList(): List<FriendDto>?
+    suspend fun addFriend(id: String): String
 }
