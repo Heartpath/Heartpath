@@ -1,7 +1,6 @@
 package com.zootopia.userservice.aop;
 
 import com.zootopia.userservice.controller.FriendController;
-import com.zootopia.userservice.controller.PointController;
 import com.zootopia.userservice.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
@@ -21,8 +20,7 @@ public class JWTAspect {
 
     private final JwtProvider jwtProvider;
 
-    @Before("execution(* com.zootopia.userservice.controller.FriendController.*(..)) || " +
-            "execution(* com.zootopia.userservice.controller.PointController.*(..))")
+    @Before("execution(* com.zootopia.userservice.controller.FriendController.*(..))")
     public void beforeControllerMethod(JoinPoint joinPoint) {
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
@@ -31,12 +29,7 @@ public class JWTAspect {
 
         String memberID = jwtProvider.getMemberIDFromToken(accessToken);
 
-        if (joinPoint.getTarget() instanceof FriendController) {
-            FriendController controller = (FriendController) joinPoint.getTarget();
-            controller.setMemberID(memberID);
-        } else {
-            PointController controller = (PointController) joinPoint.getTarget();
-            controller.setMemberID(memberID);
-        }
+        FriendController controller = (FriendController) joinPoint.getTarget();
+        controller.setMemberID(memberID);
     }
 }
