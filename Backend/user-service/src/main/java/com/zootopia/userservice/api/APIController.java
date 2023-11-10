@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-@Tag(name = "회원 관련 정보 조회 API",
+@Tag(name = "서버 통신 API (유저 정보)",
         description = "서버간 통신에서만 이용 가능합니다. <b>Android에서 호출하면 4xx Error 발생합니다.</b>"
 )
 @Slf4j
@@ -158,8 +158,20 @@ public class APIController {
         return jwtProvider.createAccessToken(memberID);
     }
 
+    @Operation(summary = "유저 POINT 갱신")
+    @ApiResponse(
+            responseCode = "200",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = "{\n" +
+                            "    \"status\": 200,\n" +
+                            "    \"message\": \"유저 포인트가 변경되었습니다\",\n" +
+                            "    \"data\": null\n" +
+                            "}")
+            )
+    )
     @PostMapping("/point/{memberID}/{point}")
-    public ResponseEntity<BaseResponse>  renewUserPoint(@PathVariable String memberID, @PathVariable int point) {
+    public ResponseEntity<BaseResponse> renewUserPoint(@PathVariable String memberID, @PathVariable int point) {
         int res = pointService.reviseUserPoint(memberID, point);
 
         int status = 200;

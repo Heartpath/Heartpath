@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,11 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 
+@Tag(name = "유저 관련 정보 조회 API",
+        description = "<b>JWT가 필요한 Method</b> \n" +
+                "1. [GET] /user/mypage (마이페이지)\n" +
+                "2. [PUT] /user/mypage (유저 정보 수정)"
+)
 @Slf4j
 @RestController
 @RequestMapping("/user")
