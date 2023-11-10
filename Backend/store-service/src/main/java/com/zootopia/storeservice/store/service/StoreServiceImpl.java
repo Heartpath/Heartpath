@@ -82,6 +82,7 @@ public class StoreServiceImpl implements StoreService {
 
             if (letterPaper.isPresent()){
                 LetterPaperResDto letterPaperResDto = LetterPaperResDto.builder()
+                        .letterpaperId(letterPaper.get().getId())
                         .name(letterPaper.get().getName())
                         .price(letterPaper.get().getPrice())
                         .description(letterPaper.get().getDescription())
@@ -109,6 +110,7 @@ public class StoreServiceImpl implements StoreService {
                 }
             }
             LetterPaperResDto letterPaperResDto = LetterPaperResDto.builder()
+                    .letterpaperId(letterPaper.getId())
                     .name(letterPaper.getName())
                     .price(letterPaper.getPrice())
                     .description(letterPaper.getDescription())
@@ -186,6 +188,7 @@ public class StoreServiceImpl implements StoreService {
             Optional<CrowTit> crowTit = crowTitRepository.findById(crowTitBook.getCrowTitId());
             if (crowTit.isPresent()){
                 CrowTitResDto crowTitResDto = CrowTitResDto.builder()
+                        .crowTitId(crowTit.get().getId())
                         .name(crowTit.get().getName())
                         .price(crowTit.get().getPrice())
                         .description(crowTit.get().getDescription())
@@ -213,6 +216,7 @@ public class StoreServiceImpl implements StoreService {
                 }
             }
             CrowTitResDto crowTitResDto = CrowTitResDto.builder()
+                    .crowTitId(crowTit.getId())
                     .name(crowTit.getName())
                     .price(crowTit.getPrice())
                     .description(crowTit.getDescription())

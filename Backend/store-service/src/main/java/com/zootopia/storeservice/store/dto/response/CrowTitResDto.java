@@ -6,6 +6,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 public class CrowTitResDto {
+    private int crowTitId;
     private String name;
     private int price;
     private String description;
@@ -13,7 +14,8 @@ public class CrowTitResDto {
     private boolean isOwned;
 
     @Builder
-    public CrowTitResDto(String name, int price, String description, String imagePath, boolean isOwned) {
+    public CrowTitResDto(int crowTitId, String name, int price, String description, String imagePath, boolean isOwned) {
+        this.crowTitId = crowTitId;
         this.name = name;
         this.price = price;
         this.description = description;
