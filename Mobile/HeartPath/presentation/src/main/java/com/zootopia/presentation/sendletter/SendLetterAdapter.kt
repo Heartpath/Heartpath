@@ -4,27 +4,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.zootopia.domain.model.unplacedletter.UnplacedLetterDto
 import com.zootopia.presentation.databinding.ItemSendLetterBinding
 
 // todo : dto 생성
 private const val TAG = "SendLetterAdapter_HeartPath"
-class SendLetterAdapter() : 
-    RecyclerView.Adapter<SendLetterAdapter.SendLetterViewHolder>() {
+class SendLetterAdapter(
+    var unplacedLetterList: MutableList<UnplacedLetterDto> = mutableListOf()
+) : RecyclerView.Adapter<SendLetterAdapter.SendLetterViewHolder>() {
     
     inner class SendLetterViewHolder(val binding: ItemSendLetterBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bindInfo() = with(binding) {
-            textviewReceiveUser.text = "하동혁님이 보낸 편지"
+        fun bindInfo(unplacedLetterDto: UnplacedLetterDto) = with(binding) {
+            textviewReceiveUser.text = "${unplacedLetterDto.receiver}님에게 보낼 편지"
             
             // Click Event
             linearlayoutLetter.setOnClickListener {
-                itemClickListener.itemClick(it, layoutPosition)
+                itemClickListener.itemClick(it, unplacedLetterDto, layoutPosition)
             }
         }
     }
     
     interface ItemClickListener {
-        fun itemClick(view: View, position: Int)
+        fun itemClick(view: View, unplacedLetterDto: UnplacedLetterDto, position: Int)
     }
     lateinit var itemClickListener: ItemClickListener
     
@@ -34,11 +36,15 @@ class SendLetterAdapter() :
         )
     }
     
+    fun submitData(unplacedLetterList: MutableList<UnplacedLetterDto>) {
+        this.unplacedLetterList = unplacedLetterList
+    }
+    
     override fun onBindViewHolder(holder: SendLetterViewHolder, position: Int) {
-        holder.bindInfo()
+        holder.bindInfo(unplacedLetterList[position])
     }
     
     override fun getItemCount(): Int {
-        return 8
+        return unplacedLetterList.size
     }
 }
