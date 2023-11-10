@@ -62,6 +62,9 @@ class WriteLetterViewModel @Inject constructor(
     private val _imageList = MutableStateFlow<MutableList<Uri>>(mutableListOf())
     var imageList: StateFlow<MutableList<Uri>> = _imageList
 
+    private val _isSendSuccess = MutableStateFlow<Boolean>(false)
+    var isSendSuccess: StateFlow<Boolean> = _isSendSuccess
+
     init {
         resetBitmap()
     }
@@ -172,6 +175,10 @@ class WriteLetterViewModel @Inject constructor(
         _imageList.value = newImageList
     }
 
+    fun resetIsSendSuccess(){
+        _isSendSuccess.value = false
+    }
+
     fun saveLetter(contentUri: String, imageList: MutableList<String>) {
 
         getApiResult(
@@ -183,7 +190,7 @@ class WriteLetterViewModel @Inject constructor(
                 )
             },
             success = {
-
+                _isSendSuccess.value = true
             }
         )
     }

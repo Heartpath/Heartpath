@@ -28,6 +28,7 @@
     <string name="select_user_search_notice">검색창에 입력값을 넣어주세요</string>
     <string name="add_letter_image_notice">추가하고 싶은 이미지를 선택해주세요</string>
     <string name="add_letter_image_confirm_button">최종 저장</string>
+    <string name="add_letter_image_write_success">편지가 저장되었습니다.</string>
 
 
     <string name="add_friend_dialog_question">친구로 추가할까요?</string>
