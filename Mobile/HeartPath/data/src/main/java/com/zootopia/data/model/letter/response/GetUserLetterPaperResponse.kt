@@ -1,6 +1,7 @@
 package com.zootopia.data.model.letter.response
 
 import com.google.gson.annotations.SerializedName
+import com.zootopia.domain.model.letter.UserLetterPaperDto
 import com.zootopia.domain.model.user.UserInfoDto
 
 data class GetUserLetterPaperResponse (
@@ -9,5 +10,5 @@ data class GetUserLetterPaperResponse (
     @SerializedName("message")
     val message: String,
     @SerializedName("data")
-    val data: UserInfoDto?,
+    val data: MutableList<UserLetterPaperDto>,
 )

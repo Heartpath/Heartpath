@@ -4,15 +4,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.zootopia.domain.model.letter.UserLetterPaperDto
 import com.zootopia.presentation.databinding.ItemLetterPaperBinding
 
-class LetterPaperViewPagerAdapter(var letterPaperList: MutableList<String>) :
+class LetterPaperViewPagerAdapter(var letterPaperList: MutableList<UserLetterPaperDto>) :
     RecyclerView.Adapter<LetterPaperViewPagerAdapter.PagerViewHolder>() {
 
     inner class PagerViewHolder(var binding: ItemLetterPaperBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun setImage(url: String) {
-            Glide.with(binding.root).load(url).into(binding.imageviewLetterPaperItem)
+        fun setImage(userLetterPaperDto: UserLetterPaperDto) {
+            Glide.with(binding.root).load(userLetterPaperDto.imageUrl).into(binding.imageviewLetterPaperItem)
         }
     }
 

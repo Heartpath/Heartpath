@@ -2,6 +2,7 @@ package com.zootopia.data.datasource.remote.business
 
 import com.zootopia.data.model.letter.request.PostHandLetterRequest
 import com.zootopia.data.model.letter.response.BusinessResponse
+import com.zootopia.data.model.letter.response.GetUserLetterPaperResponse
 import okhttp3.MultipartBody
 
 interface BusinessDataSource {
@@ -10,4 +11,6 @@ interface BusinessDataSource {
         content: MultipartBody.Part,
         files: List<MultipartBody.Part>
     ): BusinessResponse
+
+    suspend fun getUserLetterPaper(): GetUserLetterPaperResponse
 }
