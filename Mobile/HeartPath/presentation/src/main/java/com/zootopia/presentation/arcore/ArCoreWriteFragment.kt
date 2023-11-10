@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.view.isGone
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.ar.core.Anchor
 import com.google.ar.core.Config
@@ -16,6 +17,7 @@ import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentArCoreWriteBinding
+import com.zootopia.presentation.sendletter.SendLetterViewModel
 import com.zootopia.presentation.util.setFullScreen
 import io.github.sceneview.ar.arcore.getUpdatedPlanes
 import io.github.sceneview.ar.getDescription
@@ -36,6 +38,7 @@ class ArCoreWriteFragment :
 
     private lateinit var mainActivity: MainActivity
     private lateinit var currentFrame: Frame
+    private val sendLetterViewModel: SendLetterViewModel by activityViewModels()
 
     var isLoading = false
         set(value) {
@@ -67,6 +70,7 @@ class ArCoreWriteFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        initClickEvent()
     }
 
     fun updateInstructions() {
@@ -76,6 +80,14 @@ class ArCoreWriteFragment :
             "원하는 장소에 편지를 놓아주세요."
         } else {
             null
+        }
+    }
+    
+    private fun initClickEvent() = with(binding) {
+        buttonSendItem.setOnClickListener {
+            sendLetterViewModel.apply {
+                requestSendLetter()
+            }
         }
     }
 
