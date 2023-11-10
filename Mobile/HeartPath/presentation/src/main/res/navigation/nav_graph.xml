@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/loginFragment"
@@ -58,7 +58,11 @@
         android:id="@+id/receiveLetterFragment"
         android:name="com.zootopia.presentation.receiveletter.ReceiveLetterFragment"
         android:label="ReceiveLetterFragment"
-        tools:layout="@layout/fragment_receive_letter" />
+        tools:layout="@layout/fragment_receive_letter" >
+        <action
+            android:id="@+id/action_receiveLetterFragment_to_readLetterFragment"
+            app:destination="@id/readLetterFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/mapFragment"
@@ -177,5 +181,10 @@
         android:name="com.zootopia.presentation.arcore.ArCoreFragment"
         android:label="fragment_ar_core"
         tools:layout="@layout/fragment_ar_core" />
+    <fragment
+        android:id="@+id/readLetterFragment"
+        android:name="com.zootopia.presentation.readletter.ReadLetterFragment"
+        android:label="fragment_read_letter"
+        tools:layout="@layout/fragment_read_letter" />
 
 </navigation>
