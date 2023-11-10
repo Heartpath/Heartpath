@@ -36,6 +36,7 @@ public class UserController {
     private final JwtProvider jwtProvider;
     private final KakaoOAuthService kakaoOAuthService;
 
+    @Operation(summary = "User-Service 통신 테스트")
     @GetMapping("/health_check")
     public String checkServer(HttpServletRequest request) {
         return String.format("200 OK to %s", request.getRemoteAddr());
@@ -124,6 +125,15 @@ public class UserController {
         return ResponseEntity.status(200).body(baseResponse);
     }
 
+    @Operation(summary = "AccessToken 재발급", description = "RefreshToken이 필요합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{\n" +
+                            "        \"status\": 200,\n" +
+                            "        \"message\": \"AccessToken이 재발급되었습니다..\",\n" +
+                            "        \"data\": \"reissuedAccessToken\"\n" +
+                            "}\n"))),
+    })
     @GetMapping("/token")
     public ResponseEntity<BaseResponse> reissueAccessToken(@RequestParam(name = "refreshToken") String refreshToken) {
 
@@ -142,6 +152,21 @@ public class UserController {
         return ResponseEntity.status(status).body(baseResponse);
     }
 
+    @Operation(summary = "마이페이지 정보 API", description = "JWT 토큰이 필요합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{\n" +
+                            "    \"status\": 200,\n" +
+                            "    \"message\": \"메인 페이지의 유저 정보\",\n" +
+                            "    \"data\": {\n" +
+                            "        \"memberID\": \"\",\n" +
+                            "        \"nickname\": \"\",\n" +
+                            "        \"profileImagePath\": \"\",\n" +
+                            "        \"characterImagePath\": \"\",\n" +
+                            "        \"point\": \"\"\n" +
+                            "    }\n" +
+                            "}"))),
+    })
     @GetMapping("/mypage")
     public ResponseEntity<BaseResponse> getUserInfo(HttpServletRequest request) {
 
@@ -150,9 +175,32 @@ public class UserController {
 
         MypageDTO mypageDTO = userService.loadUserInfo(memberID);
 
-        return ResponseEntity.status(200).body(new BaseResponse(HttpStatus.OK.value(), "유저 불러오기", mypageDTO));
+        return ResponseEntity.status(200).body(new BaseResponse(HttpStatus.OK.value(), "메인 페이지의 유저 정보", mypageDTO));
     }
 
+    @Operation(
+            summary = "유저 ID로 유저 검색",
+            description = "JWT 토큰이 필요없습니다. \n 검색한 유저 ID와 유사한 유저 정보를 <b>'limit 개수'만큼 반환</b>합니다." +
+                    "{\n" +
+                    "  \"id\": \"검색할 유저 ID\",\n" +
+                    "  \"limit\": \"반환할 유저 정보 개수\"\n" +
+                    "}"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "[\n" +
+                            "    {\n" +
+                            "        \"memberID\": \"\",\n" +
+                            "        \"nickname\": \"\",\n" +
+                            "        \"profileImagePath\": \"\"\n" +
+                            "    },\n" +
+                            "    {\n" +
+                            "        \"memberID\": \"\",\n" +
+                            "        \"nickname\": \"\",\n" +
+                            "        \"profileImagePath\": \"\"\n" +
+                            "    }\n" +
+                            "]"))),
+    })
     @GetMapping("/search")
     public List<UserSearchDTO> searchUserByID(
             @RequestParam(name = "id") String searchMemberID,
