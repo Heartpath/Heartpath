@@ -70,7 +70,7 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(
                 textviewPoint.text = makeComma(user.point)
                 if(user.profileImagePath == "") { // 이미지 빈 값일 때
                     Glide
-                        .with(root)
+                        .with(mainActivity)
                         .load(R.drawable.image_default_profile)
                         .into(imageviewProfileImg)
                 } else {    // 이미지 값 있을 때

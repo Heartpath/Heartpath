@@ -6,20 +6,30 @@ import android.view.ViewGroup
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.zootopia.domain.model.user.FriendDto
 import com.zootopia.presentation.R
 import com.zootopia.presentation.databinding.ItemSearchedFriendBinding
 import com.zootopia.presentation.util.clickAnimation
 
-class SearchFriendAdapter():
+class SearchFriendAdapter(val list: MutableList<FriendDto>):
 RecyclerView.Adapter<SearchFriendAdapter.FriendSearchViewHolder>()
 {
     inner class FriendSearchViewHolder(val binding: ItemSearchedFriendBinding) :
     RecyclerView.ViewHolder(binding.root) {
-        fun bindInfo() = with(binding) {
-            Glide.with(root).load(R.drawable.image_default_profile)
-                .into(textviewFriendSearchFriendImg)
-            textviewFriendSearchFriendName.text = "김뱁새 친구"
-            textviewFriendSearchFriendId.text = "@iam_babsae_friend"
+        fun bindInfo(friend: FriendDto) = with(binding) {
+            textviewFriendSearchFriendName.text = friend.nickname
+            textviewFriendSearchFriendId.text = friend.memberId
+            if(friend.profileImage == "") { // 이미지 없는 경우
+                Glide.with(root)
+                    .load(R.drawable.image_default_profile)
+                    .into(textviewFriendSearchFriendImg)
+            } else {    // 이미지 있는 경우
+                Glide.with(root)
+                    .load(friend.profileImage)
+                    .error(R.drawable.image_default_profile)
+                    .circleCrop()
+                    .into(textviewFriendSearchFriendImg)
+            }
             buttonAddFriend.setOnClickListener {
                 this@FriendSearchViewHolder.itemView.findViewTreeLifecycleOwner()
                     ?.let { it1 -> it.clickAnimation(lifeCycleOwner = it1) }
@@ -39,11 +49,11 @@ RecyclerView.Adapter<SearchFriendAdapter.FriendSearchViewHolder>()
     }
 
     override fun getItemCount(): Int {
-        return 10
+        return list.size
     }
 
     override fun onBindViewHolder(holder: FriendSearchViewHolder, position: Int) {
-        holder.bindInfo()
+        holder.bindInfo(list[position])
     }
 
     companion object {

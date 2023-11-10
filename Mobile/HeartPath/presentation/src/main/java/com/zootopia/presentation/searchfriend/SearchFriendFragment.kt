@@ -12,6 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.zootopia.domain.model.user.FriendDto
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
@@ -25,6 +26,7 @@ class SearchFriendFragment : BaseFragment<FragmentFriendSearchBinding>(
     private lateinit var mainActivity: MainActivity
     private lateinit var friendSearchAdapter: SearchFriendAdapter
     private val searchFriendViewModel: SearchFriendViewModel by activityViewModels()
+    private val searchedFriendList: MutableList<FriendDto> = mutableListOf()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -32,6 +34,8 @@ class SearchFriendFragment : BaseFragment<FragmentFriendSearchBinding>(
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initData()
+        initCollect()
         initView()
         initAdapter()
         initClickEvent()
@@ -105,10 +109,11 @@ class SearchFriendFragment : BaseFragment<FragmentFriendSearchBinding>(
     }
 
     private fun initAdapter() = with(binding) {
-        friendSearchAdapter = SearchFriendAdapter().apply {
+        friendSearchAdapter = SearchFriendAdapter(searchedFriendList).apply {
             itemClickListener = object : SearchFriendAdapter.ItemClickListener {
                 override fun itemClick(view: View, position: Int) {
                     Log.d(TAG, "itemClick_fragment: $position")
+                    searchFriendViewModel.setAddingFriendId(friendId = searchedFriendList[position].memberId)   // 해당 친구 id 값 저장
                     SearchFriendAddFriendDialog(requireContext()).show(childFragmentManager, TAG)
                 }
             }
@@ -141,6 +146,18 @@ class SearchFriendFragment : BaseFragment<FragmentFriendSearchBinding>(
         lifecycleScope.launch {
             searchFriendViewModel.searchIdValue.collect {value ->
                 if(value.isNotEmpty()) imageviewInputCancelButton.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun initData() {
+    }
+
+    private fun initCollect() {
+        lifecycleScope.launch {
+            searchFriendViewModel.searchedFriendInfoList.collect {result ->
+                searchedFriendList.clear()
+                searchedFriendList.addAll(result)
             }
         }
     }
