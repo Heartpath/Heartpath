@@ -32,4 +32,18 @@ public class MemberService {
 
         return res;
     }
+
+    public String pointToMember(String memberId, int point){
+        WebClient webClient = WebClient.builder().build();
+
+        return webClient.post()
+                .uri(uriBuilder -> uriBuilder
+                        .path("http://3.34.86.93.api/")
+                        .queryParam("{memberId}", memberId)
+                        .queryParam("{point}", point)
+                        .build())
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
 }

@@ -3,8 +3,8 @@ package com.zootopia.storeservice.store.service;
 import com.zootopia.storeservice.common.error.code.ErrorCode;
 import com.zootopia.storeservice.common.error.exception.BadRequestException;
 //import com.zootopia.storeservice.common.s3.S3Uploader;
-import com.zootopia.storeservice.store.dto.request.CharacterBuyReqDto;
-import com.zootopia.storeservice.store.dto.request.LetterPaperBuyReqDto;
+import com.zootopia.storeservice.store.dto.request.CrowTitReqDto;
+import com.zootopia.storeservice.store.dto.request.LetterPaperReqDto;
 import com.zootopia.storeservice.store.dto.response.CrowTitResDto;
 import com.zootopia.storeservice.store.dto.response.LetterPaperResDto;
 import com.zootopia.storeservice.store.entity.*;
@@ -31,11 +31,13 @@ public class StoreServiceImpl implements StoreService {
     private final CrowTitRepository crowTitRepository;
     private final CrowTitBookRepository crowTitBookRepository;
     private final PointRepository pointRepository;
+    private final MemberService memberService;
 
 //    private final S3Uploader s3Uploader;
 
-    public void buyLetterPaper(String memberId, LetterPaperBuyReqDto letterPaperBuyReqDto){
-        Optional<LetterPaper> letterPaperOptional = letterPaperRepository.findById(letterPaperBuyReqDto.getLetterpaperId());
+    public void buyLetterPaper(String memberId, LetterPaperReqDto letterPaperBuyReqDto){
+        LetterPaperBookId letterPaperBookId = letterPaperBuyReqDto.getLetterpaperId();
+        Optional<LetterPaper> letterPaperOptional = letterPaperRepository.findById(letterPaperBookId);
         log.warn(String.valueOf(letterPaperBuyReqDto.getLetterpaperId()));
         log.warn(String.valueOf(letterPaperOptional));
         if (letterPaperOptional.isPresent()) {
@@ -46,7 +48,8 @@ public class StoreServiceImpl implements StoreService {
             pointUsage.sort(Comparator.comparing(Point::getCreatedDate).reversed());
             // 가장 최근의 포인트 사용 내역의 balance 가져오기
             int lastBalance = pointUsage.isEmpty() ? 0 : pointUsage.get(0).getBalance();
-            int currentBalance = lastBalance + letterPaper.getPrice();
+            int currentBalance = lastBalance - letterPaper.getPrice();
+            memberService.pointToMember(memberId, currentBalance);
 
             LetterPaperBook letterPaperBook = LetterPaperBook.builder()
                     .letterPaperId(letterPaper.getId())
@@ -98,14 +101,15 @@ public class StoreServiceImpl implements StoreService {
     }
 
 
-    public LetterPaper getLetterPaperDetail(Long letterpaperId){
+    public LetterPaper getLetterPaperDetail(int letterpaperId){
         LetterPaper letterPaper = letterPaperRepository.findById(letterpaperId)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTS_LETTERPAPER));
         return letterPaper;
     }
 
-    public void buyCrowTit(String memberId, CharacterBuyReqDto characterBuyReqDto){
-        CrowTit crowTit = crowTitRepository.findById(characterBuyReqDto.getCrowtitId())
+    public void buyCrowTit(String memberId, CrowTitReqDto crowTitBuyReqDto){
+        int crowTitBookId = crowTitBuyReqDto.getCrowTitId();
+        CrowTit crowTit = crowTitRepository.findById(crowTitBookId)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTS_CROWTIT));
 
         log.warn(String.valueOf(crowTit));
@@ -115,10 +119,11 @@ public class StoreServiceImpl implements StoreService {
         pointUsage.sort(Comparator.comparing(Point::getCreatedDate).reversed());
         // 가장 최근의 포인트 사용 내역의 balance 가져오기
         int lastBalance = pointUsage.isEmpty() ? 0 : pointUsage.get(0).getBalance();
-        int currentBalance = lastBalance+crowTit.getPrice();
+        int currentBalance = lastBalance - crowTit.getPrice();
+        memberService.pointToMember(memberId, currentBalance);
 
         CrowTitBook crowTitBook = CrowTitBook.builder()
-                .crowtitId(crowTit.getId())
+                .crowTitId(crowTit.getId())
                 .memberId(memberId)
                 .isMain(false)
                 .acquisitionDate(LocalDateTime.now())
@@ -136,6 +141,22 @@ public class StoreServiceImpl implements StoreService {
 
     }
 
+    public void changeMainCrowTit(String memberId, CrowTitReqDto crowTitChangeReqDto){
+        int crowTitBookId = crowTitChangeReqDto.getCrowTitId();
+        CrowTitBook crowTit = crowTitBookRepository.findByCrowTitIdAndMemberId(crowTitBookId, memberId)
+                .orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTS_CROWTIT));
+
+        Optional<CrowTitBook> oldCrowTIt = crowTitBookRepository.findByMemberIdAndIsMain(memberId, true);
+
+        oldCrowTIt.ifPresent(oldCrowTit -> {
+            oldCrowTit.setMain(false);
+            crowTitBookRepository.save(oldCrowTit);
+        });
+
+        crowTit.setMain(true);
+        crowTitBookRepository.save(crowTit);
+    }
+
     public List<CrowTitResDto> getCrowTitListAll(String memberId){
         List<CrowTit> crowTitList = crowTitRepository.findAll();
         List<CrowTitBook> crowTitBookList = crowTitBookRepository.findAllByMemberId(memberId);
@@ -145,7 +166,7 @@ public class StoreServiceImpl implements StoreService {
         for (CrowTit crowTit:crowTitList){
             boolean isOwned = false;
             for (CrowTitBook crowTitBook:crowTitBookList){
-                if (crowTit.getId()==crowTitBook.getCrowtitId()){
+                if (crowTit.getId()==crowTitBook.getCrowTitId()){
                     isOwned=true;
                     break;
                 }
@@ -164,7 +185,7 @@ public class StoreServiceImpl implements StoreService {
 
     }
 
-    public CrowTit getCrowTitInfo(Long crowTit_id){
+    public CrowTit getCrowTitInfo(int crowTit_id){
         CrowTit crowTit = crowTitRepository.findById(crowTit_id)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTS_CROWTIT));
         return crowTit;

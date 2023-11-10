@@ -19,7 +19,7 @@ public class LetterPaperBook {
 
     @Id
     @Column(name = "LETTER_PAPER_ID")
-    private Long letterPaperId;
+    private int letterPaperId;
 
     @Id
     @Column(name = "MEMBER_ID")
