@@ -2,7 +2,6 @@ package com.zootopia.userservice.controller;
 
 import com.zootopia.userservice.common.BaseResponse;
 import com.zootopia.userservice.dto.FriendInfoDTO;
-import com.zootopia.userservice.dto.OpponentIDDTO;
 import com.zootopia.userservice.service.FriendService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,10 +37,9 @@ public class FriendController {
         return ResponseEntity.status(200).body(baseResponse);
     }
 
-    @PostMapping("/friend")
-    public ResponseEntity<BaseResponse> addFriend(@RequestBody OpponentIDDTO opponentIDDTO) {
+    @PostMapping("/friend/{opponentID}")
+    public ResponseEntity<BaseResponse> addFriend(@PathVariable(name = "opponentID") String opponentID) {
 
-        String opponentID = opponentIDDTO.getOpponentID();
         BaseResponse baseResponse = friendService.addFriend(memberID, opponentID);
         return ResponseEntity.status(200).body(baseResponse);
     }
