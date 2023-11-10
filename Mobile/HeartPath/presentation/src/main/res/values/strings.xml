@@ -24,6 +24,11 @@
     <string name="select_letter_type_hand_write">손으로 편지쓰기</string>
     <string name="select_letter_type_typing_write">타이핑으로 편지쓰기</string>
     <string name="select_letter_paper_button">편지지 선택</string>
+    <string name="select_user_text">편지 보낼 사람을 검색하고 선택하세요</string>
+    <string name="select_user_search_notice">검색창에 입력값을 넣어주세요</string>
+    <string name="add_letter_image_notice">추가하고 싶은 이미지를 추가해주세요</string>
+    <string name="add_letter_image_confirm_button">최종 저장</string>
+
 
     <string name="add_friend_dialog_question">친구로 추가할까요?</string>
     <string name="delete_friend_dialog_question">친구에서 삭제할까요?</string>
@@ -43,4 +48,42 @@
     <string name="on">ON</string>
     <string name="off">OFF</string>
     <string name="done">완료</string>
+    <string name="add_friend_letter_dialog_content">하참새님은 김뱁새님의 친구가 아닙니다.</string>
+    <string name="loading_message">잠시만 기다려 주세요!</string>
+
+    <!--    toolbar string values   -->
+    <string name="toolbar_default_title">Appbar</string>
+    <string name="toolbar_friend_search_title">친구 추가</string>
+    <string name="toolbar_point_history_title">포인트 정보</string>
+    <string name="toolbar_my_page_title">마이페이지</string>
+    <string name="toolbar_setting_title">설정</string>
+    <string name="toolbar_select_letter_type_title">편지 쓰기</string>
+    <string name="toolbar_select_letter_paper_title">편지지 선택</string>
+    <string name="toolbar_hand_write_title">손편지 쓰기</string>
+    <string name="toolbar_typing_title">편지 쓰기</string>
+    <string name="toolbar_letter_storage_title">보내지 않은 편지</string>
+    <string name="toolbar_receive_letter_title">내 편지 보관함</string>
+    <string name="toolbar_read_letter_title">편지 읽기</string>
+    <string name="toolbar_map_title">지도</string>
+    <string name="toolbar_put_letter_title">편지 배치</string>
+    <string name="toolbar_store_title">상점</string>
+    <string name="toolbar_character_encyclopedia_title">캐릭터 도감</string>
+
+    <string name="friend_edit">친구 수정</string>
+    <string name="friend_delete">삭제하기</string>
+    <string name="friend_report">신고하기</string>
+
+    <!--  FCM  -->
+    <string name="default_notification_channel_id">heart_path</string>
+    <string name="default_notification_channel_name">HeartPath</string>
+
+    <!--    toast message   -->
+    <string name="toast_message_signup_check_id_plz">아이디 중복 확인은 필수입니다.</string>
+    <string name="toast_message_signup_check_id_enter_letter">빈 값으로 설정할 수 없습니다.</string>
+    <string name="toast_message_signup_check_id_can_use">사용할 수 있는 아이디입니다.</string>
+    <string name="toast_message_signup_check_id_cant_use">사용할 수 없는 아이디입니다.</string>
+    <string name="toast_message_signup_done">회원가입이 완료되었습니다.</string>
+    <string name="toast_message_signup_fail">회원가입 실패했습니다.</string>
+
+    <string name="signup_check_id_done">확인완료</string>
 </resources>

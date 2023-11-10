@@ -7,6 +7,9 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("dagger.hilt.android.plugin")
     id("kotlin-kapt")
+
+    // Add the Google services Gradle plugin
+    id("com.google.gms.google-services")
 }
 
 val localProperties = Properties()
@@ -32,8 +35,7 @@ android {
         buildConfigField("String", "NAVER_MAP_CLIENT_ID", "\"" + properties["naver_map_client_id"] + "\"")
         addManifestPlaceholders(mutableMapOf("NAVER_MAP_CLIENT_ID" to localProperties["naver_map_client_id"]!!))
         buildConfigField("String", "KAKAO_NATIVE_APP_KEY", localProperties.getProperty("kakao_native_app_key"))
-        addManifestPlaceholders(mutableMapOf("KAKAO_NATIVE_APP_KEY" to localProperties["kakao_native_app_key"]!!))
-
+        addManifestPlaceholders(mutableMapOf("KAKAO_NATIVE_APP_KEY" to localProperties["kakao_native_app_key_manifest"]!!))
     }
 
     buildTypes {
@@ -91,4 +93,10 @@ dependencies {
     
     // multidex
     implementation("com.android.support:multidex:1.0.3")
+
+    // splash screen
+    implementation("androidx.core:core-splashscreen:1.0.0")
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
 }

@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/custom_switch_track_off" android:state_checked="false" />
-    <item android:drawable="@drawable/custom_switch_track_on" android:state_checked="true" />
+    <item android:state_checked="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/_45sdp"/>
+
+            <solid android:color="@color/GrayLightBlue"/>
+        </shape>
+    </item>
+
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/_45sdp"/>
+
+            <solid android:color="@color/Gray"/>
+
+            <stroke android:width="0.1dp" android:color="@color/LightestGray"/>
+        </shape>
+    </item>
 </selector>
