@@ -101,7 +101,11 @@ dependencies {
     implementation("com.android.support:multidex:1.0.3")
 
     // Kakao
-    implementation("com.kakao.sdk:v2-all:2.14.0")
+    implementation("com.kakao.sdk:v2-all:2.15.0")
+    implementation("com.kakao.sdk:v2-user:2.15.0")
+    implementation ("com.kakao.sdk:v2-talk:2.15.0") // 친구, 메시지(카카오톡)
+    implementation ("com.kakao.sdk:v2-share:2.15.0") // 메시지(카카오톡 공유)
+    implementation ("com.kakao.sdk:v2-friend:2.15.0") // 카카오톡 소셜 피커, 리소스 번들 파일 포함
 
     // SSP
     implementation("com.intuit.ssp:ssp-android:1.1.0")
@@ -121,4 +125,7 @@ dependencies {
     // Add the dependency for the Firebase SDK for Google Analytics
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-messaging-ktx")
+
+    // scale image view
+    implementation("com.github.chrisbanes:PhotoView:2.3.0")
 }

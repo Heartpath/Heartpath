@@ -42,6 +42,7 @@ class ReceiveLetterFragment :
             itemClickListener = object : ReceiveLetterAdapter.ItemClickListener {
                 override fun itemClick(view: View, position: Int) {
                     Log.d(TAG, "itemClick: 편지 리스트 클릭됨 $position")
+                    findNavController().navigate(R.id.action_receiveLetterFragment_to_readLetterFragment)
                 }
             }
         }
