@@ -1,6 +1,7 @@
 package com.zootopia.presentation.writeletter.addletterimage
 
 import android.content.Context
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -19,6 +21,7 @@ import com.zootopia.presentation.MainViewModel
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentAddLetterImageBinding
+import com.zootopia.presentation.util.getImages
 import com.zootopia.presentation.util.getRealPathFromUri
 import com.zootopia.presentation.util.hasPermissions
 import com.zootopia.presentation.util.requestPermissionsOnClick
@@ -37,6 +40,8 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
     private val mainViewModel: MainViewModel by activityViewModels()
     private lateinit var navController: NavController
     private val writeLetterViewModel: WriteLetterViewModel by activityViewModels()
+    private lateinit var addLetterImageAdapter: AddLetterImageAdapter
+    private var imageList: MutableList<Uri> = mutableListOf()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -47,8 +52,24 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
 
+        initRecyclerView()
         initCollecter()
         initClickListener()
+    }
+
+    private fun initRecyclerView() = with(binding) {
+        addLetterImageAdapter = AddLetterImageAdapter(imageList)
+        addLetterImageAdapter.deleteClickListener =
+            object : AddLetterImageAdapter.DeleteClickListener {
+                override fun deleteClick(index: Int) {
+                    TODO("삭제 기능 넣을것")
+                }
+            }
+
+        recyclerviewAddImage.apply {
+            adapter = addLetterImageAdapter
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        }
     }
 
     private fun initCollecter() = with(binding) {
@@ -59,6 +80,13 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
                     .diskCacheStrategy(DiskCacheStrategy.NONE) // 디스크 캐시를 사용하지 않도록 설정 (선택사항)
                     .apply(RequestOptions.bitmapTransform(RoundedCorners(50)))
                     .into(binding.imageviewLetterPaperConfirm) // ImageView에 설정합니다.
+            }
+        }
+        lifecycleScope.launch {
+            writeLetterViewModel.imageList.collectLatest {
+                imageList.clear()
+                imageList.addAll(it)
+                addLetterImageAdapter.notifyDataSetChanged()
             }
         }
     }
@@ -85,7 +113,8 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
 
             if (mainActivity.hasPermissions(permission)) {
                 //퍼미션 받은 경우
-                Toast.makeText(mainActivity, "ok", Toast.LENGTH_LONG).show()
+                val imageList = getImages(mainActivity)
+
             } else {
                 //퍼미션 없는 경우
                 requestPermissionsOnClick(

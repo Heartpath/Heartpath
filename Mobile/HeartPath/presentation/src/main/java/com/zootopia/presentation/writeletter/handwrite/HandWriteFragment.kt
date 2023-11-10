@@ -23,6 +23,7 @@ import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentHandWriteBinding
+import com.zootopia.presentation.util.viewToBitmap
 import com.zootopia.presentation.writeletter.WriteLetterViewModel
 import kotlinx.coroutines.launch
 
@@ -148,13 +149,6 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
 
             dp * (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
         }
-    }
-
-    private fun viewToBitmap(view: View): Bitmap {
-        val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        view.draw(canvas)
-        return bitmap
     }
 
     override fun onDestroy() {
