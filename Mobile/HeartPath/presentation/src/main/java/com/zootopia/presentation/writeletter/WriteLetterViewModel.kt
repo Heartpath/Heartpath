@@ -1,6 +1,7 @@
 package com.zootopia.presentation.writeletter
 
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.zootopia.domain.model.user.UserDto
 import com.zootopia.domain.model.writeletter.HandLetterRequestDto
@@ -57,6 +58,9 @@ class WriteLetterViewModel @Inject constructor(
 
     private val _penBitmap = MutableStateFlow<Bitmap?>(null)
     var penBitmap: StateFlow<Bitmap?> = _penBitmap
+
+    private val _imageList = MutableStateFlow<MutableList<Uri>>(mutableListOf())
+    var imageList: StateFlow<MutableList<Uri>> = _imageList
 
     init {
         resetBitmap()
@@ -142,6 +146,12 @@ class WriteLetterViewModel @Inject constructor(
 
     fun setPenBitmap(bitmap: Bitmap){
         _penBitmap.value = bitmap
+    }
+
+    fun setImageList(list: MutableList<Uri>){
+        viewModelScope.launch {
+            _imageList.value = list
+        }
     }
 
     fun saveLetter(contentUri: String, imageList: MutableList<String>) {
