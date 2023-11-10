@@ -1,6 +1,7 @@
 package com.zootopia.presentation.writeletter
 
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.zootopia.domain.model.user.UserDto
 import com.zootopia.domain.model.writeletter.HandLetterRequestDto
@@ -49,6 +50,27 @@ class WriteLetterViewModel @Inject constructor(
     private val _drawingBitmap = MutableStateFlow<Bitmap?>(null)
     val drawingBitmap: StateFlow<Bitmap?> = _drawingBitmap
 
+    private val _letterPaperWidth = MutableStateFlow<Float>(0F)
+    val letterPaperWith = _letterPaperWidth
+
+    private val _letterPaperHeight = MutableStateFlow<Float>(0F)
+    val letterPaperHeight = _letterPaperHeight
+
+    private val _penBitmap = MutableStateFlow<Bitmap?>(null)
+    var penBitmap: StateFlow<Bitmap?> = _penBitmap
+
+    private val _imageList = MutableStateFlow<MutableList<Uri>>(mutableListOf())
+    var imageList: StateFlow<MutableList<Uri>> = _imageList
+
+    init {
+        resetBitmap()
+    }
+
+    fun resetBitmap(){
+        _drawingBitmap.value = null
+        _penBitmap.value = null
+    }
+
     fun setSelectedLetterPaperUrl(url: String) {
         viewModelScope.launch {
             _selectedLetterPaperUrl.value = url
@@ -64,6 +86,13 @@ class WriteLetterViewModel @Inject constructor(
     fun setEraserState(isEraserSelected: Boolean) {
         viewModelScope.launch {
             _isEraserSelected.value = isEraserSelected
+        }
+    }
+
+    fun setLetterPaperSize(width: Float, height: Float){
+        viewModelScope.launch {
+            _letterPaperWidth.value = width
+            _letterPaperHeight.value = height
         }
     }
 
@@ -113,6 +142,16 @@ class WriteLetterViewModel @Inject constructor(
 
     fun setDrawingBitmap(bitmap: Bitmap) {
         _drawingBitmap.value = bitmap
+    }
+
+    fun setPenBitmap(bitmap: Bitmap){
+        _penBitmap.value = bitmap
+    }
+
+    fun setImageList(list: MutableList<Uri>){
+        viewModelScope.launch {
+            _imageList.value = list
+        }
     }
 
     fun saveLetter(contentUri: String, imageList: MutableList<String>) {
