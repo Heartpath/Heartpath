@@ -38,6 +38,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         initNavHost()
         initCheckPermission()
         initCollect()
+        initCheck()
 
 //        initAppbar()
 
@@ -54,13 +55,29 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
     private fun initNavHost() {
+
+        val navHostFragmentManager =
+            supportFragmentManager.findFragmentById(R.id.main_container) as NavHostFragment
+        navController = navHostFragmentManager.navController
+//            navGraph = navController.graph
+//            initCheck()
+        val inflater = navHostFragmentManager.navController.navInflater
+        val graph = inflater.inflate(R.navigation.nav_graph)
         lifecycleScope.launch {
-            val navHostFragmentManager =
-                supportFragmentManager.findFragmentById(R.id.main_container) as NavHostFragment
-            navController = navHostFragmentManager.navController
-            navGraph = navController.graph
-            initCheck()
+            mainViewModel.accessToken.collect { value ->
+                Log.d(TAG, "initCheck: access token $value")
+                if (value != "") {
+//                    graph.setStartDestination(R.id.homeFragment)
+                    navController.currentDestination?.let { it1 -> navController.popBackStack(it1.id, true) }   // 백스택 지움
+                    navController.navigate(R.id.homeFragment)
+
+                } else {
+//                    graph.setStartDestination(R.id.loginFragment)
+                    navController.navigate(R.id.loginFragment)
+                }
+            }
         }
+
     }
 
     // 초기 권한 요청
@@ -115,7 +132,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     // 코틀린의 전역변수
     companion object {
         const val CAMERA_PERMISSION_REJECTED = android.Manifest.permission.CAMERA // 카메라
-        const val GALLERY_PERMISSION_REJECTED = android.Manifest.permission.READ_EXTERNAL_STORAGE // 갤러리
+        const val GALLERY_PERMISSION_REJECTED =
+            android.Manifest.permission.READ_EXTERNAL_STORAGE // 갤러리
         const val IMAGE_PERMISSION_REJECTED = android.Manifest.permission.READ_MEDIA_IMAGES
         val PERMISSION_LIST_UNDER32 = arrayOf(
             CAMERA_PERMISSION_REJECTED,
@@ -158,16 +176,5 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     private fun initCheck() {
         mainViewModel.getAccessToken()
-        lifecycleScope.launch {
-            mainViewModel.accessToken.collect {value ->
-                Log.d(TAG, "initCheck: access token $value")
-                if(value != "") {
-                    navGraph.setStartDestination(R.id.homeFragment)
-                } else {
-                    navGraph.setStartDestination(R.id.loginFragment)
-                }
-                navController.graph = navGraph
-            }
-        }
     }
 }
