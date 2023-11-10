@@ -8,6 +8,7 @@ import com.zootopia.data.model.login.request.LoginRequest
 import com.zootopia.data.model.login.request.SignupRequest
 import com.zootopia.data.model.login.response.CheckIdResponse
 import com.zootopia.data.model.login.response.LoginResponse
+import com.zootopia.data.model.user.response.FriendListResponse
 import com.zootopia.data.model.user.response.PointInfoResponse
 import com.zootopia.data.model.user.response.UserInfoResponse
 import retrofit2.Response
@@ -67,5 +68,15 @@ interface BusinessService {
     // 사용자 포인트 적립
     @POST("/user/point")
     suspend fun earnedPoint()
+
+    // 친구 목록 조회
+    @GET("/user/friend")
+    suspend fun getFriendList(): Response<FriendListResponse>
+
+    // 친구 추가
+    @POST("/user/friend")
+    suspend fun addFriend(
+
+    ): Response<MessageResponse>
 
 }
