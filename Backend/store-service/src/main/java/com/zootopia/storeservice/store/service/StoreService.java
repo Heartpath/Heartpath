@@ -16,16 +16,14 @@ public interface StoreService {
 
     void buyLetterPaper(String memberId, LetterPaperReqDto letterPaperBuyReqDto);
     List<LetterPaperResDto> getLetterPaperAll(String memberId);
-
-
+    List<LetterPaperResDto> getLetterPaper(String memberId);
     LetterPaper getLetterPaperDetail(int letterpaperId);
 
     void buyCrowTit(String memberId, CrowTitReqDto crowTitReqDto);
     void changeMainCrowTit(String memberId, CrowTitReqDto crowTitChangeReqDto);
-
     CrowTit getCrowTitInfo(int crowTitId);
-
     List<CrowTitResDto> getCrowTitListAll(String memberId);
+    List<CrowTitResDto> getCrowTitList(String memberId);
 
 //    void upload(CrowTitReqDto crowTitReqDto, List<MultipartFile> files);
 

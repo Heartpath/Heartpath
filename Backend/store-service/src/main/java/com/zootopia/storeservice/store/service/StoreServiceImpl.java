@@ -72,6 +72,27 @@ public class StoreServiceImpl implements StoreService {
         }
 
     }
+    public List<LetterPaperResDto> getLetterPaper(String memberId){
+        List<LetterPaperBook> letterPaperBookList = letterPaperBookRepository.findAllByMemberId(memberId);
+
+        List<LetterPaperResDto> result = new ArrayList<>();
+
+        for (LetterPaperBook letterPaperBook:letterPaperBookList){
+            Optional<LetterPaper> letterPaper = letterPaperRepository.findById(letterPaperBook.getLetterPaperId());
+
+            if (letterPaper.isPresent()){
+                LetterPaperResDto letterPaperResDto = LetterPaperResDto.builder()
+                        .name(letterPaper.get().getName())
+                        .price(letterPaper.get().getPrice())
+                        .description(letterPaper.get().getDescription())
+                        .imagePath(letterPaper.get().getImagePath())
+                        .isOwned(true)
+                        .build();
+                result.add(letterPaperResDto);
+            }
+        }
+        return result;
+    }
 
     public List<LetterPaperResDto> getLetterPaperAll(String memberId){
         List<LetterPaper> letterPaperList = letterPaperRepository.findAll();
@@ -155,6 +176,26 @@ public class StoreServiceImpl implements StoreService {
 
         crowTit.setMain(true);
         crowTitBookRepository.save(crowTit);
+    }
+
+    public List<CrowTitResDto> getCrowTitList(String memberId){
+        List<CrowTitBook> crowTitBookList = crowTitBookRepository.findAllByMemberId(memberId);
+        List<CrowTitResDto> result = new ArrayList<>();
+
+        for (CrowTitBook crowTitBook:crowTitBookList){
+            Optional<CrowTit> crowTit = crowTitRepository.findById(crowTitBook.getCrowTitId());
+            if (crowTit.isPresent()){
+                CrowTitResDto crowTitResDto = CrowTitResDto.builder()
+                        .name(crowTit.get().getName())
+                        .price(crowTit.get().getPrice())
+                        .description(crowTit.get().getDescription())
+                        .imagePath(crowTit.get().getImagePath())
+                        .isOwned(true)
+                        .build();
+                result.add(crowTitResDto);
+            }
+        }
+        return result;
     }
 
     public List<CrowTitResDto> getCrowTitListAll(String memberId){
