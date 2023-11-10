@@ -9,7 +9,10 @@ import com.zootopia.userservice.repository.RedisRepository;
 import com.zootopia.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -56,9 +59,21 @@ public class UserServiceImpl implements UserService {
                 .build();
         log.info("save user: {}", user);
 
+        // 유저 정보 저장
         String memberID = user.getMemberID();
         userRepository.save(user);
 
+        // 기본 캐릭터 정보 저장
+        final String URL = "http://3.37.181.29/api/default/".concat(memberID);
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.exchange(
+                URL,
+                HttpMethod.POST,
+                null,
+                String.class
+        );
+
+        // 토큰 발행
         String accessToken = jwtProvider.createAccessToken(memberID);
         String refreshToken = jwtProvider.createRefreshToken(memberID);
 
