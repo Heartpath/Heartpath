@@ -6,6 +6,7 @@ import com.zootopia.userservice.dto.UserInfoDTO;
 import com.zootopia.userservice.exception.FriendException;
 import com.zootopia.userservice.jwt.JwtProvider;
 import com.zootopia.userservice.service.APIService;
+import com.zootopia.userservice.service.PointService;
 import com.zootopia.userservice.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,6 +34,7 @@ public class APIController {
 
     private final APIService apiService;
     private final JwtProvider jwtProvider;
+    private final PointService pointService;
 
     @Operation(summary = "JWT로 멤버 정보 반환")
     @ApiResponse(
@@ -154,5 +156,21 @@ public class APIController {
     @GetMapping("/token/{memberID}")
     public String getTmpToken(@PathVariable String memberID) {
         return jwtProvider.createAccessToken(memberID);
+    }
+
+    @PostMapping("/point/{memberID}/{point}")
+    public ResponseEntity<BaseResponse>  renewUserPoint(@PathVariable String memberID, @PathVariable int point) {
+        int res = pointService.reviseUserPoint(memberID, point);
+
+        int status = 200;
+        BaseResponse baseResponse;
+        if (res == 1) {
+            baseResponse = new BaseResponse(status, "유저 포인트가 변경되었습니다", null);
+        } else {
+            status = 400;
+            baseResponse = new BaseResponse(status, "유저 포인트 변경을 실패했습니다.", null);
+        }
+
+        return ResponseEntity.status(status).body(baseResponse);
     }
 }
