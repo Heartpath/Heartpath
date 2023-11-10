@@ -32,7 +32,6 @@ class PointHistoryFragment : BaseFragment<FragmentPointHistoryBinding>(
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
-        Log.d(TAG, "onAttach: ")
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -72,7 +71,7 @@ class PointHistoryFragment : BaseFragment<FragmentPointHistoryBinding>(
     private fun initData() {
         pointHistoryViewModel.getPointInfoList()    // 포인트 관련 내역 list get api 호출
     }
-    
+
     companion object {
         private const val TAG = "PointHistoryFragment_HP"
     }
