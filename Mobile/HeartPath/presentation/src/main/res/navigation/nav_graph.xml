@@ -183,7 +183,12 @@
         android:id="@+id/addLetterImageFragment"
         android:name="com.zootopia.presentation.writeletter.addletterimage.AddLetterImageFragment"
         android:label="AddLetterImageFragment"
-        tools:layout="@layout/fragment_add_letter_image"/>
+        tools:layout="@layout/fragment_add_letter_image">
+        <action
+            android:id="@+id/action_addLetterImageFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"/>
+    </fragment>
     <fragment
         android:id="@+id/readLetterFragment"
         android:name="com.zootopia.presentation.readletter.ReadLetterFragment"

@@ -1,12 +1,15 @@
 package com.zootopia.presentation.writeletter.addletterimage
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -21,7 +24,6 @@ import com.zootopia.presentation.MainViewModel
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentAddLetterImageBinding
-import com.zootopia.presentation.util.getImages
 import com.zootopia.presentation.util.getRealPathFromUri
 import com.zootopia.presentation.util.hasPermissions
 import com.zootopia.presentation.util.requestPermissionsOnClick
@@ -62,7 +64,8 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
         addLetterImageAdapter.deleteClickListener =
             object : AddLetterImageAdapter.DeleteClickListener {
                 override fun deleteClick(index: Int) {
-                    TODO("삭제 기능 넣을것")
+                    imageList.removeAt(index)
+                    writeLetterViewModel.setImageList(imageList)
                 }
             }
 
@@ -84,9 +87,20 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
         }
         lifecycleScope.launch {
             writeLetterViewModel.imageList.collectLatest {
+                Log.d(TAG, "initCollecter: ${it.size}")
                 imageList.clear()
                 imageList.addAll(it)
                 addLetterImageAdapter.notifyDataSetChanged()
+            }
+        }
+        lifecycleScope.launch {
+            writeLetterViewModel.isSendSuccess.collectLatest {
+                if (it) {
+                    writeLetterViewModel.resetIsSendSuccess()
+                    writeLetterViewModel.resetImageList()
+                    Toast.makeText(mainActivity, R.string.add_letter_image_write_success, Toast.LENGTH_LONG).show()
+                    navController.navigate(AddLetterImageFragmentDirections.actionAddLetterImageFragmentToHomeFragment())
+                }
             }
         }
     }
@@ -97,9 +111,17 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
                 val letterUri =
                     saveImageToGallery(mainActivity, writeLetterViewModel.drawingBitmap.value!!)
                 if (letterUri != null) {
-                    val realPath = getRealPathFromUri(mainActivity, letterUri)
-                    if (realPath != null)
-                        writeLetterViewModel.saveLetter(realPath, mutableListOf())
+                    val realPathOfLetter = getRealPathFromUri(mainActivity, letterUri)
+                    if (realPathOfLetter != null){
+                        var realFilePathList = mutableListOf<String>()
+                        imageList.forEachIndexed { index, uri ->
+                            val filePath = getRealPathFromUri(mainActivity, uri)
+                            if(filePath != null){
+                                realFilePathList.add(filePath)
+                            }
+                        }
+                        writeLetterViewModel.saveLetter(realPathOfLetter, realFilePathList)
+                    }
                 }
             }
         }
@@ -113,8 +135,12 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
 
             if (mainActivity.hasPermissions(permission)) {
                 //퍼미션 받은 경우
-                val imageList = getImages(mainActivity)
+                val intent = Intent()
+                intent.setType("image/*")
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                intent.action = Intent.ACTION_GET_CONTENT
 
+                selectImagesActivityResult.launch(intent)
             } else {
                 //퍼미션 없는 경우
                 requestPermissionsOnClick(
@@ -134,4 +160,28 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
         val READ_EXTERNAL_STORAGE = android.Manifest.permission.READ_EXTERNAL_STORAGE
         val READ_MEDIA_IMAGES = android.Manifest.permission.READ_MEDIA_IMAGES
     }
+
+    val selectImagesActivityResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val list = mutableListOf<Uri>()
+                val data: Intent? = result.data
+                //If multiple image selected
+                if (data?.clipData != null) {
+                    val count = data.clipData?.itemCount ?: 0
+                    for (i in 0 until count) {
+                        val imageUri = data.clipData!!.getItemAt(i).uri
+                        list.add(imageUri)
+                    }
+                }
+                //If single image selected
+                else if (data?.data != null) {
+                    val imageUri: Uri? = data.data
+                    if (imageUri != null) {
+                        list.add(imageUri)
+                    }
+                }
+                writeLetterViewModel.addImageList(list)
+            }
+        }
 }

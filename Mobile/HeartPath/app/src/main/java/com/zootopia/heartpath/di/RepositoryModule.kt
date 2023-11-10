@@ -8,14 +8,14 @@ import com.zootopia.data.datasource.remote.sendletter.unplaced.LetterDataSource
 import com.zootopia.data.datasource.remote.receiveletter.ReceiveLetterDataSource
 import com.zootopia.data.datasource.remote.user.UserDataSource
 import com.zootopia.data.repository.PreferenceRepositoryImpl
-import com.zootopia.data.repository.business.BusinessRepositoryImpl
+import com.zootopia.data.repository.business.WriteLetterRepositoryImpl
 import com.zootopia.data.repository.letter.SendLetterRepositoryImpl
 import com.zootopia.data.repository.login.LoginRepositoryImpl
 import com.zootopia.data.repository.map.MapRepositoryImpl
 import com.zootopia.data.repository.receiveletter.ReceiveLetterRepositoryImpl
 import com.zootopia.data.repository.user.UserRepositoryImpl
 import com.zootopia.domain.repository.PreferenceRepository
-import com.zootopia.domain.repository.business.BusinessRepository
+import com.zootopia.domain.repository.letter.WriteLetterRepository
 import com.zootopia.domain.repository.letter.SendLetterRepository
 import com.zootopia.domain.repository.login.LoginRepository
 import com.zootopia.domain.repository.map.MapRepository
@@ -45,8 +45,8 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideBusinessRepository(businessDataSource: BusinessDataSource): BusinessRepository {
-        return BusinessRepositoryImpl(businessDataSource)
+    fun provideBusinessRepository(businessDataSource: BusinessDataSource): WriteLetterRepository {
+        return WriteLetterRepositoryImpl(businessDataSource)
     }
 
     @Singleton
