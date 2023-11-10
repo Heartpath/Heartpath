@@ -69,7 +69,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
             .into(imageviewBirdOnEarth)
     }
 
-    private fun loginByKakao(context: Context = requireContext()) {
+    private fun loginByKakao(context: Context = mainActivity) {
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
             Log.d(TAG, "loginByKakao: here is callback")
             if (error != null) {
@@ -145,6 +145,15 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG, "onDestroyView: 지금 destroy view 입니다")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy: 지금은 destroy입니다")
+    }
     companion object {
         private const val TAG = "LoginFragment_HP"
     }
