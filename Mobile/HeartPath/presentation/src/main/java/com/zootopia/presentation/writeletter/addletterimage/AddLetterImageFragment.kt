@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -28,6 +29,7 @@ import com.zootopia.presentation.util.hasPermissions
 import com.zootopia.presentation.util.requestPermissionsOnClick
 import com.zootopia.presentation.util.saveImageToGallery
 import com.zootopia.presentation.writeletter.WriteLetterViewModel
+import com.zootopia.presentation.writeletter.handwrite.HandWriteFragmentDirections
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -90,6 +92,15 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
                 imageList.clear()
                 imageList.addAll(it)
                 addLetterImageAdapter.notifyDataSetChanged()
+            }
+        }
+        lifecycleScope.launch {
+            writeLetterViewModel.isSendSuccess.collectLatest {
+                if (it) {
+                    writeLetterViewModel.resetIsSendSuccess()
+                    Toast.makeText(mainActivity, R.string.add_letter_image_write_success, Toast.LENGTH_LONG).show()
+                    navController.navigate(AddLetterImageFragmentDirections.actionAddLetterImageFragmentToHomeFragment())
+                }
             }
         }
     }

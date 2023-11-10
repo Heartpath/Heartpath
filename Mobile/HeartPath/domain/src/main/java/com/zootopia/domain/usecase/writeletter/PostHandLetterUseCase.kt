@@ -12,6 +12,6 @@ class PostHandLetterUseCase @Inject constructor(
         content: String,
         fileList: MutableList<String>
     ) {
-        return businessRepository.postHandWriteLetter(handLetterRequestDto, content, fileList)
+        businessRepository.postHandWriteLetter(handLetterRequestDto, content, fileList)
     }
 }
