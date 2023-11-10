@@ -4,16 +4,19 @@ import com.zootopia.data.datasource.local.PreferenceDataSource
 import com.zootopia.data.datasource.remote.business.BusinessDataSource
 import com.zootopia.data.datasource.remote.login.LoginDataSource
 import com.zootopia.data.datasource.remote.map.MapDataSource
+import com.zootopia.data.datasource.remote.sendletter.unplaced.LetterDataSource
 import com.zootopia.data.datasource.remote.receiveletter.ReceiveLetterDataSource
 import com.zootopia.data.datasource.remote.user.UserDataSource
 import com.zootopia.data.repository.PreferenceRepositoryImpl
 import com.zootopia.data.repository.business.BusinessRepositoryImpl
+import com.zootopia.data.repository.letter.SendLetterRepositoryImpl
 import com.zootopia.data.repository.login.LoginRepositoryImpl
 import com.zootopia.data.repository.map.MapRepositoryImpl
 import com.zootopia.data.repository.receiveletter.ReceiveLetterRepositoryImpl
 import com.zootopia.data.repository.user.UserRepositoryImpl
 import com.zootopia.domain.repository.PreferenceRepository
 import com.zootopia.domain.repository.business.BusinessRepository
+import com.zootopia.domain.repository.letter.SendLetterRepository
 import com.zootopia.domain.repository.login.LoginRepository
 import com.zootopia.domain.repository.map.MapRepository
 import com.zootopia.domain.repository.receiveletter.ReceiveLetterRepository
@@ -56,6 +59,12 @@ object RepositoryModule {
     @Provides
     fun provideUserRepository(userDataSource: UserDataSource): UserRepository {
         return UserRepositoryImpl(userDataSource = userDataSource)
+    }
+
+    @Singleton
+    @Provides
+    fun provideLetterRepository(letterDataSource: LetterDataSource): SendLetterRepository {
+        return SendLetterRepositoryImpl(letterDataSource = letterDataSource)
     }
 
     @Singleton

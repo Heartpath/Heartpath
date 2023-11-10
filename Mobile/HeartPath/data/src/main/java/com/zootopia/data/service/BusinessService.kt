@@ -2,9 +2,9 @@ package com.zootopia.data.service
 
 import com.zootopia.data.model.business.request.PostHandLetterRequest
 import com.zootopia.data.model.business.response.BusinessResponse
-import okhttp3.MultipartBody
 import com.zootopia.data.model.common.MessageResponse
 import com.zootopia.data.model.letter.response.StoredLetterListResponse
+import com.zootopia.data.model.letter.response.UnplacedLetterListResponse
 import com.zootopia.data.model.login.request.LoginRequest
 import com.zootopia.data.model.login.request.SignupRequest
 import com.zootopia.data.model.login.response.CheckIdResponse
@@ -12,13 +12,14 @@ import com.zootopia.data.model.login.response.LoginResponse
 import com.zootopia.data.model.user.response.FriendListResponse
 import com.zootopia.data.model.user.response.PointInfoResponse
 import com.zootopia.data.model.user.response.UserInfoResponse
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
-import retrofit2.http.Part
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -81,6 +82,9 @@ interface BusinessService {
         @Path("opponentId") id: String
     ): Response<MessageResponse>
 
+    // 미발송 편지 목록 조회
+    @GET("/letter/unplaced")
+    suspend fun getUnplacedLetter(): Response<UnplacedLetterListResponse>
     // 열람한 수신 편지 목록 조회
     @GET("/letter/checked")
     suspend fun getStoredLetterList(): Response<StoredLetterListResponse>
