@@ -6,6 +6,8 @@ import com.zootopia.data.datasource.remote.login.LoginDataSource
 import com.zootopia.data.datasource.remote.login.LoginDataSourceImpl
 import com.zootopia.data.datasource.remote.map.MapDataSource
 import com.zootopia.data.datasource.remote.map.MapDataSourceImpl
+import com.zootopia.data.datasource.remote.receiveletter.ReceiveLetterDataSource
+import com.zootopia.data.datasource.remote.receiveletter.ReceiveLetterDataSourceImpl
 import com.zootopia.data.datasource.remote.sendletter.unplaced.LetterDataSource
 import com.zootopia.data.datasource.remote.sendletter.unplaced.LetterDataSourceImpl
 import com.zootopia.data.datasource.remote.user.UserDataSource
@@ -64,13 +66,23 @@ object DataSourceModule {
             businessService = businessService
         )
     }
-    
+
     @Singleton
     @Provides
     fun provideLetterDataSource(
         businessService: BusinessService
     ): LetterDataSource {
         return LetterDataSourceImpl(
+            businessService = businessService
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideReceiveLetterDataSource(
+        businessService: BusinessService
+    ): ReceiveLetterDataSource {
+        return ReceiveLetterDataSourceImpl(
             businessService = businessService
         )
     }
