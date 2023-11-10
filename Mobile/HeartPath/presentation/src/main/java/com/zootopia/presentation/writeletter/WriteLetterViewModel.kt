@@ -105,28 +105,14 @@ class WriteLetterViewModel @Inject constructor(
 
     fun getLetterPaperList() {
         //서버로 부터 편지지 리스트를 받는다.
-//        getApiResult(
-//            block = {
-//                getUserLetterPaperUseCase.invoke()
-//            },
-//            success = {
-//                _letterPaperList.emit(it)
-//            }
-//        )
-        viewModelScope.launch {
-            var list = mutableListOf<UserLetterPaperDto>().apply {
-                add(
-                    UserLetterPaperDto(
-                        0,
-                        "d",
-                        12,
-                        "https://postfiles.pstatic.net/MjAyMzEwMjhfNjcg/MDAxNjk4NDI0ODE5NjI4.kPCHa288iH5JCl8arHKkxb-X5vq_zph7A8N7B6YTiJIg.56HHDL7-Jb3xGtjdMpdNnUPltZkV7HVZ0Hhk-AosBBEg.PNG.vmfpel0425/export202310280139235243.png?type=w773",
-                        false
-                    )
-                )
+        getApiResult(
+            block = {
+                getUserLetterPaperUseCase.invoke()
+            },
+            success = {
+                _letterPaperList.emit(it)
             }
-            _letterPaperList.emit(list)
-        }
+        )
     }
 
     fun searchUser(searchKeyWord: String) {
