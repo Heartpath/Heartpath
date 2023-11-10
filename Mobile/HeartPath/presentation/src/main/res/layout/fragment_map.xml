@@ -77,7 +77,7 @@
             android:layout_marginHorizontal="@dimen/_8sdp"
             android:layout_marginBottom="@dimen/_20sdp"
             android:backgroundTint="@color/PrimaryLightBlue"
-            android:visibility="visible"
+            android:visibility="gone"
             app:cardCornerRadius="16dp">
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -157,7 +157,7 @@
             android:background="@drawable/custom_round_map_bottom_sheet"
             android:orientation="vertical"
             android:padding="8dp"
-            android:visibility="gone"
+            android:visibility="visible"
             app:behavior_hideable="false"
             app:behavior_peekHeight="@dimen/_100sdp"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
