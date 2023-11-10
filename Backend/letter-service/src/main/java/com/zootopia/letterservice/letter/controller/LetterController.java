@@ -118,7 +118,7 @@ public class LetterController {
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "발송 편지 목록 조회 성공", letterService.getSendLetters(accessToken)));
     }
 
-    @Operation(summary = "미발송 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
+    @Operation(summary = "미발송 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수 / index : string (mongoDB index hash값)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
                     examples = @ExampleObject(value = "{" +
@@ -126,7 +126,7 @@ public class LetterController {
                             " \"message\": \"미발송 편지 목록 조회 성공\"," +
                             " \"data\": [" +
                             "       {" +
-                            "           \"index\": 1," +
+                            "           \"index\": \"654d03bf7cdd2f78a2c624cf\"," +
                             "           \"receiver\": \"사용자 닉네임\"" +
                             "       }" +
                             "   ]" +
