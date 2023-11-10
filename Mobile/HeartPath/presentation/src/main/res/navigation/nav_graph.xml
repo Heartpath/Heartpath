@@ -52,7 +52,11 @@
         android:id="@+id/sendLetterFragment"
         android:name="com.zootopia.presentation.sendletter.SendLetterFragment"
         android:label="fragment_send_letter"
-        tools:layout="@layout/fragment_send_letter"></fragment>
+        tools:layout="@layout/fragment_send_letter">
+        <action
+            android:id="@+id/action_sendLetterFragment_to_arCoreWriteFragment"
+            app:destination="@id/arCoreWriteFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/receiveLetterFragment"
@@ -185,6 +189,11 @@
         android:name="com.zootopia.presentation.readletter.ReadLetterFragment"
         android:label="fragment_read_letter"
         tools:layout="@layout/fragment_read_letter" />
+    <fragment
+        android:id="@+id/arCoreWriteFragment"
+        android:name="com.zootopia.presentation.arcore.ArCoreWriteFragment"
+        android:label="fragment_ar_core_write"
+        tools:layout="@layout/fragment_ar_core_write" />
 
 
 </navigation>
