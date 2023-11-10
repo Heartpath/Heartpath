@@ -2,13 +2,13 @@ package com.zootopia.presentation.writeletter
 
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.zootopia.domain.model.user.UserDto
 import com.zootopia.domain.model.writeletter.HandLetterRequestDto
 import com.zootopia.domain.usecase.writeletter.PostHandLetterUseCase
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseViewModel
-import com.zootopia.presentation.util.getRealPathFromUri
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -148,10 +148,28 @@ class WriteLetterViewModel @Inject constructor(
         _penBitmap.value = bitmap
     }
 
-    fun setImageList(list: MutableList<Uri>){
+    fun addImageList(list: MutableList<Uri>){ //리스트에 이미지를 추가함
         viewModelScope.launch {
-            _imageList.value = list
+            val newList = mutableListOf<Uri>()
+
+            _imageList.value.forEachIndexed { index, uri ->
+                newList.add(uri)
+            }
+            list.forEachIndexed { index, uri ->
+                newList.add(uri)
+            }
+
+            Log.d(TAG, "setImageList: ${newList.size}")
+            _imageList.emit(newList)
         }
+    }
+
+    fun setImageList(list: MutableList<Uri>){ //리스트를 새로 갈아줌
+        val newImageList = mutableListOf<Uri>()
+        list.forEachIndexed { index, uri ->
+            newImageList.add(uri)
+        }
+        _imageList.value = newImageList
     }
 
     fun saveLetter(contentUri: String, imageList: MutableList<String>) {
