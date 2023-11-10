@@ -10,7 +10,6 @@ import android.os.Looper
 import android.util.Log
 import android.view.Gravity
 import android.view.View
-import android.view.Window
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.ContextCompat
@@ -91,9 +90,6 @@ class MapFragment :
     private lateinit var workManager: WorkManager
     private lateinit var workRequest: WorkRequest
 
-    // window
-    private lateinit var window: Window
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         Log.d(TAG, "onAttach: ")
@@ -110,9 +106,6 @@ class MapFragment :
         initCollect()
         initClickEvent()
         initData()
-        
-        // 테스트 (임시)
-//        mapViewModel.test()
 
         mapView = binding.mapviewNaver
         if (checkBasePermission()) {
@@ -129,6 +122,7 @@ class MapFragment :
         toolbarHeartpathMap.apply {
             textviewCurrentPageTitle.text = resources.getString(R.string.toolbar_map_title)
             imageviewBackButton.setOnClickListener {
+                mapViewModel.resetTmapWalkRoadInfo()
                 stopWalk()
                 stopLocationUpdates()
                 findNavController().popBackStack()
@@ -190,6 +184,7 @@ class MapFragment :
         val callback = mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             // 뒤로 버튼 이벤트 처리
             Log.e(TAG, "뒤로가기 클릭")
+            mapViewModel.resetTmapWalkRoadInfo()
             stopWalk()
             stopLocationUpdates()
             findNavController().popBackStack()
@@ -399,6 +394,7 @@ class MapFragment :
         )
     }
 
+    // 위치 서비스 콜백 취소
     fun stopLocationUpdates() {
         if (locationCallback != null) {
             fusedLocationProviderClient.removeLocationUpdates(locationCallback!!)
@@ -479,7 +475,7 @@ class MapFragment :
     private fun stopWalk() {
         mapViewModel.isStartWalk = false
         mainActivity.showToast("편지 찾기를 종료합니다.")
-        workManager.cancelAllWork()
+        workManager.cancelAllWork()   // 백그라운드 작업 종료
         mapViewModel.resetTmapWalkRoadInfo()
         setUpdateLocationListner()
         setWalkView()
