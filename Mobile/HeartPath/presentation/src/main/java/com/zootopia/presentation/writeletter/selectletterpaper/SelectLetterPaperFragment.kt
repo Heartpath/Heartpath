@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
+import com.zootopia.domain.model.letter.UserLetterPaperDto
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
@@ -31,7 +32,7 @@ class SelectLetterPaperFragment : BaseFragment<FragmentSelectLetterPaperBinding>
     private lateinit var navController: NavController
     private val writeLetterViewModel: WriteLetterViewModel by activityViewModels()
     private lateinit var pagerAdapter: LetterPaperViewPagerAdapter
-    private var letterPaperList: MutableList<String> = mutableListOf()
+    private var letterPaperList: MutableList<UserLetterPaperDto> = mutableListOf()
     private val args: SelectLetterPaperFragmentArgs by navArgs()
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -48,12 +49,22 @@ class SelectLetterPaperFragment : BaseFragment<FragmentSelectLetterPaperBinding>
         Log.d(TAG, "onViewCreated: ${args.letterType}")
     }
 
-    fun initCollecter() {
+    fun initCollecter() = with(binding) {
         lifecycleScope.launch {
             writeLetterViewModel.letterPaperList.collectLatest {
-                letterPaperList.clear()
-                letterPaperList.addAll(it)
-                pagerAdapter.notifyDataSetChanged()
+                if (it.size <= 0) {
+                    buttonSelectLetterPaper.visibility = View.GONE
+                    viewPagerLetterPaper.visibility = View.GONE
+                    textviewNoLetterPapper.visibility = View.VISIBLE
+                } else {
+                    buttonSelectLetterPaper.visibility = View.VISIBLE
+                    viewPagerLetterPaper.visibility = View.VISIBLE
+                    textviewNoLetterPapper.visibility = View.GONE
+                    letterPaperList.clear()
+                    letterPaperList.addAll(it)
+                    pagerAdapter.notifyDataSetChanged()
+                }
+
             }
         }
     }
@@ -80,7 +91,7 @@ class SelectLetterPaperFragment : BaseFragment<FragmentSelectLetterPaperBinding>
 
     fun initClickListener() = with(binding) {
         buttonSelectLetterPaper.setOnClickListener {
-            writeLetterViewModel.setSelectedLetterPaperUrl(letterPaperList[viewPagerLetterPaper.currentItem])
+            writeLetterViewModel.setSelectedLetterPaperUrl(letterPaperList[viewPagerLetterPaper.currentItem].imageUrl)
             if (args.letterType == LetterType.HAND_WRITE) {
                 navController.navigate(R.id.action_selectLetterPaperFragment_to_handWriteFragment)
             } else {
