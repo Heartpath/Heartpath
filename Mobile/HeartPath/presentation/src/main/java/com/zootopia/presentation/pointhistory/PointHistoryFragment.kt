@@ -2,10 +2,7 @@ package com.zootopia.presentation.pointhistory
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -15,14 +12,16 @@ import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentPointHistoryBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class PointHistoryFragment : BaseFragment<FragmentPointHistoryBinding>(
     FragmentPointHistoryBinding::bind,
     R.layout.fragment_point_history
 ) {
     private lateinit var mainActivity: MainActivity
-    private val pointHistoryViewModel: PointHistoryViewModel by activityViewModels()
+    private val pointHistoryViewModel: PointHistoryViewModel by viewModels()
     private lateinit var pointHistoryAdapter: PointHistoryAdapter
     private var pointHistoryList: MutableList<PointDto> = mutableListOf()
 
