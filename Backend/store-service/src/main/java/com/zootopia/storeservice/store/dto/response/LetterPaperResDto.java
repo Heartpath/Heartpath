@@ -6,6 +6,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 public class LetterPaperResDto {
+    private int letterpaperId;
     private String name;
     private int price;
     private String description;
@@ -13,7 +14,8 @@ public class LetterPaperResDto {
     private boolean isOwned;
 
     @Builder
-    public LetterPaperResDto(String name, int price, String description, String imagePath, boolean isOwned) {
+    public LetterPaperResDto(int letterpaperId, String name, int price, String description, String imagePath, boolean isOwned) {
+        this.letterpaperId = letterpaperId;
         this.name = name;
         this.price = price;
         this.description = description;
