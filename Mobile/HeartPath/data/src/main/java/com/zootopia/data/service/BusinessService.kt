@@ -19,6 +19,7 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface BusinessService {
@@ -63,11 +64,11 @@ interface BusinessService {
     suspend fun editUserInfo()
 
     // 사용자 포인트 내역 조회
-    @GET("/user/point")
+    @GET("/store/point")
     suspend fun getPointInfo(): Response<PointInfoResponse>
 
     // 사용자 포인트 적립
-    @POST("/user/point")
+    @POST("/store/point")
     suspend fun earnedPoint()
 
     // 친구 목록 조회
@@ -75,9 +76,9 @@ interface BusinessService {
     suspend fun getFriendList(): Response<FriendListResponse>
 
     // 친구 추가
-    @POST("/user/friend")
+    @POST("/user/friend/{opponentId}")
     suspend fun addFriend(
-
+        @Path("opponentId") id: String
     ): Response<MessageResponse>
 
     // 미발송 편지 목록 조회
