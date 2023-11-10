@@ -9,6 +9,8 @@ public class LetterPaperBookId implements Serializable {
     public LetterPaperBookId() {
     }
 
-    public LetterPaperBookId(int letterpaperId) {
+    public LetterPaperBookId(int letterpaperId, String memeberId) {
+        this.letterPaperId = letterpaperId;
+        this.memberId = memeberId;
     }
 }
