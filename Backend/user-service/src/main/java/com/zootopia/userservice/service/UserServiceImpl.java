@@ -1,9 +1,7 @@
 package com.zootopia.userservice.service;
 
 import com.zootopia.userservice.domain.User;
-import com.zootopia.userservice.dto.MypageDTO;
-import com.zootopia.userservice.dto.UserInfoDTO;
-import com.zootopia.userservice.dto.UserRegisterDTO;
+import com.zootopia.userservice.dto.*;
 import com.zootopia.userservice.jwt.JwtProvider;
 import com.zootopia.userservice.kakao.KakaoUserInfo;
 import com.zootopia.userservice.mapper.UserMapper;
@@ -15,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -90,5 +89,10 @@ public class UserServiceImpl implements UserService {
         }
 
         return res;
+    }
+
+    @Override
+    public List<UserSearchDTO> searchUserByID(String findUserID, int limit) {
+        return userMapper.readLimitUserByID(new QueryParamMap(findUserID, limit));
     }
 }

@@ -16,4 +16,13 @@
           AND ctb.IS_MAIN = TRUE;
     </select>
 
+    <select id="readLimitUserByID" parameterType="com.zootopia.userservice.dto.QueryParamMap" resultType="UserSearchDTO">
+        SELECT m.MEMBER_ID          as `memberID`,
+               m.NICKNAME           as `nickname`,
+               m.PROFILE_IMAGE_PATH as `profileImagePath`
+        FROM `MEMBER` m
+        WHERE m.MEMBER_ID LIKE CONCAT(#{query}, '%')
+        LIMIT #{limit};
+    </select>
+
 </mapper>

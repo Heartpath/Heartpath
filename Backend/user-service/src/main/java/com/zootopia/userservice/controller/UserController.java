@@ -4,6 +4,7 @@ import com.zootopia.userservice.common.BaseResponse;
 import com.zootopia.userservice.dto.MypageDTO;
 import com.zootopia.userservice.dto.UserLoginDTO;
 import com.zootopia.userservice.dto.UserRegisterDTO;
+import com.zootopia.userservice.dto.UserSearchDTO;
 import com.zootopia.userservice.jwt.JwtProvider;
 import com.zootopia.userservice.kakao.KakaoOAuthService;
 import com.zootopia.userservice.service.UserService;
@@ -20,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -149,5 +151,13 @@ public class UserController {
         MypageDTO mypageDTO = userService.loadUserInfo(memberID);
 
         return ResponseEntity.status(200).body(new BaseResponse(HttpStatus.OK.value(), "유저 불러오기", mypageDTO));
+    }
+
+    @GetMapping("/search")
+    public List<UserSearchDTO> searchUserByID(
+            @RequestParam(name = "id") String searchMemberID,
+            @RequestParam(name = "limit") int limit
+    ) {
+        return userService.searchUserByID(searchMemberID, limit);
     }
 }
