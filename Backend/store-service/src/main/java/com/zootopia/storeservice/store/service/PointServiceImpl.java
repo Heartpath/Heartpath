@@ -35,8 +35,6 @@ public class PointServiceImpl implements PointService{
         int lastBalance = pointUsage.isEmpty() ? 0 : pointUsage.get(0).getBalance();
         log.warn("최근 포인트 " + lastBalance);
         int currentBalance = lastBalance + pointTransReqDto.getPoint();
-        memberService.pointToMember(memberId, currentBalance);
-
         Point point = Point.builder()
                 .memberId(memberId)
                 .outline("뱁새 잡기 성공")
@@ -46,6 +44,7 @@ public class PointServiceImpl implements PointService{
                 .build();
         pointRepository.save(point);
         log.warn("포인트 저장 성공");
-        // member 완성시, 포인트 저장 후 쿼리문 날려서 멤버의 point 변경 필요
+        String res = memberService.pointToMember(memberId, currentBalance);
+        log.warn("webclient 결과" + res);
     }
 }
