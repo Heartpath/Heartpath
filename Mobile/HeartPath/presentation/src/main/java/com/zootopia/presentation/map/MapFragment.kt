@@ -103,13 +103,14 @@ class MapFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-
+        
+        setWalkView()
         initView()
         initAdapter()
         initCollect()
         initClickEvent()
         initData()
-
+        
         // 테스트 (임시)
 //        mapViewModel.test()
 
@@ -147,9 +148,6 @@ class MapFragment :
         // 워커 매니저 초기화
         workManager = WorkManager.getInstance(mainActivity)
         binding.textviewDistance.text = distanceIntToString(walkDist.toInt())
-    }
-
-    private fun initSetView() {
     }
 
     private fun initClickEvent() = with(binding) {
@@ -260,14 +258,14 @@ class MapFragment :
 
         // 길 찾기 data 수신[Tmap] -> 경로 그리기 & WorkManager 실행
         viewLifecycleOwner.lifecycleScope.launch {
-            mapViewModel.tmapWalkRoadInfo.collectLatest {
-                Log.d(TAG, "initCollect: $it")
+            mapViewModel.tmapWalkRoadInfo.collect {
+                Log.d(TAG, "initCollect: ${it}")
                 DrawLoad(it) // 경로 그리기
                 startWalk() // WorkManager 실행
-                mapViewModel.isStartWalk = true
+                mapViewModel.walkRoad = it
             }
         }
-
+        
         // 목적지 까지 거리 계산
         viewLifecycleOwner.lifecycleScope.launch {
             mapViewModel.walkDistance.collectLatest {
@@ -320,6 +318,32 @@ class MapFragment :
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(mainActivity) // gps 자동으로 받아오기
         setUpdateLocationListner() // 내위치를 가져오는 코드
+        
+        rewriteMap() // 다시 그려야 하는 경로가 있다면 다시 그리기
+    }
+    
+    // 다시 그려야 하는 경로가 있다면 다시 그리기
+    private fun rewriteMap() = with(mapViewModel){
+        if(walkRoad != null) {
+            Log.d(TAG, "onViewCreated: 기존 경로 다시 그리기 ")
+            DrawLoad(walkRoad!!)
+    
+            // 현재 위치와 마커위치를 계산
+            calculateDistance()
+            
+            // 마커 포지션
+            setMarkerLocation(
+                latitude = goalLatitude,
+                longitude = goalLongitude,
+            )
+            
+            // 카메라 위치 지정
+            setCameraToIncludeMyLocationAndMarker(
+                naverMap,
+                LatLng(lastLatitude, lastLongitude),
+                LatLng(goalLatitude, goalLongitude),
+            )
+        }
     }
 
     private fun initNaverMapSetting() {
@@ -381,7 +405,7 @@ class MapFragment :
         }
     }
 
-    fun setMarkerLocation(mapLetterDto: MapLetterDto, latitude: Double, longitude: Double) {
+    fun setMarkerLocation(mapLetterDto: MapLetterDto? = null, latitude: Double, longitude: Double) {
         // 기존 마커가 존재하는 경우 제거합니다
         marker?.map = null
 
@@ -402,7 +426,11 @@ class MapFragment :
         }
 
         marker?.setOnClickListener {
-            if (it is Marker && checkBasePermission()) {
+            if(mapViewModel.isStartWalk) {
+                return@setOnClickListener false
+            }
+            
+            if (it is Marker && checkBasePermission() && mapLetterDto != null) {
                 // 확인 다이얼로그
                 val readyGoDialog = ReadyGoDialogFragment(mapLetterDto = mapLetterDto)
                 readyGoDialog.show(mainActivity.supportFragmentManager, "ReadyGoDialogFragment")
@@ -434,38 +462,40 @@ class MapFragment :
         naverMap.maxZoom = 21.0
         naverMap.minZoom = 5.0
     }
+    
+    private fun setWalkView() = with(binding){
+        Log.d(TAG, "setWalkView: ${mapViewModel.isStartWalk}")
+        if(!mapViewModel.isStartWalk) {
+            presidentBottomSheet.visibility = View.VISIBLE
+            cardviewWork.visibility = View.GONE
+        } else {
+            presidentBottomSheet.visibility = View.GONE
+            cardviewWork.visibility = View.VISIBLE
+        }
+    }
 
     // WorkManager
     // 산책 종료
     private fun stopWalk() {
+        mapViewModel.isStartWalk = false
         mainActivity.showToast("편지 찾기를 종료합니다.")
-        binding.apply {
-            presidentBottomSheet.visibility = View.VISIBLE
-            cardviewWork.visibility = View.GONE
-        }
         workManager.cancelAllWork()
         mapViewModel.resetTmapWalkRoadInfo()
         setUpdateLocationListner()
-        mapViewModel.isStartWalk = false
+        setWalkView()
     }
 
     @SuppressLint("RestrictedApi")
     private fun startWalk() {
+        mapViewModel.isStartWalk = true
         mainActivity.showToast("편지 찾기를 시작합니다.")
-
-        // 현재 포그라운드에서 받아오는 위치서비스를 중단
-//        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
-
-        binding.apply {
-            presidentBottomSheet.visibility = View.GONE
-            cardviewWork.visibility = View.VISIBLE
-        }
+        setWalkView()
 
         val inputData = Data.Builder()
             .putDouble("goalLatitude", mapViewModel.goalLatitude)
             .putDouble("goalLongitude", mapViewModel.goalLongitude)
-            .putDouble("userLatitude", mapViewModel.lastLatitude.toDouble())
-            .putDouble("userLongitude", mapViewModel.lastLongitude.toDouble())
+            .putDouble("userLatitude", mapViewModel.lastLatitude)
+            .putDouble("userLongitude", mapViewModel.lastLongitude)
             .build()
 
         workRequest = OneTimeWorkRequestBuilder<WalkWorker>()
