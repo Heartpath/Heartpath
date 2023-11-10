@@ -18,6 +18,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imageview_friend_profile_img"
             android:src="@drawable/image_default_profile"
+            android:scaleType="centerCrop"
             android:layout_width="@dimen/_48sdp"
             android:layout_height="@dimen/_48sdp"/>
         <androidx.appcompat.widget.LinearLayoutCompat

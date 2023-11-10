@@ -2,7 +2,11 @@ package com.zootopia.presentation.pointhistory
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -66,5 +70,9 @@ class PointHistoryFragment : BaseFragment<FragmentPointHistoryBinding>(
     }
     private fun initData() {
         pointHistoryViewModel.getPointInfoList()    // 포인트 관련 내역 list get api 호출
+    }
+
+    companion object {
+        private const val TAG = "PointHistoryFragment_HP"
     }
 }
