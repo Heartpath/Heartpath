@@ -19,6 +19,7 @@ import java.util.List;
 public class PointServiceImpl implements PointService{
 
     private final PointRepository pointRepository;
+    private final MemberService memberService;
 
     @Override
     public List<Point> getPointUsage(String memberId){
@@ -33,12 +34,14 @@ public class PointServiceImpl implements PointService{
         // 가장 최근의 포인트 사용 내역의 balance 가져오기
         int lastBalance = pointUsage.isEmpty() ? 0 : pointUsage.get(0).getBalance();
         log.warn("최근 포인트 " + lastBalance);
+        int currentBalance = lastBalance + pointTransReqDto.getPoint();
+        memberService.pointToMember(memberId, currentBalance);
 
         Point point = Point.builder()
                 .memberId(memberId)
                 .outline("뱁새 잡기 성공")
                 .price(pointTransReqDto.getPoint())
-                .balance(lastBalance+pointTransReqDto.getPoint())
+                .balance(currentBalance)
                 .createdDate(LocalDateTime.now())
                 .build();
         pointRepository.save(point);

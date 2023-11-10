@@ -1,12 +1,8 @@
 package com.zootopia.storeservice.store.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,7 +16,7 @@ public class CrowTitBook {
 
     @Id
     @Column(name = "CROW_TIT_ID")
-    private Long crowtitId;
+    private int crowTitId;
 
     @Id
     @Column(name = "MEMBER_ID")
@@ -30,5 +26,7 @@ public class CrowTitBook {
     @Column(name = "ACQUISITION_DATE")
     private LocalDateTime acquisitionDate;
 
-
+    public void setMain(boolean isMain) {
+        this.isMain = isMain;
+    }
 }
