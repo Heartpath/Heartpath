@@ -37,7 +37,7 @@ public class MemberService {
         WebClient webClient = WebClient.builder().build();
 
         return webClient.post()
-                .uri("http://3.34.86.93/api/{memberId}/{point}", memberId, point)
+                .uri("http://3.34.86.93/api/point/{memberId}/{point}", memberId, point)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
