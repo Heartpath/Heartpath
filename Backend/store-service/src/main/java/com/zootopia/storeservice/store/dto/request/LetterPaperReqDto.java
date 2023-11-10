@@ -1,6 +1,7 @@
 package com.zootopia.storeservice.store.dto.request;
 
-import com.zootopia.storeservice.store.entity.LetterPaperBookId;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,10 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LetterPaperReqDto {
 
-    private LetterPaperBookId letterpaperId;
+    private int letterpaperId;
 
-    public LetterPaperReqDto(int letterpaperId){
-        this.letterpaperId = new LetterPaperBookId(letterpaperId);
+    @JsonCreator
+    public LetterPaperReqDto(@JsonProperty("letterpaperId") int letterpaperId){
+        this.letterpaperId = letterpaperId;
     }
 
 }

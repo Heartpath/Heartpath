@@ -36,42 +36,35 @@ public class StoreServiceImpl implements StoreService {
 //    private final S3Uploader s3Uploader;
 
     public void buyLetterPaper(String memberId, LetterPaperReqDto letterPaperBuyReqDto){
-        LetterPaperBookId letterPaperBookId = letterPaperBuyReqDto.getLetterpaperId();
-        Optional<LetterPaper> letterPaperOptional = letterPaperRepository.findById(letterPaperBookId);
-        log.warn(String.valueOf(letterPaperBuyReqDto.getLetterpaperId()));
-        log.warn(String.valueOf(letterPaperOptional));
-        if (letterPaperOptional.isPresent()) {
-            // "letterpaper"를 찾았을 때의 처리
-            LetterPaper letterPaper = letterPaperOptional.get();
-            List<Point> pointUsage = pointRepository.findByMemberId(memberId);
-            // 포인트 사용 내역을 생성일자(`createdDate`)를 기준으로 내림차순으로 정렬
-            pointUsage.sort(Comparator.comparing(Point::getCreatedDate).reversed());
-            // 가장 최근의 포인트 사용 내역의 balance 가져오기
-            int lastBalance = pointUsage.isEmpty() ? 0 : pointUsage.get(0).getBalance();
-            int currentBalance = lastBalance - letterPaper.getPrice();
-            memberService.pointToMember(memberId, currentBalance);
+        int letterPaperBookId = letterPaperBuyReqDto.getLetterpaperId();
+        LetterPaper letterPaper = letterPaperRepository.findById(letterPaperBookId)
+                .orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTS_LETTERPAPER));
 
-            LetterPaperBook letterPaperBook = LetterPaperBook.builder()
-                    .letterPaperId(letterPaper.getId())
-                    .memberId(memberId)
-                    .acquisitionDate(LocalDateTime.now())
-                    .build();
-            letterPaperBookRepository.save(letterPaperBook);
+        List<Point> pointUsage = pointRepository.findByMemberId(memberId);
+        // 포인트 사용 내역을 생성일자(`createdDate`)를 기준으로 내림차순으로 정렬
+        pointUsage.sort(Comparator.comparing(Point::getCreatedDate).reversed());
+        // 가장 최근의 포인트 사용 내역의 balance 가져오기
+        int lastBalance = pointUsage.isEmpty() ? 0 : pointUsage.get(0).getBalance();
+        int currentBalance = lastBalance - letterPaper.getPrice();
+        memberService.pointToMember(memberId, currentBalance);
 
-            Point point = Point.builder()
-                    .memberId(memberId)
-                    .outline("편지지 구매")
-                    .price(letterPaper.getPrice())
-                    .balance(currentBalance)
-                    .createdDate(LocalDateTime.now())
-                    .build();
-            pointRepository.save(point);
-        } else {
-            // "letterpaper"를 찾지 못했을 때의 처리 또는 예외를 던집니다.
-            throw new BadRequestException(ErrorCode.NOT_EXISTS_LETTERPAPER);
-        }
+        LetterPaperBook letterPaperBook = LetterPaperBook.builder()
+                .letterPaperId(letterPaper.getId())
+                .memberId(memberId)
+                .acquisitionDate(LocalDateTime.now())
+                .build();
+        letterPaperBookRepository.save(letterPaperBook);
 
+        Point point = Point.builder()
+                .memberId(memberId)
+                .outline("편지지 구매")
+                .price(letterPaper.getPrice())
+                .balance(currentBalance)
+                .createdDate(LocalDateTime.now())
+                .build();
+        pointRepository.save(point);
     }
+
     public List<LetterPaperResDto> getLetterPaper(String memberId){
         List<LetterPaperBook> letterPaperBookList = letterPaperBookRepository.findAllByMemberId(memberId);
 
@@ -134,8 +127,6 @@ public class StoreServiceImpl implements StoreService {
         int crowTitBookId = crowTitBuyReqDto.getCrowTitId();
         CrowTit crowTit = crowTitRepository.findById(crowTitBookId)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTS_CROWTIT));
-
-        log.warn(String.valueOf(crowTit));
 
         List<Point> pointUsage = pointRepository.findByMemberId(memberId);
         // 포인트 사용 내역을 생성일자(`createdDate`)를 기준으로 내림차순으로 정렬
