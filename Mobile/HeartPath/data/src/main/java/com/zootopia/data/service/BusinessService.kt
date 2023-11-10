@@ -1,7 +1,7 @@
 package com.zootopia.data.service
 
-import com.zootopia.data.model.business.request.PostHandLetterRequest
-import com.zootopia.data.model.business.response.BusinessResponse
+import com.zootopia.data.model.letter.request.PostHandLetterRequest
+import com.zootopia.data.model.letter.response.BusinessResponse
 import okhttp3.MultipartBody
 import com.zootopia.data.model.common.MessageResponse
 import com.zootopia.data.model.login.request.LoginRequest
