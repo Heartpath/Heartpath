@@ -1,17 +1,17 @@
 package com.zootopia.domain.usecase.writeletter
 
 import com.zootopia.domain.model.writeletter.HandLetterRequestDto
-import com.zootopia.domain.repository.business.BusinessRepository
+import com.zootopia.domain.repository.letter.WriteLetterRepository
 import javax.inject.Inject
 
 class PostHandLetterUseCase @Inject constructor(
-    private val businessRepository: BusinessRepository
+    private val businessRepository: WriteLetterRepository
 ) {
     suspend operator fun invoke(
         handLetterRequestDto: HandLetterRequestDto,
         content: String,
         fileList: MutableList<String>
     ) {
-        return businessRepository.postHandWriteLetter(handLetterRequestDto, content, fileList)
+        businessRepository.postHandWriteLetter(handLetterRequestDto, content, fileList)
     }
 }

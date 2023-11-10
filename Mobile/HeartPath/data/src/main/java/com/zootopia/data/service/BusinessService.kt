@@ -1,8 +1,10 @@
 package com.zootopia.data.service
 
-import com.zootopia.data.model.business.request.PostHandLetterRequest
-import com.zootopia.data.model.business.response.BusinessResponse
+import com.zootopia.data.model.letter.request.PostHandLetterRequest
+import com.zootopia.data.model.letter.response.BusinessResponse
+import okhttp3.MultipartBody
 import com.zootopia.data.model.common.MessageResponse
+import com.zootopia.data.model.letter.response.GetUserLetterPaperResponse
 import com.zootopia.data.model.letter.response.StoredLetterListResponse
 import com.zootopia.data.model.letter.response.UnplacedLetterListResponse
 import com.zootopia.data.model.login.request.LoginRequest
@@ -12,7 +14,6 @@ import com.zootopia.data.model.login.response.LoginResponse
 import com.zootopia.data.model.user.response.FriendListResponse
 import com.zootopia.data.model.user.response.PointInfoResponse
 import com.zootopia.data.model.user.response.UserInfoResponse
-import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -88,4 +89,8 @@ interface BusinessService {
     // 열람한 수신 편지 목록 조회
     @GET("/letter/checked")
     suspend fun getStoredLetterList(): Response<StoredLetterListResponse>
+
+    // 유저가 보유한 편지지 조회
+    @GET("/store/letterpaper")
+    suspend fun getUserLetterPaper(): Response<GetUserLetterPaperResponse>
 }
