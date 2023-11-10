@@ -3,9 +3,13 @@ package com.zootopia.presentation.writeletter.typingwrite
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
+import androidx.compose.ui.geometry.Rect
+import androidx.core.view.marginTop
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -17,6 +21,7 @@ import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentTypingWriteBinding
 import com.zootopia.presentation.R
+import com.zootopia.presentation.util.MaxLineLimitTextWatcher
 import com.zootopia.presentation.writeletter.WriteLetterViewModel
 import kotlinx.coroutines.launch
 
@@ -102,11 +107,26 @@ class TypingWriteFragment : BaseFragment<FragmentTypingWriteBinding>(
                     imageviewLetterPaper.layoutParams.width = newImageWidth.toInt()
                     imageviewLetterPaper.layoutParams.height = newImageHeight.toInt()
                     imageviewLetterPaper.requestLayout()
-                    textviewLetter.apply {
-                         maxWidth = newImageWidth.toInt()
-                        maxHeight = newImageHeight.toInt()
+
+                    val horizontalPadding = resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._32sdp)
+                    val topPadding = resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._60sdp)
+                    val bottomPadding = resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._20sdp)
+
+                    var fontHeight = edittextLetter.paint.fontMetrics.ascent - edittextLetter.paint.fontMetrics.descent
+                    if(fontHeight < 0){
+                        fontHeight = -fontHeight
                     }
-                    textviewLetter.requestLayout()
+                    val textViewHeightResult = newImageHeight.toInt()-topPadding-bottomPadding
+                    val maxLineCount = (textViewHeightResult/fontHeight).toInt()
+                    Log.d(TAG, "onResourceReady: ${maxLineCount}")
+
+                    edittextLetter.apply {
+                        width = newImageWidth.toInt()
+                        height = newImageHeight.toInt()
+                        setPadding(horizontalPadding, topPadding, horizontalPadding, bottomPadding)
+                    }
+                    edittextLetter.requestLayout()
+                    edittextLetter.addTextChangedListener(MaxLineLimitTextWatcher(maxLineCount, edittextLetter))
                 }
 
                 override fun onLoadCleared(placeholder: Drawable?) {
@@ -116,9 +136,7 @@ class TypingWriteFragment : BaseFragment<FragmentTypingWriteBinding>(
     }
 
     private fun initListener() = with(binding) {
-        textviewLetter.setOnScrollChangeListener { view, i, i2, i3, i4 ->
 
-        }
     }
 
     override fun onDestroy() {
