@@ -1,6 +1,6 @@
 package com.zootopia.letterservice.letter.service;
 
-import com.zootopia.letterservice.common.FCM.FCMService;
+import com.zootopia.letterservice.common.FCM.FirebaseCloudMessageService;
 import com.zootopia.letterservice.common.error.code.ErrorCode;
 import com.zootopia.letterservice.common.error.exception.BadRequestException;
 import com.zootopia.letterservice.common.error.exception.ServerException;
@@ -43,7 +43,7 @@ public class LetterServiceImpl implements LetterService {
     private final LetterImageRepository letterImageRepository;
     private final PlaceImageRepository placeImageRepository;
 
-    private final FCMService fcmService;
+    private final FirebaseCloudMessageService firebaseCloudMessageService;
 
     private final BannedWords bannedWords;
     private final S3Uploader s3Uploader;
@@ -196,9 +196,16 @@ public class LetterServiceImpl implements LetterService {
 
             placeImageRepository.save(placeImage);
         }
-        letterMongoRepository.deleteById(letterMongo.getId());
-
         // Receiver, FCM 알림 발송 추가 필요
+        UserInfoDetailResDto receiver = findByUserId(letterMongo.getReceiverId());
+        try {
+            String message = receiver.getNickname() + "님이 당신에게 편지를 보냈습니다.";
+            firebaseCloudMessageService.sendMessageTo(receiver.getFcmToken(), "뱁새가 편지를 물고 왔어요.",message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        letterMongoRepository.deleteById(letterMongo.getId());
     }
 
     // 첨부된 파일이 이미지 파일인지 확인
