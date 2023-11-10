@@ -29,4 +29,9 @@ class UserRepositoryImpl(
         }
     }
 
+    override suspend fun addFriend(id: String): String {
+        return getValueOrThrow2 {
+            userDataSource.addFriend(id = id).toDomain()
+        }
+    }
 }
