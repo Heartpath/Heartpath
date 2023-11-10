@@ -9,9 +9,7 @@ import com.zootopia.storeservice.store.dto.response.UserResDto;
 import com.zootopia.storeservice.store.entity.CrowTit;
 import com.zootopia.storeservice.store.entity.CrowTitBook;
 import com.zootopia.storeservice.store.entity.LetterPaper;
-import com.zootopia.storeservice.store.entity.LetterPaperBook;
 import com.zootopia.storeservice.store.repository.CrowTitBookRepository;
-import com.zootopia.storeservice.store.repository.LetterPaperBookRepository;
 import com.zootopia.storeservice.store.service.MemberService;
 import com.zootopia.storeservice.store.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,7 +35,6 @@ public class StoreController {
 
     private final StoreService storeService;
     private final MemberService memberService;
-    private final LetterPaperBookRepository letterPaperBookRepository;
     private final CrowTitBookRepository crowTitBookRepository;
 
     @GetMapping("/health_check")
@@ -61,7 +58,7 @@ public class StoreController {
                             "           \"index\": 1," +
                             "           \"name\": \"빨간 편지지\"," +
                             "           \"price\": 300," +
-                            "           \"image\": \"url\"," +
+                            "           \"imagePath\": \"url\"," +
                             "           \"isowned\": \"true\"" +
                             "       }" +
                             "   ]" +
@@ -72,7 +69,7 @@ public class StoreController {
         UserResDto userResDto = memberService.accessTokenToMember(accessToken);
         String memberId = userResDto.getData().getMemberID();
 
-        List<LetterPaperBook> letterPaperBookList = letterPaperBookRepository.findAllByMemberId(memberId);
+        List<LetterPaperResDto> letterPaperBookList = storeService.getLetterPaper(memberId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "편지지 목록 조회 성공", letterPaperBookList));
     }
@@ -91,7 +88,7 @@ public class StoreController {
                             "           \"index\": 1," +
                             "           \"name\": \"빨간 편지지\"," +
                             "           \"price\": 300," +
-                            "           \"image\": \"url\"," +
+                            "           \"imagePath\": \"url\"," +
                             "           \"isowned\": \"true\"" +
                             "       }" +
                             "   ]" +
@@ -121,7 +118,7 @@ public class StoreController {
                             "           \"name\": \"빨간 편지지\"," +
                             "           \"description\": \"예쁜 빨간색 물방울 무늬를 가진 편지지이다.\"," +
                             "           \"price\": 300," +
-                            "           \"image\": \"url\"" +
+                            "           \"imagePath\": \"url\"" +
                             "       }" +
                             "   ]" +
                             "}"))),
@@ -172,7 +169,7 @@ public class StoreController {
                             "           \"index\": 1," +
                             "           \"name\": \"일반 뱁새\"," +
                             "           \"price\": 100," +
-                            "           \"image\": \"url\"," +
+                            "           \"imagePath\": \"url\"," +
                             "           \"isowned\": \"true\"" +
                             "       }" +
                             "   ]" +
@@ -182,9 +179,37 @@ public class StoreController {
         UserResDto userResDto = memberService.accessTokenToMember(accessToken);
         String memberId = userResDto.getData().getMemberID();
 
-        List<CrowTitBook> crowTitBookList = crowTitBookRepository.findAllByMemberId(memberId);
+//        List<CrowTitBook> crowTitBookList = crowTitBookRepository.findAllByMemberId(memberId);
+        List<CrowTitResDto> crowTitBookList = storeService.getCrowTitList(memberId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "캐릭터 목록 조회 성공", crowTitBookList));
+    }
+    @GetMapping("/crowtit/all")
+    @Operation(summary = "캐릭터 목록 전체 조회 (상점용)", description = "Authorization : Bearer {accessToken}, 필수\n\n " +
+            "isowned : 사용자가 가지고 있는 캐릭터인지 아닌지 판단하는 boolean")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{" +
+                            " \"status\": 200," +
+                            " \"message\": \"캐릭터 목록 조회 성공\"," +
+                            " \"data\": [" +
+                            "       {" +
+                            "           \"index\": 1," +
+                            "           \"name\": \"일반 뱁새\"," +
+                            "           \"price\": 100," +
+                            "           \"imagePath\": \"url\"," +
+                            "           \"isowned\": \"true\"" +
+                            "       }" +
+                            "   ]" +
+                            "}")))
+    })
+    public ResponseEntity<? extends BaseResponseBody> getCharacterListAll(@RequestHeader("Authorization") String accessToken){
+        UserResDto userResDto = memberService.accessTokenToMember(accessToken);
+        String memberId = userResDto.getData().getMemberID();
+
+        List<CrowTitResDto> crowTitList = storeService.getCrowTitListAll(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "메인 캐릭터 조회 성공", crowTitList));
     }
 
     @GetMapping("/crowtit/main")
@@ -199,7 +224,7 @@ public class StoreController {
                             "           \"index\": 1," +
                             "           \"name\": \"일반 뱁새\"," +
                             "           \"price\": 100," +
-                            "           \"image\": \"url\"," +
+                            "           \"imagePath\": \"url\"," +
                             "           \"isowned\": \"true\"" +
                             "       }" +
                             "   ]" +
@@ -212,34 +237,6 @@ public class StoreController {
         Optional<CrowTitBook> mainCrowTit = crowTitBookRepository.findByMemberIdAndIsMain(memberId, true);
 
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "메인 캐릭터 조회 성공", mainCrowTit));
-    }
-
-    @GetMapping("/crowtit/all")
-    @Operation(summary = "캐릭터 목록 전체 조회 (상점용)", description = "Authorization : Bearer {accessToken}, 필수\n\n " +
-                                                                    "isowned : 사용자가 가지고 있는 캐릭터인지 아닌지 판단하는 boolean")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
-                    examples = @ExampleObject(value = "{" +
-                            " \"status\": 200," +
-                            " \"message\": \"캐릭터 목록 조회 성공\"," +
-                            " \"data\": [" +
-                            "       {" +
-                            "           \"index\": 1," +
-                            "           \"name\": \"일반 뱁새\"," +
-                            "           \"price\": 100," +
-                            "           \"image\": \"url\"," +
-                            "           \"isowned\": \"true\"" +
-                            "       }" +
-                            "   ]" +
-                            "}")))
-    })
-    public ResponseEntity<? extends BaseResponseBody> getCharacterListAll(@RequestHeader("Authorization") String accessToken){
-        UserResDto userResDto = memberService.accessTokenToMember(accessToken);
-        String memberId = userResDto.getData().getMemberID();
-
-        List<CrowTitResDto> crowTitList = storeService.getCrowTitListAll(memberId);
-
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "메인 캐릭터 조회 성공", crowTitList));
     }
 
     // 캐릭터 상세 조회
@@ -256,7 +253,7 @@ public class StoreController {
                             "           \"name\": \"일반 뱁새\"," +
                             "           \"description\": \"편지 배달을 업으로 삼는 뱁새다. 몹시 지친 직장인과 유사한 퀭한 생김새를 가지고 있다.\"," +
                             "           \"price\": 300," +
-                            "           \"image\": \"url\"" +
+                            "           \"imagePath\": \"url\"" +
                             "       }" +
                             "   ]" +
                             "}"))),
