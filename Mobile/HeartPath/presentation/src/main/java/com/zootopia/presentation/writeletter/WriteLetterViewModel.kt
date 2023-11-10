@@ -1,10 +1,14 @@
 package com.zootopia.presentation.writeletter
 
-import androidx.compose.runtime.MutableState
-import androidx.lifecycle.ViewModel
+import android.graphics.Bitmap
+import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.zootopia.domain.model.user.UserDto
+import com.zootopia.domain.model.writeletter.HandLetterRequestDto
+import com.zootopia.domain.usecase.writeletter.PostHandLetterUseCase
 import com.zootopia.presentation.R
+import com.zootopia.presentation.config.BaseViewModel
+import com.zootopia.presentation.util.getRealPathFromUri
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,8 +19,8 @@ private const val TAG = "WriteLetterViewModel"
 
 @HiltViewModel
 class WriteLetterViewModel @Inject constructor(
-
-) : ViewModel() {
+    private val postHandLetterUseCase: PostHandLetterUseCase
+) : BaseViewModel() {
 
     private var _selectedLetterPaperUrl: MutableStateFlow<String> = MutableStateFlow("")
     val selectedLetterPaperUrl: StateFlow<String> = _selectedLetterPaperUrl
@@ -35,11 +39,37 @@ class WriteLetterViewModel @Inject constructor(
     private var _isEraserSelected: MutableStateFlow<Boolean> = MutableStateFlow<Boolean>(false)
     val isEraserSelected: StateFlow<Boolean> = _isEraserSelected
 
-    private var _searchedUserList: MutableStateFlow<MutableList<UserDto>> = MutableStateFlow(mutableListOf<UserDto>())
+    private var _searchedUserList: MutableStateFlow<MutableList<UserDto>> =
+        MutableStateFlow(mutableListOf<UserDto>())
     val searchedUserList: StateFlow<MutableList<UserDto>> = _searchedUserList
 
-    private var _selectedUser: MutableStateFlow<UserDto> = MutableStateFlow<UserDto>(UserDto("", "", ""))
+    private var _selectedUser: MutableStateFlow<UserDto> =
+        MutableStateFlow<UserDto>(UserDto("", "", ""))
     val selectedUser: StateFlow<UserDto> = _selectedUser
+
+    private val _drawingBitmap = MutableStateFlow<Bitmap?>(null)
+    val drawingBitmap: StateFlow<Bitmap?> = _drawingBitmap
+
+    private val _letterPaperWidth = MutableStateFlow<Float>(0F)
+    val letterPaperWith = _letterPaperWidth
+
+    private val _letterPaperHeight = MutableStateFlow<Float>(0F)
+    val letterPaperHeight = _letterPaperHeight
+
+    private val _penBitmap = MutableStateFlow<Bitmap?>(null)
+    var penBitmap: StateFlow<Bitmap?> = _penBitmap
+
+    private val _imageList = MutableStateFlow<MutableList<Uri>>(mutableListOf())
+    var imageList: StateFlow<MutableList<Uri>> = _imageList
+
+    init {
+        resetBitmap()
+    }
+
+    fun resetBitmap(){
+        _drawingBitmap.value = null
+        _penBitmap.value = null
+    }
 
     fun setSelectedLetterPaperUrl(url: String) {
         viewModelScope.launch {
@@ -56,6 +86,13 @@ class WriteLetterViewModel @Inject constructor(
     fun setEraserState(isEraserSelected: Boolean) {
         viewModelScope.launch {
             _isEraserSelected.value = isEraserSelected
+        }
+    }
+
+    fun setLetterPaperSize(width: Float, height: Float){
+        viewModelScope.launch {
+            _letterPaperWidth.value = width
+            _letterPaperHeight.value = height
         }
     }
 
@@ -91,7 +128,7 @@ class WriteLetterViewModel @Inject constructor(
         }
     }
 
-    fun setSelectedUser(user: UserDto){
+    fun setSelectedUser(user: UserDto) {
         viewModelScope.launch {
             _selectedUser.emit(user)
         }
@@ -101,5 +138,35 @@ class WriteLetterViewModel @Inject constructor(
         viewModelScope.launch {
             _selectedColor.value = id
         }
+    }
+
+    fun setDrawingBitmap(bitmap: Bitmap) {
+        _drawingBitmap.value = bitmap
+    }
+
+    fun setPenBitmap(bitmap: Bitmap){
+        _penBitmap.value = bitmap
+    }
+
+    fun setImageList(list: MutableList<Uri>){
+        viewModelScope.launch {
+            _imageList.value = list
+        }
+    }
+
+    fun saveLetter(contentUri: String, imageList: MutableList<String>) {
+
+        getApiResult(
+            block = {
+                postHandLetterUseCase.invoke(
+                    handLetterRequestDto = HandLetterRequestDto(_selectedUser.value.memberId),
+                    content = contentUri,
+                    fileList = imageList
+                )
+            },
+            success = {
+
+            }
+        )
     }
 }

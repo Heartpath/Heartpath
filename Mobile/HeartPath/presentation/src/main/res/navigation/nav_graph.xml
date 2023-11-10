@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/loginFragment"
@@ -58,7 +58,11 @@
         android:id="@+id/receiveLetterFragment"
         android:name="com.zootopia.presentation.receiveletter.ReceiveLetterFragment"
         android:label="ReceiveLetterFragment"
-        tools:layout="@layout/fragment_receive_letter" />
+        tools:layout="@layout/fragment_receive_letter" >
+        <action
+            android:id="@+id/action_receiveLetterFragment_to_readLetterFragment"
+            app:destination="@id/readLetterFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/mapFragment"
@@ -132,7 +136,11 @@
         android:id="@+id/handWriteFragment"
         android:name="com.zootopia.presentation.writeletter.handwrite.HandWriteFragment"
         android:label="HandWriteFragment"
-        tools:layout="@layout/fragment_hand_write" />
+        tools:layout="@layout/fragment_hand_write" >
+        <action
+            android:id="@+id/action_handWriteFragment_to_addLetterImageFragment"
+            app:destination="@id/addLetterImageFragment" />
+    </fragment>
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.zootopia.presentation.login.SignUpFragment"
@@ -148,11 +156,16 @@
         android:id="@+id/typingWriteFragment"
         android:name="com.zootopia.presentation.writeletter.typingwrite.TypingWriteFragment"
         android:label="TypingWriteFragment"
-        tools:layout="@layout/fragment_typing_write"/>
+        tools:layout="@layout/fragment_typing_write">
+        <action
+            android:id="@+id/action_typingWriteFragment_to_addLetterImageFragment"
+            app:destination="@id/addLetterImageFragment" />
+    </fragment>
     <fragment
         android:id="@+id/selectUserFragment"
         android:name="com.zootopia.presentation.writeletter.selectuser.SelectUserFragment"
-        android:label="SelectUserFragment" >
+        android:label="SelectUserFragment"
+        tools:layout="@layout/fragment_select_user">
         <action
             android:id="@+id/action_selectUserFragment_to_selectLetterTypeFragment"
             app:destination="@id/selectLetterTypeFragment"
@@ -162,5 +175,16 @@
         android:id="@+id/arCoreReadFragment"
         android:name="com.zootopia.presentation.arcore.ArCoreReadFragment"
         android:label="ArCoreReadFragment" />
+    <fragment
+        android:id="@+id/addLetterImageFragment"
+        android:name="com.zootopia.presentation.writeletter.addletterimage.AddLetterImageFragment"
+        android:label="AddLetterImageFragment"
+        tools:layout="@layout/fragment_add_letter_image"/>
+    <fragment
+        android:id="@+id/readLetterFragment"
+        android:name="com.zootopia.presentation.readletter.ReadLetterFragment"
+        android:label="fragment_read_letter"
+        tools:layout="@layout/fragment_read_letter" />
+
 
 </navigation>

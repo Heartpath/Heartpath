@@ -1,7 +1,11 @@
 package com.zootopia.presentation.writeletter.handwrite
 
 import android.content.Context
+import android.content.Intent.getIntent
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -19,8 +23,10 @@ import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentHandWriteBinding
+import com.zootopia.presentation.util.viewToBitmap
 import com.zootopia.presentation.writeletter.WriteLetterViewModel
 import kotlinx.coroutines.launch
+
 
 private const val TAG = "HandWriteFragment_HP"
 
@@ -33,6 +39,7 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
     private val writeLetterViewModel: WriteLetterViewModel by activityViewModels()
     private var imageViewHeight: Float = 0F
     private var imageViewWidth: Float = 0F
+    private var bmp: Bitmap? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -76,6 +83,7 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
     }
 
     private fun setLetterPaper(url: String) = with(binding) {
+
         Glide.with(mainActivity).load(url)
             .into(object : CustomTarget<Drawable>() {
                 override fun onResourceReady(
@@ -85,22 +93,9 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
                     // 이미지의 너비와 높이를 가져옴
                     val imageWidth = resource.intrinsicWidth.toFloat()
                     val imageHeight = resource.intrinsicHeight.toFloat()
-                    Log.d(
-                        TAG,
-                        "onResourceReady: image size ${imageWidth} ${imageHeight}"
-                    )
-
-                    Log.d(
-                        TAG,
-                        "onResourceReady: canvas size ${imageViewWidth} ${imageViewHeight}"
-                    )
 
                     // 이미지의 비율을 계산
                     val imageAspectRatio = imageWidth / imageHeight
-                    Log.d(
-                        TAG,
-                        "onResourceReady: ${imageAspectRatio}"
-                    )
 
                     // 이미지의 비율에 따라 캔버스에 맞게 크기 조정
                     val newImageWidth: Float
@@ -115,10 +110,7 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
 
                     // 이미지뷰 크기와 이미지 크기 설정
                     imageviewLetterPaper.background = resource
-                    Log.d(
-                        TAG,
-                        "onResourceReady: new size ${newImageHeight.toInt()} ${newImageWidth.toInt()}"
-                    )
+                    writeLetterViewModel.setLetterPaperSize(newImageWidth, newImageHeight)
                     imageviewLetterPaper.layoutParams.width = newImageWidth.toInt()
                     imageviewLetterPaper.layoutParams.height = newImageHeight.toInt()
                     imageviewLetterPaper.requestLayout()
@@ -128,12 +120,21 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
                 }
 
             })
+
+
+       
+        
     }
 
     private fun initClickListener() = with(binding) {
         buttonPalette.setOnClickListener {
             val bottomSheetPalette = BottomSheetPalette()
             bottomSheetPalette.show(childFragmentManager, "BottomSheetPalette")
+        }
+        buttonSave.setOnClickListener {
+            bmp = viewToBitmap(imageviewLetterPaper)
+            writeLetterViewModel.setDrawingBitmap(bmp!!)
+            navController.navigate(HandWriteFragmentDirections.actionHandWriteFragmentToAddLetterImageFragment())
         }
     }
 
@@ -157,5 +158,6 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
         writeLetterViewModel.setSelectedLetterPaperUrl("")
         writeLetterViewModel.setPenSize(10f)
         writeLetterViewModel.setEraserState(false)
+        writeLetterViewModel.resetBitmap()
     }
 }
