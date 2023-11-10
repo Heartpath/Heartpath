@@ -1,9 +1,11 @@
 package com.zootopia.presentation.writeletter.handwrite
 
 import android.content.Context
+import android.content.Intent.getIntent
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -21,10 +23,10 @@ import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentHandWriteBinding
-import com.zootopia.presentation.util.LetterType
+import com.zootopia.presentation.util.viewToBitmap
 import com.zootopia.presentation.writeletter.WriteLetterViewModel
-import com.zootopia.presentation.writeletter.selecttype.SelectLetterTypeFragmentDirections
 import kotlinx.coroutines.launch
+
 
 private const val TAG = "HandWriteFragment_HP"
 
@@ -81,6 +83,7 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
     }
 
     private fun setLetterPaper(url: String) = with(binding) {
+
         Glide.with(mainActivity).load(url)
             .into(object : CustomTarget<Drawable>() {
                 override fun onResourceReady(
@@ -90,22 +93,9 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
                     // 이미지의 너비와 높이를 가져옴
                     val imageWidth = resource.intrinsicWidth.toFloat()
                     val imageHeight = resource.intrinsicHeight.toFloat()
-                    Log.d(
-                        TAG,
-                        "onResourceReady: image size ${imageWidth} ${imageHeight}"
-                    )
-
-                    Log.d(
-                        TAG,
-                        "onResourceReady: canvas size ${imageViewWidth} ${imageViewHeight}"
-                    )
 
                     // 이미지의 비율을 계산
                     val imageAspectRatio = imageWidth / imageHeight
-                    Log.d(
-                        TAG,
-                        "onResourceReady: ${imageAspectRatio}"
-                    )
 
                     // 이미지의 비율에 따라 캔버스에 맞게 크기 조정
                     val newImageWidth: Float
@@ -120,10 +110,7 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
 
                     // 이미지뷰 크기와 이미지 크기 설정
                     imageviewLetterPaper.background = resource
-                    Log.d(
-                        TAG,
-                        "onResourceReady: new size ${newImageHeight.toInt()} ${newImageWidth.toInt()}"
-                    )
+                    writeLetterViewModel.setLetterPaperSize(newImageWidth, newImageHeight)
                     imageviewLetterPaper.layoutParams.width = newImageWidth.toInt()
                     imageviewLetterPaper.layoutParams.height = newImageHeight.toInt()
                     imageviewLetterPaper.requestLayout()
@@ -133,6 +120,10 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
                 }
 
             })
+
+
+       
+        
     }
 
     private fun initClickListener() = with(binding) {
@@ -160,13 +151,6 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
         }
     }
 
-    private fun viewToBitmap(view: View): Bitmap {
-        val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        view.draw(canvas)
-        return bitmap
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "onDestroy: ")
@@ -174,5 +158,6 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
         writeLetterViewModel.setSelectedLetterPaperUrl("")
         writeLetterViewModel.setPenSize(10f)
         writeLetterViewModel.setEraserState(false)
+        writeLetterViewModel.resetBitmap()
     }
 }

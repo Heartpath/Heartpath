@@ -25,7 +25,7 @@ private const val TAG = "LetterPaperCanvas_HP"
 class LetterPaperCanvas(context: Context?, attrs: AttributeSet?) : ImageView(context, attrs) {
 
     private lateinit var viewModel: WriteLetterViewModel
-    private lateinit var mBitmap: Bitmap
+    private var mBitmap: Bitmap? = null
     private lateinit var mCanvas: Canvas
     private lateinit var mPath: Path
     private lateinit var mPaint: Paint
@@ -80,6 +80,14 @@ class LetterPaperCanvas(context: Context?, attrs: AttributeSet?) : ImageView(con
                     isEraserSelected = it
                 }
             }
+
+            activity.lifecycleScope.launch {
+                viewModel.penBitmap.collectLatest {
+                    if(it != null){
+                        mBitmap = it
+                    }
+                }
+            }
         }
 
     }
@@ -87,15 +95,20 @@ class LetterPaperCanvas(context: Context?, attrs: AttributeSet?) : ImageView(con
     //이 view가 생성될때 호출된다. 그 크기를 w, h로 준다
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
-        mCanvas = Canvas(mBitmap)
-
+        val newBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+        if(mBitmap == null){
+            mBitmap = newBitmap
+        }
+        if(mBitmap != null){
+            mCanvas = Canvas(mBitmap!!)
+            viewModel.setPenBitmap(mBitmap!!)
+        }
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         drawPathOnCanvas()
-        canvas.drawBitmap(mBitmap, 0F, 0F, null) //지금까지 그려진 내용
+        mBitmap?.let { canvas.drawBitmap(it, 0F, 0F, null) } //지금까지 그려진 내용
     }
 
     // 이 view 에 일어나는 터치 이벤트 처리
