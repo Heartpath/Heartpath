@@ -20,6 +20,7 @@
             android:layout_marginEnd="@dimen/_10sdp"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/icon_pen" />
 
         <ImageButton
@@ -28,7 +29,26 @@
             android:layout_height="@dimen/_24sdp"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/icon_eraser" />
+
+        <ImageView
+            android:id="@+id/imageview_pen_style_view"
+            android:layout_width="3dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_circle"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/_30sdp"
+            />
+        <ImageView
+            android:id="@+id/imageview_eraser_style_view"
+            android:visibility="gone"
+            android:layout_width="3dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_eraser_point"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/_30sdp"
+            />
     </LinearLayout>
 
     <Space
@@ -36,12 +56,12 @@
         android:layout_height="@dimen/_6sdp" />
 
     <com.google.android.material.slider.Slider
+        android:id="@+id/slider_pen_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:stepSize="1"
-        android:value="1"
-        android:valueFrom="1"
-        android:valueTo="10"
+        android:stepSize="10"
+        android:valueFrom="10"
+        android:valueTo="100"
         app:labelBehavior="withinBounds"
         app:labelStyle="@style/tooltip"
         app:thumbColor="@color/DustyBlue"
@@ -55,7 +75,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_palette_colors"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_100sdp"/>
+        android:layout_height="wrap_content"/>
     <Space
         android:layout_width="wrap_content"
         android:layout_height="@dimen/_10sdp" />

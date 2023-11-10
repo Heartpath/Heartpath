@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "MainViewModel_HeartPath"
+
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getPermissionRejectedUseCase: GetPermissionRejectedUseCase,
@@ -23,25 +24,33 @@ class MainViewModel @Inject constructor(
     val isShowPermissionDialog: StateFlow<Boolean>
         get() = _isShowPermissionDialog.asStateFlow()
     
-    fun getPermissionRejected(key: String) {
-        viewModelScope.launch {
-            getPermissionRejectedUseCase.invoke(key).collect { value ->
-                Log.d(TAG, "getPermissionRejected: $value")
-                when(value) {
-                    0 -> {
-                        setPermissionRejected(key, value+1)
-                    }
-                    
-                    1 -> {
-                        setPermissionRejected(key, value+1)
-                    }
-                    
-                    2 -> {
-                        // 다이얼로그 출력
-                        setIsShowPermissionDialog(true)
+    fun getPermissionRejected(keys: MutableList<String>) {
+        Log.d(TAG, "getPermissionRejected: 들어옴~")
+        var isDialog = false
+        keys.forEach {
+            viewModelScope.launch {
+                getPermissionRejectedUseCase.invoke(it).collect{ value ->
+                    Log.d(TAG, "getPermissionRejected: $it -> $value")
+                    when (value) {
+                        0 -> {
+                            setPermissionRejected(it, value + 1)
+                        }
+                        
+                        1 -> {
+                            setPermissionRejected(it, value + 1)
+                        }
+                        
+                        2 -> {
+                            // 다이얼로그 출력
+                            isDialog = true
+                        }
                     }
                 }
             }
+        }
+        Log.d(TAG, "getPermissionRejected: 다이얼로그 : $isDialog")
+        viewModelScope.launch {
+            if (isDialog) setIsShowPermissionDialog(true)
         }
     }
     
@@ -50,7 +59,6 @@ class MainViewModel @Inject constructor(
             setPermissionRejectedUseCase.invoke(key, stack)
         }
     }
-    
     
     suspend fun setIsShowPermissionDialog(value: Boolean) {
         viewModelScope.launch {

@@ -3,10 +3,10 @@ package com.zootopia.presentation.home
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
@@ -46,12 +46,12 @@ class HomeFragment :
         }
 
         buttonWriteLetter.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_selectLetterTypeFragment)
+            findNavController().navigate(R.id.action_homeFragment_to_selectUserFragment)
         }
     }
 
     private fun initView() = with(binding) {
-
+    
     }
 
     private fun initAnimation() = with(binding) {
