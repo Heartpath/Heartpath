@@ -29,7 +29,6 @@ import com.zootopia.presentation.util.hasPermissions
 import com.zootopia.presentation.util.requestPermissionsOnClick
 import com.zootopia.presentation.util.saveImageToGallery
 import com.zootopia.presentation.writeletter.WriteLetterViewModel
-import com.zootopia.presentation.writeletter.handwrite.HandWriteFragmentDirections
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -98,6 +97,7 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
             writeLetterViewModel.isSendSuccess.collectLatest {
                 if (it) {
                     writeLetterViewModel.resetIsSendSuccess()
+                    writeLetterViewModel.resetImageList()
                     Toast.makeText(mainActivity, R.string.add_letter_image_write_success, Toast.LENGTH_LONG).show()
                     navController.navigate(AddLetterImageFragmentDirections.actionAddLetterImageFragmentToHomeFragment())
                 }
@@ -111,9 +111,17 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
                 val letterUri =
                     saveImageToGallery(mainActivity, writeLetterViewModel.drawingBitmap.value!!)
                 if (letterUri != null) {
-                    val realPath = getRealPathFromUri(mainActivity, letterUri)
-                    if (realPath != null)
-                        writeLetterViewModel.saveLetter(realPath, mutableListOf())
+                    val realPathOfLetter = getRealPathFromUri(mainActivity, letterUri)
+                    if (realPathOfLetter != null){
+                        var realFilePathList = mutableListOf<String>()
+                        imageList.forEachIndexed { index, uri ->
+                            val filePath = getRealPathFromUri(mainActivity, uri)
+                            if(filePath != null){
+                                realFilePathList.add(filePath)
+                            }
+                        }
+                        writeLetterViewModel.saveLetter(realPathOfLetter, realFilePathList)
+                    }
                 }
             }
         }

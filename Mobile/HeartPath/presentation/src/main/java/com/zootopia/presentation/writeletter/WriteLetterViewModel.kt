@@ -175,6 +175,10 @@ class WriteLetterViewModel @Inject constructor(
         _imageList.value = newImageList
     }
 
+    fun resetImageList(){
+        _imageList.value = mutableListOf()
+    }
+
     fun resetIsSendSuccess(){
         _isSendSuccess.value = false
     }
