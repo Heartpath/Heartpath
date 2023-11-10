@@ -82,7 +82,9 @@ class MapViewModel @Inject constructor(
     private val _tmapWalkRoadInfo = MutableSharedFlow<FeatureCollectionDto>()
     val tmapWalkRoadInfo: SharedFlow<FeatureCollectionDto>
         get() = _tmapWalkRoadInfo.asSharedFlow()
-
+    
+    var walkRoad: FeatureCollectionDto? = null
+    
     @OptIn(ExperimentalCoroutinesApi::class)
     fun resetTmapWalkRoadInfo() {
         _tmapWalkRoadInfo.resetReplayCache()
