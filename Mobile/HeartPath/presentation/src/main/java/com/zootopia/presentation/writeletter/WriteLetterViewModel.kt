@@ -69,6 +69,9 @@ class WriteLetterViewModel @Inject constructor(
     private val _isSendSuccess = MutableStateFlow<Boolean>(false)
     var isSendSuccess: StateFlow<Boolean> = _isSendSuccess
 
+    private val _letterText = MutableStateFlow<String>("")
+    var letterText: StateFlow<String> = _letterText
+
     init {
         resetBitmap()
     }
@@ -148,6 +151,10 @@ class WriteLetterViewModel @Inject constructor(
         _penBitmap.value = bitmap
     }
 
+    fun setLetterText(text: String){
+        _letterText.value = text
+    }
+
     fun addImageList(list: MutableList<Uri>) { //리스트에 이미지를 추가함
         viewModelScope.launch {
             val newList = mutableListOf<Uri>()
@@ -180,7 +187,7 @@ class WriteLetterViewModel @Inject constructor(
         _isSendSuccess.value = false
     }
 
-    fun saveLetter(contentUri: String, imageList: MutableList<String>) {
+    fun saveHandWriteLetter(contentUri: String, imageList: MutableList<String>) {
 
         getApiResult(
             block = {
@@ -195,4 +202,17 @@ class WriteLetterViewModel @Inject constructor(
             }
         )
     }
+
+    fun saveTypingWriteLetter(contentUri: String, imageList: MutableList<String>, text: String){
+        getApiResult(
+            block = {
+
+            },
+            success = {
+
+            }
+        )
+    }
+
+
 }

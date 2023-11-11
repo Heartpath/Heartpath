@@ -22,6 +22,7 @@ import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentTypingWriteBinding
 import com.zootopia.presentation.R
 import com.zootopia.presentation.util.MaxLineLimitTextWatcher
+import com.zootopia.presentation.util.viewToBitmap
 import com.zootopia.presentation.writeletter.WriteLetterViewModel
 import kotlinx.coroutines.launch
 
@@ -136,11 +137,18 @@ class TypingWriteFragment : BaseFragment<FragmentTypingWriteBinding>(
     }
 
     private fun initListener() = with(binding) {
-
+        buttonSave.setOnClickListener {
+            val bitmap = viewToBitmap(imageviewLetterPaper)
+            writeLetterViewModel.setDrawingBitmap(bitmap)
+            writeLetterViewModel.setLetterText(edittextLetter.text.toString())
+            navController.navigate(TypingWriteFragmentDirections.actionTypingWriteFragmentToAddLetterImageFragment())
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         writeLetterViewModel.setSelectedLetterPaperUrl("")
+        writeLetterViewModel.resetBitmap()
+        //텍스트 리셋
     }
 }
