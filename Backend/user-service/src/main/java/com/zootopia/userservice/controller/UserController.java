@@ -209,10 +209,15 @@ public class UserController {
                             "]"))),
     })
     @GetMapping("/search")
-    public List<UserSearchDTO> searchUserByID(
+    public ResponseEntity<BaseResponse> searchUserByID(
             @RequestParam(name = "id") String searchMemberID,
             @RequestParam(name = "limit") int limit
     ) {
-        return userService.searchUserByID(searchMemberID, limit);
+
+        List<UserSearchDTO> res = userService.searchUserByID(searchMemberID, limit);
+
+        BaseResponse baseResponse = new BaseResponse(200, "유저 검색 결과입니다.", res);
+
+        return ResponseEntity.status(200).body(baseResponse);
     }
 }
