@@ -82,7 +82,20 @@
             android:layout_marginHorizontal="@dimen/_10sdp"
             tools:itemCount="10"
             tools:listitem="@layout/item_select_user" />
+
     </LinearLayout>
 
+    <include
+        android:id="@+id/custom_no_search_result"
+        layout="@layout/custom_no_search_result"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_heartpath_select_user"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintHeight_percent="0.2"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

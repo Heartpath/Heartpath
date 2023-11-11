@@ -48,9 +48,9 @@ class WriteLetterViewModel @Inject constructor(
     private var _isEraserSelected: MutableStateFlow<Boolean> = MutableStateFlow<Boolean>(false)
     val isEraserSelected: StateFlow<Boolean> = _isEraserSelected
 
-    private var _searchedUserList: MutableStateFlow<List<SearchUserInfoDto>> =
-        MutableStateFlow(mutableListOf<SearchUserInfoDto>())
-    val searchedUserList: StateFlow<List<SearchUserInfoDto>> = _searchedUserList
+    private var _searchedUserList: MutableStateFlow<List<SearchUserInfoDto>?> =
+        MutableStateFlow(null)
+    val searchedUserList: StateFlow<List<SearchUserInfoDto>?> = _searchedUserList
 
     private var _selectedUser: MutableStateFlow<SearchUserInfoDto> =
         MutableStateFlow<SearchUserInfoDto>(SearchUserInfoDto("", "", "", false))
@@ -136,15 +136,6 @@ class WriteLetterViewModel @Inject constructor(
                 _searchedUserList.emit(it)
             }
         )
-//        viewModelScope.launch {
-//            var list = mutableListOf<SearchUserInfoDto>().apply {
-//                add(SearchUserInfoDto("dodo2504", "도연쓰", "https://picsum.photos/id/237/200/300"))
-//                add(SearchUserInfoDto("dodo2504_2", "도연쓰2", "https://picsum.photos/id/237/200/300"))
-//                add(SearchUserInfoDto("dodo2504_3", "도연쓰3", "https://picsum.photos/id/237/200/300"))
-//                add(SearchUserInfoDto("dodo2504_4", "도연쓰4", "https://picsum.photos/id/237/200/300"))
-//            }
-//            _searchedUserList.emit(list)
-//        }
     }
 
     fun setSelectedUser(user: SearchUserInfoDto) {
@@ -205,6 +196,10 @@ class WriteLetterViewModel @Inject constructor(
 
     fun resetLetterText(){
         _letterText.value = ""
+    }
+
+    fun resetSearchedUserList(){
+        _searchedUserList.value = null
     }
 
     fun saveHandWriteLetter(contentUri: String, imageList: MutableList<String>) {

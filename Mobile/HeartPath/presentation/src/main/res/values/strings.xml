@@ -34,6 +34,7 @@
     <string name="add_letter_image_forbidden_word">금지어가 포함되어 전송 불가합니다.</string>
     <string name="add_letter_image_no_text">편지 내용을 작성해주세요!</string>
     <string name="add_letter_unknown_err">알수없는 에러가 발생했습니다. 다시 시도해주세요.</string>
+    <string name="no_search_result">검색 결과가 없습니다!</string>
 
 
     <string name="add_friend_dialog_question">친구로 추가할까요?</string>
