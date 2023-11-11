@@ -144,6 +144,10 @@
         <action
             android:id="@+id/action_handWriteFragment_to_addLetterImageFragment"
             app:destination="@id/addLetterImageFragment" />
+        <argument
+            android:name="letterUrl"
+            android:defaultValue=""
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -164,6 +168,10 @@
         <action
             android:id="@+id/action_typingWriteFragment_to_addLetterImageFragment"
             app:destination="@id/addLetterImageFragment" />
+        <argument
+            android:name="letterUrl"
+            android:defaultValue=""
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/selectUserFragment"
