@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             style="@style/DarkGray_14_ExtraBold_NanumText"
             android:layout_marginTop="@dimen/_10sdp"
+            android:layout_gravity="center"
             tools:text = "bird name"/>
     </LinearLayout>
 
