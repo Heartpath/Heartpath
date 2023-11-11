@@ -37,17 +37,32 @@ class SelectUserFragment : BaseFragment<FragmentSelectUserBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
+        initData()
         initRecyclerView()
         initCollecter()
         initClickListener()
     }
 
+    fun initData(){
+
+    }
+
     fun initCollecter() {
         lifecycleScope.launch {
             writeLetterViewModel.searchedUserList.collectLatest {
-                searchedUserList.clear()
-                searchedUserList.addAll(it)
-                searchedUserAdapter.notifyDataSetChanged()
+                if(it == null){
+                    binding.customNoSearchResult.root.visibility = View.GONE
+                }else{
+                    if(it.size ==0) {
+                        binding.customNoSearchResult.root.visibility = View.VISIBLE
+                    }else{
+                        binding.customNoSearchResult.root.visibility = View.GONE
+                    }
+                    searchedUserList.clear()
+                    searchedUserList.addAll(it)
+                    searchedUserAdapter.notifyDataSetChanged()
+                }
+
             }
         }
     }
@@ -76,6 +91,11 @@ class SelectUserFragment : BaseFragment<FragmentSelectUserBinding>(
                 writeLetterViewModel.searchUser(editTextSearch.text.toString(), 10)
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        writeLetterViewModel.resetSearchedUserList()
     }
 
 }
