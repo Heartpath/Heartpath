@@ -16,6 +16,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -26,6 +27,7 @@ import com.zootopia.presentation.databinding.FragmentHandWriteBinding
 import com.zootopia.presentation.util.LetterType
 import com.zootopia.presentation.util.viewToBitmap
 import com.zootopia.presentation.writeletter.WriteLetterViewModel
+import com.zootopia.presentation.writeletter.typingwrite.TypingWriteFragmentArgs
 import kotlinx.coroutines.launch
 
 
@@ -41,6 +43,8 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
     private var imageViewHeight: Float = 0F
     private var imageViewWidth: Float = 0F
     private var bmp: Bitmap? = null
+    private val args: HandWriteFragmentArgs by navArgs()
+    private var url = ""
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -51,6 +55,7 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
 
+        url = args.letterUrl
         initViewReadyListener()
         initCollecter()
         initClickListener()
@@ -67,23 +72,23 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
                         .removeOnGlobalLayoutListener(this)
                     imageViewHeight = binding.imageviewLetterPaper.getHeight().toFloat()
                     imageViewWidth = binding.imageviewLetterPaper.getWidth().toFloat()
-                    setLetterPaper(writeLetterViewModel.selectedLetterPaperUrl.value)
+                    setLetterPaper()
                 }
             })
         }
     }
 
     private fun initCollecter() = with(binding) {
-        lifecycleScope.launch {
-            writeLetterViewModel.selectedLetterPaperUrl.collect {
-                Log.d(TAG, "initCollecter: url collect")
-                setLetterPaper(it)
-            }
-        }
+//        lifecycleScope.launch {
+//            writeLetterViewModel.selectedLetterPaperUrl.collect {
+//                Log.d(TAG, "initCollecter: url collect")
+//                setLetterPaper(it)
+//            }
+//        }
 
     }
 
-    private fun setLetterPaper(url: String) = with(binding) {
+    private fun setLetterPaper() = with(binding) {
 
         Glide.with(mainActivity).load(url)
             .into(object : CustomTarget<Drawable>() {
