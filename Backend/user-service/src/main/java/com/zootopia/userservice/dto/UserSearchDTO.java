@@ -11,6 +11,4 @@ public class UserSearchDTO {
     private String nickname;
 
     private String profileImagePath;
-
-    private boolean isFriend;
 }
