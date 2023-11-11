@@ -27,25 +27,25 @@
         WHERE m.MEMBER_ID LIKE CONCAT(#{query}, '%') LIMIT #{limit};
     </select>
 
-        <select id="readLimitUserByIDWithFriendRelation"
-                parameterType="com.zootopia.userservice.dto.UserSearchParam"
-                resultType="UserSearchDTO">
+    <select id="readLimitUserByIDWithFriendRelation"
+            parameterType="com.zootopia.userservice.dto.UserSearchParam"
+            resultType="UserSearchDTO">
 
-            SELECT `res`.MEMBER_ID          AS `memberID`,
-                   `res`.NICKNAME           AS `nickname`,
-                   `res`.PROFILE_IMAGE_PATH AS `profileImagePath`,
-                   CASE
-                       WHEN f.IS_BLOCKED = FALSE
+        SELECT `res`.MEMBER_ID          AS `memberID`,
+               `res`.NICKNAME           AS `nickname`,
+               `res`.PROFILE_IMAGE_PATH AS `profileImagePath`,
+               CASE
+                   WHEN f.IS_BLOCKED = FALSE
                        THEN TRUE
-                       WHEN f.IS_BLOCKED IS NULL
+                   WHEN f.IS_BLOCKED IS NULL
                        THEN FALSE
-                   END                      AS `isFriend`
-            FROM (SELECT m.*
-                  FROM `MEMBER` m
-                  WHERE m.MEMBER_ID != #{memberID} AND m.MEMBER_ID LIKE CONCAT(#{query}, '%') LIMIT #{limit}) AS `res`
-                     LEFT JOIN FRIEND f ON f.TO_MEMBER_ID = `res`.MEMBER_ID
-            WHERE f.FROM_MEMBER_ID = #{memberID}
-               OR f.FROM_MEMBER_ID IS null;
-        </select>
+                   END                  AS `isFriend`
+        FROM (SELECT m.*
+              FROM `MEMBER` m
+              WHERE m.MEMBER_ID != #{memberID} AND m.MEMBER_ID LIKE CONCAT(#{query}, '%')
+              LIMIT #{limit}
+              ) AS `res`
+        LEFT JOIN FRIEND f ON f.FROM_MEMBER_ID = #{memberID} AND f.TO_MEMBER_ID = `res`.MEMBER_ID;
+    </select>
 
 </mapper>
