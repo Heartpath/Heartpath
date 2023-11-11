@@ -14,6 +14,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -24,11 +25,13 @@ import com.zootopia.presentation.MainViewModel
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentAddLetterImageBinding
+import com.zootopia.presentation.util.LetterType
 import com.zootopia.presentation.util.getRealPathFromUri
 import com.zootopia.presentation.util.hasPermissions
 import com.zootopia.presentation.util.requestPermissionsOnClick
 import com.zootopia.presentation.util.saveImageToGallery
 import com.zootopia.presentation.writeletter.WriteLetterViewModel
+import com.zootopia.presentation.writeletter.selectletterpaper.SelectLetterPaperFragmentArgs
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -44,6 +47,7 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
     private val writeLetterViewModel: WriteLetterViewModel by activityViewModels()
     private lateinit var addLetterImageAdapter: AddLetterImageAdapter
     private var imageList: MutableList<Uri> = mutableListOf()
+    private val args: SelectLetterPaperFragmentArgs by navArgs()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -120,7 +124,12 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
                                 realFilePathList.add(filePath)
                             }
                         }
-                        writeLetterViewModel.saveHandWriteLetter(realPathOfLetter, realFilePathList)
+                        if(args.letterType == LetterType.HAND_WRITE){
+                            writeLetterViewModel.saveHandWriteLetter(realPathOfLetter, realFilePathList)
+                        }else{
+                            writeLetterViewModel.saveTypingWriteLetter(realPathOfLetter, realFilePathList, writeLetterViewModel.letterText.value)
+                        }
+
                     }
                 }
             }
