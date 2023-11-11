@@ -12,14 +12,9 @@
         android:background="@color/PrimaryLightBlue"
         android:orientation="vertical">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintlayout_letter_paper_box"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1">
 
-            <ImageView
+
+            <androidx.cardview.widget.CardView
                 android:id="@+id/imageview_letter_paper"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -28,22 +23,24 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.5"
-                tools:src="@tools:sample/avatars"></ImageView>
+                android:background="@color/DustyBlue"
+                tools:src="@tools:sample/avatars">
+                <EditText
+                    android:id="@+id/edittext_letter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:scrollHorizontally="false"
+                    android:text=""
+                    android:gravity="top"
+                    android:textColor="@color/black"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageview_letter_paper"
+                    app:layout_constraintEnd_toEndOf="@id/imageview_letter_paper"
+                    app:layout_constraintStart_toStartOf="@+id/imageview_letter_paper"
+                    app:layout_constraintTop_toTopOf="@+id/imageview_letter_paper" />
+            </androidx.cardview.widget.CardView>
 
-            <EditText
-                android:id="@+id/edittext_letter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:scrollHorizontally="false"
-                android:text=""
-                android:gravity="top"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toBottomOf="@+id/imageview_letter_paper"
-                app:layout_constraintEnd_toEndOf="@id/imageview_letter_paper"
-                app:layout_constraintStart_toStartOf="@+id/imageview_letter_paper"
-                app:layout_constraintTop_toTopOf="@+id/imageview_letter_paper" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -120,7 +120,7 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
                                 realFilePathList.add(filePath)
                             }
                         }
-                        writeLetterViewModel.saveLetter(realPathOfLetter, realFilePathList)
+                        writeLetterViewModel.saveHandWriteLetter(realPathOfLetter, realFilePathList)
                     }
                 }
             }
