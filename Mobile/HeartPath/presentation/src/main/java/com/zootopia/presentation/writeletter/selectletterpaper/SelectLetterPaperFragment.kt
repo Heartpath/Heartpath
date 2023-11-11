@@ -96,7 +96,6 @@ class SelectLetterPaperFragment : BaseFragment<FragmentSelectLetterPaperBinding>
             if (args.letterType == LetterType.HAND_WRITE) {
                 navController.navigate(SelectLetterPaperFragmentDirections.actionSelectLetterPaperFragmentToHandWriteFragment(url))
             } else {
-               // navController.navigate(R.id.action_selectLetterPaperFragment_to_typingWriteFragment)
                 navController.navigate(SelectLetterPaperFragmentDirections.actionSelectLetterPaperFragmentToTypingWriteFragment(url))
             }
         }

@@ -79,12 +79,6 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
     }
 
     private fun initCollecter() = with(binding) {
-//        lifecycleScope.launch {
-//            writeLetterViewModel.selectedLetterPaperUrl.collect {
-//                Log.d(TAG, "initCollecter: url collect")
-//                setLetterPaper(it)
-//            }
-//        }
 
     }
 

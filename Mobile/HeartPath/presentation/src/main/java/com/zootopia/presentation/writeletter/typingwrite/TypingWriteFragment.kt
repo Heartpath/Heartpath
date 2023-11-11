@@ -77,12 +77,6 @@ class TypingWriteFragment : BaseFragment<FragmentTypingWriteBinding>(
     }
 
     private fun initCollecter() = with(binding) {
-//        lifecycleScope.launch {
-//            writeLetterViewModel.selectedLetterPaperUrl.collect {
-//                Log.d(TAG, "initCollecter: url collect")
-//                setLetterPaper(it)
-//            }
-//        }
 
     }
 
