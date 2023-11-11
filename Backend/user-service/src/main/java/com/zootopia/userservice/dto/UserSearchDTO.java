@@ -1,9 +1,6 @@
 package com.zootopia.userservice.dto;
 
-import lombok.Getter;
 
-
-@Getter
 public class UserSearchDTO {
 
     private String memberID;
@@ -11,4 +8,22 @@ public class UserSearchDTO {
     private String nickname;
 
     private String profileImagePath;
+
+    private boolean isFriend;
+
+    public String getMemberID() {
+        return memberID;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public String getProfileImagePath() {
+        return profileImagePath;
+    }
+
+    public boolean getIsFriend() {
+        return isFriend;
+    }
 }

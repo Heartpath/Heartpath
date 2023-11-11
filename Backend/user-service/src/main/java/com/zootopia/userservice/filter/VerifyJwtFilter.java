@@ -2,12 +2,10 @@ package com.zootopia.userservice.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zootopia.userservice.common.ErrorResponse;
-import com.zootopia.userservice.exception.JwtErrorCode;
 import com.zootopia.userservice.exception.JwtException;
 import com.zootopia.userservice.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -31,10 +29,12 @@ public class VerifyJwtFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
 
     // TODO: yaml 파일로 빼기
-    private static final String[] EXCLUDED_URLS = {"/user/health_check",
-            "/user/login", "/user/register", "/user/check", "/user/token", "/user/search",
+    private static final String[] EXCLUDED_URLS = {
+            "/user/health_check",
+            "/user/login", "/user/register", "/user/check", "/user/token",
             "/api/user/", "/api/token", "/api/point",
-            "/swagger-ui", "/v3/api-docs"};
+            "/swagger-ui", "/v3/api-docs"
+    };
 
     private String extractJwtFromHeader(Optional<String> authorizationToken) throws JwtException {
 
