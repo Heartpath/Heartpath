@@ -1,5 +1,6 @@
 package com.zootopia.data.service
 
+import com.zootopia.data.model.auth.AuthResponse
 import com.zootopia.data.model.letter.request.PostHandLetterRequest
 import com.zootopia.data.model.letter.response.BusinessResponse
 import okhttp3.MultipartBody
@@ -103,4 +104,9 @@ interface BusinessService {
         @Part content: MultipartBody.Part,
         @Part files: List<MultipartBody.Part>?
     ): Response<BusinessResponse>
+
+    // 토큰 재발급
+    @GET("/user/token")
+    suspend fun getReAccessToken(@Query("refreshToken") refreshToken: String): Response<AuthResponse>
+
 }
