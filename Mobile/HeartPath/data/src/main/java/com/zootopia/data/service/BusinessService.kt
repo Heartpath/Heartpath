@@ -1,5 +1,6 @@
 package com.zootopia.data.service
 
+import com.zootopia.data.model.auth.AuthResponse
 import com.zootopia.data.model.letter.request.PostHandLetterRequest
 import com.zootopia.data.model.letter.response.BusinessResponse
 import okhttp3.MultipartBody
@@ -93,4 +94,8 @@ interface BusinessService {
     // 유저가 보유한 편지지 조회
     @GET("/store/letterpaper")
     suspend fun getUserLetterPaper(): Response<GetUserLetterPaperResponse>
+
+    // 토큰 재발급
+    @GET("/user/token")
+    suspend fun getReAccessToken(@Query("refreshToken") refreshToken: String): Response<AuthResponse>
 }
