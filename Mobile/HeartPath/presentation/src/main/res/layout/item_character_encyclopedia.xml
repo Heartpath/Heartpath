@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:layout_margin="@dimen/_10sdp"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_134sdp"
+        android:orientation="vertical">
+        <ImageView
+            android:id="@+id/imageview_bird"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:src="@drawable/image_bird_silhouette"
+            android:scaleType="fitCenter"
+            android:padding="@dimen/_20sdp"
+            android:background="@drawable/custom_round_corner_extra_light_gray"/>
+        <TextView
+            android:id="@+id/textview_bird_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/DarkGray_14_ExtraBold_NanumText"
+            android:layout_marginTop="@dimen/_10sdp"
+            tools:text = "bird name"/>
+    </LinearLayout>
+
+</LinearLayout>
