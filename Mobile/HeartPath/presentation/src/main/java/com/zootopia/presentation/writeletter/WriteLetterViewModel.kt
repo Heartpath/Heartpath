@@ -5,9 +5,10 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.zootopia.domain.model.letter.UserLetterPaperDto
-import com.zootopia.domain.model.user.UserDto
+import com.zootopia.domain.model.user.SearchUserInfoDto
 import com.zootopia.domain.model.writeletter.HandLetterRequestDto
 import com.zootopia.domain.model.writeletter.TypingLetterRequestDto
+import com.zootopia.domain.usecase.user.SearchUserUseCase
 import com.zootopia.domain.usecase.writeletter.GetUserLetterPaperUseCase
 import com.zootopia.domain.usecase.writeletter.PostHandLetterUseCase
 import com.zootopia.domain.usecase.writeletter.PostTypingLetterUseCase
@@ -25,7 +26,8 @@ private const val TAG = "WriteLetterViewModel"
 class WriteLetterViewModel @Inject constructor(
     private val getUserLetterPaperUseCase: GetUserLetterPaperUseCase,
     private val postHandLetterUseCase: PostHandLetterUseCase,
-    private val postTypingLetterUseCase: PostTypingLetterUseCase
+    private val postTypingLetterUseCase: PostTypingLetterUseCase,
+    private val searchUserUseCase: SearchUserUseCase
 ) : BaseViewModel() {
 
     private var _selectedLetterPaperUrl: MutableStateFlow<String> = MutableStateFlow("")
@@ -46,13 +48,13 @@ class WriteLetterViewModel @Inject constructor(
     private var _isEraserSelected: MutableStateFlow<Boolean> = MutableStateFlow<Boolean>(false)
     val isEraserSelected: StateFlow<Boolean> = _isEraserSelected
 
-    private var _searchedUserList: MutableStateFlow<MutableList<UserDto>> =
-        MutableStateFlow(mutableListOf<UserDto>())
-    val searchedUserList: StateFlow<MutableList<UserDto>> = _searchedUserList
+    private var _searchedUserList: MutableStateFlow<List<SearchUserInfoDto>> =
+        MutableStateFlow(mutableListOf<SearchUserInfoDto>())
+    val searchedUserList: StateFlow<List<SearchUserInfoDto>> = _searchedUserList
 
-    private var _selectedUser: MutableStateFlow<UserDto> =
-        MutableStateFlow<UserDto>(UserDto("", "", ""))
-    val selectedUser: StateFlow<UserDto> = _selectedUser
+    private var _selectedUser: MutableStateFlow<SearchUserInfoDto> =
+        MutableStateFlow<SearchUserInfoDto>(SearchUserInfoDto("", "", "", false))
+    val selectedUser: StateFlow<SearchUserInfoDto> = _selectedUser
 
     private val _drawingBitmap = MutableStateFlow<Bitmap?>(null)
     val drawingBitmap: StateFlow<Bitmap?> = _drawingBitmap
@@ -121,20 +123,30 @@ class WriteLetterViewModel @Inject constructor(
         )
     }
 
-    fun searchUser(searchKeyWord: String) {
-        //서버로 부터 유저 검색 결과를 받는다
-        viewModelScope.launch {
-            var list = mutableListOf<UserDto>().apply {
-                add(UserDto("dodo2504", "도연쓰", "https://picsum.photos/id/237/200/300"))
-                add(UserDto("dodo2504_2", "도연쓰2", "https://picsum.photos/id/237/200/300"))
-                add(UserDto("dodo2504_3", "도연쓰3", "https://picsum.photos/id/237/200/300"))
-                add(UserDto("dodo2504_4", "도연쓰4", "https://picsum.photos/id/237/200/300"))
+    fun searchUser(searchKeyWord: String, limit: Int) {
+        getApiResult(
+            block = {
+                searchUserUseCase.invoke(
+                    id = searchKeyWord,
+                    limit = limit
+                )
+            },
+            success = {
+                _searchedUserList.emit(it)
             }
-            _searchedUserList.emit(list)
-        }
+        )
+//        viewModelScope.launch {
+//            var list = mutableListOf<SearchUserInfoDto>().apply {
+//                add(SearchUserInfoDto("dodo2504", "도연쓰", "https://picsum.photos/id/237/200/300"))
+//                add(SearchUserInfoDto("dodo2504_2", "도연쓰2", "https://picsum.photos/id/237/200/300"))
+//                add(SearchUserInfoDto("dodo2504_3", "도연쓰3", "https://picsum.photos/id/237/200/300"))
+//                add(SearchUserInfoDto("dodo2504_4", "도연쓰4", "https://picsum.photos/id/237/200/300"))
+//            }
+//            _searchedUserList.emit(list)
+//        }
     }
 
-    fun setSelectedUser(user: UserDto) {
+    fun setSelectedUser(user: SearchUserInfoDto) {
         viewModelScope.launch {
             _selectedUser.emit(user)
         }
@@ -199,7 +211,7 @@ class WriteLetterViewModel @Inject constructor(
         getApiResult(
             block = {
                 postHandLetterUseCase.invoke(
-                    handLetterRequestDto = HandLetterRequestDto(_selectedUser.value.memberId),
+                    handLetterRequestDto = HandLetterRequestDto(_selectedUser.value.memberID),
                     content = contentUri,
                     fileList = imageList
                 )
@@ -214,7 +226,7 @@ class WriteLetterViewModel @Inject constructor(
         getApiResult(
             block = {
                 postTypingLetterUseCase.invoke(
-                    typingLetterRequestDto = TypingLetterRequestDto(_selectedUser.value.memberId, text),
+                    typingLetterRequestDto = TypingLetterRequestDto(_selectedUser.value.memberID, text),
                     content = contentUri,
                     fileList = imageList
                 )

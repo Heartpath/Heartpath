@@ -1,32 +1,29 @@
 package com.zootopia.presentation.writeletter.selectuser
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.zootopia.domain.model.user.UserDto
+import com.zootopia.domain.model.user.SearchUserInfoDto
 import com.zootopia.presentation.databinding.ItemMypageFriendBinding
 
 private const val TAG = "SearchedUserAdapter"
-class SearchedUserAdapter(var searchedUserList: MutableList<UserDto>) :
+class SearchedUserAdapter(var searchedUserList: MutableList<SearchUserInfoDto>) :
     RecyclerView.Adapter<SearchedUserAdapter.SearchUserViewHolder>() {
 
     interface ItemClickListener {
-        fun itemClick(user: UserDto)
+        fun itemClick(user: SearchUserInfoDto)
     }
 
     lateinit var itemClickListener: ItemClickListener
 
     inner class SearchUserViewHolder(val binding: ItemMypageFriendBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bindInfo(user: UserDto) = with(binding) {
+        fun bindInfo(user: SearchUserInfoDto) = with(binding) {
             textviewFriendName.text = user.nickname
-            textviewFriendId.text = user.memberId
+            textviewFriendId.text = user.memberID
 
-            Log.d(TAG, "bindInfo: ${user.profileImage}")
-            Glide.with(root).load(user.profileImage)
+            Glide.with(root).load(user.profileImagePath)
                 .circleCrop()
                 .into(imageviewFriendProfileImg)
 
