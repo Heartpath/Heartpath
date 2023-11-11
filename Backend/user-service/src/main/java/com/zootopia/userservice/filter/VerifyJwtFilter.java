@@ -98,6 +98,11 @@ public class VerifyJwtFilter extends OncePerRequestFilter {
             Optional<String> authorizationToken = Optional.ofNullable(request.getHeader("Authorization"));
             String accessToken = extractJwtFromHeader(authorizationToken);
 
+            log.info("============================================================");
+            log.info("Request URL: {}", requestURI);
+            log.info("Get Access Token: {}", accessToken);
+            log.info("============================================================");
+
             // JWT 검증
             jwtProvider.validateToken(accessToken);
         } catch (JwtException e) {

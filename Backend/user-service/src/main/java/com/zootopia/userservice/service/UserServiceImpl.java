@@ -2,6 +2,7 @@ package com.zootopia.userservice.service;
 
 import com.zootopia.userservice.domain.User;
 import com.zootopia.userservice.dto.*;
+import com.zootopia.userservice.exception.JwtException;
 import com.zootopia.userservice.jwt.JwtProvider;
 import com.zootopia.userservice.kakao.KakaoUserInfo;
 import com.zootopia.userservice.mapper.UserMapper;
@@ -91,12 +92,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String reissueAccessToken(String refreshToken) {
+    public String reissueAccessToken(String refreshToken) throws JwtException {
 
         String res = "";
         if (refreshToken == null) {
             return res;
         }
+
+        log.info("try to reissue AccessToken");
+        log.info("With Given Token: {}", refreshToken);
+        jwtProvider.validateToken(refreshToken);
 
         String memberIDFromToken = jwtProvider.getMemberIDFromToken(refreshToken);
         if (!memberIDFromToken.isEmpty()) {

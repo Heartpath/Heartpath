@@ -19,4 +19,13 @@ public class ExceptionController {
 
         return ResponseEntity.status(e.getHttpStatus()).body(errorResponse);
     }
+
+    @ExceptionHandler(JwtException.class)
+    protected ResponseEntity<ErrorResponse> handleJWTException(JwtException error) {
+
+        JwtErrorCode e = error.getJwtErrorCode();
+        ErrorResponse errorResponse = ErrorResponse.of(e.getHttpStatus().toString(), e.getErrorCode(), e.getMessage());
+
+        return ResponseEntity.status(e.getHttpStatus()).body(errorResponse);
+    }
 }
