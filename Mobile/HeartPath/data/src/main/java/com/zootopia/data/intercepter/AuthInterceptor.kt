@@ -1,5 +1,6 @@
 package com.zootopia.data.intercepter
 
+import android.net.Uri
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonParser
@@ -7,29 +8,19 @@ import com.zootopia.data.datasource.local.PreferenceDataSource
 import com.zootopia.data.model.auth.AuthResponse
 import com.zootopia.data.model.error.ErrorResponse
 import com.zootopia.domain.util.NetworkThrowable
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.last
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import okhttp3.HttpUrl
 import okhttp3.Interceptor
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.internal.closeQuietly
-import org.json.JSONObject
 import java.io.IOException
 import javax.inject.Inject
-import kotlin.coroutines.suspendCoroutine
+
 
 class AuthInterceptor @Inject constructor(
     private val preferenceDataSource: PreferenceDataSource
@@ -49,8 +40,11 @@ class AuthInterceptor @Inject constructor(
 
         // 에러 코드가 왔을 떄, RefreshToken으로 AccessToken을 다시 얻어오는 로직
         if (response.code == AUTH_TOKEN_EXPIRE_ERROR) {
+            Log.d(TAG, "intercept: 만료로 여기 호출")
             val newAccessToken =
-                getAccessTokenAfterRefresh(accessToken).getOrElse { return response }
+                getAccessTokenAfterRefresh(accessToken).getOrElse {
+                    Log.d(TAG, "intercept: $response")
+                    return response }
             response.closeQuietly()
             return chain.proceed(
                 chain.request().newBuilder().addHeader(AUTHORIZATION, newAccessToken).build()
@@ -73,49 +67,74 @@ class AuthInterceptor @Inject constructor(
     private fun getRefreshToken(): String {
         var result: String = ""
         runBlocking {
-            preferenceDataSource.getRefreshToken().first()
+            result = preferenceDataSource.getRefreshToken().first()
             Log.d(TAG, "getRefreshToken: here $result")
         }
         return result
     }
 
     // Token을 저장합니다.
-    private fun storeToken(accessToken: String, refreshToken: String) = runBlocking {
-        Log.d(TAG, "storeToken: $accessToken $refreshToken")
+//    private fun storeToken(accessToken: String, refreshToken: String) = runBlocking {
+//        Log.d(TAG, "storeToken: $accessToken $refreshToken")
+//        preferenceDataSource.setAccessToken(accessToken)
+//        preferenceDataSource.setRefreshToken(refreshToken)
+//    }
+    private fun storeToken(accessToken: String) = runBlocking {
+        Log.d(TAG, "storeToken: $accessToken")
         preferenceDataSource.setAccessToken(accessToken)
-        preferenceDataSource.setRefreshToken(refreshToken)
     }
 
     // 가지고 있는 RefreshToken으로 AccessToken을 재발급 합니다.
     // 서버 구현이 AccessToken이 필요 없다면 뺴도 됨.
     private fun getAccessTokenAfterRefresh(accessToken: String): Result<String> {
-        val requestBody = createRefreshRequestBody()
-        val request = createRefreshRequest(requestBody, accessToken)
+        Log.d(TAG, "getAccessTokenAfterRefresh: 재발급 호출")
+//        val requestBody = createRefreshRequestBody()
+        val request = createRefreshRequest(accessToken)
 
-        val auth: AuthResponse = requestRefresh(request).getOrElse {
+        val resultUrl  = requestRefresh(request).getOrElse {
             return Result.failure(it)
         }
-        storeToken(auth.accessToken, auth.refreshToken)
+        Log.d(TAG, "getAccessTokenAfterRefresh: result url $resultUrl")
+        val uri = Uri.parse(resultUrl.toString())
+        Log.d(TAG, "getAccessTokenAfterRefresh: uri $uri")
+        val accessToken = uri.getQueryParameter("data")
+        Log.d(TAG, "getAccessTokenAfterRefresh: 어세스 토큰 $accessToken")
+        if (accessToken != null) {
+            storeToken(accessToken = accessToken)
+        }
 
-        return Result.success(BEARER + auth.accessToken)
+        return Result.success(BEARER + accessToken)
     }
 
     // 통신을 위해 JSON 형식으로 RequestCode를 생성합니다.
-    private fun createRefreshRequestBody(): RequestBody {
-        return JSONObject()
-            .put(AUTH_REFRESH, getRefreshToken())
-            .toString()
-            .toRequestBody(contentType = "application/json".toMediaType())
-    }
+//    private fun createRefreshRequestBody(): {
+//        return JSONObject()
+//            .put(AUTH_REFRESH, getRefreshToken())
+//            .toString()
+//            .toRequestBody(contentType = "application/json".toMediaType())
+//    }
 
     // AccessToken을 다시 얻어올 Request를 생성합니다.
-    private fun createRefreshRequest(requestBody: RequestBody, accessToken: String): Request {
+    private fun createRefreshRequest(accessToken: String): Request {
         return Request.Builder()
-            .url(BASE_URL + AUTH_REFRESH_PATH)
-            .post(requestBody)
+            .url(BASE_URL + AUTH_REFRESH_PATH + "?" + AUTH_REFRESH + "=" + getRefreshToken())
+            .get()
             .addHeader(AUTHORIZATION, accessToken)
             .build()
     }
+//    private fun createRefreshRequest(accessToken: String): Request {
+//        val url = (BASE_URL + AUTH_REFRESH_PATH).toHttpUrlOrNull()
+//            ?.newBuilder()
+//            ?.addQueryParameter("access_token", accessToken) // Add access token as a query parameter
+//            ?.build()
+//
+//        return Request.Builder()
+//            .url(url)
+//            .post(RequestBody.create(null, ByteArray(0))) // Empty request body for POST request
+//            .addHeader(AUTHORIZATION, accessToken)
+//            .addHeader(AUTHORIZATION, accessToken)
+//            .build()
+//    }
 
     private inline fun <reified T> Response.getDto(): T {
         val responseObject = JsonParser.parseString(body?.string()).asJsonObject
@@ -123,12 +142,33 @@ class AuthInterceptor @Inject constructor(
     }
 
     // AccessToken을 재발급 합니다.
-    private fun requestRefresh(request: Request): Result<AuthResponse> {
+//    private fun requestRefresh(request: Request): Result<AuthResponse> {
+//        val response: Response = runBlocking {
+//            withContext(Dispatchers.IO) { client.newCall(request).execute() }
+//        }
+//        if (response.isSuccessful) {
+//            return Result.success(response.getDto<AuthResponse>())
+//        }
+//        val failedResponse = response.getDto<ErrorResponse>() // TODO 서버에서 ErrorResponse 객체
+//        if (failedResponse.httpStatusCode == AUTH_TOKEN_ERROR) { // TODO 서버에서 주는 코드 입력
+//            return Result.failure(
+//                NetworkThrowable.Base400Throwable(
+//                    failedResponse.httpStatusCode,
+//                    failedResponse.message
+//                )
+//            )
+//        }
+//        return Result.failure(IllegalStateException(REFRESH_FAILURE))
+//    }
+
+    private fun requestRefresh(request: Request): Result<HttpUrl> {
         val response: Response = runBlocking {
             withContext(Dispatchers.IO) { client.newCall(request).execute() }
         }
+//        Log.d(TAG, "requestRefresh: ${}")
         if (response.isSuccessful) {
-            return Result.success(response.getDto<AuthResponse>())
+            Log.d(TAG, "requestRefresh: ${response.request.url}")
+            return Result.success(response.request.url)
         }
         val failedResponse = response.getDto<ErrorResponse>() // TODO 서버에서 ErrorResponse 객체
         if (failedResponse.httpStatusCode == AUTH_TOKEN_ERROR) { // TODO 서버에서 주는 코드 입력
@@ -144,7 +184,7 @@ class AuthInterceptor @Inject constructor(
 
     companion object {
         private const val AUTHORIZATION = "Authorization"
-        private const val AUTH_REFRESH = "RefreshToken"
+        private const val AUTH_REFRESH = "refreshToken"
 
         private const val AUTH_REFRESH_PATH = "/user/token"
 
@@ -153,8 +193,8 @@ class AuthInterceptor @Inject constructor(
         private const val NO_REFRESH_TOKEN = "리프레시 토큰이 없습니다"
         private const val REFRESH_FAILURE = "토큰 리프레시 실패"
 
-        private const val AUTH_TOKEN_EXPIRE_ERROR = 1002 // TODO 서버에 맞게 수정
-        private const val AUTH_TOKEN_ERROR = 1000 // TODO 서버에 맞게 수정
+        private const val AUTH_TOKEN_EXPIRE_ERROR = 401 // TODO 서버에 맞게 수정
+        private const val AUTH_TOKEN_ERROR = 406 // TODO 서버에 맞게 수정
 
         private const val BASE_URL = "https://www.heartpath.site"
         private const val TAG = "AuthInterceptor_HP"

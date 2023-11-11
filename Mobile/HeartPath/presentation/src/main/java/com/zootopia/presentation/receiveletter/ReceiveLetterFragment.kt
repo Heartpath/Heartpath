@@ -52,7 +52,10 @@ class ReceiveLetterFragment :
             itemClickListener = object : ReceiveLetterAdapter.ItemClickListener {
                 override fun itemClick(view: View, position: Int) {
                     Log.d(TAG, "itemClick: 편지 리스트 클릭됨 $position")
-                    findNavController().navigate(R.id.action_receiveLetterFragment_to_readLetterFragment)
+                    val action = ReceiveLetterFragmentDirections.actionReceiveLetterFragmentToReadLetterFragment(
+                        position
+                    )
+                    findNavController().navigate(action)
                 }
             }
         }
@@ -81,7 +84,7 @@ class ReceiveLetterFragment :
             receiveLetterViewModel.storedLetterList.collect {value ->
                 letterList.clear()
                 letterList.addAll(value)
-                receiveLetterAdapter
+                receiveLetterAdapter.notifyDataSetChanged()
             }
         }
     }
