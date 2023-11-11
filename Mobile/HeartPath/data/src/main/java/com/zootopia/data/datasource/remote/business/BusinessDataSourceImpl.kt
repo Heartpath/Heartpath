@@ -1,6 +1,7 @@
 package com.zootopia.data.datasource.remote.business
 
 import com.zootopia.data.model.letter.request.PostHandLetterRequest
+import com.zootopia.data.model.letter.request.PostTypingLetterRequest
 import com.zootopia.data.model.letter.response.BusinessResponse
 import com.zootopia.data.model.letter.response.GetUserLetterPaperResponse
 import com.zootopia.data.service.BusinessService
@@ -20,6 +21,17 @@ class BusinessDataSourceImpl(
             businessService.postHandLetter(postHandLetterRequest, content, files)
         }
     }
+
+    override suspend fun postTypingLetter(
+        postTypingLetterRequest: PostTypingLetterRequest,
+        content: MultipartBody.Part,
+        files: List<MultipartBody.Part>
+    ): BusinessResponse {
+        return handleApi {
+            businessService.postTypingLetter(postTypingLetterRequest, content, files)
+        }
+    }
+
 
     override suspend fun getUserLetterPaper(): GetUserLetterPaperResponse {
         return handleApi {
