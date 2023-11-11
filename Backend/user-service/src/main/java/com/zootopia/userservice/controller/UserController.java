@@ -195,26 +195,37 @@ public class UserController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json",
-                    examples = @ExampleObject(value = "[\n" +
+                    examples = @ExampleObject(value = "{\n" +
+                            "  \"status\": 200,\n" +
+                            "  \"message\": \"유저 검색 결과입니다.\",\n" +
+                            "  \"data\": [\n" +
                             "    {\n" +
-                            "        \"memberID\": \"\",\n" +
-                            "        \"nickname\": \"\",\n" +
-                            "        \"profileImagePath\": \"\"\n" +
+                            "      \"memberID\": \"\",\n" +
+                            "      \"nickname\": \"\",\n" +
+                            "      \"profileImagePath\": \"\",\n" +
+                            "      \"isFriend\": \"\"\n" +
                             "    },\n" +
                             "    {\n" +
-                            "        \"memberID\": \"\",\n" +
-                            "        \"nickname\": \"\",\n" +
-                            "        \"profileImagePath\": \"\"\n" +
+                            "      \"memberID\": \"\",\n" +
+                            "      \"nickname\": \"\",\n" +
+                            "      \"profileImagePath\": \"\",\n" +
+                            "      \"isFriend\": \"\"\n" +
                             "    }\n" +
-                            "]"))),
+                            "  ]\n" +
+                            "}"))),
     })
     @GetMapping("/search")
     public ResponseEntity<BaseResponse> searchUserByID(
-            @RequestParam(name = "id") String searchMemberID,
-            @RequestParam(name = "limit") int limit
+            @RequestParam(name = "id") String query,
+            @RequestParam(name = "limit") int limit,
+            @RequestParam(name = "checkFriends") boolean checkFriends,
+            HttpServletRequest request
     ) {
 
-        List<UserSearchDTO> res = userService.searchUserByID(searchMemberID, limit);
+        String accessToken = JwtUtil.getTokenFromHeader(request);
+        String memberID = jwtProvider.getMemberIDFromToken(accessToken);
+
+        List<UserSearchDTO> res = userService.searchUser(query, limit, memberID, checkFriends);
 
         BaseResponse baseResponse = new BaseResponse(200, "유저 검색 결과입니다.", res);
 

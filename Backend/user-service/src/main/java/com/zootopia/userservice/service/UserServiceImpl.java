@@ -11,7 +11,6 @@ import com.zootopia.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -112,7 +111,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserSearchDTO> searchUserByID(String findUserID, int limit) {
-        return userMapper.readLimitUserByID(new QueryParamMap(findUserID, limit));
+    public List<UserSearchDTO> searchUser(String query, int limit, String memberID, boolean checkFriends) {
+
+        List<UserSearchDTO> res;
+
+        if (checkFriends) {
+            res = searchUserByIDWithFriendRelation(memberID, query, limit);
+        } else {
+            res = searchUserByID(query, limit);
+        }
+
+        return res;
+    }
+
+    private List<UserSearchDTO> searchUserByID(String query, int limit) {
+        return userMapper.readLimitUserByID(new UserSearchParam(query, limit));
+    }
+
+    private List<UserSearchDTO> searchUserByIDWithFriendRelation(String memberID, String query, int limit) {
+        return userMapper.readLimitUserByIDWithFriendRelation(new UserSearchParam(memberID, query, limit));
     }
 }
