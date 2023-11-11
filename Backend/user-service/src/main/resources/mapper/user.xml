@@ -17,12 +17,21 @@
     </select>
 
     <select id="readLimitUserByID" parameterType="com.zootopia.userservice.dto.QueryParamMap" resultType="UserSearchDTO">
-        SELECT m.MEMBER_ID          as `memberID`,
-               m.NICKNAME           as `nickname`,
-               m.PROFILE_IMAGE_PATH as `profileImagePath`
-        FROM `MEMBER` m
-        WHERE m.MEMBER_ID LIKE CONCAT(#{query}, '%')
-        LIMIT #{limit};
+        SELECT `res`.MEMBER_ID          AS `memberID`,
+               `res`.NICKNAME           AS `nickname`,
+               `res`.PROFILE_IMAGE_PATH AS `profileImagePath`,
+               CASE
+                   WHEN f.IS_BLOCKED = FALSE
+                       THEN TRUE
+                   WHEN f.IS_BLOCKED IS NULL
+                       THEN FALSE
+               END                      AS `isFriend`
+        FROM (SELECT m.*
+              FROM `MEMBER` m
+              WHERE m.MEMBER_ID LIKE 'ssafy%' LIMIT 5) AS `res`
+                 LEFT JOIN FRIEND f ON f.TO_MEMBER_ID = `res`.MEMBER_ID
+        WHERE f.FROM_MEMBER_ID = 'ssafyA'
+           OR f.FROM_MEMBER_ID IS null;
     </select>
 
 </mapper>
