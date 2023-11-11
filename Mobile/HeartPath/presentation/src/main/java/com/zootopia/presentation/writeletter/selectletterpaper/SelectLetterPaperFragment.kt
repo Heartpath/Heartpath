@@ -91,12 +91,12 @@ class SelectLetterPaperFragment : BaseFragment<FragmentSelectLetterPaperBinding>
 
     fun initClickListener() = with(binding) {
         buttonSelectLetterPaper.setOnClickListener {
-            writeLetterViewModel.setSelectedLetterPaperUrl(letterPaperList[viewPagerLetterPaper.currentItem].imagePath)
+            val url = letterPaperList[viewPagerLetterPaper.currentItem].imagePath
+            writeLetterViewModel.setSelectedLetterPaperUrl(url)
             if (args.letterType == LetterType.HAND_WRITE) {
-                navController.navigate(R.id.action_selectLetterPaperFragment_to_handWriteFragment)
+                navController.navigate(SelectLetterPaperFragmentDirections.actionSelectLetterPaperFragmentToHandWriteFragment(url))
             } else {
-                // 폰트 설정화면으로 이동
-                navController.navigate(R.id.action_selectLetterPaperFragment_to_typingWriteFragment)
+                navController.navigate(SelectLetterPaperFragmentDirections.actionSelectLetterPaperFragmentToTypingWriteFragment(url))
             }
         }
     }
