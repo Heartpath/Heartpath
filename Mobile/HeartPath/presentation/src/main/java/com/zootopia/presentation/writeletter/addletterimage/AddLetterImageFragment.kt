@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.zootopia.domain.util.NetworkThrowable
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.MainViewModel
 import com.zootopia.presentation.R
@@ -47,7 +48,7 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
     private val writeLetterViewModel: WriteLetterViewModel by activityViewModels()
     private lateinit var addLetterImageAdapter: AddLetterImageAdapter
     private var imageList: MutableList<Uri> = mutableListOf()
-    private val args: SelectLetterPaperFragmentArgs by navArgs()
+    private val args: AddLetterImageFragmentArgs by navArgs()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -102,8 +103,22 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
                 if (it) {
                     writeLetterViewModel.resetIsSendSuccess()
                     writeLetterViewModel.resetImageList()
-                    Toast.makeText(mainActivity, R.string.add_letter_image_write_success, Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        mainActivity,
+                        R.string.add_letter_image_write_success,
+                        Toast.LENGTH_LONG
+                    ).show()
                     navController.navigate(AddLetterImageFragmentDirections.actionAddLetterImageFragmentToHomeFragment())
+                }
+            }
+        }
+        lifecycleScope.launch {
+            writeLetterViewModel.error.collectLatest {
+                val err = it as NetworkThrowable
+                when (err.code) {
+                    4001 -> Toast.makeText(mainActivity, R.string.add_letter_image_unexpected_image, Toast.LENGTH_LONG).show()
+                    4004 -> Toast.makeText(mainActivity, R.string.add_letter_image_forbidden_word, Toast.LENGTH_LONG).show()
+                    else -> Toast.makeText(mainActivity, R.string.add_letter_unknown_err, Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -116,18 +131,25 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
                     saveImageToGallery(mainActivity, writeLetterViewModel.drawingBitmap.value!!)
                 if (letterUri != null) {
                     val realPathOfLetter = getRealPathFromUri(mainActivity, letterUri)
-                    if (realPathOfLetter != null){
+                    if (realPathOfLetter != null) {
                         var realFilePathList = mutableListOf<String>()
                         imageList.forEachIndexed { index, uri ->
                             val filePath = getRealPathFromUri(mainActivity, uri)
-                            if(filePath != null){
+                            if (filePath != null) {
                                 realFilePathList.add(filePath)
                             }
                         }
-                        if(args.letterType == LetterType.HAND_WRITE){
-                            writeLetterViewModel.saveHandWriteLetter(realPathOfLetter, realFilePathList)
-                        }else{
-                            writeLetterViewModel.saveTypingWriteLetter(realPathOfLetter, realFilePathList, writeLetterViewModel.letterText.value)
+                        if (args.letterType == LetterType.HAND_WRITE) {
+                            writeLetterViewModel.saveHandWriteLetter(
+                                realPathOfLetter,
+                                realFilePathList
+                            )
+                        } else {
+                            writeLetterViewModel.saveTypingWriteLetter(
+                                realPathOfLetter,
+                                realFilePathList,
+                                writeLetterViewModel.letterText.value
+                            )
                         }
 
                     }

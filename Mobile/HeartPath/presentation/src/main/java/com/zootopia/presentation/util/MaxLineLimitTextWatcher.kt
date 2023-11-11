@@ -2,8 +2,10 @@ package com.zootopia.presentation.util
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.EditText
 
+private const val TAG = "MaxLineLimitTextWatcher"
 class MaxLineLimitTextWatcher(val limitCount: Int, val editText: EditText) : TextWatcher{
 
     private var lastValue = ""

@@ -7,8 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.zootopia.domain.model.letter.UserLetterPaperDto
 import com.zootopia.domain.model.user.UserDto
 import com.zootopia.domain.model.writeletter.HandLetterRequestDto
+import com.zootopia.domain.model.writeletter.TypingLetterRequestDto
 import com.zootopia.domain.usecase.writeletter.GetUserLetterPaperUseCase
 import com.zootopia.domain.usecase.writeletter.PostHandLetterUseCase
+import com.zootopia.domain.usecase.writeletter.PostTypingLetterUseCase
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +24,8 @@ private const val TAG = "WriteLetterViewModel"
 @HiltViewModel
 class WriteLetterViewModel @Inject constructor(
     private val getUserLetterPaperUseCase: GetUserLetterPaperUseCase,
-    private val postHandLetterUseCase: PostHandLetterUseCase
+    private val postHandLetterUseCase: PostHandLetterUseCase,
+    private val postTypingLetterUseCase: PostTypingLetterUseCase
 ) : BaseViewModel() {
 
     private var _selectedLetterPaperUrl: MutableStateFlow<String> = MutableStateFlow("")
@@ -210,10 +213,14 @@ class WriteLetterViewModel @Inject constructor(
     fun saveTypingWriteLetter(contentUri: String, imageList: MutableList<String>, text: String){
         getApiResult(
             block = {
-
+                postTypingLetterUseCase.invoke(
+                    typingLetterRequestDto = TypingLetterRequestDto(_selectedUser.value.memberId, text),
+                    content = contentUri,
+                    fileList = imageList
+                )
             },
             success = {
-
+                _isSendSuccess.value = true
             }
         )
     }

@@ -4,6 +4,7 @@ import com.zootopia.data.model.letter.request.PostHandLetterRequest
 import com.zootopia.data.model.letter.response.BusinessResponse
 import okhttp3.MultipartBody
 import com.zootopia.data.model.common.MessageResponse
+import com.zootopia.data.model.letter.request.PostTypingLetterRequest
 import com.zootopia.data.model.letter.response.GetUserLetterPaperResponse
 import com.zootopia.data.model.letter.response.StoredLetterListResponse
 import com.zootopia.data.model.letter.response.UnplacedLetterListResponse
@@ -93,4 +94,13 @@ interface BusinessService {
     // 유저가 보유한 편지지 조회
     @GET("/store/letterpaper")
     suspend fun getUserLetterPaper(): Response<GetUserLetterPaperResponse>
+
+    // 타이핑 편지 작성
+    @Multipart
+    @POST("/letter/text")
+    suspend fun postTypingLetter(
+        @Part("letterTextReqDto") postTypingLetterRequest: PostTypingLetterRequest,
+        @Part content: MultipartBody.Part,
+        @Part files: List<MultipartBody.Part>?
+    ): Response<BusinessResponse>
 }
