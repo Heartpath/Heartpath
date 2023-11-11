@@ -3,6 +3,7 @@ package com.zootopia.presentation.characterencyclopedia
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.zootopia.domain.model.store.CharacterDto
 import com.zootopia.presentation.databinding.ItemCharacterEncyclopediaBinding
 
@@ -17,7 +18,8 @@ RecyclerView.Adapter<CharacterEncyclopediaAdapter.CharacterEncyclopediaViewHolde
     inner class CharacterEncyclopediaViewHolder(var binding: ItemCharacterEncyclopediaBinding):
     RecyclerView.ViewHolder(binding.root){
         fun setCharacter(character: CharacterDto){
-
+            binding.textviewBirdName.text = character.characterName
+            Glide.with(binding.root).load(character.imagePath).into(binding.imageviewBird)
         }
     }
 

@@ -3,6 +3,8 @@ package com.zootopia.presentation.characterencyclopedia
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
@@ -11,22 +13,20 @@ import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentCharacterEncyclopediaBinding
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class CharacterEncyclopediaFragment : BaseFragment<FragmentCharacterEncyclopediaBinding>(
     FragmentCharacterEncyclopediaBinding::bind,
     R.layout.fragment_character_encyclopedia
 ) {
     private lateinit var mainActivity: MainActivity
     private lateinit var navController: NavController
+    private val characterEncyclopediaViewModel: CharacterEncyclopediaViewModel by viewModels()
     private lateinit var characterEncyclopediaAdapter: CharacterEncyclopediaAdapter
-    private var characterList: MutableList<CharacterDto> = mutableListOf(
-        CharacterDto(0, "", 10, "", "", false),
-        CharacterDto(0, "", 10, "", "", false),
-        CharacterDto(0, "", 10, "", "", false),
-        CharacterDto(0, "", 10, "", "", false),
-        CharacterDto(0, "", 10, "", "", false)
-    )
-
+    private var characterList: MutableList<CharacterDto> = mutableListOf()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -43,17 +43,18 @@ class CharacterEncyclopediaFragment : BaseFragment<FragmentCharacterEncyclopedia
         initClickListener()
     }
 
-    private fun initData(){
-
+    private fun initData() {
+        characterEncyclopediaViewModel.getCharacterEncyclopediaList()
     }
 
     private fun initRecyclerGridView() = with(binding) {
         characterEncyclopediaAdapter = CharacterEncyclopediaAdapter(characterList)
-        characterEncyclopediaAdapter.itemClickListener = object : CharacterEncyclopediaAdapter.ItemClickListener{
-            override fun onItemClicked(character: CharacterDto) {
-                TODO("Not yet implemented")
+        characterEncyclopediaAdapter.itemClickListener =
+            object : CharacterEncyclopediaAdapter.ItemClickListener {
+                override fun onItemClicked(character: CharacterDto) {
+                    TODO("Not yet implemented")
+                }
             }
-        }
 
         recyclerviewCharacterEncyclopedia.apply {
             adapter = characterEncyclopediaAdapter
@@ -62,9 +63,14 @@ class CharacterEncyclopediaFragment : BaseFragment<FragmentCharacterEncyclopedia
     }
 
     private fun initCollecter() = with(binding) {
-
+        lifecycleScope.launch {
+            characterEncyclopediaViewModel.characterEncyclopediaList.collectLatest {
+                characterList.clear()
+                characterList.addAll(it)
+                characterEncyclopediaAdapter.notifyDataSetChanged()
+            }
+        }
     }
-
 
     private fun initClickListener() = with(binding) {
 
