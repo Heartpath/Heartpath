@@ -12,5 +12,5 @@ interface UserDataSource {
     suspend fun getPointInfo(): PointInfoResponse
     suspend fun getFriendList(): FriendListResponse
     suspend fun addFriend(id: String): MessageResponse
-    suspend fun searchUser(id: String, limit: Int): SearchUserResponse
+    suspend fun searchUser(id: String, limit: Int, checkFriends: Boolean): SearchUserResponse
 }

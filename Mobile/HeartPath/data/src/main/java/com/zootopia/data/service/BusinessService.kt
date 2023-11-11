@@ -114,7 +114,8 @@ interface BusinessService {
     @GET("/user/search")
     suspend fun searchUser(
         @Query("id") id: String,
-        @Query("limit") limit: Int
+        @Query("limit") limit: Int,
+        @Query("checkFriends") checkFriends: Boolean
     ): Response<SearchUserResponse>
 
 }

@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zootopia.domain.model.user.SearchUserInfoDto
 import com.zootopia.presentation.databinding.ItemMypageFriendBinding
+import com.zootopia.presentation.databinding.ItemSearchedFriendBinding
+import com.zootopia.presentation.databinding.ItemSelectUserBinding
 
 private const val TAG = "SearchedUserAdapter"
 class SearchedUserAdapter(var searchedUserList: MutableList<SearchUserInfoDto>) :
@@ -17,17 +19,17 @@ class SearchedUserAdapter(var searchedUserList: MutableList<SearchUserInfoDto>) 
 
     lateinit var itemClickListener: ItemClickListener
 
-    inner class SearchUserViewHolder(val binding: ItemMypageFriendBinding) :
+    inner class SearchUserViewHolder(val binding: ItemSelectUserBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bindInfo(user: SearchUserInfoDto) = with(binding) {
-            textviewFriendName.text = user.nickname
-            textviewFriendId.text = user.memberID
+            textviewSearchUserNickname.text = user.nickname
+            textviewSearchUserId.text = user.memberID
 
             Glide.with(root).load(user.profileImagePath)
                 .circleCrop()
-                .into(imageviewFriendProfileImg)
+                .into(imageviewSearchUserProfile)
 
-            linearlayoutFriendInfo.setOnClickListener {
+            cardviewItemSearchUser.setOnClickListener {
                 itemClickListener.itemClick(user)
             }
         }
@@ -35,7 +37,7 @@ class SearchedUserAdapter(var searchedUserList: MutableList<SearchUserInfoDto>) 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchUserViewHolder {
         return SearchUserViewHolder(
-            ItemMypageFriendBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemSelectUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
