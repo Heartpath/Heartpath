@@ -187,6 +187,10 @@ class WriteLetterViewModel @Inject constructor(
         _isSendSuccess.value = false
     }
 
+    fun resetLetterText(){
+        _letterText.value = ""
+    }
+
     fun saveHandWriteLetter(contentUri: String, imageList: MutableList<String>) {
 
         getApiResult(

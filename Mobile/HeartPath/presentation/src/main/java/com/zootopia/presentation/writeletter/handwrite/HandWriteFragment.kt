@@ -23,6 +23,7 @@ import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentHandWriteBinding
+import com.zootopia.presentation.util.LetterType
 import com.zootopia.presentation.util.viewToBitmap
 import com.zootopia.presentation.writeletter.WriteLetterViewModel
 import kotlinx.coroutines.launch
@@ -134,7 +135,7 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
         buttonSave.setOnClickListener {
             bmp = viewToBitmap(imageviewLetterPaper)
             writeLetterViewModel.setDrawingBitmap(bmp!!)
-            navController.navigate(HandWriteFragmentDirections.actionHandWriteFragmentToAddLetterImageFragment())
+            navController.navigate(HandWriteFragmentDirections.actionHandWriteFragmentToAddLetterImageFragment(LetterType.HAND_WRITE))
         }
     }
 
