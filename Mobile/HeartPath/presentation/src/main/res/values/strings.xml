@@ -12,7 +12,7 @@
     <string name="search_friend_search_bar_hint">검색 아이디를 입력하세요</string>
     <string name="point_history_date_text">2023.10.25</string>
     <string name="default_name">김뱁새</string>
-    <string name="default_id">\@im_babsae</string>
+    <string name="default_id">\@$s</string>
     <string name="setting_set_bgm">BGM 설정</string>
     <string name="setting_privacy_policy">개인정보 처리방침</string>
     <string name="setting_logout">로그아웃</string>
@@ -92,4 +92,6 @@
     <string name="toast_message_signup_fail">회원가입 실패했습니다.</string>
 
     <string name="signup_check_id_done">확인완료</string>
+
+    <string name="received_letter_title">$s님이 보낸 편지</string>
 </resources>

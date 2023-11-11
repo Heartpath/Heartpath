@@ -1,6 +1,5 @@
 package com.zootopia.presentation.receiveletter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,14 +7,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zootopia.domain.model.letter.ReceiveLetterDto
 import com.zootopia.presentation.databinding.ItemReceiveLetterBinding
 
-private const val TAG = "ReceiveLetterAdapter_HeartPath"
 class ReceiveLetterAdapter(val list: MutableList<ReceiveLetterDto>) :
     RecyclerView.Adapter<ReceiveLetterAdapter.ReceiveLetterViewHolder>() {
     
     inner class ReceiveLetterViewHolder(val binding: ItemReceiveLetterBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bindInfo(receiveLetter: ReceiveLetterDto) = with(binding) {
-            textviewSendUser.text = receiveLetter.sender
+            textviewSendUser.text = receiveLetter.sender + "님이 보낸 편지"
             textviewSendTime.text = receiveLetter.time
             
             // Click Event
@@ -42,5 +40,9 @@ class ReceiveLetterAdapter(val list: MutableList<ReceiveLetterDto>) :
     
     override fun getItemCount(): Int {
         return list.size
+    }
+
+    companion object {
+        private const val TAG = "ReceiveLetterAdapter_HP"
     }
 }
