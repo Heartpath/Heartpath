@@ -193,7 +193,12 @@
         android:id="@+id/readLetterFragment"
         android:name="com.zootopia.presentation.readletter.ReadLetterFragment"
         android:label="fragment_read_letter"
-        tools:layout="@layout/fragment_read_letter" />
+        tools:layout="@layout/fragment_read_letter" >
+        <argument
+            android:name="letterId"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
     <fragment
         android:id="@+id/arCoreWriteFragment"
         android:name="com.zootopia.presentation.arcore.ArCoreWriteFragment"
