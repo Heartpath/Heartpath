@@ -27,8 +27,8 @@ class UserDataSourceImpl(
         return handleApi { businessService.addFriend(id = id) }
     }
 
-    override suspend fun searchUser(id: String, limit: Int): SearchUserResponse {
-        return handleApi { businessService.searchUser(id = id, limit = limit) }
+    override suspend fun searchUser(id: String, limit: Int, checkFriends: Boolean): SearchUserResponse {
+        return handleApi { businessService.searchUser(id = id, limit = limit, checkFriends = checkFriends) }
     }
 
 }

@@ -36,9 +36,9 @@ class UserRepositoryImpl(
         }
     }
 
-    override suspend fun searchUser(id: String, limit: Int): List<SearchUserInfoDto> {
+    override suspend fun searchUser(id: String, limit: Int, checkFriends: Boolean): List<SearchUserInfoDto> {
         return getValueOrThrow2 {
-            userDataSource.searchUser(id = id, limit = limit).toDomain()
+            userDataSource.searchUser(id = id, limit = limit, checkFriends = checkFriends).toDomain()
         }
     }
 }

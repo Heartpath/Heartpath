@@ -10,5 +10,5 @@ interface UserRepository {
     suspend fun getPointInfo(): List<PointDto>?
     suspend fun getFriendList(): List<FriendDto>?
     suspend fun addFriend(id: String): String
-    suspend fun searchUser(id: String, limit: Int): List<SearchUserInfoDto>
+    suspend fun searchUser(id: String, limit: Int, checkFriends: Boolean): List<SearchUserInfoDto>
 }

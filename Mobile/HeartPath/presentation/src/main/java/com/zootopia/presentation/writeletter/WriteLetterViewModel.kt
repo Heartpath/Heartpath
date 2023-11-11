@@ -128,7 +128,8 @@ class WriteLetterViewModel @Inject constructor(
             block = {
                 searchUserUseCase.invoke(
                     id = searchKeyWord,
-                    limit = limit
+                    limit = limit,
+                    false
                 )
             },
             success = {
