@@ -5,6 +5,7 @@ import com.zootopia.userservice.dto.MypageDTO;
 import com.zootopia.userservice.dto.UserLoginDTO;
 import com.zootopia.userservice.dto.UserRegisterDTO;
 import com.zootopia.userservice.dto.UserSearchDTO;
+import com.zootopia.userservice.exception.JwtException;
 import com.zootopia.userservice.jwt.JwtProvider;
 import com.zootopia.userservice.kakao.KakaoOAuthService;
 import com.zootopia.userservice.service.UserService;
@@ -141,7 +142,7 @@ public class UserController {
                             "}\n"))),
     })
     @GetMapping("/token")
-    public ResponseEntity<BaseResponse> reissueAccessToken(@RequestParam(name = "refreshToken") String refreshToken) {
+    public ResponseEntity<BaseResponse> reissueAccessToken(@RequestParam(name = "refreshToken") String refreshToken) throws JwtException {
 
         int status = 200;
         String reissuedAccessToken = userService.reissueAccessToken(refreshToken);
