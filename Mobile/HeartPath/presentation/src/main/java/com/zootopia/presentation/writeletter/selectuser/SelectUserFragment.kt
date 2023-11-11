@@ -2,7 +2,6 @@ package com.zootopia.presentation.writeletter.selectuser
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
@@ -11,18 +10,12 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewpager2.widget.CompositePageTransformer
-import androidx.viewpager2.widget.MarginPageTransformer
-import androidx.viewpager2.widget.ViewPager2
-import com.zootopia.domain.model.user.UserDto
+import com.zootopia.domain.model.user.SearchUserInfoDto
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentSelectUserBinding
-import com.zootopia.presentation.util.LetterType
 import com.zootopia.presentation.writeletter.WriteLetterViewModel
-import com.zootopia.presentation.writeletter.selectletterpaper.LetterPaperViewPagerAdapter
-import com.zootopia.presentation.writeletter.selecttype.SelectLetterTypeFragmentDirections
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -34,7 +27,7 @@ class SelectUserFragment : BaseFragment<FragmentSelectUserBinding>(
     private lateinit var navController: NavController
     private val writeLetterViewModel: WriteLetterViewModel by activityViewModels()
     private lateinit var searchedUserAdapter: SearchedUserAdapter
-    private var searchedUserList: MutableList<UserDto> = mutableListOf()
+    private var searchedUserList: MutableList<SearchUserInfoDto> = mutableListOf()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -62,7 +55,7 @@ class SelectUserFragment : BaseFragment<FragmentSelectUserBinding>(
     fun initRecyclerView() = with(binding) {
         searchedUserAdapter = SearchedUserAdapter(searchedUserList)
         searchedUserAdapter.itemClickListener = object : SearchedUserAdapter.ItemClickListener{
-            override fun itemClick(userDto: UserDto) {
+            override fun itemClick(userDto: SearchUserInfoDto) {
                 writeLetterViewModel.setSelectedUser(userDto)
                 findNavController().navigate(SelectUserFragmentDirections.actionSelectUserFragmentToSelectLetterTypeFragment())
             }
@@ -80,7 +73,7 @@ class SelectUserFragment : BaseFragment<FragmentSelectUserBinding>(
                 Toast.makeText(mainActivity, R.string.select_user_search_notice, Toast.LENGTH_LONG)
                     .show()
             } else {
-                writeLetterViewModel.searchUser(editTextSearch.text.toString())
+                writeLetterViewModel.searchUser(editTextSearch.text.toString(), 10)
             }
         }
     }

@@ -15,6 +15,7 @@ import com.zootopia.data.model.login.response.CheckIdResponse
 import com.zootopia.data.model.login.response.LoginResponse
 import com.zootopia.data.model.user.response.FriendListResponse
 import com.zootopia.data.model.user.response.PointInfoResponse
+import com.zootopia.data.model.user.response.SearchUserResponse
 import com.zootopia.data.model.user.response.UserInfoResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -108,5 +109,12 @@ interface BusinessService {
     // 토큰 재발급
     @GET("/user/token")
     suspend fun getReAccessToken(@Query("refreshToken") refreshToken: String): Response<AuthResponse>
+
+    // 유저 검색
+    @GET("/user/search")
+    suspend fun searchUser(
+        @Query("id") id: String,
+        @Query("limit") limit: Int
+    ): Response<SearchUserResponse>
 
 }
