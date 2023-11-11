@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
         }
 
         String memberIDFromToken = jwtProvider.getMemberIDFromToken(refreshToken);
-        if (memberIDFromToken.isEmpty()) {
+        if (!memberIDFromToken.isEmpty()) {
             res = jwtProvider.createAccessToken(memberIDFromToken);
         }
 

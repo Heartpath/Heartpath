@@ -45,7 +45,7 @@ public class JwtProvider {
 
     @PostConstruct
     public void calculateDate() {
-        long durationOfOneDay = DateUtil.toDays(jwtExpiration);
+        long durationOfOneDay = DateUtil.toDays(2);
         ONE_DAY = DateUtil.toDate(durationOfOneDay);
 
         long durationOfSevenDays = DateUtil.toDays(refreshExpiration);
