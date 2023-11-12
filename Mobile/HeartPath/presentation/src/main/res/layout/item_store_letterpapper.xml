@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:layout_margin="@dimen/_10sdp"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="@dimen/_120sdp"
+        android:layout_height="@dimen/_228sdp"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/imageview_store_letterpapper"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="@dimen/_10sdp"
+            android:src="@drawable/image_letterpapper"
+            android:scaleType="fitCenter"/>
+        <TextView
+            android:id="@+id/textview_store_letterpapper_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/DarkGray_14_ExtraBold_NanumText"
+            android:layout_gravity="center"
+            tools:text = "letter name"/>
+        <TextView
+            android:id="@+id/textview_store_letterpapper_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            style="@style/DarkGray_10_ExtraBold_NanumText"
+            android:layout_marginTop="@dimen/_4sdp"
+            tools:text = "100 우표"/>
+    </LinearLayout>
+
+</LinearLayout>

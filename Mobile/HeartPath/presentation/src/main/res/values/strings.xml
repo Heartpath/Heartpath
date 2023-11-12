@@ -98,4 +98,9 @@
 
     <!-- character encyclopedia -->
     <string name="character_encyclopedia_go_store">상점</string>
+
+    <!-- store -->
+    <string name="store_character">캐릭터</string>
+    <string name="store_letter_papper">편지지</string>
+    <string name="store_price">%d 우표</string>
 </resources>
