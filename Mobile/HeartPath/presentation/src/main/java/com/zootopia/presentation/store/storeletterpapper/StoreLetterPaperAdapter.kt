@@ -15,7 +15,7 @@ class StoreLetterPaperAdapter(var storeLetterPaperList: MutableList<StoreItemLet
     RecyclerView.Adapter<StoreLetterPaperAdapter.StoreLetterPaperViewHolder>() {
 
     interface ItemClickListener {
-        fun onItemClicked(character: StoreItemLetterPaperDto)
+        fun onItemClicked(letterpaper: StoreItemLetterPaperDto)
     }
 
     lateinit var itemClickListener: ItemClickListener
@@ -23,16 +23,20 @@ class StoreLetterPaperAdapter(var storeLetterPaperList: MutableList<StoreItemLet
     inner class StoreLetterPaperViewHolder(var binding: ItemStoreLetterpaperBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun setStoreLetterPaper(letterPaper: StoreItemLetterPaperDto) {
-            binding.textviewStoreLetterpapperPrice.text =
+            binding.textviewStoreLetterpaperPrice.text =
                 binding.root.context.getString(R.string.store_price, letterPaper.price)
-            binding.textviewStoreLetterpapperName.text = letterPaper.letterName
+            binding.textviewStoreLetterpaperName.text = letterPaper.letterName
             Glide.with(binding.root).load(letterPaper.imagePath)
                 .transform(CenterInside(), RoundedCorners(20))
-                .into(binding.imageviewStoreLetterpapper)
+                .into(binding.imageviewStoreLetterpaper)
             if (letterPaper.isOwned) {
                 binding.imageviewIsOwned.visibility = View.VISIBLE
             } else {
                 binding.imageviewIsOwned.visibility = View.GONE
+            }
+
+            binding.linearlayoutStoreLetterpaper.setOnClickListener {
+                itemClickListener.onItemClicked(letterPaper)
             }
         }
     }

@@ -45,6 +45,15 @@ class StoreLetterPaperFragment : BaseFragment<FragmentStoreLetterPaperBinding>(
 
     private fun initRecyclerGridView() = with(binding) {
         storeLetterPaperAdapter = StoreLetterPaperAdapter(storeLetterPaperList)
+
+        storeLetterPaperAdapter.itemClickListener = object : StoreLetterPaperAdapter.ItemClickListener{
+            override fun onItemClicked(letterpaper: StoreItemLetterPaperDto) {
+                val dialog = StoreLetterPaperDialog(binding.root.context, letterpaper)
+                dialog.show(childFragmentManager, "storeLetterPaperDialog")
+            }
+
+        }
+
         recyclerviewStoreLetterpapper.apply {
             adapter = storeLetterPaperAdapter
             layoutManager = GridLayoutManager(context, 2)
