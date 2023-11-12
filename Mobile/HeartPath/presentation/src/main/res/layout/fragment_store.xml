@@ -11,6 +11,33 @@
         app:layout_constraintTop_toTopOf="parent"
         layout="@layout/toolbar_heartpath_custom"/>
 
+    <TextView
+        android:id="@+id/textview_point"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/toolbar_heartpath_store"
+        app:layout_constraintBottom_toBottomOf="@id/toolbar_heartpath_store"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.9"
+        android:paddingStart="@dimen/_4sdp"
+        style="@style/DarkGray_14_ExtraBold_NanumText"
+        android:text="100"/>
+
+    <ImageView
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:src="@drawable/image_stamp"
+        android:scaleType="fitCenter"
+        app:layout_constraintTop_toTopOf="@id/textview_point"
+        app:layout_constraintBottom_toBottomOf="@id/textview_point"
+        app:layout_constraintEnd_toStartOf="@id/textview_point"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintHorizontal_bias="1"
+        />
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tablayout_store_tab"
         android:layout_width="match_parent"
