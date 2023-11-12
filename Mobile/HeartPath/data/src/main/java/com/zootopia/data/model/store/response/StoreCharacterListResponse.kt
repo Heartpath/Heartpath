@@ -1,13 +1,13 @@
-package com.zootopia.data.model.store
+package com.zootopia.data.model.store.response
 
 import com.google.gson.annotations.SerializedName
-import com.zootopia.domain.model.store.CharacterDto
+import com.zootopia.domain.model.store.StoreCharacterDto
 
-data class CharacterEncyclopediaListResponse(
+data class StoreCharacterListResponse(
     @SerializedName("status")
     val status: Int,
     @SerializedName("message")
     val message: String,
     @SerializedName("data")
-    val data: MutableList<CharacterDto>
+    val data: MutableList<StoreCharacterDto>
 )

@@ -3,12 +3,18 @@ package com.zootopia.presentation.store
 import androidx.lifecycle.viewModelScope
 import com.zootopia.domain.model.store.StoreCharacterDto
 import com.zootopia.domain.model.store.StoreLetterPaperDto
+import com.zootopia.domain.usecase.store.GetStoreCharacterListUseCase
 import com.zootopia.presentation.config.BaseViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class StoreViewModel : BaseViewModel() {
+@HiltViewModel
+class StoreViewModel @Inject constructor(
+    private val getStoreCharacterListUseCase: GetStoreCharacterListUseCase
+): BaseViewModel() {
     private var _storeCharacterList =
         MutableStateFlow<MutableList<StoreCharacterDto>>(mutableListOf())
     val storeCharacterList: StateFlow<MutableList<StoreCharacterDto>> = _storeCharacterList
@@ -18,44 +24,14 @@ class StoreViewModel : BaseViewModel() {
     val storeLetterPaperList: StateFlow<MutableList<StoreLetterPaperDto>> = _storeLetterPaperList
 
     fun getStoreCharacterList() {
-        viewModelScope.launch {
-            val list = mutableListOf<StoreCharacterDto>().apply {
-                add(
-                    StoreCharacterDto(
-                        0,
-                        "뱁새1",
-                        100,
-                        "뱁새1임",
-                        "https://zootopia-s3.s3.ap-northeast-2.amazonaws.com/crowtit/98bb8f06-4233-4678-9ebd-50ae629cf780.%EA%B3%B5%ED%95%99_%EB%B1%81%EC%83%88.png",
-                        false
-                    )
-
-                )
-                add(
-                    StoreCharacterDto(
-                        0,
-                        "뱁새1",
-                        100,
-                        "뱁새1임",
-                        "https://zootopia-s3.s3.ap-northeast-2.amazonaws.com/crowtit/98bb8f06-4233-4678-9ebd-50ae629cf780.%EA%B3%B5%ED%95%99_%EB%B1%81%EC%83%88.png",
-                        false
-                    )
-
-                )
-                add(
-                    StoreCharacterDto(
-                        0,
-                        "뱁새1",
-                        100,
-                        "뱁새1임",
-                        "https://zootopia-s3.s3.ap-northeast-2.amazonaws.com/crowtit/98bb8f06-4233-4678-9ebd-50ae629cf780.%EA%B3%B5%ED%95%99_%EB%B1%81%EC%83%88.png",
-                        false
-                    )
-
-                )
+        getApiResult(
+            block = {
+                getStoreCharacterListUseCase.invoke()
+            },
+            success = {
+                _storeCharacterList.emit(it)
             }
-            _storeCharacterList.emit(list)
-        }
+        )
     }
 
     fun getStoreLetterPaperList() {

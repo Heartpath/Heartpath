@@ -1,6 +1,7 @@
 package com.zootopia.presentation.store.storecharacter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -24,6 +25,11 @@ class StoreCharacterAdapter(var storeCharacterList: MutableList<StoreCharacterDt
             binding.textviewStoreBirdPrice.text =
                 binding.root.context.getString(R.string.store_price, character.price)
             Glide.with(binding.root).load(character.imagePath).into(binding.imageviewStoreBird)
+            if(character.isOwned){
+                binding.imageviewIsOwned.visibility = View.VISIBLE
+            }else{
+                binding.imageviewIsOwned.visibility = View.GONE
+            }
         }
     }
 
