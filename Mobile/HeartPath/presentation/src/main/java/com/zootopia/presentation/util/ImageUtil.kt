@@ -5,14 +5,21 @@ import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Matrix
+import android.graphics.SurfaceTexture
+import android.media.Image
 import android.net.Uri
+import android.opengl.GLES20
 import android.provider.MediaStore
 import android.util.Log
+import android.view.Surface
 import android.view.View
 import androidx.core.net.toUri
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.UUID
@@ -110,3 +117,26 @@ fun getImages(context: Context): MutableList<Uri> {
 
     return list
 }
+
+// ARSceneView의 OpenGL 컨텐츠 캡처 함수
+fun loadBitmapFromView(view: View): Bitmap {
+    // 뷰와 동일한 크기의 비트맵 생성
+    val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+
+    // SurfaceTexture를 이용하여 Surface 생성
+    val surfaceTexture = SurfaceTexture(0)
+    val surface = Surface(surfaceTexture)
+
+    // Surface에 뷰를 그려서 비트맵에 복사
+    val canvas = surface.lockCanvas(null)
+    view.draw(canvas)
+    surface.unlockCanvasAndPost(canvas)
+
+    // Surface 및 SurfaceTexture 해제
+    surface.release()
+    surfaceTexture.release()
+
+    return bitmap
+}
+
+
