@@ -53,7 +53,7 @@ class ReceiveLetterFragment :
                 override fun itemClick(view: View, position: Int) {
                     Log.d(TAG, "itemClick: 편지 리스트 클릭됨 $position")
                     val action = ReceiveLetterFragmentDirections.actionReceiveLetterFragmentToReadLetterFragment(
-                        position
+                        letterList[position].index
                     )
                     findNavController().navigate(action)
                 }

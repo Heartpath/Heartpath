@@ -7,6 +7,7 @@ import okhttp3.MultipartBody
 import com.zootopia.data.model.common.MessageResponse
 import com.zootopia.data.model.letter.request.PostTypingLetterRequest
 import com.zootopia.data.model.letter.response.GetUserLetterPaperResponse
+import com.zootopia.data.model.letter.response.ReceivedLetterDetailResponse
 import com.zootopia.data.model.letter.response.StoredLetterListResponse
 import com.zootopia.data.model.letter.response.UnplacedLetterListResponse
 import com.zootopia.data.model.login.request.LoginRequest
@@ -122,4 +123,8 @@ interface BusinessService {
     // 캐릭터 도감 목록 조회
     @GET("/store/crowtit")
     suspend fun getCharacterEncyclopediaList(): Response<CharacterEncyclopediaListResponse>
+
+    // 편지 상세 보기
+    @GET("letter/{letter_id}")
+    suspend fun getLetter(@Path("letter_id") letterId: Int): Response<ReceivedLetterDetailResponse>
 }
