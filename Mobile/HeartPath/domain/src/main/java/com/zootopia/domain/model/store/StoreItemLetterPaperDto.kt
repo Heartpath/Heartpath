@@ -2,7 +2,7 @@ package com.zootopia.domain.model.store
 
 import com.google.gson.annotations.SerializedName
 
-data class StoreLetterPaperDto (
+data class StoreItemLetterPaperDto (
     @SerializedName("letterpaperId")
     val letterpaperId: Int,
     @SerializedName("name")
