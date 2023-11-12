@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:background="@drawable/custom_round_dialog_view">
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textview_add_friend_who_is_not_friend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/_16sdp"
