@@ -17,7 +17,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import com.zootopia.domain.model.unplacedletter.UnplacedLetterDto
+import com.zootopia.domain.model.letter.unplacedletter.UnplacedLetterDto
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment

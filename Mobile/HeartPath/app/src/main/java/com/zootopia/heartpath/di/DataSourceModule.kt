@@ -2,12 +2,12 @@ package com.zootopia.heartpath.di
 
 import com.zootopia.data.datasource.remote.business.BusinessDataSource
 import com.zootopia.data.datasource.remote.business.BusinessDataSourceImpl
+import com.zootopia.data.datasource.remote.letter.LetterDataSource
+import com.zootopia.data.datasource.remote.letter.LetterDataSourceImpl
 import com.zootopia.data.datasource.remote.login.LoginDataSource
 import com.zootopia.data.datasource.remote.login.LoginDataSourceImpl
 import com.zootopia.data.datasource.remote.map.MapDataSource
 import com.zootopia.data.datasource.remote.map.MapDataSourceImpl
-import com.zootopia.data.datasource.remote.sendletter.unplaced.LetterDataSource
-import com.zootopia.data.datasource.remote.sendletter.unplaced.LetterDataSourceImpl
 import com.zootopia.data.datasource.remote.user.UserDataSource
 import com.zootopia.data.datasource.remote.user.UserDataSourceImpl
 import com.zootopia.data.service.BusinessService
@@ -19,7 +19,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 object DataSourceModule {
@@ -28,19 +27,19 @@ object DataSourceModule {
     fun provideMapDataSource(
         naverService: NaverService,
         tmapService: TmapService,
-        businessService: BusinessService
+        businessService: BusinessService,
     ): MapDataSource {
         return MapDataSourceImpl(
             naverService = naverService,
             tmapService = tmapService,
-            businessService = businessService
+            businessService = businessService,
         )
     }
 
     @Singleton
     @Provides
     fun provideBusinessDataSource(
-        businessService: BusinessService
+        businessService: BusinessService,
     ): BusinessDataSource {
         return BusinessDataSourceImpl(businessService)
     }
@@ -48,30 +47,30 @@ object DataSourceModule {
     @Singleton
     @Provides
     fun provideLoginDataSource(
-        businessService: BusinessService
+        businessService: BusinessService,
     ): LoginDataSource {
         return LoginDataSourceImpl(
-            businessService = businessService
+            businessService = businessService,
         )
     }
 
     @Singleton
     @Provides
     fun provideUserDataSource(
-        businessService: BusinessService
-    ): UserDataSource{
+        businessService: BusinessService,
+    ): UserDataSource {
         return UserDataSourceImpl(
-            businessService = businessService
+            businessService = businessService,
         )
     }
-    
+
     @Singleton
     @Provides
     fun provideLetterDataSource(
-        businessService: BusinessService
+        businessService: BusinessService,
     ): LetterDataSource {
         return LetterDataSourceImpl(
-            businessService = businessService
+            businessService = businessService,
         )
     }
 }

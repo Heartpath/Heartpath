@@ -2,9 +2,9 @@ package com.zootopia.heartpath.di
 
 import com.zootopia.data.datasource.local.PreferenceDataSource
 import com.zootopia.data.datasource.remote.business.BusinessDataSource
+import com.zootopia.data.datasource.remote.letter.LetterDataSource
 import com.zootopia.data.datasource.remote.login.LoginDataSource
 import com.zootopia.data.datasource.remote.map.MapDataSource
-import com.zootopia.data.datasource.remote.sendletter.unplaced.LetterDataSource
 import com.zootopia.data.datasource.remote.user.UserDataSource
 import com.zootopia.data.repository.PreferenceRepositoryImpl
 import com.zootopia.data.repository.business.BusinessRepositoryImpl
@@ -24,7 +24,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {
@@ -33,10 +32,10 @@ object RepositoryModule {
     fun providePreferenceRepository(preferenceDataSource: PreferenceDataSource): PreferenceRepository {
         return PreferenceRepositoryImpl(preferenceDataSource)
     }
-    
+
     @Singleton
     @Provides
-    fun provideMapRepository(mapDataSource: MapDataSource): MapRepository{
+    fun provideMapRepository(mapDataSource: MapDataSource): MapRepository {
         return MapRepositoryImpl(mapDataSource)
     }
 
@@ -57,7 +56,7 @@ object RepositoryModule {
     fun provideUserRepository(userDataSource: UserDataSource): UserRepository {
         return UserRepositoryImpl(userDataSource = userDataSource)
     }
-    
+
     @Singleton
     @Provides
     fun provideLetterRepository(letterDataSource: LetterDataSource): SendLetterRepository {
