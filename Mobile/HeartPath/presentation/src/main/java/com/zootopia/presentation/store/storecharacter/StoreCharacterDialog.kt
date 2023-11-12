@@ -60,6 +60,7 @@ class StoreCharacterDialog(context: Context, private val storeCharacterDto: Stor
             dismiss()
         }
         buttonBuy.setOnClickListener {
+            storeViewModel.buyStoreCharacter(storeCharacterDto.characterId)
             dismiss()
         }
     }

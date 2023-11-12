@@ -1,8 +1,10 @@
 package com.zootopia.presentation.store
 
+import com.zootopia.domain.model.store.BuyStoreCharacterRequestDto
 import com.zootopia.domain.model.store.StoreCharacterDto
 import com.zootopia.domain.model.store.StoreItemLetterPaperDto
 import com.zootopia.domain.model.user.UserInfoDto
+import com.zootopia.domain.usecase.store.BuyStoreCharacterUseCase
 import com.zootopia.domain.usecase.store.GetStoreCharacterListUseCase
 import com.zootopia.domain.usecase.store.GetStoreItemLetterPaperListUseCase
 import com.zootopia.domain.usecase.user.GetUserInfoUseCase
@@ -17,7 +19,8 @@ import javax.inject.Inject
 class StoreViewModel @Inject constructor(
     private val getStoreCharacterListUseCase: GetStoreCharacterListUseCase,
     private val getStoreItemLetterPaperUseCase: GetStoreItemLetterPaperListUseCase,
-    private val getUserInfoUseCase: GetUserInfoUseCase
+    private val getUserInfoUseCase: GetUserInfoUseCase,
+    private val buyStoreCharacterUseCase: BuyStoreCharacterUseCase
 ) : BaseViewModel() {
 
     private val _userInfo = MutableStateFlow(UserInfoDto())
@@ -63,6 +66,20 @@ class StoreViewModel @Inject constructor(
             },
             success = {
                 _storeLetterPaperList.emit(it)
+            }
+        )
+    }
+
+    fun buyStoreCharacter(characterId: Int){
+        getApiResult(
+            block = {
+                buyStoreCharacterUseCase.invoke(
+                    BuyStoreCharacterRequestDto(characterId)
+                )
+            },
+            success = {
+                getStoreCharacterList()
+                getUserInfo()
             }
         )
     }
