@@ -29,7 +29,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:padding="@dimen/_10sdp"
-                android:src="@drawable/image_letterpapper"
+                android:src="@drawable/image_letterpaper"
                 android:scaleType="fitCenter"
                 android:background="@drawable/custom_round_corner_extra_light_gray"/>
             <ImageView

@@ -11,15 +11,16 @@ import com.zootopia.domain.model.store.StoreItemLetterPaperDto
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
-import com.zootopia.presentation.databinding.FragmentStoreLetterPapperBinding
+import com.zootopia.presentation.databinding.FragmentStoreLetterPaperBinding
 import com.zootopia.presentation.store.StoreViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 private const val TAG = "StoreLetterPaperFragmen"
-class StoreLetterPaperFragment : BaseFragment<FragmentStoreLetterPapperBinding>(
-    FragmentStoreLetterPapperBinding::bind,
-    R.layout.fragment_store_letter_papper
+
+class StoreLetterPaperFragment : BaseFragment<FragmentStoreLetterPaperBinding>(
+    FragmentStoreLetterPaperBinding::bind,
+    R.layout.fragment_store_letter_paper
 ) {
     private lateinit var mainActivity: MainActivity
     private val storeViewModel: StoreViewModel by activityViewModels()

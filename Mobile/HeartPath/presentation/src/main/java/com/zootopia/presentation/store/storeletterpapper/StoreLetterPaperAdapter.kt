@@ -9,7 +9,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.zootopia.domain.model.store.StoreItemLetterPaperDto
 import com.zootopia.presentation.R
-import com.zootopia.presentation.databinding.ItemStoreLetterpapperBinding
+import com.zootopia.presentation.databinding.ItemStoreLetterpaperBinding
 
 class StoreLetterPaperAdapter(var storeLetterPaperList: MutableList<StoreItemLetterPaperDto>) :
     RecyclerView.Adapter<StoreLetterPaperAdapter.StoreLetterPaperViewHolder>() {
@@ -20,7 +20,7 @@ class StoreLetterPaperAdapter(var storeLetterPaperList: MutableList<StoreItemLet
 
     lateinit var itemClickListener: ItemClickListener
 
-    inner class StoreLetterPaperViewHolder(var binding: ItemStoreLetterpapperBinding) :
+    inner class StoreLetterPaperViewHolder(var binding: ItemStoreLetterpaperBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun setStoreLetterPaper(letterPaper: StoreItemLetterPaperDto) {
             binding.textviewStoreLetterpapperPrice.text =
@@ -29,9 +29,9 @@ class StoreLetterPaperAdapter(var storeLetterPaperList: MutableList<StoreItemLet
             Glide.with(binding.root).load(letterPaper.imagePath)
                 .transform(CenterInside(), RoundedCorners(20))
                 .into(binding.imageviewStoreLetterpapper)
-            if(letterPaper.isOwned){
+            if (letterPaper.isOwned) {
                 binding.imageviewIsOwned.visibility = View.VISIBLE
-            }else{
+            } else {
                 binding.imageviewIsOwned.visibility = View.GONE
             }
         }
@@ -39,7 +39,7 @@ class StoreLetterPaperAdapter(var storeLetterPaperList: MutableList<StoreItemLet
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoreLetterPaperViewHolder {
         return StoreLetterPaperViewHolder(
-            ItemStoreLetterpapperBinding.inflate(
+            ItemStoreLetterpaperBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
