@@ -12,8 +12,8 @@ import com.zootopia.domain.usecase.letter.send.GetUnplacedLetterUseCase
 import com.zootopia.domain.usecase.letter.send.RequestLetterPlacedUseCase
 import com.zootopia.presentation.config.BaseViewModel
 import com.zootopia.presentation.util.getRealPathFromUri
+import com.zootopia.presentation.util.loadBitmapFromView
 import com.zootopia.presentation.util.saveImageToGallery
-import com.zootopia.presentation.util.viewToBitmap
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -92,9 +92,12 @@ class SendLetterViewModel @Inject constructor(
     private val _isRealPath = MutableSharedFlow<String>()
     val isRealPath: SharedFlow<String> = _isRealPath
     suspend fun catchCapture(view: View) {
-        _isBitmap.emit(
-            viewToBitmap(view = view),
-        )
+        loadBitmapFromView(view = view)?.let {
+            _isBitmap.emit(
+                //            viewToBitmap(view = view),
+                it,
+            )
+        }
     }
     suspend fun saveImage(context: Context, bitmap: Bitmap) {
         saveImageToGallery(context = context, bitmap = bitmap)?.let {

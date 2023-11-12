@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/rootView"
     tools:context=".arcore.ArCoreWriteFragment">
 
     <io.github.sceneview.ar.ARSceneView
         android:id="@+id/sceneView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
+
 
     <FrameLayout
         android:id="@+id/loadingView"
@@ -56,52 +57,52 @@
         android:layout_width="@dimen/_80sdp"
         android:layout_height="@dimen/_40sdp"
         android:layout_marginBottom="@dimen/_50sdp"
-        android:text="편지 놓기"
-        android:paddingVertical="@dimen/_2sdp"
-        android:paddingHorizontal="@dimen/_4sdp"
-        android:gravity="center"
-        app:strokeColor="@color/PrimaryLightBlue"
-        app:strokeWidth="@dimen/_2sdp"
         android:backgroundTint="@color/white"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/_4sdp"
+        android:paddingVertical="@dimen/_2sdp"
+        android:text="편지 놓기"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:strokeColor="@color/PrimaryLightBlue"
+        app:strokeWidth="@dimen/_2sdp" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/button_re_set_item"
         android:layout_width="@dimen/_80sdp"
         android:layout_height="@dimen/_40sdp"
         android:layout_marginBottom="@dimen/_50sdp"
-        android:text="편지 다시 놓기"
-        android:paddingVertical="@dimen/_2sdp"
-        android:paddingHorizontal="@dimen/_4sdp"
-        android:gravity="center"
-        app:strokeColor="@color/PrimaryLightBlue"
-        app:strokeWidth="@dimen/_2sdp"
-        android:visibility="gone"
         android:backgroundTint="@color/white"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/_4sdp"
+        android:paddingVertical="@dimen/_2sdp"
+        android:text="편지 다시 놓기"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:strokeColor="@color/PrimaryLightBlue"
+        app:strokeWidth="@dimen/_2sdp" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/button_send_item"
         android:layout_width="@dimen/_80sdp"
         android:layout_height="@dimen/_40sdp"
         android:layout_marginBottom="@dimen/_50sdp"
-        android:text="편지 보내기"
-        android:paddingVertical="@dimen/_2sdp"
-        android:paddingHorizontal="@dimen/_4sdp"
-        android:gravity="center"
-        app:strokeColor="@color/PrimaryLightBlue"
-        app:strokeWidth="@dimen/_2sdp"
-        android:visibility="gone"
         android:backgroundTint="@color/white"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/_4sdp"
+        android:paddingVertical="@dimen/_2sdp"
+        android:text="편지 보내기"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:strokeColor="@color/PrimaryLightBlue"
+        app:strokeWidth="@dimen/_2sdp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
