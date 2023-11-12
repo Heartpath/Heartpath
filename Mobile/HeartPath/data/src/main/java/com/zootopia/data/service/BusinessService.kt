@@ -16,6 +16,7 @@ import com.zootopia.data.model.login.response.CheckIdResponse
 import com.zootopia.data.model.login.response.LoginResponse
 import com.zootopia.data.model.store.response.CharacterEncyclopediaListResponse
 import com.zootopia.data.model.store.response.StoreCharacterListResponse
+import com.zootopia.data.model.store.response.StoreItemLetterPaperListResponse
 import com.zootopia.data.model.user.response.FriendListResponse
 import com.zootopia.data.model.user.response.PointInfoResponse
 import com.zootopia.data.model.user.response.SearchUserResponse
@@ -132,4 +133,8 @@ interface BusinessService {
     // 상점 캐릭터 리스트 조회
     @GET("/store/crowtit/all")
     suspend fun getStoreCharacterList(): Response<StoreCharacterListResponse>
+
+    // 상점 편지 리스트 조회
+    @GET("/store/letterpaper/all")
+    suspend fun getStoreItemLetterPaperList(): Response<StoreItemLetterPaperListResponse>
 }

@@ -7,7 +7,7 @@ import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import com.zootopia.domain.model.store.StoreLetterPaperDto
+import com.zootopia.domain.model.store.StoreItemLetterPaperDto
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
@@ -24,7 +24,7 @@ class StoreLetterPaperFragment : BaseFragment<FragmentStoreLetterPapperBinding>(
     private lateinit var mainActivity: MainActivity
     private val storeViewModel: StoreViewModel by activityViewModels()
     private lateinit var storeLetterPaperAdapter: StoreLetterPaperAdapter
-    private var storeLetterPaperList: MutableList<StoreLetterPaperDto> = mutableListOf()
+    private var storeLetterPaperList: MutableList<StoreItemLetterPaperDto> = mutableListOf()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
