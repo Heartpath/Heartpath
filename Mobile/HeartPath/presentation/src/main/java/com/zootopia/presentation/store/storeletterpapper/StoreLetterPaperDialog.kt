@@ -64,6 +64,7 @@ class StoreLetterPaperDialog(context: Context, private val storeItemLetterPaperD
             dismiss()
         }
         buttonBuy.setOnClickListener {
+            storeViewModel.buyStoreLetterPaper(storeItemLetterPaperDto.letterpaperId)
             dismiss()
         }
     }

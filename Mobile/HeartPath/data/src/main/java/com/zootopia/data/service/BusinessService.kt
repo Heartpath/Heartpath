@@ -14,7 +14,9 @@ import com.zootopia.data.model.login.request.SignupRequest
 import com.zootopia.data.model.login.response.CheckIdResponse
 import com.zootopia.data.model.login.response.LoginResponse
 import com.zootopia.data.model.store.request.BuyStoreCharacterRequest
+import com.zootopia.data.model.store.request.BuyStoreLetterPaperRequest
 import com.zootopia.data.model.store.response.BuyStoreCharacterResponse
+import com.zootopia.data.model.store.response.BuyStoreLetterPaperResponse
 import com.zootopia.data.model.store.response.CharacterEncyclopediaListResponse
 import com.zootopia.data.model.store.response.StoreCharacterListResponse
 import com.zootopia.data.model.store.response.StoreItemLetterPaperListResponse
@@ -144,4 +146,7 @@ interface BusinessService {
     // 상점 캐릭터 구매
     @POST("/store/crowtit/buy")
     suspend fun buyStoreCharacter(@Body buyStoreCharacterRequest: BuyStoreCharacterRequest): Response<BuyStoreCharacterResponse>
+
+    @POST("/store/letterpaper/buy")
+    suspend fun buyStoreLetterPaper(@Body buyStoreLetterPaperRequest: BuyStoreLetterPaperRequest): Response<BuyStoreLetterPaperResponse>
 }

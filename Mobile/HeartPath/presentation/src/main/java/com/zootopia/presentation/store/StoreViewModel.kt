@@ -1,10 +1,12 @@
 package com.zootopia.presentation.store
 
 import com.zootopia.domain.model.store.BuyStoreCharacterRequestDto
+import com.zootopia.domain.model.store.BuyStoreLetterPaperRequestDto
 import com.zootopia.domain.model.store.StoreCharacterDto
 import com.zootopia.domain.model.store.StoreItemLetterPaperDto
 import com.zootopia.domain.model.user.UserInfoDto
 import com.zootopia.domain.usecase.store.BuyStoreCharacterUseCase
+import com.zootopia.domain.usecase.store.BuyStoreLetterPaperUseCase
 import com.zootopia.domain.usecase.store.GetStoreCharacterListUseCase
 import com.zootopia.domain.usecase.store.GetStoreItemLetterPaperListUseCase
 import com.zootopia.domain.usecase.user.GetUserInfoUseCase
@@ -20,7 +22,8 @@ class StoreViewModel @Inject constructor(
     private val getStoreCharacterListUseCase: GetStoreCharacterListUseCase,
     private val getStoreItemLetterPaperUseCase: GetStoreItemLetterPaperListUseCase,
     private val getUserInfoUseCase: GetUserInfoUseCase,
-    private val buyStoreCharacterUseCase: BuyStoreCharacterUseCase
+    private val buyStoreCharacterUseCase: BuyStoreCharacterUseCase,
+    private val buyStoreLetterPaperUseCase: BuyStoreLetterPaperUseCase
 ) : BaseViewModel() {
 
     private val _userInfo = MutableStateFlow(UserInfoDto())
@@ -79,6 +82,20 @@ class StoreViewModel @Inject constructor(
             },
             success = {
                 getStoreCharacterList()
+                getUserInfo()
+            }
+        )
+    }
+
+    fun buyStoreLetterPaper(letterPaper: Int){
+        getApiResult(
+            block = {
+                buyStoreLetterPaperUseCase.invoke(
+                    BuyStoreLetterPaperRequestDto(letterPaper)
+                )
+            },
+            success = {
+                getStoreLetterPaperList()
                 getUserInfo()
             }
         )
