@@ -2,6 +2,7 @@ package com.zootopia.presentation.readletter
 
 import androidx.lifecycle.viewModelScope
 import com.zootopia.domain.model.letter.ReadLetterDto
+import com.zootopia.domain.usecase.letter.received.GetLetterToReadUseCase
 import com.zootopia.domain.usecase.user.AddFriendUseCase
 import com.zootopia.presentation.config.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,6 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ReadLetterViewModel @Inject constructor(
     private val addFriendUseCase: AddFriendUseCase,
+    private val getLetterToReadUseCase: GetLetterToReadUseCase,
 ): BaseViewModel(){
 
     private val _checkFriendCnt = MutableStateFlow(1)
@@ -20,6 +22,9 @@ class ReadLetterViewModel @Inject constructor(
 
     private val _readLetterResult = MutableStateFlow(ReadLetterDto())
     var readLetterResult = _readLetterResult.asStateFlow()
+
+    private val _addFriendResult = MutableStateFlow("")
+    var addFriendResult = _addFriendResult.asStateFlow()
 
     fun setCheckFriendCnt() = viewModelScope.launch {
         _checkFriendCnt.value -= 1
@@ -30,21 +35,27 @@ class ReadLetterViewModel @Inject constructor(
             block = {
                 addFriendUseCase.invoke(readLetterResult.value.sender)
             },
-            success = {
-
+            success = {result ->
+                _addFriendResult.emit(result)
+                setCheckFriendCnt()
             }
         )
     }
 
-    fun getReadLetter() {
+    fun getReadLetter(id: Int) {
         getApiResult(
             block = {
-
+                getLetterToReadUseCase.invoke(letterId = id)
             },
-            success = {
-
+            success = {result ->
+                if (result != null) {
+                    _readLetterResult.emit(result)
+                }
             }
         )
     }
 
+    fun clearLetterResult() = viewModelScope.launch {
+        _readLetterResult.emit(ReadLetterDto())
+    }
 }

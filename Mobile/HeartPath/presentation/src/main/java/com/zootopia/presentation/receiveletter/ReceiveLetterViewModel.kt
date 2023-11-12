@@ -1,7 +1,7 @@
 package com.zootopia.presentation.receiveletter
 
 import com.zootopia.domain.model.letter.ReceiveLetterDto
-import com.zootopia.domain.usecase.receiveletter.GetStoredLetterListUseCase
+import com.zootopia.domain.usecase.letter.received.GetStoredLetterListUseCase
 import com.zootopia.presentation.config.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

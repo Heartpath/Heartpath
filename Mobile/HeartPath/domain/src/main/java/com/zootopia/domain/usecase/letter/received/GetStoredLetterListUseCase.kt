@@ -1,4 +1,4 @@
-package com.zootopia.domain.usecase.receiveletter
+package com.zootopia.domain.usecase.letter.received
 
 import com.zootopia.domain.model.letter.ReceiveLetterDto
 import com.zootopia.domain.repository.receiveletter.ReceiveLetterRepository
