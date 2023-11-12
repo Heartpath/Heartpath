@@ -16,6 +16,6 @@
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         tools:itemCount="10"
         app:spanCount="2"
-        tools:listitem="@layout/item_store_letterpapper"
+        tools:listitem="@layout/item_store_letterpaper"
         />
 </LinearLayout>

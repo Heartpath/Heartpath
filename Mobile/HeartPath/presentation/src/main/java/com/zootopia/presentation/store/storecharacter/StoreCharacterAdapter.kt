@@ -30,6 +30,10 @@ class StoreCharacterAdapter(var storeCharacterList: MutableList<StoreCharacterDt
             }else{
                 binding.imageviewIsOwned.visibility = View.GONE
             }
+
+            binding.linearlayoutStoreCharacter.setOnClickListener {
+                itemClickListener.onItemClicked(character)
+            }
         }
     }
 

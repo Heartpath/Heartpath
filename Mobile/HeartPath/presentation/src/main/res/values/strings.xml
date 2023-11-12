@@ -103,4 +103,5 @@
     <string name="store_character">캐릭터</string>
     <string name="store_letter_papper">편지지</string>
     <string name="store_price">%d 우표</string>
+    <string name="store_buy">구매</string>
 </resources>

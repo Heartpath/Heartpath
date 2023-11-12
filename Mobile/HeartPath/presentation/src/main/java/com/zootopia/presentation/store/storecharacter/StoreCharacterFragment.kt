@@ -42,6 +42,14 @@ class StoreCharacterFragment : BaseFragment<FragmentStoreCharacterBinding>(
 
     private fun initRecyclerGridView() = with(binding) {
         storeCharacterAdapter = StoreCharacterAdapter(storeCharacterList)
+
+        storeCharacterAdapter.itemClickListener = object : StoreCharacterAdapter.ItemClickListener{
+            override fun onItemClicked(character: StoreCharacterDto) {
+                val dialog = StoreCharacterDialog(binding.root.context, character)
+                dialog.show(childFragmentManager, "storeCharacterDialog")
+            }
+        }
+
         recyclerviewStoreCharacter.apply {
             adapter = storeCharacterAdapter
             layoutManager = GridLayoutManager(context, 2)
