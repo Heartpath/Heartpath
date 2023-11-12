@@ -386,5 +386,4 @@ public class LetterServiceImpl implements LetterService {
 
         return res.getData();
     }
-
 }
