@@ -1,5 +1,7 @@
 package com.zootopia.data.datasource.remote.store
 
+import com.zootopia.data.model.store.request.BuyStoreCharacterRequest
+import com.zootopia.data.model.store.response.BuyStoreCharacterResponse
 import com.zootopia.data.model.store.response.CharacterEncyclopediaListResponse
 import com.zootopia.data.model.store.response.StoreCharacterListResponse
 import com.zootopia.data.model.store.response.StoreItemLetterPaperListResponse
@@ -24,6 +26,12 @@ class StoreDataSourceImpl(
     override suspend fun getStoreItemLetterPaperList(): StoreItemLetterPaperListResponse {
         return handleApi {
             businessService.getStoreItemLetterPaperList()
+        }
+    }
+
+    override suspend fun buyStoreCharacter(buyStoreCharacterRequest: BuyStoreCharacterRequest): BuyStoreCharacterResponse {
+        return handleApi {
+            businessService.buyStoreCharacter(buyStoreCharacterRequest)
         }
     }
 
