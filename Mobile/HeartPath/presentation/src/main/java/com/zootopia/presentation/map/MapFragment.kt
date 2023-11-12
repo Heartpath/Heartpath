@@ -99,7 +99,7 @@ class MapFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-        
+
         setWalkView()
         initView()
         initAdapter()
@@ -254,13 +254,13 @@ class MapFragment :
         // 길 찾기 data 수신[Tmap] -> 경로 그리기 & WorkManager 실행
         viewLifecycleOwner.lifecycleScope.launch {
             mapViewModel.tmapWalkRoadInfo.collect {
-                Log.d(TAG, "initCollect: ${it}")
+                Log.d(TAG, "initCollect: $it")
                 DrawLoad(it) // 경로 그리기
                 startWalk() // WorkManager 실행
                 mapViewModel.walkRoad = it
             }
         }
-        
+
         // 목적지 까지 거리 계산
         viewLifecycleOwner.lifecycleScope.launch {
             mapViewModel.walkDistance.collectLatest {
@@ -313,25 +313,25 @@ class MapFragment :
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(mainActivity) // gps 자동으로 받아오기
         setUpdateLocationListner() // 내위치를 가져오는 코드
-        
+
         rewriteMap() // 다시 그려야 하는 경로가 있다면 다시 그리기
     }
-    
+
     // 다시 그려야 하는 경로가 있다면 다시 그리기
-    private fun rewriteMap() = with(mapViewModel){
-        if(walkRoad != null) {
+    private fun rewriteMap() = with(mapViewModel) {
+        if (walkRoad != null) {
             Log.d(TAG, "onViewCreated: 기존 경로 다시 그리기 ")
             DrawLoad(walkRoad!!)
-    
+
             // 현재 위치와 마커위치를 계산
             calculateDistance()
-            
+
             // 마커 포지션
             setMarkerLocation(
                 latitude = goalLatitude,
                 longitude = goalLongitude,
             )
-            
+
             // 카메라 위치 지정
             setCameraToIncludeMyLocationAndMarker(
                 naverMap,
@@ -422,10 +422,10 @@ class MapFragment :
         }
 
         marker?.setOnClickListener {
-            if(mapViewModel.isStartWalk) {
+            if (mapViewModel.isStartWalk) {
                 return@setOnClickListener false
             }
-            
+
             if (it is Marker && checkBasePermission() && mapLetterDto != null) {
                 // 확인 다이얼로그
                 val readyGoDialog = ReadyGoDialogFragment(mapLetterDto = mapLetterDto)
@@ -458,10 +458,10 @@ class MapFragment :
         naverMap.maxZoom = 21.0
         naverMap.minZoom = 5.0
     }
-    
-    private fun setWalkView() = with(binding){
+
+    private fun setWalkView() = with(binding) {
         Log.d(TAG, "setWalkView: ${mapViewModel.isStartWalk}")
-        if(!mapViewModel.isStartWalk) {
+        if (!mapViewModel.isStartWalk) {
             presidentBottomSheet.visibility = View.VISIBLE
             cardviewWork.visibility = View.GONE
         } else {
@@ -475,7 +475,7 @@ class MapFragment :
     private fun stopWalk() {
         mapViewModel.isStartWalk = false
         mainActivity.showToast("편지 찾기를 종료합니다.")
-        workManager.cancelAllWork()   // 백그라운드 작업 종료
+        workManager.cancelAllWork() // 백그라운드 작업 종료
         mapViewModel.resetTmapWalkRoadInfo()
         setUpdateLocationListner()
         setWalkView()
