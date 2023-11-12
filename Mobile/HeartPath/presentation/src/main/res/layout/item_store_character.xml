@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
     android:layout_gravity="center"
     android:layout_margin="@dimen/_10sdp"
@@ -11,15 +12,36 @@
         android:layout_width="@dimen/_100sdp"
         android:layout_height="@dimen/_148sdp"
         android:orientation="vertical">
-        <ImageView
-            android:id="@+id/imageview_store_bird"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:src="@drawable/image_bird_silhouette"
-            android:scaleType="fitCenter"
-            android:padding="@dimen/_20sdp"
-            android:background="@drawable/custom_round_corner_extra_light_gray"/>
+            android:layout_weight="1">
+            <ImageView
+                android:id="@+id/imageview_store_bird"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:src="@drawable/image_bird_silhouette"
+                android:scaleType="fitCenter"
+                android:padding="@dimen/_20sdp"
+                android:background="@drawable/custom_round_corner_extra_light_gray"/>
+            <ImageView
+                android:id="@+id/imageview_is_owned"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintHorizontal_bias="0.9"
+                app:layout_constraintVertical_bias="0.1"
+                android:src="@drawable/icon_check_circle"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <TextView
             android:id="@+id/textview_store_bird_name"
             android:layout_width="wrap_content"
