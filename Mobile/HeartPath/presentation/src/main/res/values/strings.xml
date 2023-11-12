@@ -95,4 +95,7 @@
     <string name="signup_check_id_done">확인완료</string>
 
     <string name="received_letter_title">$s님이 보낸 편지</string>
+
+    <!-- character encyclopedia -->
+    <string name="character_encyclopedia_go_store">상점</string>
 </resources>

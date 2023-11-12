@@ -13,6 +13,7 @@ import com.zootopia.data.model.login.request.LoginRequest
 import com.zootopia.data.model.login.request.SignupRequest
 import com.zootopia.data.model.login.response.CheckIdResponse
 import com.zootopia.data.model.login.response.LoginResponse
+import com.zootopia.data.model.store.CharacterEncyclopediaListResponse
 import com.zootopia.data.model.user.response.FriendListResponse
 import com.zootopia.data.model.user.response.PointInfoResponse
 import com.zootopia.data.model.user.response.SearchUserResponse
@@ -118,4 +119,7 @@ interface BusinessService {
         @Query("checkFriends") checkFriends: Boolean
     ): Response<SearchUserResponse>
 
+    // 캐릭터 도감 목록 조회
+    @GET("/store/crowtit")
+    suspend fun getCharacterEncyclopediaList(): Response<CharacterEncyclopediaListResponse>
 }
