@@ -7,6 +7,7 @@ import android.view.View
 import androidx.core.view.isGone
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.ar.core.Anchor
 import com.google.ar.core.Config
 import com.google.ar.core.Frame
@@ -24,6 +25,7 @@ import io.github.sceneview.ar.getDescription
 import io.github.sceneview.ar.node.AnchorNode
 import io.github.sceneview.math.Position
 import io.github.sceneview.node.ModelNode
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -71,6 +73,7 @@ class ArCoreWriteFragment :
         super.onViewCreated(view, savedInstanceState)
         initView()
         initClickEvent()
+        initCollect()
     }
 
     fun updateInstructions() {
@@ -82,11 +85,43 @@ class ArCoreWriteFragment :
             null
         }
     }
-    
+
     private fun initClickEvent() = with(binding) {
+        // 편지 서버로 보내기 클릭 이벤트
         buttonSendItem.setOnClickListener {
             sendLetterViewModel.apply {
-                requestSendLetter()
+                viewLifecycleOwner.lifecycleScope.launch {
+                    catchCapture(binding.rootView)
+                    isLoading = true
+                }
+            }
+        }
+    }
+
+    private fun initCollect() = with(sendLetterViewModel) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            isBitmap.collectLatest {
+                saveImage(context = mainActivity, bitmap = it)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            isSaveIamge.collectLatest {
+                getRealPath(context = mainActivity, uri = it)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            isRealPath.collectLatest {
+                requestSendLetter(files = it)
+                isLoading = false
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            isResult.collectLatest {
+                mainActivity.showToast(it)
+                findNavController().popBackStack()
             }
         }
     }
@@ -123,7 +158,10 @@ class ArCoreWriteFragment :
                                 measureDistanceFromCamera()
 
                                 // 버튼 비활성화
-                                binding.buttonSetItem.visibility = View.GONE
+                                binding.apply {
+                                    buttonSetItem.visibility = View.GONE
+                                    buttonSendItem.visibility = View.VISIBLE
+                                }
                             }
                         }
                 }

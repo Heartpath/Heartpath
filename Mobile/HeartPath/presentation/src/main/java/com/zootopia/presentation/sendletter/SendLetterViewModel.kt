@@ -1,16 +1,22 @@
 package com.zootopia.presentation.sendletter
 
+import android.content.Context
+import android.graphics.Bitmap
 import android.location.Location
+import android.net.Uri
 import android.util.Log
+import android.view.View
 import com.zootopia.domain.model.letter.sendletter.LetterPlacedDto
 import com.zootopia.domain.model.letter.unplacedletter.UnPlacedLetterListDto
 import com.zootopia.domain.usecase.letter.send.GetUnplacedLetterUseCase
 import com.zootopia.domain.usecase.letter.send.RequestLetterPlacedUseCase
 import com.zootopia.presentation.config.BaseViewModel
+import com.zootopia.presentation.util.getRealPathFromUri
+import com.zootopia.presentation.util.saveImageToGallery
+import com.zootopia.presentation.util.viewToBitmap
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
-import okhttp3.MultipartBody
 import javax.inject.Inject
 
 private const val TAG = "SendLetterViewModel_HP"
@@ -52,20 +58,54 @@ class SendLetterViewModel @Inject constructor(
     /**
      * 편지 전송
      */
+    var isSelectLetterId = ""
+    private val _isResult = MutableSharedFlow<String>()
+    val isResult: SharedFlow<String> = _isResult
     fun requestSendLetter(
-        files: MultipartBody.Part,
-        letterPlacedDto: LetterPlacedDto,
+        files: String,
     ) {
         getApiResult(
             block = {
                 requestLetterPlacedUseCase.invoke(
                     files = files,
-                    letterPlacedDto = letterPlacedDto,
+                    letterPlacedDto = LetterPlacedDto(
+                        id = isSelectLetterId,
+                        lat = lastLatitude,
+                        lng = lastLongitude,
+                    ),
                 )
             },
             success = {
                 Log.d(TAG, "requestSendLetter: $it")
+                _isResult.emit(it)
             },
         )
+    }
+
+    /**
+     * 화면 캡처 전처리
+     */
+    private val _isBitmap = MutableSharedFlow<Bitmap>()
+    val isBitmap: SharedFlow<Bitmap> = _isBitmap
+    private val _isSaveImage = MutableSharedFlow<Uri>()
+    val isSaveIamge: SharedFlow<Uri> = _isSaveImage
+    private val _isRealPath = MutableSharedFlow<String>()
+    val isRealPath: SharedFlow<String> = _isRealPath
+    suspend fun catchCapture(view: View) {
+        _isBitmap.emit(
+            viewToBitmap(view = view),
+        )
+    }
+    suspend fun saveImage(context: Context, bitmap: Bitmap) {
+        saveImageToGallery(context = context, bitmap = bitmap)?.let {
+            _isSaveImage.emit(
+                it,
+            )
+        }
+    }
+    suspend fun getRealPath(context: Context, uri: Uri) {
+        getRealPathFromUri(context = context, contentUri = uri)?.let {
+            _isRealPath.emit(it)
+        }
     }
 }

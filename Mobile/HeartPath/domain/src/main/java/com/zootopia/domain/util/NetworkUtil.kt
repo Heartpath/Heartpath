@@ -10,7 +10,7 @@ private fun <T> Response<T>.isDelete(): Boolean {
     return this.raw().request.method == "DELETE"
 }
 
-//@Suppress("UNCHECKED_CAST")
+// @Suppress("UNCHECKED_CAST")
 fun <T> Response<T>.getValueOrThrow(): T {
     Log.d(TAG, "getValueOrThrow: $isSuccessful ${code()}")
     Log.d(TAG, "getValueOrThrow: ${this.body()}")
@@ -28,28 +28,28 @@ fun <T> Response<T>.getValueOrThrow(): T {
     val status = jsonObject?.getInt("status") ?: 0
     val message = jsonObject?.getString("message") ?: ""
 
-    Log.e(TAG, "getValueOrThrow: Error status : ${status}, message : ${message}")
-    
+    Log.e(TAG, "getValueOrThrow: Error status : $status, message : $message")
+
     when (status) {
         in 100..199 -> { throw NetworkThrowable.Base100Throwable(status, message) }
         in 300..399 -> { throw NetworkThrowable.Base300Throwable(status, message) }
         in 400..499 -> { throw NetworkThrowable.Base400Throwable(status, message) }
         in 500..599 -> { throw NetworkThrowable.Base500Throwable(status, message) }
-        in 4000..4050 -> {throw NetworkThrowable.Base40000Throwable(status, message)}
+        in 4000..4050 -> { throw NetworkThrowable.Base40000Throwable(status, message) }
     }
 
     throw NetworkThrowable.IllegalStateThrowable()
 }
 
-
 /**
  * throwable 처리하기 전까지 가져갈 함수
  */
-suspend fun <T> getValueOrThrow2(block: suspend () -> T): T{
-    try{
-        Log.d(TAG, "getValueOrThrow2")
+suspend fun <T> getValueOrThrow2(block: suspend () -> T): T {
+    try {
+        Log.d(TAG, "getValueOrThrow2 $block")
         return block()
-    }catch (throwable: NetworkThrowable){
+    } catch (throwable: NetworkThrowable) {
+        Log.d(TAG, "getValueOrThrow2: $throwable")
         throw throwable
     }
 }

@@ -10,8 +10,6 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import androidx.core.net.toUri
-import androidx.lifecycle.ViewModel
-import com.zootopia.presentation.config.BaseViewModel
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -71,7 +69,7 @@ fun viewToBitmap(view: View): Bitmap {
     return bitmap
 }
 
-fun getImages(context: Context): MutableList<Uri>{
+fun getImages(context: Context): MutableList<Uri> {
     Log.d(TAG, "getImages: ~~~~~~~~~~~~~~~~~~~~~~~")
     var list = mutableListOf<Uri>()
 
@@ -105,7 +103,7 @@ fun getImages(context: Context): MutableList<Uri>{
             val imageData = cursor.getString(dataColumnIndex)
             // 이미지 데이터를 사용하여 필요한 작업 수행
             list.add(
-                imageData.toUri()
+                imageData.toUri(),
             )
         }
     }
