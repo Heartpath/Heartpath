@@ -46,6 +46,10 @@
             android:id="@+id/action_homeFragment_to_selectUserFragment"
             app:destination="@id/selectUserFragment"
             style="@style/SlideAnimation"/>
+        <action
+            android:id="@+id/action_homeFragment_to_characterEncyclopediaFragment"
+            app:destination="@id/characterEncyclopediaFragment"
+            style="@style/SlideAnimation"/>
     </fragment>
 
     <fragment
@@ -216,6 +220,11 @@
         android:name="com.zootopia.presentation.arcore.ArCoreWriteFragment"
         android:label="fragment_ar_core_write"
         tools:layout="@layout/fragment_ar_core_write" />
+    <fragment
+        android:id="@+id/characterEncyclopediaFragment"
+        android:name="com.zootopia.presentation.characterencyclopedia.CharacterEncyclopediaFragment"
+        android:label="CharacterEncyclopediaFragment"
+        tools:layout="@layout/fragment_character_encyclopedia"/>
 
 
 </navigation>
