@@ -29,17 +29,17 @@
             android:layout_height="match_parent"
             android:layout_weight="10">
             <ImageView
-                android:id="@+id/imageview_store_bird"
+                android:id="@+id/imageview_store_letterpaper"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/image_bird_silhouette"
+                android:src="@drawable/image_letterpaper"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:padding="@dimen/_20sdp"
+                android:padding="@dimen/_4sdp"
                 android:scaleType="fitCenter"
-               />
+                />
         </androidx.constraintlayout.widget.ConstraintLayout>
         <Space
             android:layout_width="0dp"
@@ -54,7 +54,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textview_store_character_name"
+                android:id="@+id/textview_store_letterpaper_name"
                 style="@style/DarkGray_14_ExtraBold_NanumText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
                 tools:text="bird name" />
 
             <TextView
-                android:id="@+id/textview_store_character_description"
+                android:id="@+id/textview_store_letterpaper_description"
                 style="@style/DarkGray_10_Bold_NanumText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -9,6 +9,7 @@
     android:layout_margin="@dimen/_10sdp"
     android:orientation="vertical">
     <LinearLayout
+        android:id="@+id/linearlayout_store_letterpaper"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_228sdp"
         android:orientation="vertical"
@@ -20,7 +21,7 @@
             android:layout_weight="1"
             >
             <ImageView
-                android:id="@+id/imageview_store_letterpapper"
+                android:id="@+id/imageview_store_letterpaper"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -46,7 +47,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
-            android:id="@+id/textview_store_letterpapper_name"
+            android:id="@+id/textview_store_letterpaper_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/DarkGray_14_ExtraBold_NanumText"
@@ -58,7 +59,7 @@
             android:layout_marginTop="@dimen/_4sdp"
             tools:text = "letter name" />
         <TextView
-            android:id="@+id/textview_store_letterpapper_price"
+            android:id="@+id/textview_store_letterpaper_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
