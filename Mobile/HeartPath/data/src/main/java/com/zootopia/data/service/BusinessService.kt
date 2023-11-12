@@ -6,6 +6,7 @@ import com.zootopia.data.model.letter.response.BusinessResponse
 import okhttp3.MultipartBody
 import com.zootopia.data.model.common.MessageResponse
 import com.zootopia.data.model.letter.response.GetUserLetterPaperResponse
+import com.zootopia.data.model.letter.response.ReceivedLetterDetailResponse
 import com.zootopia.data.model.letter.response.StoredLetterListResponse
 import com.zootopia.data.model.letter.response.UnplacedLetterListResponse
 import com.zootopia.data.model.login.request.LoginRequest
@@ -98,4 +99,8 @@ interface BusinessService {
     // 토큰 재발급
     @GET("/user/token")
     suspend fun getReAccessToken(@Query("refreshToken") refreshToken: String): Response<AuthResponse>
+
+    // 편지 상세 보기
+    @GET("letter/{letter_id}")
+    suspend fun getLetter(@Path("letter_id") letterId: Int): Response<ReceivedLetterDetailResponse>
 }
