@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.tabs.TabLayout
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
@@ -12,6 +13,9 @@ import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentStoreBinding
 import com.zootopia.presentation.store.storecharacter.StoreCharacterFragment
 import com.zootopia.presentation.store.storeletterpapper.StoreLetterPaperFragment
+import com.zootopia.presentation.util.makeComma
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class StoreFragment : BaseFragment<FragmentStoreBinding>(
     FragmentStoreBinding::bind,
@@ -28,6 +32,20 @@ class StoreFragment : BaseFragment<FragmentStoreBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initTabLayout()
+        initCollect()
+        initData()
+    }
+
+    private fun initData(){
+        storeViewModel.getUserInfo()
+    }
+
+    private fun initCollect() = with(binding){
+        lifecycleScope.launch {
+            storeViewModel.userInfo.collectLatest {
+                textviewPoint.text = makeComma(it.point)
+            }
+        }
     }
 
     private fun initTabLayout() {
