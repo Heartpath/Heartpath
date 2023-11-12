@@ -3,6 +3,7 @@ package com.zootopia.data.datasource.remote.user
 import com.zootopia.data.model.common.MessageResponse
 import com.zootopia.data.model.user.response.FriendListResponse
 import com.zootopia.data.model.user.response.PointInfoResponse
+import com.zootopia.data.model.user.response.SearchUserResponse
 import com.zootopia.data.model.user.response.UserInfoResponse
 import com.zootopia.data.service.BusinessService
 import com.zootopia.data.util.handleApi
@@ -25,4 +26,9 @@ class UserDataSourceImpl(
     override suspend fun addFriend(id: String): MessageResponse {
         return handleApi { businessService.addFriend(id = id) }
     }
+
+    override suspend fun searchUser(id: String, limit: Int, checkFriends: Boolean): SearchUserResponse {
+        return handleApi { businessService.searchUser(id = id, limit = limit, checkFriends = checkFriends) }
+    }
+
 }
