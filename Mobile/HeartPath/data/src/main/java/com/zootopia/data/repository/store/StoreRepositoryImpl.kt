@@ -4,6 +4,7 @@ import com.zootopia.data.datasource.remote.store.StoreDataSource
 import com.zootopia.data.mapper.toData
 import com.zootopia.data.mapper.toDomain
 import com.zootopia.domain.model.store.BuyStoreCharacterRequestDto
+import com.zootopia.domain.model.store.BuyStoreLetterPaperRequestDto
 import com.zootopia.domain.model.store.CharacterDto
 import com.zootopia.domain.model.store.StoreCharacterDto
 import com.zootopia.domain.model.store.StoreItemLetterPaperDto
@@ -32,8 +33,14 @@ class StoreRepositoryImpl(
     }
 
     override suspend fun buyStoreCharacter(buyStoreCharacterRequestDto: BuyStoreCharacterRequestDto) {
-        return getValueOrThrow2 {
+        getValueOrThrow2 {
             storeDataSource.buyStoreCharacter(buyStoreCharacterRequestDto.toData())
+        }
+    }
+
+    override suspend fun buyStoreLetterPaper(buyStoreLetterPaperRequestDto: BuyStoreLetterPaperRequestDto) {
+        return getValueOrThrow2 {
+            storeDataSource.buyStoreLetterPaper(buyStoreLetterPaperRequestDto.toData())
         }
     }
 
