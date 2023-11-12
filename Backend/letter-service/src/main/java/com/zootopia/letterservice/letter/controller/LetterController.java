@@ -83,7 +83,7 @@ public class LetterController {
             "(letterId : 필수, lat : 필수, lng : 필수, files : 필수(1장 이상))")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description =  "CREATED", content = @Content(mediaType = "application/json",
-                    examples = @ExampleObject(value = "{\n \"status\": 201,\n \"message\": \"편지 생성 성공\"\n}"))),
+                    examples = @ExampleObject(value = "{\n \"status\": 201,\n \"message\": \"편지 배치 성공\"\n}"))),
             @ApiResponse(responseCode = "4001", description =  "INVALID_IMAGE_FORMAT", content = @Content(examples = @ExampleObject(value = "{\n \"httpStatus\": \"400 BAD_REQUEST\",\n \"status\": 4001,\n \"message\": \"지원하지 않는 이미지 파일 확장자입니다.\"\n}"))),
             @ApiResponse(responseCode = "4005", description =  "NOT_EQUAL_USER", content = @Content(examples = @ExampleObject(value = "{\n \"httpStatus\": \"400 BAD_REQUEST\",\n \"status\": 4005,\n \"message\": \"편지 작성자와 요청을 보낸 사용자가 일치하지 않습니다.\"\n}"))),
             @ApiResponse(responseCode = "4006", description =  "NOT_EXISTS_LETTER", content = @Content(examples = @ExampleObject(value = "{\n \"httpStatus\": \"400 BAD_REQUEST\",\n \"status\": 4006,\n \"message\": \"존재하지 않는 편지입니다.\"\n}"))),
