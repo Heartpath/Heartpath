@@ -143,7 +143,9 @@ interface BusinessService {
 
     // 편지 상세 보기
     @GET("letter/{letter_id}")
-    suspend fun getLetter(@Path("letter_id") letterId: Int): Response<ReceivedLetterDetailResponse>
+    suspend fun getLetter(
+        @Path("letter_id") letterId: Int
+    ): Response<ReceivedLetterDetailResponse>
 
     // 상점 캐릭터 리스트 조회
     @GET("/store/crowtit/all")
@@ -163,6 +165,14 @@ interface BusinessService {
     // 미확인 편지 리스트 수신
     @GET("/letter/unchecked")
     suspend fun getUncheckedLetter(): Response<UncheckedLetterResponse>
+    
+    // 편지 place 읽음 처리 == (AR로 찾은 편지 요청)
+    @GET("/letter/{letter_id}")
+    suspend fun getReadLetter(
+        @Path("letter_id") letter_id: Int,
+    )
+    
+    // 
 }
 
 

@@ -30,12 +30,13 @@ class MapViewModel @Inject constructor(
     // 편지 신고 삭제 신고 클릭 유무
     var isReport = false
     
+    
+    // 미확인 편지 리스트
     var uncheckedLetterList : MutableList<UncheckLetterDto> = mutableListOf()
 
     private val _mapLetterList = MutableSharedFlow<List<UncheckLetterDto>>()
     val mapLetterList: SharedFlow<List<UncheckLetterDto>>
         get() = _mapLetterList
-    
     
     fun getUncheckedLetterList() {
         getApiResult(
@@ -48,6 +49,10 @@ class MapViewModel @Inject constructor(
             }
         )
     }
+    // 미확인 편지 리스트 END
+    
+    // select Letter
+    var selectLetter: UncheckLetterDto? = null
 
     // user posi
     var lastLatitude: Double = 0.0
@@ -128,4 +133,8 @@ class MapViewModel @Inject constructor(
             _walkDistance.emit(dist.toDouble())
         }
     }
+    
+    /**
+     * 편지 읽기 API
+     */
 }

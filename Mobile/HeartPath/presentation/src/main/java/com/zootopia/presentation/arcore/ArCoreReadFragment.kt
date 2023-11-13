@@ -96,7 +96,9 @@ class ArCoreReadFragment :
         }
     }
     private fun initClickEvent() = with(binding) {
+        // 편지 담기 버튼 -> API 통신
         buttonGetLetter.setOnClickListener {
+        
         }
     }
 
