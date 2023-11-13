@@ -409,5 +409,10 @@ public class LetterServiceImpl implements LetterService {
 
         String message = user.getNickname() + "님이 당신에게 편지를 보냈습니다.";
         fcmService.sendFCMNotification(user.getFcmToken(), "뱁새가 편지를 물고 왔어요.",message);
+        try {
+            firebaseCloudMessageService.sendMessageTo(user.getFcmToken(), "뱁새가 편지를 물고 왔어요.", message);
+        } catch (IOException e) {
+            System.out.println("firebaseCloud 오류 : " + e.getMessage());
+        }
     }
 }
