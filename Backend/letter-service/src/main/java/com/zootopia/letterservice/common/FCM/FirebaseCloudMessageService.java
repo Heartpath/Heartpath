@@ -18,11 +18,12 @@ import java.util.List;
 @Slf4j
 public class FirebaseCloudMessageService {
 
-    private final String API_URL = "https://fcm.googleapis.com/v1/projects/heartpath-590b0/message:send";
+    private final String API_URL = "https://fcm.googleapis.com/v1/projects/heartpath-590b0/messages:send";
     private final ObjectMapper objectMapper;
 
     public void sendMessageTo(String targetToken, String title, String body) throws IOException {
         String message = makeMessage(targetToken, title, body);
+        System.out.println("makeMessage : " + message);
 
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(message,
@@ -34,9 +35,17 @@ public class FirebaseCloudMessageService {
                 .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
                 .build();
 
-        Response response = client.newCall(request).execute();
-
-        System.out.println(response.body().string());
+        try (Response response = client.newCall(request).execute()) {
+            if (response.isSuccessful()) {
+                System.out.println(response.body().string());
+                log.info("전송 성공");
+            } else {
+                log.error("전송 실패: {} - {}", response.code(), response.message());
+            }
+        } catch (IOException e) {
+            log.error("FCM 서버 요청 중 예외 발생", e);
+            throw e; // 예외를 상위로 전파
+        }
     }
 
     private String makeMessage(String targetToken, String title, String body) throws JsonParseException, JsonProcessingException {
@@ -59,7 +68,6 @@ public class FirebaseCloudMessageService {
                 .fromStream(is)
                 .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
 
-        System.out.println("FIREBASE GET ACCESS TOKEN");
         googleCredentials.refreshIfExpired();
         return googleCredentials.getAccessToken().getTokenValue();
     }

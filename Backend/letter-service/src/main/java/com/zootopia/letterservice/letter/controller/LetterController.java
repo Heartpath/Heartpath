@@ -1,5 +1,6 @@
 package com.zootopia.letterservice.letter.controller;
 
+import com.zootopia.letterservice.common.FCM.FCMService;
 import com.zootopia.letterservice.common.dto.BaseResponseBody;
 import com.zootopia.letterservice.letter.dto.request.LetterHandReqDto;
 import com.zootopia.letterservice.letter.dto.request.LetterPlaceReqDto;
@@ -227,7 +228,7 @@ public class LetterController {
     })
     @GetMapping("/test")
     public ResponseEntity<? extends BaseResponseBody> FCMtest(@RequestHeader(value = "Authorization") String accessToken) {
-
+        letterService.test(accessToken);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "FCM 테스트 성공"));
     }
 }

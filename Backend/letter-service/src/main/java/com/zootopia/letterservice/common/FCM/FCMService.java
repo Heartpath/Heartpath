@@ -13,14 +13,13 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class FCMService {
 
-    public void sendFCMNotification(String token, String body) {
+    public void sendFCMNotification(String token, String title, String body) {
         try {
-
             Map<String, String> data = new HashMap<>();
 
             // FCM 데이터 입력
-            data.put("title", "편지 도착 알림");
-            data.put("message", body); // "{사용자 id}님이 나에게 편지를 보냈어요!"
+            data.put("title", title);
+            data.put("message", body);
 
             Message message = Message.builder()
                     .putAllData(data)
@@ -28,6 +27,7 @@ public class FCMService {
                     .build();
 
             String response = FirebaseMessaging.getInstance().send(message);
+            System.out.println("Successfully sent message: " + response);
         } catch (Exception e) {
             e.printStackTrace();
         }
