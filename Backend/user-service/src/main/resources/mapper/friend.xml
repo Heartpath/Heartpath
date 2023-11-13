@@ -33,11 +33,11 @@
             SELECT f.FRIEND_ID FROM FRIEND f WHERE f.FROM_MEMBER_ID = #{from} AND f.TO_MEMBER_ID = #{to} );
     </insert>
 
-    <update id="blockOffFriend" parameterType="Map">
+    <update id="blockOrUnblockOffFriend" parameterType="Map">
         INSERT INTO FRIEND (FROM_MEMBER_ID, TO_MEMBER_ID, IS_BLOCKED)
-        VALUES (#{from}, #{to}, 1) ON DUPLICATE KEY
+        VALUES (#{from}, #{to}, #{option}) ON DUPLICATE KEY
         UPDATE
-            IS_BLOCKED = 1;
+            IS_BLOCKED = #{option};
     </update>
 
     <select id="getBlockOffFriendList" parameterType="String" resultType="FriendInfoDTO">
