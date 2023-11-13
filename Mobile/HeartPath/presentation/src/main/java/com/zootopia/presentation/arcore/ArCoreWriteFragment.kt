@@ -1,17 +1,9 @@
 package com.zootopia.presentation.arcore
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.SurfaceTexture
-import android.media.Image
 import android.os.Bundle
-import android.os.Handler
-import android.os.HandlerThread
 import android.util.Log
-import android.view.PixelCopy
-import android.view.Surface
 import android.view.View
-import androidx.annotation.RequiresApi
 import androidx.core.view.isGone
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -36,8 +28,6 @@ import io.github.sceneview.math.Position
 import io.github.sceneview.node.ModelNode
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.io.File
-import java.nio.ByteBuffer
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -82,17 +72,6 @@ class ArCoreWriteFragment :
         mainActivity = context as MainActivity
     }
 
-//    override fun onCreateView(
-//        inflater: LayoutInflater,
-//        container: ViewGroup?,
-//        savedInstanceState: Bundle?,
-//    ): View? {
-//        val rootView = super.onCreateView(inflater, container, savedInstanceState)
-//        arSceneView = ARSceneView(requireContext())
-//
-//        return rootView
-//    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
@@ -117,20 +96,20 @@ class ArCoreWriteFragment :
 
             sendLetterViewModel.apply {
                 viewLifecycleOwner.lifecycleScope.launch {
-                    catchCapture(binding.rootView)
-//                    captureARSceneView(binding.sceneView)
+                    catchCapture(this@ArCoreWriteFragment)
+//                    takePhoto(this@ArCoreWriteFragment)
                 }
             }
         }
     }
 
     private fun initCollect() = with(sendLetterViewModel) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            isBitmap.collectLatest {
-                Log.d(TAG, "initCollect: $it")
-                saveImage(context = mainActivity, bitmap = it)
-            }
-        }
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            isBitmap.collectLatest {
+//                Log.d(TAG, "initCollect: $it")
+//                saveImage(context = mainActivity, bitmap = it)
+//            }
+//        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             isSaveIamge.collectLatest {
@@ -140,7 +119,7 @@ class ArCoreWriteFragment :
 
         viewLifecycleOwner.lifecycleScope.launch {
             isRealPath.collectLatest {
-//                requestSendLetter(files = it)
+                requestSendLetter(files = it)
                 isLoading = false
             }
         }
