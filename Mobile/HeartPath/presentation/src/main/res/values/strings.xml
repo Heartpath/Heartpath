@@ -12,7 +12,7 @@
     <string name="search_friend_search_bar_hint">검색 아이디를 입력하세요</string>
     <string name="point_history_date_text">2023.10.25</string>
     <string name="default_name">김뱁새</string>
-    <string name="default_id">\@$s</string>
+    <string name="default_id">\@%s</string>
     <string name="setting_set_bgm">BGM 설정</string>
     <string name="setting_privacy_policy">개인정보 처리방침</string>
     <string name="setting_logout">로그아웃</string>
@@ -55,6 +55,7 @@
     <string name="on">ON</string>
     <string name="off">OFF</string>
     <string name="done">완료</string>
+    <string name="okay">확인</string>
     <string name="add_friend_letter_dialog_content">하참새님은 김뱁새님의 친구가 아닙니다.</string>
     <string name="loading_message">잠시만 기다려 주세요!</string>
 
@@ -94,7 +95,9 @@
 
     <string name="signup_check_id_done">확인완료</string>
 
-    <string name="received_letter_title">$s님이 보낸 편지</string>
+    <!--    letter read -->
+    <string name="received_letter_title">%s님이 보낸 편지</string>
+    <string name="received_letter_info">편지에 %d장의 사진이 있습니다.\n넘겨서 확인하세요!</string>
 
     <!-- character encyclopedia -->
     <string name="character_encyclopedia_go_store">상점</string>

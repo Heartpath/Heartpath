@@ -2,6 +2,7 @@ package com.zootopia.presentation
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -32,7 +33,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     lateinit var navController: NavController
     lateinit var navGraph: NavGraph
     private val mainViewModel: MainViewModel by viewModels()
-
+    private val intent: Intent = Intent()
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_Splash)
         super.onCreate(savedInstanceState)
@@ -56,7 +57,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
     private fun initNavHost() {
-
         val navHostFragmentManager =
             supportFragmentManager.findFragmentById(R.id.main_container) as NavHostFragment
         navController = navHostFragmentManager.navController
@@ -64,17 +64,22 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 //            initCheck()
         val inflater = navHostFragmentManager.navController.navInflater
         val graph = inflater.inflate(R.navigation.nav_graph)
-        lifecycleScope.launch {
-            mainViewModel.accessToken.collect { value ->
-                Log.d(TAG, "initCheck: access token $value")
-                if (value != "") {
-//                    graph.setStartDestination(R.id.homeFragment)
-                    navController.currentDestination?.let { it1 -> navController.popBackStack(it1.id, true) }   // 백스택 지움
-                    navController.navigate(R.id.homeFragment)
 
-                } else {
+        val type = intent.getStringExtra("destination")
+        if(type != null) {
+            navController.navigate(R.id.mapFragment)
+        } else {
+            lifecycleScope.launch {
+                mainViewModel.accessToken.collect { value ->
+                    Log.d(TAG, "initCheck: access token $value")
+                    if (value != "") {
+//                    graph.setStartDestination(R.id.homeFragment)
+                        navController.currentDestination?.let { it1 -> navController.popBackStack(it1.id, true) }   // 백스택 지움
+                        navController.navigate(R.id.homeFragment)
+                    } else {
 //                    graph.setStartDestination(R.id.loginFragment)
-                    navController.navigate(R.id.loginFragment)
+                        navController.navigate(R.id.loginFragment)
+                    }
                 }
             }
         }
