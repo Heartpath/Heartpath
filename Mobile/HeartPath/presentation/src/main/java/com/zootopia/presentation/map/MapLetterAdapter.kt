@@ -18,6 +18,7 @@ private const val TAG = "MapLetterAdapter_HP"
 /**
  * ListAdapter
  */
+@RequiresApi(Build.VERSION_CODES.O)
 class MapLetterAdapter(
     val mapViewModel: MapViewModel
 ) : ListAdapter<UncheckLetterDto, MapLetterAdapter.MapLetterViewHolder>(diffUtil) {
@@ -25,7 +26,6 @@ class MapLetterAdapter(
     inner class MapLetterViewHolder(val binding: ItemMapLetterBinding) :
         RecyclerView.ViewHolder(binding.root) {
         
-        @RequiresApi(Build.VERSION_CODES.O)
         fun bindInfo(uncheckLetterDto: UncheckLetterDto) = with(binding) {
             val time = convertDateFormat(uncheckLetterDto.time)
             textviewLetterTitle.text = "${uncheckLetterDto.sender}님이 보낸 편지"
@@ -69,7 +69,6 @@ class MapLetterAdapter(
         } else {
             holder.binding.buttonReport.visibility = View.GONE
         }
-        
         holder.bindInfo(currentList[position])
     }
     

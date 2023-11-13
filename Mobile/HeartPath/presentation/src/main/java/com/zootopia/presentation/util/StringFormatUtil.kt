@@ -34,7 +34,9 @@ fun makeComma(num: Int): String {
     return "${comma.format(num)}"
 }
 
-
+/**
+ * 날짜 시간 포멧팅
+ */
 @RequiresApi(Build.VERSION_CODES.O)
 fun convertDateFormat(inputDateString: String): String {
     // 입력된 문자열을 LocalDateTime으로 파싱

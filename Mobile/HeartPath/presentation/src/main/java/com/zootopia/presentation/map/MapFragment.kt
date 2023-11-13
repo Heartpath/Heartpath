@@ -5,6 +5,7 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
@@ -12,6 +13,7 @@ import android.view.Gravity
 import android.view.View
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -62,6 +64,7 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "MapFragment_HP"
 
+@RequiresApi(Build.VERSION_CODES.O)
 @AndroidEntryPoint
 class MapFragment :
     BaseFragment<FragmentMapBinding>(FragmentMapBinding::bind, R.layout.fragment_map),
@@ -137,20 +140,16 @@ class MapFragment :
     }
 
     private fun initData() {
-//        mapViewModel.getDummyList()
-
         // Unchecked 편지 리스트 얻기
         mapViewModel.getUncheckedLetterList()
         
         // 워커 매니저 초기화
         workManager = WorkManager.getInstance(mainActivity)
         binding.textviewDistance.text = distanceIntToString(walkDist.toInt())
-        
-        
     }
 
     private fun initClickEvent() = with(binding) {
-        // 신고 버튼
+        // 신고 버튼 활성화 이벤트
         imageviewReport.setOnClickListener {
             Log.d(TAG, "initClickEvent: 신고버튼 클릭")
             mapViewModel.apply {
@@ -166,6 +165,11 @@ class MapFragment :
             }
             initAdapter()
             initData()
+        }
+        
+        // 신고 요청 이벤트
+        buttonReport.setOnClickListener {
+        
         }
 
         // workManager 종료 버튼
@@ -196,7 +200,7 @@ class MapFragment :
         }
         mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
-
+    
     private fun initAdapter() {
         mapLetterAdapter = MapLetterAdapter(mapViewModel = mapViewModel).apply {
             itemClickListener = object : MapLetterAdapter.ItemClickListener {
@@ -208,7 +212,9 @@ class MapFragment :
                             goalLatitude = uncheckLetterDto.lat
                             goalLongitude = uncheckLetterDto.lng
                             mapViewModel.makeGoalLocataion()
-
+                            // 선택된 편지
+                            selectLetter = uncheckLetterDto
+                            
                             // 현재 위치와 마커위치를 계산
                             calculateDistance()
                             // 마커 포지션
@@ -375,7 +381,7 @@ class MapFragment :
                 override fun onLocationResult(locationResult: LocationResult) {
                     locationResult ?: return
                     for ((i, location) in locationResult.locations.withIndex()) {
-                        Log.d(TAG, " $locationCallback    mapOn -> latitude: ${location.latitude}, longitude: ${location.longitude}")
+//                        Log.d(TAG, " $locationCallback    mapOn -> latitude: ${location.latitude}, longitude: ${location.longitude}")
                         mapViewModel.apply {
                             setLocation(
                                 latitude = location.latitude,
