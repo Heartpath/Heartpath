@@ -22,6 +22,7 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+    open-in-view: false
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
