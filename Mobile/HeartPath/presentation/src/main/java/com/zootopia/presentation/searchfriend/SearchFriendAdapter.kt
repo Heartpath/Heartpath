@@ -19,7 +19,7 @@ RecyclerView.Adapter<SearchFriendAdapter.FriendSearchViewHolder>()
     RecyclerView.ViewHolder(binding.root) {
         fun bindInfo(user: SearchUserInfoDto) = with(binding) {
             textviewFriendSearchFriendName.text = user.nickname
-            textviewFriendSearchFriendId.text = user.memberID
+            textviewFriendSearchFriendId.text = root.context.getString(R.string.default_id, user.memberID)
             if(user.profileImagePath == "") { // 이미지 없는 경우
                 Glide.with(root)
                     .load(R.drawable.image_default_profile)
@@ -31,10 +31,17 @@ RecyclerView.Adapter<SearchFriendAdapter.FriendSearchViewHolder>()
                     .circleCrop()
                     .into(textviewFriendSearchFriendImg)
             }
-            buttonAddFriend.setOnClickListener {
-                this@FriendSearchViewHolder.itemView.findViewTreeLifecycleOwner()
-                    ?.let { it1 -> it.clickAnimation(lifeCycleOwner = it1) }
-                itemClickListener.itemClick(it, layoutPosition)
+            buttonAddFriend.apply {
+                if(user.isFriend) {
+                    visibility = View.GONE
+                } else {
+                    visibility = View.VISIBLE
+                }
+                setOnClickListener {
+                    this@FriendSearchViewHolder.itemView.findViewTreeLifecycleOwner()
+                        ?.let { it1 -> it.clickAnimation(lifeCycleOwner = it1) }
+                    itemClickListener.itemClick(it, layoutPosition)
+                }
             }
         }
     }
