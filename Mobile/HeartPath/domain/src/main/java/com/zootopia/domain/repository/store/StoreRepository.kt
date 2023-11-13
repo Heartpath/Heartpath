@@ -14,4 +14,5 @@ interface StoreRepository {
     suspend fun buyStoreCharacter(buyStoreCharacterRequestDto: BuyStoreCharacterRequestDto)
     suspend fun buyStoreLetterPaper(buyStoreLetterPaperRequestDto: BuyStoreLetterPaperRequestDto)
     suspend fun changeMainCharacter(changeMainCharacterRequestDto: ChangeMainCharacterRequestDto)
+    suspend fun getMainCharacter(): CharacterDto
 }

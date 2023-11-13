@@ -22,6 +22,7 @@ import com.zootopia.data.model.store.response.BuyStoreCharacterResponse
 import com.zootopia.data.model.store.response.BuyStoreLetterPaperResponse
 import com.zootopia.data.model.store.response.ChangeMainCharacterResponse
 import com.zootopia.data.model.store.response.CharacterEncyclopediaListResponse
+import com.zootopia.data.model.store.response.GetMainCharacterResponse
 import com.zootopia.data.model.store.response.StoreCharacterListResponse
 import com.zootopia.data.model.store.response.StoreItemLetterPaperListResponse
 import com.zootopia.data.model.user.response.FriendListResponse
@@ -165,6 +166,10 @@ interface BusinessService {
     // 메인 캐릭터 설정
     @POST("/store/crowtit/change")
     suspend fun changeMainCharacter(@Body changeMainCharacterRequest: ChangeMainCharacterRequest): Response<ChangeMainCharacterResponse>
+
+    // 메인 캐릭터 조회
+    @GET("/store/crowtit/main")
+    suspend fun getMainCharacter(): Response<GetMainCharacterResponse>
 }
 
 

@@ -51,5 +51,11 @@ class StoreRepositoryImpl(
         }
     }
 
+    override suspend fun getMainCharacter(): CharacterDto {
+        return getValueOrThrow2 {
+            storeDataSource.getMainCharacter().toDomain()
+        }
+    }
+
 
 }
