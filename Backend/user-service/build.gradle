@@ -44,6 +44,12 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
+    // AWS S3
+    implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
+
+    // XML Processing
+    implementation 'javax.xml.bind:jaxb-api'
+
     // 설정 파일 암호화 Library
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
 
