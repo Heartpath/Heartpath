@@ -38,9 +38,8 @@ public class FirebaseCloudMessageService {
         try (Response response = client.newCall(request).execute()) {
             if (response.isSuccessful()) {
                 System.out.println(response.body().string());
-                log.info("전송 성공");
             } else {
-                log.error("전송 실패: {} - {}", response.code(), response.message());
+                System.out.println("오류 : " + response.message());
             }
         } catch (IOException e) {
             log.error("FCM 서버 요청 중 예외 발생", e);
@@ -69,6 +68,7 @@ public class FirebaseCloudMessageService {
                 .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
 
         googleCredentials.refreshIfExpired();
+        System.out.println(googleCredentials.getAccessToken().getTokenValue());
         return googleCredentials.getAccessToken().getTokenValue();
     }
 }
