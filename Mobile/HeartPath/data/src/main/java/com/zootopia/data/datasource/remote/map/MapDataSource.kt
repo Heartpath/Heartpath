@@ -1,5 +1,6 @@
 package com.zootopia.data.datasource.remote.map
 
+import com.zootopia.data.model.letter.response.UncheckedLetterResponse
 import com.zootopia.data.model.map.request.TmapWalkRoadRequest
 import com.zootopia.data.model.map.response.navermap.MapDirectionResponse
 import com.zootopia.data.model.map.response.tmap.FeatureCollectionResponse
@@ -24,6 +25,8 @@ interface MapDataSource {
         appKey: String,
     ): FeatureCollectionResponse
     
-    
-    suspend fun test(): String
+    /**
+     * 미확인 편지 리스트 수신
+     */
+    suspend fun getUncheckedLetter(): UncheckedLetterResponse
 }

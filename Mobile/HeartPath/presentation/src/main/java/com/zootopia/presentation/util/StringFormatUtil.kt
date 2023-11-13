@@ -1,6 +1,10 @@
 package com.zootopia.presentation.util
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import java.text.DecimalFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 /**
  * 거리값 포맷
@@ -28,4 +32,16 @@ fun timeIntToString(time: Int): String {
 fun makeComma(num: Int): String {
     var comma = DecimalFormat("#,###")
     return "${comma.format(num)}"
+}
+
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun convertDateFormat(inputDateString: String): String {
+    // 입력된 문자열을 LocalDateTime으로 파싱
+    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+    val inputDateTime = LocalDateTime.parse(inputDateString, inputFormatter)
+    
+    // 새로운 형식으로 변환
+    val outputFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd")
+    return inputDateTime.format(outputFormatter)
 }

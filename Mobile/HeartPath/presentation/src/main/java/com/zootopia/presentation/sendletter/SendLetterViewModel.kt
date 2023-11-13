@@ -1,7 +1,6 @@
 package com.zootopia.presentation.sendletter
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.location.Location
 import android.net.Uri
 import android.util.Log
@@ -84,8 +83,6 @@ class SendLetterViewModel @Inject constructor(
     /**
      * 화면 캡처 전처리
      */
-    private val _isBitmap = MutableSharedFlow<Bitmap>()
-    val isBitmap: SharedFlow<Bitmap> = _isBitmap
     private val _isSaveImage = MutableSharedFlow<Uri>()
     val isSaveIamge: SharedFlow<Uri> = _isSaveImage
     private val _isRealPath = MutableSharedFlow<String>()
@@ -98,7 +95,6 @@ class SendLetterViewModel @Inject constructor(
         photoUri?.let {
             Log.d(TAG, "catchCapture: $it")
             _isSaveImage.emit(
-                //            viewToBitmap(view = view),
                 it,
             )
         }

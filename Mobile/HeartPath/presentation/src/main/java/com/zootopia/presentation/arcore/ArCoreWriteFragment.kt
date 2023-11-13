@@ -97,19 +97,12 @@ class ArCoreWriteFragment :
             sendLetterViewModel.apply {
                 viewLifecycleOwner.lifecycleScope.launch {
                     catchCapture(this@ArCoreWriteFragment)
-//                    takePhoto(this@ArCoreWriteFragment)
                 }
             }
         }
     }
 
     private fun initCollect() = with(sendLetterViewModel) {
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            isBitmap.collectLatest {
-//                Log.d(TAG, "initCollect: $it")
-//                saveImage(context = mainActivity, bitmap = it)
-//            }
-//        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             isSaveIamge.collectLatest {

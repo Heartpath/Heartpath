@@ -12,12 +12,14 @@ private const val TAG = "LetterDataSourceImpl_HP"
 class LetterDataSourceImpl(
     private val businessService: BusinessService,
 ) : LetterDataSource {
+    // 미발송 편지 목록 조회
     override suspend fun getUnplacedLetter(): UnplacedLetterListResponse {
         return handleApi {
             businessService.getUnplacedLetter()
         }
     }
-
+    
+    // 편지 배치
     override suspend fun requestLetterPlaced(
         files: MultipartBody.Part,
         letterPlacedRequest: LetterPlacedRequest,
