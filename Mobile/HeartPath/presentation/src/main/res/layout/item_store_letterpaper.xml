@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:layout_margin="@dimen/_10sdp"
+    android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/linearlayout_store_letterpaper"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_228sdp"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            >
+            <ImageView
+                android:id="@+id/imageview_store_letterpaper"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:padding="@dimen/_10sdp"
+                android:src="@drawable/image_letterpaper"
+                android:scaleType="fitCenter"
+                android:background="@drawable/custom_round_corner_extra_light_gray"/>
+            <ImageView
+                android:id="@+id/imageview_is_owned"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintHorizontal_bias="0.9"
+                app:layout_constraintVertical_bias="0.1"
+                android:src="@drawable/icon_check_circle"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/textview_store_letterpaper_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/DarkGray_14_ExtraBold_NanumText"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_marginTop="@dimen/_4sdp"
+            tools:text = "letter name" />
+        <TextView
+            android:id="@+id/textview_store_letterpaper_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            style="@style/DarkGray_10_ExtraBold_NanumText"
+            android:layout_marginTop="@dimen/_4sdp"
+            tools:text = "100 우표"/>
+    </LinearLayout>
+
+</LinearLayout>

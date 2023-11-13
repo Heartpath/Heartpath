@@ -73,7 +73,9 @@ class CharacterEncyclopediaFragment : BaseFragment<FragmentCharacterEncyclopedia
     }
 
     private fun initClickListener() = with(binding) {
-
+        textviewGoStore.setOnClickListener {
+            navController.navigate(CharacterEncyclopediaFragmentDirections.actionCharacterEncyclopediaFragmentToStoreFragment())
+        }
     }
 
 }
