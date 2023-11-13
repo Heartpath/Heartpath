@@ -33,7 +33,6 @@ public class PointServiceImpl implements PointService{
         pointUsage.sort(Comparator.comparing(Point::getCreatedDate).reversed());
         // 가장 최근의 포인트 사용 내역의 balance 가져오기
         int lastBalance = pointUsage.isEmpty() ? 0 : pointUsage.get(0).getBalance();
-        log.warn("최근 포인트 " + lastBalance);
         int currentBalance = lastBalance + pointTransReqDto.getPoint();
         Point point = Point.builder()
                 .memberId(memberId)
@@ -43,8 +42,6 @@ public class PointServiceImpl implements PointService{
                 .createdDate(LocalDateTime.now())
                 .build();
         pointRepository.save(point);
-        log.warn("포인트 저장 성공");
         String res = memberService.pointToMember(memberId, currentBalance);
-        log.warn("webclient 결과" + res);
     }
 }
