@@ -3,12 +3,12 @@ package com.zootopia.presentation.map
 import android.location.Location
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.zootopia.domain.model.navermap.MapLetterDto
+import com.zootopia.domain.model.letter.uncheckedletter.UncheckLetterDto
 import com.zootopia.domain.model.tmap.FeatureCollectionDto
 import com.zootopia.domain.model.tmap.RequestTmapWalkRoadDto
 import com.zootopia.domain.usecase.map.GetMapDirectionUseCase
+import com.zootopia.domain.usecase.map.GetUncheckedLetterUseCase
 import com.zootopia.domain.usecase.map.RequestTmapWalkRoadUseCase
-import com.zootopia.domain.usecase.testUseCase
 import com.zootopia.presentation.config.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,38 +24,41 @@ private const val TAG = "MapViewModel_HP"
 class MapViewModel @Inject constructor(
     private val getMapDirectionUseCase: GetMapDirectionUseCase,
     private val requestTmapWalkRoadUseCase: RequestTmapWalkRoadUseCase,
-    private val testUseCase: testUseCase,
+    private val uncheckedLetterUseCase: GetUncheckedLetterUseCase,
 ) : BaseViewModel() {
 
     // 편지 신고 삭제 신고 클릭 유무
     var isReport = false
+    
+    var uncheckedLetterList : MutableList<UncheckLetterDto> = mutableListOf()
 
-    // 더미더미더미
-    var LetterList = mutableListOf<MapLetterDto>(
-        MapLetterDto(1, false, "하동혁님이 보낸 편지1", "2023.11.01", "36.1094880", "128.420560"),
-        MapLetterDto(2, false, "하동혁님이 보낸 편지2", "2023.11.01", "36.1051004", "128.422769"),
-        MapLetterDto(3, false, "하동혁님이 보낸 편지3", "2023.11.01", "36.111282119957956", "128.42349987855764"),
-        MapLetterDto(4, false, "우리집", "2023.11.01", "36.121949856660855", "128.38053050168602"),
-    )
-
-    private val _mapLetterList = MutableSharedFlow<MutableList<MapLetterDto>>()
-    val mapLetterList: SharedFlow<MutableList<MapLetterDto>>
+    private val _mapLetterList = MutableSharedFlow<List<UncheckLetterDto>>()
+    val mapLetterList: SharedFlow<List<UncheckLetterDto>>
         get() = _mapLetterList
-
-    fun getDummyList() {
-        viewModelScope.launch {
-            _mapLetterList.emit(LetterList)
-        }
+    
+    
+    fun getUncheckedLetterList() {
+        getApiResult(
+            block = {
+                uncheckedLetterUseCase.invoke()
+            },
+            success = {
+                uncheckedLetterList = it.toMutableList()
+                _mapLetterList.emit(it)
+            }
+        )
     }
 
     // user posi
     var lastLatitude: Double = 0.0
     var lastLongitude: Double = 0.0
-    val lastLocation = Location("userProvider")
     fun setLocation(latitude: Double, longitude: Double) {
         lastLatitude = latitude
         lastLongitude = longitude
     }
+    
+    // user: Location
+    val lastLocation = Location("userProvider")
     fun makeUserLocataion() {
         lastLocation.latitude = lastLatitude
         lastLocation.longitude = lastLongitude
@@ -89,7 +92,7 @@ class MapViewModel @Inject constructor(
     }
 
     fun requestTmapWalkRoad(
-        mapLetterDto: MapLetterDto,
+        uncheckLetterDto: UncheckLetterDto,
     ) {
         getApiResult(
             block = {
@@ -98,8 +101,8 @@ class MapViewModel @Inject constructor(
                     RequestTmapWalkRoadDto(
                         startX = lastLongitude.toString(),
                         startY = lastLatitude.toString(),
-                        endX = mapLetterDto.longitude,
-                        endY = mapLetterDto.latitude,
+                        endX = uncheckLetterDto.lng.toString(),
+                        endY = uncheckLetterDto.lat.toString(),
                         reqCoordType = "WGS84GEO", // 위경도 표현 타입 코드
                         resCoordType = "WGS84GEO",
                         startName = "내 위치",

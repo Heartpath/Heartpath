@@ -1,6 +1,7 @@
 package com.zootopia.data.datasource.remote.map
 
 import android.util.Log
+import com.zootopia.data.model.letter.response.UncheckedLetterResponse
 import com.zootopia.data.model.map.request.TmapWalkRoadRequest
 import com.zootopia.data.model.map.response.navermap.MapDirectionResponse
 import com.zootopia.data.model.map.response.tmap.FeatureCollectionResponse
@@ -56,12 +57,12 @@ class MapDataSourceImpl(
         }
     }
     
-    override suspend fun test(): String {
-        Log.d(TAG, "test: 테스트 호출됨")
+    /**
+     * 미확인 편지 리스트 수신
+     */
+    override suspend fun getUncheckedLetter(): UncheckedLetterResponse {
         return handleApi {
-            businessService.test().apply {
-                Log.d(TAG, "test: $isSuccessful")
-            }
+            businessService.getUncheckedLetter()
         }
     }
 }

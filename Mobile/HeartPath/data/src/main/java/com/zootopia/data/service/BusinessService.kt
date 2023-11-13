@@ -2,14 +2,14 @@ package com.zootopia.data.service
 
 import com.zootopia.data.model.auth.AuthResponse
 import com.zootopia.data.model.common.MessageResponse
-
-import com.zootopia.data.model.letter.request.PostHandLetterRequest
 import com.zootopia.data.model.letter.request.LetterPlacedRequest
+import com.zootopia.data.model.letter.request.PostHandLetterRequest
 import com.zootopia.data.model.letter.request.PostTypingLetterRequest
 import com.zootopia.data.model.letter.response.BusinessResponse
 import com.zootopia.data.model.letter.response.GetUserLetterPaperResponse
 import com.zootopia.data.model.letter.response.ReceivedLetterDetailResponse
 import com.zootopia.data.model.letter.response.StoredLetterListResponse
+import com.zootopia.data.model.letter.response.UncheckedLetterResponse
 import com.zootopia.data.model.letter.response.UnplacedLetterListResponse
 import com.zootopia.data.model.login.request.LoginRequest
 import com.zootopia.data.model.login.request.SignupRequest
@@ -159,6 +159,10 @@ interface BusinessService {
 
     @POST("/store/letterpaper/buy")
     suspend fun buyStoreLetterPaper(@Body buyStoreLetterPaperRequest: BuyStoreLetterPaperRequest): Response<BuyStoreLetterPaperResponse>
+    
+    // 미확인 편지 리스트 수신
+    @GET("/letter/unchecked")
+    suspend fun getUncheckedLetter(): Response<UncheckedLetterResponse>
 }
 
 

@@ -7,16 +7,10 @@
     android:layout_height="match_parent"
     tools:context=".arcore.ArCoreWriteFragment">
 
-<!--    <android.opengl.GLSurfaceView-->
-<!--        android:id="@+id/gl_surface_view"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"/>-->
-
     <io.github.sceneview.ar.ARSceneView
         android:id="@+id/sceneView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 
     <FrameLayout
         android:id="@+id/loadingView"

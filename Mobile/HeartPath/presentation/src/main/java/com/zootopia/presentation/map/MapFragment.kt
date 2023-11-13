@@ -42,7 +42,7 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
-import com.zootopia.domain.model.navermap.MapLetterDto
+import com.zootopia.domain.model.letter.uncheckedletter.UncheckLetterDto
 import com.zootopia.domain.model.tmap.FeatureCollectionDto
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.MainActivity.Companion.CAMERA_PERMISSION_REJECTED
@@ -137,11 +137,16 @@ class MapFragment :
     }
 
     private fun initData() {
-        mapViewModel.getDummyList()
+//        mapViewModel.getDummyList()
 
+        // Unchecked 편지 리스트 얻기
+        mapViewModel.getUncheckedLetterList()
+        
         // 워커 매니저 초기화
         workManager = WorkManager.getInstance(mainActivity)
         binding.textviewDistance.text = distanceIntToString(walkDist.toInt())
+        
+        
     }
 
     private fun initClickEvent() = with(binding) {
@@ -150,8 +155,8 @@ class MapFragment :
             Log.d(TAG, "initClickEvent: 신고버튼 클릭")
             mapViewModel.apply {
                 isReport = !isReport
-                LetterList.map { MapLetterDto ->
-                    MapLetterDto.isSelected = !MapLetterDto.isSelected
+                uncheckedLetterList.map { UncheckLetterDto ->
+                    UncheckLetterDto.isSelected = !UncheckLetterDto.isSelected
                 }
                 if (isReport) {
                     buttonReport.visibility = View.VISIBLE
@@ -195,20 +200,20 @@ class MapFragment :
     private fun initAdapter() {
         mapLetterAdapter = MapLetterAdapter(mapViewModel = mapViewModel).apply {
             itemClickListener = object : MapLetterAdapter.ItemClickListener {
-                override fun itemClick(view: View, position: Int, mapLetterDto: MapLetterDto) {
+                override fun itemClick(view: View, position: Int, uncheckLetterDto: UncheckLetterDto) {
                     Log.d(TAG, "itemClick: 받은 편지 item 클릭됨")
 
                     if (mapViewModel.lastLatitude != 0.0 && mapViewModel.lastLongitude != 0.0) {
                         mapViewModel.apply {
-                            goalLatitude = mapLetterDto.latitude.toDouble()
-                            goalLongitude = mapLetterDto.longitude.toDouble()
+                            goalLatitude = uncheckLetterDto.lat
+                            goalLongitude = uncheckLetterDto.lng
                             mapViewModel.makeGoalLocataion()
 
                             // 현재 위치와 마커위치를 계산
                             calculateDistance()
                             // 마커 포지션
                             setMarkerLocation(
-                                mapLetterDto = mapLetterDto,
+                                uncheckLetterDto = uncheckLetterDto,
                                 latitude = goalLatitude,
                                 longitude = goalLongitude,
                             )
@@ -401,7 +406,7 @@ class MapFragment :
         }
     }
 
-    fun setMarkerLocation(mapLetterDto: MapLetterDto? = null, latitude: Double, longitude: Double) {
+    fun setMarkerLocation(uncheckLetterDto: UncheckLetterDto? = null, latitude: Double, longitude: Double) {
         // 기존 마커가 존재하는 경우 제거합니다
         marker?.map = null
 
@@ -426,9 +431,9 @@ class MapFragment :
                 return@setOnClickListener false
             }
 
-            if (it is Marker && checkBasePermission() && mapLetterDto != null) {
+            if (it is Marker && checkBasePermission() && uncheckLetterDto != null) {
                 // 확인 다이얼로그
-                val readyGoDialog = ReadyGoDialogFragment(mapLetterDto = mapLetterDto)
+                val readyGoDialog = ReadyGoDialogFragment(uncheckLetterDto = uncheckLetterDto)
                 readyGoDialog.show(mainActivity.supportFragmentManager, "ReadyGoDialogFragment")
             } else {
                 requestBasePermission()

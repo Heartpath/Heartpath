@@ -5,6 +5,7 @@ import com.zootopia.data.BuildConfig
 import com.zootopia.data.datasource.remote.map.MapDataSource
 import com.zootopia.data.mapper.toData
 import com.zootopia.data.mapper.toDomain
+import com.zootopia.domain.model.letter.uncheckedletter.UncheckLetterDto
 import com.zootopia.domain.model.navermap.MapDirectionDto
 import com.zootopia.domain.model.tmap.FeatureCollectionDto
 import com.zootopia.domain.model.tmap.RequestTmapWalkRoadDto
@@ -57,11 +58,14 @@ class MapRepositoryImpl @Inject constructor(
         }
     }
     
-    
-    override suspend fun test() : String{
+    /**
+     * 미확인 편지 리스트 수신
+     */
+    override suspend fun getUncheckedLetter(): List<UncheckLetterDto> {
         return getValueOrThrow2 {
-            mapDataSource.test()
+            mapDataSource.getUncheckedLetter().data as List<UncheckLetterDto>
         }
     }
+    
     
 }
