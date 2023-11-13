@@ -35,7 +35,8 @@ import javax.servlet.http.HttpServletRequest;
         description = "<b>JWT가 필요한 Method</b> \n" +
                 "1. [GET] /user/mypage (마이페이지)\n" +
                 "2. [PUT] /user/mypage (유저 정보 수정)\n" +
-                "3. [GET] /user/search (유저 ID로 유저 검색)"
+                "3. [GET] /user/search (유저 ID로 유저 검색)\n" +
+                "4. [DELETE] /user/unregister (유저 삭제)"
 )
 @Slf4j
 @RestController
@@ -163,7 +164,7 @@ public class UserController {
         return ResponseEntity.status(status).body(baseResponse);
     }
 
-    @Operation(summary = "마이페이지 정보 API", description = "JWT 토큰이 필요합니다.")
+    @Operation(summary = "마이페이지 정보", description = "JWT 토큰이 필요합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json",
                     examples = @ExampleObject(value = "{\n" +
@@ -237,7 +238,7 @@ public class UserController {
         return ResponseEntity.status(200).body(baseResponse);
     }
 
-    @Operation(summary = "유저 정보(닉네임, 프로필 사진) 수정 API")
+    @Operation(summary = "유저 정보(닉네임, 프로필 사진) 수정")
     @PutMapping(value = "/mypage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BaseResponse> renewUserInfo(
             @RequestPart(value = "nickname", required = false) String nickname,
@@ -254,5 +255,40 @@ public class UserController {
         log.info("'{}' 유저 정보 수정: {}", memberID, res);
 
         return ResponseEntity.status(200).body(baseResponse);
+    }
+
+    @Operation(summary = "유저 탈퇴")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{\n" +
+                            "        \"status\": 200,\n" +
+                            "        \"message\": \"유저 탈퇴 완료\",\n" +
+                            "        \"data\": \"null\"\n" +
+                            "}\n"))),
+            @ApiResponse(responseCode = "400", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{\n" +
+                            "        \"status\": 400,\n" +
+                            "        \"message\": \"유저 탈퇴에 실패했습니다.\",\n" +
+                            "        \"data\": \"null\"\n" +
+                            "}\n"))),
+    })
+    @DeleteMapping("/unregister")
+    public ResponseEntity<BaseResponse> unregisterUser(HttpServletRequest request) {
+
+        String accessToken = JwtUtil.getTokenFromHeader(request);
+        String memberID = jwtProvider.getMemberIDFromToken(accessToken);
+
+        boolean res = userService.unregisterUser(memberID);
+
+        int status = 200;
+        BaseResponse baseResponse = new BaseResponse(status, "유저 탈퇴 완료", null);
+
+        if (!res) {
+            status = 400;
+            baseResponse.setStatus(status);
+            baseResponse.setMessage("유저 탈퇴에 실패했습니다.");
+        }
+
+        return ResponseEntity.status(status).body(baseResponse);
     }
 }
