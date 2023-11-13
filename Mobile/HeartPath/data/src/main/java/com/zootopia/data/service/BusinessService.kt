@@ -1,5 +1,6 @@
 package com.zootopia.data.service
 
+import android.media.tv.CommandResponse
 import com.zootopia.data.model.auth.AuthResponse
 import com.zootopia.data.model.common.MessageResponse
 import com.zootopia.data.model.letter.request.LetterPlacedRequest
@@ -167,10 +168,10 @@ interface BusinessService {
     suspend fun getUncheckedLetter(): Response<UncheckedLetterResponse>
     
     // 편지 place 읽음 처리 == (AR로 찾은 편지 요청)
-    @GET("/letter/{letter_id}")
+    @GET("/letter/pickup/{letter_id}")
     suspend fun getReadLetter(
         @Path("letter_id") letter_id: Int,
-    )
+    ): Response<CommandResponse>
     
 }
 
