@@ -32,8 +32,8 @@
                 android:background="@drawable/custom_round_corner_extra_light_gray"/>
             <ImageView
                 android:id="@+id/imageview_is_owned"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
