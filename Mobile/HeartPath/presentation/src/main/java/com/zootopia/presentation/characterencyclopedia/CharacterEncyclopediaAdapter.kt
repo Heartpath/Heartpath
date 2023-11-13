@@ -20,6 +20,9 @@ RecyclerView.Adapter<CharacterEncyclopediaAdapter.CharacterEncyclopediaViewHolde
         fun setCharacter(character: CharacterDto){
             binding.textviewBirdName.text = character.characterName
             Glide.with(binding.root).load(character.imagePath).into(binding.imageviewBird)
+            binding.linearlayoutCharacterEncyclopedia.setOnClickListener {
+                itemClickListener.onItemClicked(character)
+            }
         }
     }
 
