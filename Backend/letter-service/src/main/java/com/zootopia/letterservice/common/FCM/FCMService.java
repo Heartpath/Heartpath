@@ -16,10 +16,11 @@ public class FCMService {
     public void sendFCMNotification(String token, String title, String body) {
         try {
             Map<String, String> data = new HashMap<>();
-
+            System.out.println("title: " + title);
+            System.out.println("body: " + body);
             // FCM 데이터 입력
-            data.put("title", title);
-            data.put("message", body);
+            data.put("title :", title);
+            data.put("message :", body);
 
             Message message = Message.builder()
                     .putAllData(data)
@@ -29,7 +30,7 @@ public class FCMService {
             String response = FirebaseMessaging.getInstance().send(message);
             System.out.println("Successfully sent message: " + response);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("UnSuccessfully sent message: " + e);
         }
     }
 }
