@@ -56,14 +56,13 @@ class SelectUserFragment : BaseFragment<FragmentSelectUserBinding>(
 
     fun initView()= with(binding) {
         // toolbar setting
-//        toolbarHeartpathSearchFriend.apply {
-//            textviewCurrentPageTitle.text =
-//                resources.getString(R.string.toolbar_friend_search_title)
-//            imageviewBackButton.setOnClickListener {
-//                findNavController().popBackStack()
-//            }
-//        }
-
+        toolbarHeartpathSelectUser.apply {
+            textviewCurrentPageTitle.text =
+                resources.getString(R.string.toolbar_receiver_search_title)
+            imageviewBackButton.setOnClickListener {
+                findNavController().popBackStack()
+            }
+        }
         // 아이디 검색 창 edit text
         editTextSearch.apply {
             // text 변경 event
