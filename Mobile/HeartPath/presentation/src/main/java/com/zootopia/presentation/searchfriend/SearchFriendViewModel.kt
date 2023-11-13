@@ -41,7 +41,7 @@ class SearchFriendViewModel @Inject constructor(
     fun searchUser() {
         getApiResult(
             block = {
-                searchUserUseCase.invoke(id = _searchIdValue.value, limit = 10, checkFriends = false)
+                searchUserUseCase.invoke(id = _searchIdValue.value, limit = 10, checkFriends = true)
             },
             success = {
                 _searchedFriendInfoList.emit(it)
