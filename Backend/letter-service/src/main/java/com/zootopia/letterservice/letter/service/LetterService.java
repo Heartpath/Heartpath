@@ -28,5 +28,7 @@ public interface LetterService {
 
     LetterReceivedDetailResDto getLetter(String accessToken, Long letter_id);
 
+    void updateIsPickup(String accessToken, Long letter_id);
+
     void test(String accessToken);
 }
