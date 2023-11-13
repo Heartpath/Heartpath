@@ -34,14 +34,18 @@ public class FirebaseCloudMessageService {
                 .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
                 .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
                 .build();
-
+        System.out.println("1");
         try (Response response = client.newCall(request).execute()) {
             if (response.isSuccessful()) {
+                System.out.println("2");
                 System.out.println(response.body().string());
+                log.debug("전송 성공");
             } else {
-                System.out.println("오류 : " + response.message());
+                System.out.println("3");
+                log.error("전송 실패: {} - {}", response.code(), response.message());
             }
         } catch (IOException e) {
+            System.out.println("4");
             log.error("FCM 서버 요청 중 예외 발생", e);
             throw e; // 예외를 상위로 전파
         }
@@ -51,7 +55,7 @@ public class FirebaseCloudMessageService {
         FCMMessageDto fcmMessage = FCMMessageDto.builder()
                 .message(FCMMessageDto.Message.builder()
                         .token(targetToken)
-                        .data(FCMMessageDto.Data.builder()
+                        .notification(FCMMessageDto.Notification.builder()
                                 .title(title)
                                 .body(body)
                                 .build()
@@ -68,7 +72,6 @@ public class FirebaseCloudMessageService {
                 .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
 
         googleCredentials.refreshIfExpired();
-        System.out.println(googleCredentials.getAccessToken().getTokenValue());
         return googleCredentials.getAccessToken().getTokenValue();
     }
 }
