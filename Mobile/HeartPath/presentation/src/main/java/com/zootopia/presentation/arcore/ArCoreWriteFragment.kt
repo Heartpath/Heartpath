@@ -1,12 +1,21 @@
 package com.zootopia.presentation.arcore
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.SurfaceTexture
+import android.media.Image
 import android.os.Bundle
+import android.os.Handler
+import android.os.HandlerThread
 import android.util.Log
+import android.view.PixelCopy
+import android.view.Surface
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.core.view.isGone
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.ar.core.Anchor
 import com.google.ar.core.Config
 import com.google.ar.core.Frame
@@ -19,12 +28,16 @@ import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentArCoreWriteBinding
 import com.zootopia.presentation.sendletter.SendLetterViewModel
 import com.zootopia.presentation.util.setFullScreen
+import io.github.sceneview.ar.ARSceneView
 import io.github.sceneview.ar.arcore.getUpdatedPlanes
 import io.github.sceneview.ar.getDescription
 import io.github.sceneview.ar.node.AnchorNode
 import io.github.sceneview.math.Position
 import io.github.sceneview.node.ModelNode
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.io.File
+import java.nio.ByteBuffer
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -39,6 +52,8 @@ class ArCoreWriteFragment :
     private lateinit var mainActivity: MainActivity
     private lateinit var currentFrame: Frame
     private val sendLetterViewModel: SendLetterViewModel by activityViewModels()
+
+    private lateinit var arSceneView: ARSceneView
 
     var isLoading = false
         set(value) {
@@ -67,10 +82,22 @@ class ArCoreWriteFragment :
         mainActivity = context as MainActivity
     }
 
+//    override fun onCreateView(
+//        inflater: LayoutInflater,
+//        container: ViewGroup?,
+//        savedInstanceState: Bundle?,
+//    ): View? {
+//        val rootView = super.onCreateView(inflater, container, savedInstanceState)
+//        arSceneView = ARSceneView(requireContext())
+//
+//        return rootView
+//    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
         initClickEvent()
+        initCollect()
     }
 
     fun updateInstructions() {
@@ -82,11 +109,46 @@ class ArCoreWriteFragment :
             null
         }
     }
-    
+
     private fun initClickEvent() = with(binding) {
+        // 편지 서버로 보내기 클릭 이벤트
         buttonSendItem.setOnClickListener {
+            isLoading = true
+
             sendLetterViewModel.apply {
-                requestSendLetter()
+                viewLifecycleOwner.lifecycleScope.launch {
+                    catchCapture(binding.rootView)
+//                    captureARSceneView(binding.sceneView)
+                }
+            }
+        }
+    }
+
+    private fun initCollect() = with(sendLetterViewModel) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            isBitmap.collectLatest {
+                Log.d(TAG, "initCollect: $it")
+                saveImage(context = mainActivity, bitmap = it)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            isSaveIamge.collectLatest {
+                getRealPath(context = mainActivity, uri = it)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            isRealPath.collectLatest {
+//                requestSendLetter(files = it)
+                isLoading = false
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            isResult.collectLatest {
+                mainActivity.showToast(it)
+                findNavController().popBackStack()
             }
         }
     }
@@ -123,7 +185,10 @@ class ArCoreWriteFragment :
                                 measureDistanceFromCamera()
 
                                 // 버튼 비활성화
-                                binding.buttonSetItem.visibility = View.GONE
+                                binding.apply {
+                                    buttonSetItem.visibility = View.GONE
+                                    buttonSendItem.visibility = View.VISIBLE
+                                }
                             }
                         }
                 }
