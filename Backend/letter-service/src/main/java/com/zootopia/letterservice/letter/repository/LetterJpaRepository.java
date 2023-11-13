@@ -15,4 +15,8 @@ public interface LetterJpaRepository extends JpaRepository<LetterMySQL, Long> {
     @Modifying
     @Query("UPDATE LetterMySQL l SET l.isRead = true WHERE l.id = :letterId")
     void setLetterIsReadTrue(Long letterId);
+
+    @Modifying
+    @Query("UPDATE LetterMySQL l SET l.isPickup = true WHERE l.id = :letterId")
+    void setLetterIsPickupTrue(Long letterId);
 }
