@@ -1,6 +1,5 @@
 package com.zootopia.letterservice.letter.controller;
 
-import com.zootopia.letterservice.common.FCM.FCMService;
 import com.zootopia.letterservice.common.dto.BaseResponseBody;
 import com.zootopia.letterservice.letter.dto.request.LetterHandReqDto;
 import com.zootopia.letterservice.letter.dto.request.LetterPlaceReqDto;
@@ -148,7 +147,7 @@ public class LetterController {
                             "       {" +
                             "           \"index\": 1," +
                             "           \"sender\": \"사용자 닉네임\"," +
-                            "           \"time\": \"yyyy-MM-ddThh:mm:ss.ssssss\"," +
+                            "           \"time\": \"yyyy-MM-ddThh:mm:ss\"," +
                             "           \"lat\": 125.345436," +
                             "           \"lng\": 45.235233," +
                             "           \"location\":[" +
@@ -174,7 +173,7 @@ public class LetterController {
                             "       {" +
                             "           \"index\": 1," +
                             "           \"sender\": \"사용자 닉네임\"," +
-                            "           \"time\": \"yyyy-MM-ddThh:mm:ss.ssssss\"," +
+                            "           \"time\": \"yyyy-MM-ddThh:mm:ss\"," +
                             "           \"lat\": 125.345436," +
                             "           \"lng\": 45.235233," +
                             "           \"location\":[" +
@@ -202,7 +201,7 @@ public class LetterController {
                             "           \"content\": \"https://zootopia-s3.s3.ap-northeast-2.amazonaws.com/-/file.jpg\"," +
                             "           \"sender\": \"사용자 닉네임\"," +
                             "           \"receiver\": \"사용자 닉네임\"," +
-                            "           \"time\": \"yyyy-MM-ddThh:mm:ss.ssssss\"," +
+                            "           \"time\": \"yyyy-MM-ddThh:mm:ss\"," +
                             "           \"lat\": 125.345436," +
                             "           \"lng\": 45.235233," +
                             "           \"files\":[" +
