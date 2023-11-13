@@ -74,6 +74,13 @@ class CharacterEncyclopediaDialog (context: Context, private val characterDto: C
 
         Glide.with(binding.root).load(characterDto.imagePath)
             .into(binding.imageviewEncyclopediaBird)
+
+        if(characterDto.isMain){
+            buttonChangeMainCharacter.visibility = View.GONE
+        }else{
+            buttonChangeMainCharacter.visibility = View.VISIBLE
+        }
+
     }
 
     private fun initCollecter(){
