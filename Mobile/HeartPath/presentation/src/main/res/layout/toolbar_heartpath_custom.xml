@@ -35,8 +35,8 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imageview_setting_icon"
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/_16sdp"
                 android:src="@drawable/icon_setting"
                 android:tint="@color/DarkGray"
