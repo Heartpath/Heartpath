@@ -26,6 +26,7 @@ public class FirebaseCloudMessageService {
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(message,
                 MediaType.get("application/json; charset=utf-8"));
+        System.out.println("1 step");
         Request request = new Request.Builder()
                 .url(API_URL)
                 .post(requestBody)
@@ -33,8 +34,9 @@ public class FirebaseCloudMessageService {
                 .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
                 .build();
 
+        System.out.println("request :" + request);
         Response response = client.newCall(request).execute();
-
+        System.out.println("2 step");
         System.out.println(response.body().string());
     }
 
@@ -55,7 +57,7 @@ public class FirebaseCloudMessageService {
 
     private String getAccessToken() throws IOException {
         // 클래스패스 내의 리소스로 파일 로드
-        InputStream is = getClass().getResourceAsStream("/firebase/heartpath-adminsdk.json");
+        InputStream is = getClass().getResourceAsStream("firebase/heartpath-adminsdk.json");
 
         GoogleCredentials googleCredentials = GoogleCredentials
                 .fromStream(is)
