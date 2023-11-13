@@ -9,11 +9,11 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.zootopia.presentation.R
-import com.zootopia.presentation.databinding.DialogLetterAddFriendBinding
+import com.zootopia.presentation.databinding.DialogReadLetterInfoBinding
 import kotlinx.coroutines.launch
 
-class ReadLetterAddFriendDialog : DialogFragment() {
-    private lateinit var binding: DialogLetterAddFriendBinding
+class ReadLetterInfoDialog: DialogFragment() {
+    private lateinit var binding: DialogReadLetterInfoBinding
     private val readLetterViewModel: ReadLetterViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,29 +21,23 @@ class ReadLetterAddFriendDialog : DialogFragment() {
         isCancelable = true // 화면 밖에 클릭하면 dismiss 되도록
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        binding = DialogLetterAddFriendBinding.inflate(inflater, container, false)
+        binding = DialogReadLetterInfoBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.apply {
-            buttonFriendAddCancel.setOnClickListener {
-                dismiss()
-            }
-            buttonFriendAddAccept.setOnClickListener {
-                readLetterViewModel.addAsFriend()
-                dismiss()
-            }
-            lifecycleScope.launch {
-                readLetterViewModel.readLetterResult.collect {letter ->
-                    textviewAddFriendWhoIsNotFriend.text = view.context.getString(R.string.received_letter_title, letter.sender)
+        binding.apply { 
+            lifecycleScope.launch { 
+                readLetterViewModel.imageCnt.collect {
+                    textviewImageInfo.text = root.context.getString(R.string.received_letter_info, it)
                 }
             }
         }
@@ -62,8 +56,8 @@ class ReadLetterAddFriendDialog : DialogFragment() {
             dialog.window?.setGravity(Gravity.BOTTOM)
         }
     }
-
+    
     companion object {
-        const val TAG = "ReadLetterAddFriendDial"
+        private const val TAG = "ReadLetterInfoDialog_HP"
     }
 }
