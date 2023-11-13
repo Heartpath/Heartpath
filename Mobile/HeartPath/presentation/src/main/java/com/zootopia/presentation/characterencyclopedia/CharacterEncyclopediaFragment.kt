@@ -2,8 +2,10 @@ package com.zootopia.presentation.characterencyclopedia
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -18,6 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+private const val TAG = "CharacterEncyclopediaFr"
 @AndroidEntryPoint
 class CharacterEncyclopediaFragment : BaseFragment<FragmentCharacterEncyclopediaBinding>(
     FragmentCharacterEncyclopediaBinding::bind,
@@ -25,7 +28,7 @@ class CharacterEncyclopediaFragment : BaseFragment<FragmentCharacterEncyclopedia
 ) {
     private lateinit var mainActivity: MainActivity
     private lateinit var navController: NavController
-    private val characterEncyclopediaViewModel: CharacterEncyclopediaViewModel by viewModels()
+    private val characterEncyclopediaViewModel: CharacterEncyclopediaViewModel by activityViewModels()
     private lateinit var characterEncyclopediaAdapter: CharacterEncyclopediaAdapter
     private var characterList: MutableList<CharacterDto> = mutableListOf()
 
@@ -38,10 +41,12 @@ class CharacterEncyclopediaFragment : BaseFragment<FragmentCharacterEncyclopedia
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
 
-        initData()
         initRecyclerGridView()
-        initCollecter()
+        initData()
         initClickListener()
+
+        initCollecter()
+
     }
 
     private fun initData() {
@@ -67,6 +72,7 @@ class CharacterEncyclopediaFragment : BaseFragment<FragmentCharacterEncyclopedia
     private fun initCollecter() = with(binding) {
         lifecycleScope.launch {
             characterEncyclopediaViewModel.characterEncyclopediaList.collectLatest {
+                Log.d(TAG, "initCollecter: change!! ${it.size}")
                 characterList.clear()
                 characterList.addAll(it)
                 characterEncyclopediaAdapter.notifyDataSetChanged()

@@ -1,5 +1,6 @@
 package com.zootopia.presentation.characterencyclopedia
 
+import android.util.Log
 import com.zootopia.domain.model.store.ChangeMainCharacterRequestDto
 import com.zootopia.domain.model.store.CharacterDto
 import com.zootopia.domain.usecase.store.ChangeMainCharacterUseCase
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
+private const val TAG = "CharacterEncyclopediaVi"
 @HiltViewModel
 class CharacterEncyclopediaViewModel @Inject constructor(
     private val getCharacterEncyclopediaListUseCase: GetCharacterEncyclopediaListUseCase,
@@ -29,6 +31,10 @@ class CharacterEncyclopediaViewModel @Inject constructor(
                 getCharacterEncyclopediaListUseCase.invoke()
             },
             success = {
+                Log.d(TAG, "getCharacterEncyclopediaList: get ${it.size}")
+                it.forEach {
+                    Log.d(TAG, "getCharacterEncyclopediaList: ?? ${it.characterName} ${it.isMain}")
+                }
                 _characterEncyclopediaList.emit(it)
             }
         )
@@ -42,6 +48,7 @@ class CharacterEncyclopediaViewModel @Inject constructor(
                 )
             },
             success = {
+                getCharacterEncyclopediaList()
                 _isSendSuccess.value = true
             }
         )
