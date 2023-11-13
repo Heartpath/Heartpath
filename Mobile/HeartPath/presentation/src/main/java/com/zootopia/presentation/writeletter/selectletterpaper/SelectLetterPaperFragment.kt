@@ -8,6 +8,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
@@ -46,6 +47,7 @@ class SelectLetterPaperFragment : BaseFragment<FragmentSelectLetterPaperBinding>
         initViewPager()
         initCollecter()
         initClickListener()
+        initView()
         Log.d(TAG, "onViewCreated: ${args.letterType}")
     }
 
@@ -97,6 +99,16 @@ class SelectLetterPaperFragment : BaseFragment<FragmentSelectLetterPaperBinding>
                 navController.navigate(SelectLetterPaperFragmentDirections.actionSelectLetterPaperFragmentToHandWriteFragment(url))
             } else {
                 navController.navigate(SelectLetterPaperFragmentDirections.actionSelectLetterPaperFragmentToTypingWriteFragment(url))
+            }
+        }
+    }
+
+    private fun initView() = with(binding) {
+        toolbarHeartpathSelectLetterPapaer.apply {
+            textviewCurrentPageTitle.text =
+                resources.getString(R.string.toolbar_select_letter_paper_title)
+            imageviewBackButton.setOnClickListener {
+                findNavController().popBackStack()
             }
         }
     }
