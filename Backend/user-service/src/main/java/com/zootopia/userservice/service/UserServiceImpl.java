@@ -8,16 +8,20 @@ import com.zootopia.userservice.kakao.KakaoUserInfo;
 import com.zootopia.userservice.mapper.UserMapper;
 import com.zootopia.userservice.repository.RedisRepository;
 import com.zootopia.userservice.repository.UserRepository;
+import com.zootopia.userservice.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+
+import static java.util.Objects.isNull;
 
 
 @Slf4j
@@ -25,12 +29,40 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private final S3Service s3Service;
     private final JwtProvider jwtProvider;
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
 
     private final RedisRepository redisRepository;
+
+    @Override
+    public HashMap<String, String> reviseUserInfo(MultipartFile userProfileImage, String nickname, String memberID) {
+
+        HashMap<String, String> res = new HashMap<>();
+
+        Optional<User> findMember = userRepository.findByMemberID(memberID);
+        String updatedUserProfileImagePath = null;
+
+        if (!isNull(userProfileImage)) {
+            updatedUserProfileImagePath = s3Service.saveUserProfileImage(userProfileImage, memberID);
+
+            res.put("profileImagePath", updatedUserProfileImagePath);
+        }
+
+        if (findMember.isPresent()) {
+
+            User user = findMember.get();
+            user.updateUserNickname(nickname);
+            user.updateProfileImagePath(updatedUserProfileImagePath);
+
+            User updatedUser = userRepository.save(user);
+            res.put("nickname", updatedUser.getNickname());
+        }
+
+        return res;
+    }
 
     @Override
     public boolean checkIfDuplicatedUserID(String memberID) {

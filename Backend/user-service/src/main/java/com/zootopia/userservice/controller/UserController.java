@@ -19,8 +19,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -228,6 +230,25 @@ public class UserController {
         List<UserSearchDTO> res = userService.searchUser(query, limit, memberID, checkFriends);
 
         BaseResponse baseResponse = new BaseResponse(200, "유저 검색 결과입니다.", res);
+
+        return ResponseEntity.status(200).body(baseResponse);
+    }
+
+    @Operation(summary = "유저 정보(닉네임, 프로필 사진) 수정 API")
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<BaseResponse> renewUserInfo(
+            @RequestPart(value = "nickname", required = false) String nickname,
+            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
+            HttpServletRequest request
+    ) {
+
+        String accessToken = JwtUtil.getTokenFromHeader(request);
+        String memberID = jwtProvider.getMemberIDFromToken(accessToken);
+
+        HashMap<String, String> res = userService.reviseUserInfo(profileImage, nickname, memberID);
+
+        BaseResponse baseResponse = new BaseResponse(200, "변경된 유저 정보입니다.", res);
+        log.info("'{}' 유저 정보 수정: {}", memberID, res);
 
         return ResponseEntity.status(200).body(baseResponse);
     }
