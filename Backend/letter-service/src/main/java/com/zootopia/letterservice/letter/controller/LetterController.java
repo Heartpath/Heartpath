@@ -226,7 +226,7 @@ public class LetterController {
                     examples = @ExampleObject(value = "{\n \"status\": 200,\n \"message\": \"FCM 테스트 성공\"\n}")))
     })
     @GetMapping("/test")
-    public ResponseEntity<? extends BaseResponseBody> FCMtest(@RequestHeader(value = "Authrorization") String accessToken) {
+    public ResponseEntity<? extends BaseResponseBody> FCMtest(@RequestHeader(value = "Authorization") String accessToken) {
 
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "FCM 테스트 성공"));
     }
