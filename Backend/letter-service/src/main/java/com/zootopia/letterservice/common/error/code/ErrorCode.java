@@ -15,11 +15,12 @@ public enum ErrorCode {
     NOT_EXISTS_RECEIVER_ID(HttpStatus.BAD_REQUEST, 4002, "수신자 ID는 필수 항목 입니다."),
     NOT_EXISTS_TEXT(HttpStatus.BAD_REQUEST, 4003, "텍스트 편지 생성시 사용자 입력 텍스트는 필수 항목입니다."),
     EXISTS_FORBIDDEN_WORD(HttpStatus.BAD_REQUEST, 4004, "편지에 금칙어가 포함되어 있습니다. 금칙어를 제외하고 작성해주세요."),
-    NOT_EQUAL_USER(HttpStatus.BAD_REQUEST, 4005, "편지 작성자와 요청을 보낸 사용자가 일치하지 않습니다."),
+    NOT_EQUAL_SENDER(HttpStatus.BAD_REQUEST, 4005, "편지 작성자와 요청을 보낸 사용자가 일치하지 않습니다."),
     NOT_EXISTS_LETTER(HttpStatus.BAD_REQUEST, 4006, "존재하지 않는 편지입니다."),
     NOT_EXISTS_LAT_OR_LNG(HttpStatus.BAD_REQUEST, 4007, "위도, 경도는 필수 항목입니다."),
     NOT_EXISTS_PLACE_IMAGES(HttpStatus.BAD_REQUEST, 4008, "배치 장소에 대한 이미지 파일은 필수 항목입니다."),
     NOT_EQUAL_SENDER_OR_RECEIVER(HttpStatus.BAD_REQUEST, 4009, "편지의 발신자와 수신자가 아닌 사용자는 상세 내용을 조회할 수 없습니다."),
+    NOT_EQUAL_RECEIVER(HttpStatus.BAD_REQUEST, 4011, "편지의 수신자가 아니면 편지를 주울 수 없습니다."),
 
 
     // API 통신
