@@ -3,10 +3,7 @@ package com.zootopia.letterservice.letter.service;
 import com.zootopia.letterservice.letter.dto.request.LetterHandReqDto;
 import com.zootopia.letterservice.letter.dto.request.LetterPlaceReqDto;
 import com.zootopia.letterservice.letter.dto.request.LetterTextReqDto;
-import com.zootopia.letterservice.letter.dto.response.LetterReceivedDetailResDto;
-import com.zootopia.letterservice.letter.dto.response.LetterNotPickUpResDto;
-import com.zootopia.letterservice.letter.dto.response.LetterSendResDto;
-import com.zootopia.letterservice.letter.dto.response.LetterUnsendResDto;
+import com.zootopia.letterservice.letter.dto.response.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,7 +22,7 @@ public interface LetterService {
 
     List<LetterUnsendResDto> getUnsendLetters(String accessToken);
 
-    List<LetterNotPickUpResDto> getPickupLetters(String accessToken);
+    List<LetterPickUpResDto> getPickupLetters(String accessToken);
 
     List<LetterNotPickUpResDto> getNotPickupLetters(String accessToken);
 
