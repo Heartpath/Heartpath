@@ -48,6 +48,10 @@ class HomeFragment :
         buttonWriteLetter.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_selectUserFragment)
         }
+
+        buttonCharacterEncyclopedia.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_characterEncyclopediaFragment)
+        }
     }
 
     private fun initView() = with(binding) {

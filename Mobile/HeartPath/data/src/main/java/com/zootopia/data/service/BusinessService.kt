@@ -1,18 +1,25 @@
 package com.zootopia.data.service
 
-import com.zootopia.data.model.business.request.PostHandLetterRequest
-import com.zootopia.data.model.business.response.BusinessResponse
+import com.zootopia.data.model.auth.AuthResponse
+import com.zootopia.data.model.letter.request.PostHandLetterRequest
+import com.zootopia.data.model.letter.response.BusinessResponse
+import okhttp3.MultipartBody
 import com.zootopia.data.model.common.MessageResponse
 import com.zootopia.data.model.letter.request.LetterPlacedRequest
+import com.zootopia.data.model.letter.request.PostTypingLetterRequest
+import com.zootopia.data.model.letter.response.GetUserLetterPaperResponse
+import com.zootopia.data.model.letter.response.ReceivedLetterDetailResponse
+import com.zootopia.data.model.letter.response.StoredLetterListResponse
 import com.zootopia.data.model.letter.response.UnplacedLetterListResponse
 import com.zootopia.data.model.login.request.LoginRequest
 import com.zootopia.data.model.login.request.SignupRequest
 import com.zootopia.data.model.login.response.CheckIdResponse
 import com.zootopia.data.model.login.response.LoginResponse
+import com.zootopia.data.model.store.CharacterEncyclopediaListResponse
 import com.zootopia.data.model.user.response.FriendListResponse
 import com.zootopia.data.model.user.response.PointInfoResponse
+import com.zootopia.data.model.user.response.SearchUserResponse
 import com.zootopia.data.model.user.response.UserInfoResponse
-import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -93,4 +100,42 @@ interface BusinessService {
         @Part files: MultipartBody.Part?,
         @Part("letterPlaceReqDto") letterPlacedRequest: LetterPlacedRequest,
     ): Response<MessageResponse>
+
+    // 열람한 수신 편지 목록 조회
+    @GET("/letter/checked")
+    suspend fun getStoredLetterList(): Response<StoredLetterListResponse>
+
+    // 유저가 보유한 편지지 조회
+    @GET("/store/letterpaper")
+    suspend fun getUserLetterPaper(): Response<GetUserLetterPaperResponse>
+
+    // 타이핑 편지 작성
+    @Multipart
+    @POST("/letter/text")
+    suspend fun postTypingLetter(
+        @Part("letterTextReqDto") postTypingLetterRequest: PostTypingLetterRequest,
+        @Part content: MultipartBody.Part,
+        @Part files: List<MultipartBody.Part>?
+    ): Response<BusinessResponse>
+
+    // 토큰 재발급
+    @GET("/user/token")
+    suspend fun getReAccessToken(@Query("refreshToken") refreshToken: String): Response<AuthResponse>
+
+    // 유저 검색
+    @GET("/user/search")
+    suspend fun searchUser(
+        @Query("id") id: String,
+        @Query("limit") limit: Int,
+        @Query("checkFriends") checkFriends: Boolean
+    ): Response<SearchUserResponse>
+
+    // 캐릭터 도감 목록 조회
+    @GET("/store/crowtit")
+    suspend fun getCharacterEncyclopediaList(): Response<CharacterEncyclopediaListResponse>
+
+    // 편지 상세 보기
+    @GET("letter/{letter_id}")
+    suspend fun getLetter(@Path("letter_id") letterId: Int): Response<ReceivedLetterDetailResponse>
 }
+

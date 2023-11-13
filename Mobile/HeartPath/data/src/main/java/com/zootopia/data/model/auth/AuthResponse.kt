@@ -4,8 +4,10 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class AuthResponse(
-    @SerializedName("accessToken")
-    val accessToken: String,
-    @SerializedName("refreshToken")
-    val refreshToken: String,
+    @SerializedName("status")
+    val status: Int,
+    @SerializedName("message")
+    val message: String,
+    @SerializedName("data")
+    val data: String,
 )

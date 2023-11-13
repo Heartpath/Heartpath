@@ -5,11 +5,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Matrix
 import android.graphics.SurfaceTexture
-import android.media.Image
 import android.net.Uri
-import android.opengl.GLES20
 import android.provider.MediaStore
 import android.util.Log
 import android.view.Surface
@@ -18,8 +15,6 @@ import androidx.core.net.toUri
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.UUID

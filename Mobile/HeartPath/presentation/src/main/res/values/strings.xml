@@ -12,7 +12,7 @@
     <string name="search_friend_search_bar_hint">검색 아이디를 입력하세요</string>
     <string name="point_history_date_text">2023.10.25</string>
     <string name="default_name">김뱁새</string>
-    <string name="default_id">\@im_babsae</string>
+    <string name="default_id">\@$s</string>
     <string name="setting_set_bgm">BGM 설정</string>
     <string name="setting_privacy_policy">개인정보 처리방침</string>
     <string name="setting_logout">로그아웃</string>
@@ -24,10 +24,17 @@
     <string name="select_letter_type_hand_write">손으로 편지쓰기</string>
     <string name="select_letter_type_typing_write">타이핑으로 편지쓰기</string>
     <string name="select_letter_paper_button">편지지 선택</string>
+    <string name="select_letter_papper_no_user_letter_papper">보유한 편지지가 없습니다!\n상점에서 구매해주세요</string>
     <string name="select_user_text">편지 보낼 사람을 검색하고 선택하세요</string>
     <string name="select_user_search_notice">검색창에 입력값을 넣어주세요</string>
-    <string name="add_letter_image_notice">추가하고 싶은 이미지를 추가해주세요</string>
+    <string name="add_letter_image_notice">추가하고 싶은 이미지를 선택해주세요</string>
     <string name="add_letter_image_confirm_button">최종 저장</string>
+    <string name="add_letter_image_write_success">편지가 저장되었습니다.</string>
+    <string name="add_letter_image_unexpected_image">전송 불가능한 이미지 형태가 포함되어있습니다! 다시 시도해주세요.</string>
+    <string name="add_letter_image_forbidden_word">금지어가 포함되어 전송 불가합니다.</string>
+    <string name="add_letter_image_no_text">편지 내용을 작성해주세요!</string>
+    <string name="add_letter_unknown_err">알수없는 에러가 발생했습니다. 다시 시도해주세요.</string>
+    <string name="no_search_result">검색 결과가 없습니다!</string>
 
 
     <string name="add_friend_dialog_question">친구로 추가할까요?</string>
@@ -86,4 +93,9 @@
     <string name="toast_message_signup_fail">회원가입 실패했습니다.</string>
 
     <string name="signup_check_id_done">확인완료</string>
+
+    <string name="received_letter_title">$s님이 보낸 편지</string>
+
+    <!-- character encyclopedia -->
+    <string name="character_encyclopedia_go_store">상점</string>
 </resources>
