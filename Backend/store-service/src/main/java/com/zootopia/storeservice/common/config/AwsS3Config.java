@@ -1,4 +1,4 @@
-package com.zootopia.storeservice.common.config;
+package com.zootopia.letterservice.common.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
