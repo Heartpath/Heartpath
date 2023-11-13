@@ -60,16 +60,34 @@ public class FriendServiceImpl implements FriendService {
             throw new FriendException(BLOCK_OFF_MYSELF);
         }
 
-        // 알 수 없는 유저에게 친구 추가할 경우
-        int res;
+        // 존재하지 않는 유저를 차단할 경우
         try {
-            res = friendMapper.blockOffFriend(memberID, opponentID);
+            friendMapper.blockOrUnblockOffFriend(memberID, opponentID, 1);
         } catch (DataIntegrityViolationException e) {
             throw new FriendException(BLOCK_OFF_NON_EXISTENT_USER);
         }
-        System.out.println("res = " + res);
 
         String msg = String.format("%s 유저를 차단했습니다.", opponentID);
+
+        return new BaseResponse(200, msg, null);
+    }
+
+    @Override
+    public BaseResponse unblockOffFriend(String memberID, String opponentID) {
+
+        // 자기 자신을 차단 해제할 경우
+        if (memberID.equals(opponentID)) {
+            throw new FriendException(UNBLOCK_OFF_MYSELF);
+        }
+
+        // 존재하지 않는 유저를 차단 해제할 경우
+        try {
+            friendMapper.blockOrUnblockOffFriend(memberID, opponentID, 0);
+        } catch (DataIntegrityViolationException e) {
+            throw new FriendException(UNBLOCK_OFF_NON_EXISTENT_USER);
+        }
+
+        String msg = String.format("%s 유저를 차단 해제했습니다.", opponentID);
 
         return new BaseResponse(200, msg, null);
     }

@@ -163,6 +163,49 @@ public class FriendController {
         return ResponseEntity.status(200).body(baseResponse);
     }
 
+    @Operation(summary = "친구 차단 해제 API, 예외가 발생할 경우 모두 ErrorCode 400입니다!")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "400", description = "자기 자신을 차단 해제할 경우",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "    \"status\": 1009,\n" +
+                                    "    \"message\": \"자기 자신을 차단 해제할 수 없습니다.\",\n" +
+                                    "    \"httpStatus\": \"400 BAD_REQUEST\"\n" +
+                                    "}")
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401", description = "존재하지 않은 유저를 차단 해제할 경우",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "    \"status\": 1008,\n" +
+                                    "    \"message\": \"존재하지 않은 유저를 차단 해제할 수 없습니다.\",\n" +
+                                    "    \"httpStatus\": \"400 BAD_REQUEST\"\n" +
+                                    "}")
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "200", description = "친구 차단 해제 완료",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "    \"status\": 200,\n" +
+                                    "    \"message\": \"ㅇㅇ 유저를 차단 해제했습니다.\",\n" +
+                                    "    \"data\": null\n" +
+                                    "}")
+                    )
+            )
+    })
+    @DeleteMapping("/friend/{opponentID}")
+    public ResponseEntity<BaseResponse> unblockFriend(@PathVariable(name = "opponentID") String opponentID) {
+
+        BaseResponse baseResponse = friendService.unblockOffFriend(memberID, opponentID);
+        return ResponseEntity.status(200).body(baseResponse);
+    }
+
     @Operation(summary = "차단한 유저 목록 조회 API")
     @ApiResponse(
             responseCode = "200", description = "차단한 유저 목록 조회",
