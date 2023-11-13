@@ -386,4 +386,15 @@ public class LetterServiceImpl implements LetterService {
 
         return res.getData();
     }
+
+    public void test(String accessToken) {
+        UserDetailResDto user = accessTokenToMember(accessToken).getData();
+
+        try {
+            String message = user.getNickname() + "님이 당신에게 편지를 보냈습니다.";
+            firebaseCloudMessageService.sendMessageTo(user.getFcmToken(), "뱁새가 편지를 물고 왔어요.",message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
