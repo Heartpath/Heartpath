@@ -61,11 +61,8 @@ public class FriendController {
     public ResponseEntity<BaseResponse> getFriendList() {
 
         List<FriendInfoDTO> friendInfoList = friendService.getFriendInfoList(memberID);
-        for (FriendInfoDTO friendInfoDTO : friendInfoList) {
-            System.out.println("friendInfoDTO = " + friendInfoDTO);
-        }
-
         BaseResponse baseResponse = new BaseResponse(200, "친구 목록", friendInfoList);
+
         return ResponseEntity.status(200).body(baseResponse);
     }
 
