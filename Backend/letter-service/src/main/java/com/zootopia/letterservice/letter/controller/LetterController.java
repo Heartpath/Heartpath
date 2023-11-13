@@ -221,6 +221,18 @@ public class LetterController {
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "편지 상세 조회 성공", letterService.getLetter(accessToken, letter_id)));
     }
 
+    @Operation(summary = "isPickUp 업데이트", description = "Authorization : Bearer {accessToken}, 필수")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description =  "UPDATE", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{\n \"status\": 200,\n \"message\": \"isPickup true로 변경 성공\"\n}")))
+    })
+    @GetMapping("/pickup/{letter_id}")
+    public ResponseEntity<? extends BaseResponseBody> updatePickup(@PathVariable Long letter_id,
+                                                                   @RequestHeader(value = "Authorization") String accessToken) {
+        letterService.updateIsPickup(accessToken, letter_id);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "isPickup true로 변경 성공"));
+    }
+
     @Operation(summary = "FCM 테스트", description = "Authorization : Bearer {accessToken}, 필수")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description =  "CREATED", content = @Content(mediaType = "application/json",
