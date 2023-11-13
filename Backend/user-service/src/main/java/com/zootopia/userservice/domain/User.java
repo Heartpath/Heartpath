@@ -44,4 +44,16 @@ public class User {
     public void updateFCMToken(String fcmToken) {
         this.fcmToken = fcmToken;
     }
+
+    public void updateUserNickname(String nickname) {
+
+        if (nickname != null)
+            this.nickname = nickname;
+    }
+
+    public void updateProfileImagePath(String profileImagePath) {
+
+        if (profileImagePath != null)
+            this.profileImagePath = profileImagePath;
+    }
 }
