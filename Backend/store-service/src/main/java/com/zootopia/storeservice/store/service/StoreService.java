@@ -1,12 +1,12 @@
 package com.zootopia.storeservice.store.service;
 
-import com.zootopia.storeservice.store.dto.request.CharacterBuyReqDto;
 import com.zootopia.storeservice.store.dto.request.CrowTitReqDto;
-import com.zootopia.storeservice.store.dto.request.LetterPaperBuyReqDto;
+import com.zootopia.storeservice.store.dto.request.LetterPaperReqDto;
+import com.zootopia.storeservice.store.dto.response.CrowTitResDto;
+import com.zootopia.storeservice.store.dto.response.LetterPaperResDto;
 import com.zootopia.storeservice.store.entity.CrowTit;
 import com.zootopia.storeservice.store.entity.LetterPaper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -14,15 +14,18 @@ import java.util.List;
 @Service
 public interface StoreService {
 
-    void buyLetterPaper(String memberId, LetterPaperBuyReqDto letterPaperBuyReqDto);
+    void buyLetterPaper(String memberId, LetterPaperReqDto letterPaperBuyReqDto);
+    List<LetterPaperResDto> getLetterPaperAll(String memberId);
+    List<LetterPaperResDto> getLetterPaper(String memberId);
+    LetterPaper getLetterPaperDetail(int letterpaperId);
 
-    LetterPaper getLetterPaperDetail(Long letterpaperId);
+    void buyCrowTit(String memberId, CrowTitReqDto crowTitReqDto);
+    void changeMainCrowTit(String memberId, CrowTitReqDto crowTitChangeReqDto);
+    CrowTit getCrowTitInfo(int crowTitId);
+    List<CrowTitResDto> getCrowTitListAll(String memberId);
+    List<CrowTitResDto> getCrowTitList(String memberId);
 
-    void buyCharacter(String memberId, CharacterBuyReqDto characterBuyReqDto);
-
-    CrowTit getCharacterInfo(Long charater_id);
-
-    void upload(CrowTitReqDto crowTitReqDto, List<MultipartFile> files);
+//    void upload(CrowTitReqDto crowTitReqDto, List<MultipartFile> files);
 
 //    void upload(CrowTitReqDto crowTitReqDto, List<MultipartFile> files);
 
