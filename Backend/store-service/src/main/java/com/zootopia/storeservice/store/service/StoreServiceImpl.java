@@ -11,6 +11,7 @@ import com.zootopia.storeservice.store.entity.*;
 import com.zootopia.storeservice.store.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -169,6 +170,22 @@ public class StoreServiceImpl implements StoreService {
 
         crowTit.setMain(true);
         crowTitBookRepository.save(crowTit);
+    }
+
+    public CrowTitResDto getMainCrowTit(String memberId){
+       Optional<CrowTitBook> mainCrowTit = crowTitBookRepository.findByMemberIdAndIsMain(memberId, true);
+       Optional<CrowTit> crowTit = crowTitRepository.findById(mainCrowTit.get().getCrowTitId());
+
+       CrowTitResDto crowTitResDto = CrowTitResDto.builder()
+               .crowTitId(crowTit.get().getId())
+               .name(crowTit.get().getName())
+               .price(crowTit.get().getPrice())
+               .description(crowTit.get().getDescription())
+               .imagePath(crowTit.get().getImagePath())
+               .isOwned(true)
+               .isMain(mainCrowTit.get().getIsMain())
+               .build();
+        return crowTitResDto;
     }
 
     public List<CrowTitResDto> getCrowTitList(String memberId){
