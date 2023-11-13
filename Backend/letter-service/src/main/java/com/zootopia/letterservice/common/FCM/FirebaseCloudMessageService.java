@@ -20,24 +20,27 @@ public class FirebaseCloudMessageService {
     private final ObjectMapper objectMapper;
 
     public void sendMessageTo(String targetToken, String title, String body) throws IOException {
-        String message = makeMessage(targetToken, title, body);
-        System.out.println("FCM sendMessageTo");
+        try {
+            String message = makeMessage(targetToken, title, body);
+            System.out.println("FCM sendMessageTo");
 
-        OkHttpClient client = new OkHttpClient();
-        RequestBody requestBody = RequestBody.create(message,
-                MediaType.get("application/json; charset=utf-8"));
-        System.out.println("1 step");
-        Request request = new Request.Builder()
-                .url(API_URL)
-                .post(requestBody)
-                .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
-                .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
-                .build();
+            OkHttpClient client = new OkHttpClient();
+            RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
+            System.out.println("1 step");
+            Request request = new Request.Builder()
+                    .url(API_URL)
+                    .post(requestBody)
+                    .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                    .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
+                    .build();
 
-        System.out.println("request :" + request);
-        Response response = client.newCall(request).execute();
-        System.out.println("2 step");
-        System.out.println(response.body().string());
+            System.out.println("request :" + request);
+            Response response = client.newCall(request).execute();
+
+            System.out.println(response.body().string());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        };
     }
 
     private String makeMessage(String targetToken, String title, String body) throws JsonParseException, JsonProcessingException {
@@ -57,7 +60,7 @@ public class FirebaseCloudMessageService {
 
     private String getAccessToken() throws IOException {
         // 클래스패스 내의 리소스로 파일 로드
-        InputStream is = getClass().getResourceAsStream("firebase/heartpath-adminsdk.json");
+        InputStream is = getClass().getResourceAsStream("/firebase/heartpath-adminsdk.json");
 
         GoogleCredentials googleCredentials = GoogleCredentials
                 .fromStream(is)
@@ -65,6 +68,7 @@ public class FirebaseCloudMessageService {
 
         System.out.println("FIREBASE GET ACCESS TOKEN");
         googleCredentials.refreshIfExpired();
+        System.out.println(googleCredentials.getAccessToken().getTokenValue());
         return googleCredentials.getAccessToken().getTokenValue();
     }
 
