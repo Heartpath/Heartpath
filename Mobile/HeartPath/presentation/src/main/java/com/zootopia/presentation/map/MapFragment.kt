@@ -12,7 +12,6 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import androidx.activity.addCallback
-import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
@@ -58,6 +57,7 @@ import com.zootopia.presentation.util.checkAllPermission
 import com.zootopia.presentation.util.distanceIntToString
 import com.zootopia.presentation.util.hasPermissions
 import com.zootopia.presentation.util.requestPermissionsOnClick
+import com.zootopia.presentation.util.timeIntToString
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -75,7 +75,6 @@ class MapFragment :
     private lateinit var mainActivity: MainActivity
     private lateinit var navController: NavController
     private lateinit var mapLetterAdapter: MapLetterAdapter
-    private lateinit var requestMultiplePermission: ActivityResultLauncher<Array<String>>
 
     // Map
     private var path: PathOverlay? = null
@@ -95,7 +94,6 @@ class MapFragment :
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        Log.d(TAG, "onAttach: ")
         mainActivity = context as MainActivity
     }
 
@@ -142,10 +140,13 @@ class MapFragment :
     private fun initData() {
         // Unchecked 편지 리스트 얻기
         mapViewModel.getUncheckedLetterList()
-        
+
         // 워커 매니저 초기화
         workManager = WorkManager.getInstance(mainActivity)
-        binding.textviewDistance.text = distanceIntToString(walkDist.toInt())
+        binding.apply {
+            textviewDistance.text = "이동 거리: ${distanceIntToString(walkDist.toInt())}"
+            textviewTime.text = "이동 시간: ${timeIntToString(walkTime)}"
+        }
     }
 
     private fun initClickEvent() = with(binding) {
@@ -154,10 +155,8 @@ class MapFragment :
             Log.d(TAG, "initClickEvent: 신고버튼 클릭")
             mapViewModel.apply {
                 isReport = !isReport
-                uncheckedLetterList.map {it.isSelected = false}
-//                uncheckedLetterList.map { UncheckLetterDto ->
-//                    UncheckLetterDto.isSelected = !UncheckLetterDto.isSelected
-//                }
+                uncheckedLetterList.map { it.isSelected = false }
+
                 if (isReport) {
                     buttonReport.visibility = View.VISIBLE
                 } else {
@@ -166,10 +165,9 @@ class MapFragment :
                 mapLetterAdapter.notifyDataSetChanged()
             }
         }
-        
+
         // 신고 요청 이벤트
         buttonReport.setOnClickListener {
-        
         }
 
         // workManager 종료 버튼
@@ -200,7 +198,7 @@ class MapFragment :
         }
         mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
-    
+
     private fun initAdapter() {
         mapLetterAdapter = MapLetterAdapter(mapViewModel = mapViewModel).apply {
             itemClickListener = object : MapLetterAdapter.ItemClickListener {
@@ -214,7 +212,7 @@ class MapFragment :
                             mapViewModel.makeGoalLocataion()
                             // 선택된 편지
                             selectLetter = uncheckLetterDto
-                            
+
                             // 현재 위치와 마커위치를 계산
                             calculateDistance()
                             // 마커 포지션
@@ -284,7 +282,10 @@ class MapFragment :
             mapViewModel.walkDistance.collectLatest {
                 mapViewModel.dist = distanceIntToString(it.toInt())
                 if (mapViewModel.isStartWalk) {
-                    binding.textviewDistance.text = mapViewModel.dist
+                    binding.apply {
+                        textviewDistance.text = "이동 거리: ${distanceIntToString(walkDist.toInt())}"
+                        textviewTime.text = "이동 시간: ${timeIntToString(walkTime)}"
+                    }
                 }
             }
         }
@@ -332,7 +333,7 @@ class MapFragment :
             LocationServices.getFusedLocationProviderClient(mainActivity) // gps 자동으로 받아오기
         setUpdateLocationListner() // 내위치를 가져오는 코드
 
-        rewriteMap() // 다시 그려야 하는 경로가 있다면 다시 그리기
+        if (mapViewModel.isStartWalk) rewriteMap() // 다시 그려야 하는 경로가 있다면 다시 그리기
     }
 
     // 다시 그려야 하는 경로가 있다면 다시 그리기
@@ -491,6 +492,7 @@ class MapFragment :
     // WorkManager
     // 산책 종료
     private fun stopWalk() {
+        Log.d(TAG, "stopWalk: 백그라운드 종료")
         mapViewModel.isStartWalk = false
         mainActivity.showToast("편지 찾기를 종료합니다.")
         workManager.cancelAllWork() // 백그라운드 작업 종료

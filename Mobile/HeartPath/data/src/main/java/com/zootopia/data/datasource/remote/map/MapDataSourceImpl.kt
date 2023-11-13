@@ -1,6 +1,7 @@
 package com.zootopia.data.datasource.remote.map
 
 import android.util.Log
+import com.zootopia.data.model.common.MessageResponse
 import com.zootopia.data.model.letter.response.UncheckedLetterResponse
 import com.zootopia.data.model.map.request.TmapWalkRoadRequest
 import com.zootopia.data.model.map.response.navermap.MapDirectionResponse
@@ -15,7 +16,7 @@ private const val TAG = "MapDataSourceImpl_HP"
 class MapDataSourceImpl(
     private val naverService: NaverService,
     private val tmapService: TmapService,
-    
+
     private val businessService: BusinessService,
 ) : MapDataSource {
     /**
@@ -34,11 +35,11 @@ class MapDataSourceImpl(
                 goal,
                 option,
                 apiKeyId,
-                apiKey
+                apiKey,
             )
         }
     }
-    
+
     /**
      * tmap 길찾기 (도보)
      */
@@ -50,19 +51,28 @@ class MapDataSourceImpl(
             Log.d(TAG, "requestTmapWalkRoad: 데이터소스에서 티맵 길 요청!!!!!")
             tmapService.getPedestrianRoute(
                 requestData = tmapWalkRoadRequest,
-                appKey = appKey
+                appKey = appKey,
             ).apply {
                 Log.d(TAG, "requestTmapWalkRoad: $this")
             }
         }
     }
-    
+
     /**
      * 미확인 편지 리스트 수신
      */
     override suspend fun getUncheckedLetter(): UncheckedLetterResponse {
         return handleApi {
             businessService.getUncheckedLetter()
+        }
+    }
+
+    /**
+     * 편지 줍기
+     */
+    override suspend fun getPickUpLetter(letter_id: Int): MessageResponse {
+        return handleApi {
+            businessService.getPickUpLetter(letter_id = letter_id)
         }
     }
 }

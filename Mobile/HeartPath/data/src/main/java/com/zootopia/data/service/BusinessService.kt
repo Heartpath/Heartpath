@@ -123,7 +123,7 @@ interface BusinessService {
     suspend fun postTypingLetter(
         @Part("letterTextReqDto") postTypingLetterRequest: PostTypingLetterRequest,
         @Part content: MultipartBody.Part,
-        @Part files: List<MultipartBody.Part>?
+        @Part files: List<MultipartBody.Part>?,
     ): Response<BusinessResponse>
 
     // 토큰 재발급
@@ -135,7 +135,7 @@ interface BusinessService {
     suspend fun searchUser(
         @Query("id") id: String,
         @Query("limit") limit: Int,
-        @Query("checkFriends") checkFriends: Boolean
+        @Query("checkFriends") checkFriends: Boolean,
     ): Response<SearchUserResponse>
 
     // 캐릭터 도감 목록 조회
@@ -145,7 +145,7 @@ interface BusinessService {
     // 편지 상세 보기
     @GET("letter/{letter_id}")
     suspend fun getLetter(
-        @Path("letter_id") letterId: Int
+        @Path("letter_id") letterId: Int,
     ): Response<ReceivedLetterDetailResponse>
 
     // 상점 캐릭터 리스트 조회
@@ -162,18 +162,14 @@ interface BusinessService {
 
     @POST("/store/letterpaper/buy")
     suspend fun buyStoreLetterPaper(@Body buyStoreLetterPaperRequest: BuyStoreLetterPaperRequest): Response<BuyStoreLetterPaperResponse>
-    
+
     // 미확인 편지 리스트 수신
     @GET("/letter/unchecked")
     suspend fun getUncheckedLetter(): Response<UncheckedLetterResponse>
-    
+
     // 편지 place 읽음 처리 == (AR로 찾은 편지 요청)
     @GET("/letter/pickup/{letter_id}")
-    suspend fun getReadLetter(
+    suspend fun getPickUpLetter(
         @Path("letter_id") letter_id: Int,
-    ): Response<CommandResponse>
-    
+    ): Response<MessageResponse>
 }
-
-
-
