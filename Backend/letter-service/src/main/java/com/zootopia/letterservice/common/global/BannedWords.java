@@ -61,7 +61,7 @@ public class BannedWords {
             "vote.php", "onmouse", "onkeyup", "newsnack", "onkeydown", "〈", "시바라"};
 
     public boolean isBannedWords(String ext) {
-        String[] words = ext.split("[\\p{Z}?;!]]+"); // 정규 표현식, 공백(tab, space 등) & "?!;" 이 나오면 split
+        String[] words = ext.split("[\\p{Z}?;!]+"); // 정규 표현식, 공백(tab, space 등) & "?!;" 이 나오면 split
 
         for (String word : words) {
             if (Arrays.asList(stt).contains(word.toLowerCase()))
