@@ -185,6 +185,7 @@ public class StoreServiceImpl implements StoreService {
                         .description(crowTit.get().getDescription())
                         .imagePath(crowTit.get().getImagePath())
                         .isOwned(true)
+                        .isMain(crowTitBook.getIsMain())
                         .build();
                 result.add(crowTitResDto);
             }
@@ -200,9 +201,11 @@ public class StoreServiceImpl implements StoreService {
 
         for (CrowTit crowTit:crowTitList){
             boolean isOwned = false;
+            boolean isMain = false;
             for (CrowTitBook crowTitBook:crowTitBookList){
                 if (crowTit.getId()==crowTitBook.getCrowTitId()){
                     isOwned=true;
+                    isMain = crowTitBook.getIsMain();
                     break;
                 }
             }
@@ -213,6 +216,7 @@ public class StoreServiceImpl implements StoreService {
                     .description(crowTit.getDescription())
                     .imagePath(crowTit.getImagePath())
                     .isOwned(isOwned)
+                    .isMain(isMain)
                     .build();
             result.add(crowTitResDto);
         }

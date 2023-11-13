@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/api")
 public class ApiController {
 
-    private final MemberService memberService;
     private final ApiService apiService;
 
     @PostMapping("/default/{memberId}")
