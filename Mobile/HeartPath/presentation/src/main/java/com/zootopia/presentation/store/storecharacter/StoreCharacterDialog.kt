@@ -65,14 +65,24 @@ class StoreCharacterDialog(context: Context, private val storeCharacterDto: Stor
         }
     }
 
-    private fun initData() = with(binding){
+    private fun initData() = with(binding) {
         textviewStoreCharacterName.text = storeCharacterDto.characterName
         textviewStoreCharacterDescription.text = storeCharacterDto.description
-        if(storeCharacterDto.isOwned){
-            buttonBuy.visibility = View.INVISIBLE
-        }else{
+        val point = storeViewModel.userInfo.value.point
+        if (storeCharacterDto.isOwned) { //이미 보유한 경우
+            buttonBuy.visibility = View.GONE
+            textviewCantBuy.visibility = View.GONE
+            textviewAlreadyPurchased.visibility = View.VISIBLE
+        } else if (point - storeCharacterDto.price < 0) { //구매 포인트 부족
+            buttonBuy.visibility = View.GONE
+            textviewCantBuy.visibility = View.VISIBLE
+            textviewAlreadyPurchased.visibility = View.GONE
+        } else { //구매가능
             buttonBuy.visibility = View.VISIBLE
+            textviewCantBuy.visibility = View.GONE
+            textviewAlreadyPurchased.visibility = View.GONE
         }
+
         Glide.with(binding.root).load(storeCharacterDto.imagePath).into(binding.imageviewStoreBird)
     }
 

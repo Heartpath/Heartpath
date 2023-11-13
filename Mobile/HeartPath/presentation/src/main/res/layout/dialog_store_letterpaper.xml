@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/custom_round_dialog_view"
     android:orientation="vertical"
     android:paddingHorizontal="@dimen/_20sdp">
@@ -20,6 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/_10sdp"
         android:layout_weight="1"
         android:orientation="horizontal">
 
@@ -28,23 +29,25 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="10">
+
             <ImageView
                 android:id="@+id/imageview_store_letterpaper"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="@dimen/_4sdp"
+                android:scaleType="fitCenter"
                 android:src="@drawable/image_letterpaper"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:padding="@dimen/_4sdp"
-                android:scaleType="fitCenter"
-                />
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -68,8 +71,8 @@
                 style="@style/DarkGray_10_Bold_NanumText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical"
                 android:layout_gravity="center"
+                android:scrollbars="vertical"
                 tools:text="description" />
         </LinearLayout>
     </LinearLayout>
@@ -80,9 +83,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/_20sdp"
         android:background="@drawable/custom_round_corner_primary_light_blue"
         android:paddingHorizontal="@dimen/_20sdp"
         android:paddingVertical="@dimen/_10sdp"
-        android:layout_marginBottom="@dimen/_20sdp"
         android:text="@string/store_buy" />
+
+    <TextView
+        android:id="@+id/textview_already_purchased"
+        style="@style/DustyGreen_14_ExtraBold_NanumText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:paddingHorizontal="@dimen/_20sdp"
+        android:paddingVertical="@dimen/_10sdp"
+        android:text="@string/store_already_purchased" />
+
+    <TextView
+        android:id="@+id/textview_cant_buy"
+        style="@style/AlertRed_14_ExtraBold_NanumText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:paddingHorizontal="@dimen/_20sdp"
+        android:paddingVertical="@dimen/_10sdp"
+        android:text="@string/store_cant_buy" />
 </LinearLayout>
