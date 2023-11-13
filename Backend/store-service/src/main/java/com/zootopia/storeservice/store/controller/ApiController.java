@@ -25,6 +25,7 @@ public class ApiController {
     public ResponseEntity<? extends BaseResponseBody> setDefaultCrowtit(@PathVariable String memberId){
 
         apiService.setDefaultCrowTit(memberId);
+        apiService.setDefaultLetterPaper(memberId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "기본 캐릭터 저장 성공"));
     }
