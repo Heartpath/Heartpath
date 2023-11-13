@@ -134,15 +134,15 @@ public class LetterController {
     })
     @GetMapping("/unplaced")
     public ResponseEntity<? extends BaseResponseBody> getUnsendLetters(@RequestHeader(value = "Authorization") String accessToken) {
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "미발송 편지 목록 조회 성공", letterService.getUnsendLetters(accessToken)));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "미발송 편지 목록 조회 성공", letterService.getNotPickupLetters(accessToken)));
     }
 
-    @Operation(summary = "열람한 수신 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
+    @Operation(summary = "주운 수신 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
                     examples = @ExampleObject(value = "{" +
                             " \"status\": 200," +
-                            " \"message\": \"열람한 편지 목록 조회 성공\"," +
+                            " \"message\": \"수신한 편지 중 가지고 온 편지 목록 반환\"," +
                             " \"data\": [" +
                             "       {" +
                             "           \"index\": 1," +
@@ -153,22 +153,23 @@ public class LetterController {
                             "           \"location\":[" +
                             "                           \"https://zootopia-s3.s3.ap-northeast-2.amazonaws.com/-/file.jpg\"" +
                                                     "]" +
+                            "           \"Read\": true" +
                             "       }" +
                             "   ]" +
                             "}")))
     })
     @GetMapping("/checked")
-    public ResponseEntity<? extends BaseResponseBody> getReadLetters(@RequestHeader(value = "Authorization") String accessToken) {
-        // accessToken으로 멤버 객체 찾기 → SendId가 해당 맴버인 것 중 isRead = true인 값들만 반환
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "열람한 편지 목록 조회 성공", letterService.getReadLetters(accessToken)));
+    public ResponseEntity<? extends BaseResponseBody> getPickupLetters(@RequestHeader(value = "Authorization") String accessToken) {
+        // accessToken으로 멤버 객체 찾기 → SendId가 해당 맴버인 것 중 isPickup = true인 값들만 반환
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "열람한 편지 목록 조회 성공", letterService.getPickupLetters(accessToken)));
     }
 
-    @Operation(summary = "미열람한 수신 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
+    @Operation(summary = "줍지 않은 수신 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
                     examples = @ExampleObject(value = "{" +
                             " \"status\": 200," +
-                            " \"message\": \"미열람한 편지 목록 조회 성공\"," +
+                            " \"message\": \"수신한 편지 중 가지러 가지 않은 편지 목록 반환\"," +
                             " \"data\": [" +
                             "       {" +
                             "           \"index\": 1," +
@@ -184,9 +185,9 @@ public class LetterController {
                             "}")))
     })
     @GetMapping("/unchecked")
-    public ResponseEntity<? extends BaseResponseBody> getUnReadLetters(@RequestHeader(value = "Authorization") String accessToken) {
-        // accessToken으로 멤버 객체 찾기 → SendId가 해당 맴버인 것 중 isRead = false인 값들만 반환
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "미열람한 편지 목록 조회 성공", letterService.getUnreadLetters(accessToken)));
+    public ResponseEntity<? extends BaseResponseBody> getNotPickupLetters(@RequestHeader(value = "Authorization") String accessToken) {
+        // accessToken으로 멤버 객체 찾기 → SendId가 해당 맴버인 것 중 isPickup = false인 값들만 반환
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "미열람한 편지 목록 조회 성공", letterService.getNotPickupLetters(accessToken)));
     }
 
     @Operation(summary = "편지 상세조회", description = "Authorization : Bearer {accessToken}, 필수")
