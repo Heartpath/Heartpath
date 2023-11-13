@@ -388,7 +388,7 @@ public class LetterServiceImpl implements LetterService {
         return res.getData();
     }
 
-    public void updateIsPickUp(String accessToken, Long letter_id) {
+    public void updateIsPickup(String accessToken, Long letter_id) {
         UserDetailResDto user = accessTokenToMember(accessToken).getData();
 
         LetterMySQL letterMySQL = letterJpaRepository.findById(letter_id).orElseThrow(() -> {
