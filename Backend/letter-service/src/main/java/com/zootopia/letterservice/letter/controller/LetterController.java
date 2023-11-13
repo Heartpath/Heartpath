@@ -219,4 +219,15 @@ public class LetterController {
                                                                 @RequestHeader(value = "Authorization") String accessToken) {
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "편지 상세 조회 성공", letterService.getLetter(accessToken, letter_id)));
     }
+
+    @Operation(summary = "FCM 테스트", description = "Authorization : Bearer {accessToken}, 필수")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description =  "CREATED", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{\n \"status\": 200,\n \"message\": \"FCM 테스트 성공\"\n}")))
+    })
+    @GetMapping("/test")
+    public ResponseEntity<? extends BaseResponseBody> FCMtest(@RequestHeader(value = "Authrorization") String accessToken) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "FCM 테스트 성공"));
+    }
 }
