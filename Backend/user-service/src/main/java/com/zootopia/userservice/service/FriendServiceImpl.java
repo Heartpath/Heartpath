@@ -23,7 +23,7 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public List<FriendInfoDTO> getFriendInfoList(String memberID) {
-        return friendMapper.getFriendInfoList(memberID);
+        return friendMapper.getBlockOffOrFriendInfoList(memberID, 0);
     }
 
     @Override
@@ -94,6 +94,6 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public List<FriendInfoDTO> getBlockList(String memberID) {
-        return friendMapper.getBlockOffFriendList(memberID);
+        return friendMapper.getBlockOffOrFriendInfoList(memberID, 1);
     }
 }
