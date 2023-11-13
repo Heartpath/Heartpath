@@ -13,14 +13,14 @@ public class FCMMessageDto {
     @AllArgsConstructor
     @Getter
     public static class Message{
-        private Data data;
+        private Notification notification;
         private String token;
     }
 
     @Builder
     @AllArgsConstructor
     @Getter
-    public static class Data{
+    public static class Notification{
         private String title;
         private String body;
     }
