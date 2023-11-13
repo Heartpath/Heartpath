@@ -74,4 +74,15 @@
                 tools:text="description" />
         </LinearLayout>
     </LinearLayout>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_change_main_character"
+        style="@style/DarkGray_14_ExtraBold_NanumText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/custom_round_corner_primary_light_blue"
+        android:paddingHorizontal="@dimen/_20sdp"
+        android:paddingVertical="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:text="@string/character_encyclopedia_set_main_character" />
 </LinearLayout>

@@ -101,6 +101,8 @@
 
     <!-- character encyclopedia -->
     <string name="character_encyclopedia_go_store">상점</string>
+    <string name="character_encyclopedia_set_main_character">대표 캐릭터로 설정</string>
+    <string name="character_encyclopedia_change_success">변경 완료!</string>
 
     <!-- store -->
     <string name="store_character">캐릭터</string>
