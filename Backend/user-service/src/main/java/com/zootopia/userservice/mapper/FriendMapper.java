@@ -3,6 +3,7 @@ package com.zootopia.userservice.mapper;
 import com.zootopia.userservice.dto.FriendInfoDTO;
 import com.zootopia.userservice.dto.FriendShipDTO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -14,5 +15,7 @@ public interface FriendMapper {
 
     List<FriendInfoDTO> getFriendInfoList(String memberID);
 
-    int addFriend(String from, String to);
+    int addFriend(@Param(value = "from") String from, @Param(value = "to") String to);
+
+    int blockOffFriend(@Param(value = "from") String from, @Param(value = "to") String to);
 }

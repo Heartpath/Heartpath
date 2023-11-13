@@ -69,10 +69,10 @@ public class FriendController {
         return ResponseEntity.status(200).body(baseResponse);
     }
 
-    @Operation(summary = "친구 추가 API, <b>예외가 발생할 경우 모두 ErrorCode 400입니다!</b>")
+    @Operation(summary = "친구 추가 API, 예외가 발생할 경우 모두 ErrorCode 400입니다!")
     @ApiResponses(value = {
             @ApiResponse(
-                    responseCode = "400", description = "존재하지 않은 유저에게 친구 추가 할 경우",
+                    responseCode = "400", description = "자기 자신에게 친구 추가 할 경우",
                     content = @Content(
                             mediaType = "application/json",
                             examples = @ExampleObject(value = "{\n" +
@@ -120,6 +120,49 @@ public class FriendController {
     public ResponseEntity<BaseResponse> addFriend(@PathVariable(name = "opponentID") String opponentID) {
 
         BaseResponse baseResponse = friendService.addFriend(memberID, opponentID);
+        return ResponseEntity.status(200).body(baseResponse);
+    }
+
+    @Operation(summary = "친구 차단 API, 예외가 발생할 경우 모두 ErrorCode 400입니다!")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "400", description = "자기 자신을 차단할 경우",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "    \"status\": 1007,\n" +
+                                    "    \"message\": \"자기 자신을 차단할 수 없습니다.\",\n" +
+                                    "    \"httpStatus\": \"400 BAD_REQUEST\"\n" +
+                                    "}")
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401", description = "존재하지 않은 유저를 차단할 경우",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "    \"status\": 1008,\n" +
+                                    "    \"message\": \"존재하지 않은 유저를 차단 할 수 없습니다.\",\n" +
+                                    "    \"httpStatus\": \"400 BAD_REQUEST\"\n" +
+                                    "}")
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "200", description = "친구 차단 완료",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "    \"status\": 200,\n" +
+                                    "    \"message\": \"ㅇㅇ 유저를 차단했습니다.\",\n" +
+                                    "    \"data\": null\n" +
+                                    "}")
+                    )
+            )
+    })
+    @PutMapping("/friend/{opponentID}")
+    public ResponseEntity<BaseResponse> blockFriend(@PathVariable(name = "opponentID") String opponentID) {
+
+        BaseResponse baseResponse = friendService.blockOffFriend(memberID, opponentID);
         return ResponseEntity.status(200).body(baseResponse);
     }
 }
