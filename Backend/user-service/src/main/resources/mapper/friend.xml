@@ -40,4 +40,14 @@
             IS_BLOCKED = 1;
     </update>
 
+    <select id="getBlockOffFriendList" parameterType="String" resultType="FriendInfoDTO">
+        SELECT m.MEMBER_ID          AS `memberID`,
+               m.NICKNAME           AS `nickname`,
+               m.PROFILE_IMAGE_PATH AS `profileImagePath`
+        FROM `MEMBER` m
+                 LEFT JOIN FRIEND f ON m.MEMBER_ID = f.TO_MEMBER_ID
+        WHERE f.FROM_MEMBER_ID = #{memberID}
+          AND f.IS_BLOCKED;
+    </select>
+
 </mapper>
