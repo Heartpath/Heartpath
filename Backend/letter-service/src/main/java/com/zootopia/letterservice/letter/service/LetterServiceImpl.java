@@ -264,16 +264,17 @@ public class LetterServiceImpl implements LetterService {
         return letters;
     }
 
+    // isPickup(true) & isRead(상관 x)
     @Override
     @Transactional
-    public List<LetterReceivedResDto> getReadLetters(String accessToken) {
+    public List<LetterNotPickUpResDto> getPickupLetters(String accessToken) {
         String userId = accessTokenToMember(accessToken).getData().getMemberID();
 
-        List<LetterReceivedResDto> letters = letterJpaRepository.findByReceiverIdAndIsRead(userId, true)
+        List<LetterNotPickUpResDto> letters = letterJpaRepository.findByReceiverIdAndIsPickup(userId, true)
                 .stream()
                 .map(letterMySQL -> {
                     String senderNickname = findByUserId(letterMySQL.getSenderId()).getNickname();
-                    return new LetterReceivedResDto(letterMySQL, senderNickname);
+                    return new LetterNotPickUpResDto(letterMySQL, senderNickname);
                 })
                 .collect(Collectors.toList());
         return letters;
@@ -281,14 +282,14 @@ public class LetterServiceImpl implements LetterService {
 
     @Override
     @Transactional
-    public List<LetterReceivedResDto> getUnreadLetters(String accessToken) {
+    public List<LetterNotPickUpResDto> getNotPickupLetters(String accessToken) {
         String userId = accessTokenToMember(accessToken).getData().getMemberID();
 
-        List<LetterReceivedResDto> letters = letterJpaRepository.findByReceiverIdAndIsRead(userId, false)
+        List<LetterNotPickUpResDto> letters = letterJpaRepository.findByReceiverIdAndIsPickup(userId, false)
                 .stream()
                 .map(letterMySQL -> {
                     String senderNickname = findByUserId(letterMySQL.getSenderId()).getNickname();
-                    return new LetterReceivedResDto(letterMySQL, senderNickname);
+                    return new LetterNotPickUpResDto(letterMySQL, senderNickname);
                 })
                 .collect(Collectors.toList());
         return letters;
