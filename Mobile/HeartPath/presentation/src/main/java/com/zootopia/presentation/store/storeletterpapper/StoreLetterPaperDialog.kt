@@ -72,11 +72,21 @@ class StoreLetterPaperDialog(context: Context, private val storeItemLetterPaperD
     private fun initData() = with(binding){
         textviewStoreLetterpaperName.text = storeItemLetterPaperDto.letterName
         textviewStoreLetterpaperDescription.text = storeItemLetterPaperDto.description
-        if(storeItemLetterPaperDto.isOwned){
-            buttonBuy.visibility = View.INVISIBLE
-        }else{
+        val point = storeViewModel.userInfo.value.point
+        if(storeItemLetterPaperDto.isOwned) { //이미 보유한 경우
+            buttonBuy.visibility = View.GONE
+            textviewCantBuy.visibility = View.GONE
+            textviewAlreadyPurchased.visibility = View.VISIBLE
+        } else if (point - storeItemLetterPaperDto.price < 0) { //구매 포인트 부족
+            buttonBuy.visibility = View.GONE
+            textviewCantBuy.visibility = View.VISIBLE
+            textviewAlreadyPurchased.visibility = View.GONE
+        } else { //구매가능
             buttonBuy.visibility = View.VISIBLE
+            textviewCantBuy.visibility = View.GONE
+            textviewAlreadyPurchased.visibility = View.GONE
         }
+
         Glide.with(binding.root).load(storeItemLetterPaperDto.imagePath)
             .transform(CenterInside(), RoundedCorners(20))
             .into(binding.imageviewStoreLetterpaper)

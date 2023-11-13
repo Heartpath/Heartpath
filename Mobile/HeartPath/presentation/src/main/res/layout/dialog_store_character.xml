@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="1"
+        android:layout_marginBottom="@dimen/_10sdp"
         android:orientation="horizontal">
 
 
@@ -85,4 +86,24 @@
         android:paddingVertical="@dimen/_10sdp"
         android:layout_marginBottom="@dimen/_20sdp"
         android:text="@string/store_buy" />
+    <TextView
+        android:id="@+id/textview_already_purchased"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/store_already_purchased"
+        android:layout_gravity="center"
+        android:paddingHorizontal="@dimen/_20sdp"
+        android:paddingVertical="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_20sdp"
+        style="@style/DustyGreen_14_ExtraBold_NanumText"/>
+    <TextView
+        android:id="@+id/textview_cant_buy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/store_cant_buy"
+        android:layout_gravity="center"
+        android:paddingHorizontal="@dimen/_20sdp"
+        android:paddingVertical="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_20sdp"
+        style="@style/AlertRed_14_ExtraBold_NanumText"/>
 </LinearLayout>
