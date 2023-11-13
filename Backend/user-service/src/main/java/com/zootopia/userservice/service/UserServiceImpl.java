@@ -117,6 +117,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean unregisterUser(String memberID) {
+
+        boolean res;
+        Optional<User> findMember = userRepository.findByMemberID(memberID);
+
+        if (findMember.isEmpty()) {
+            res = false;
+        } else {
+            User user = findMember.get();
+            user.setStatus(false);
+
+            userRepository.save(user);
+
+            res = true;
+        }
+
+        return res;
+    }
+
+    @Override
     public MypageDTO loadUserInfo(String memberID) {
         MypageDTO userInfoDTO = userMapper.readUserInfo(memberID);
         return userInfoDTO;

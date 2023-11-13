@@ -18,6 +18,8 @@ public interface UserService {
 
     HashMap<String, String> registerUser(UserRegisterDTO userRegisterDTO);
 
+    boolean unregisterUser(String memberID);
+
     String reissueAccessToken(String refreshToken) throws JwtException;
 
     List<UserSearchDTO> searchUser(String query, int limit, String memberID, boolean checkFriends);

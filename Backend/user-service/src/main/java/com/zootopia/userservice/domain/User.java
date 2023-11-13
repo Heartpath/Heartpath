@@ -56,4 +56,8 @@ public class User {
         if (profileImagePath != null)
             this.profileImagePath = profileImagePath;
     }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
 }
