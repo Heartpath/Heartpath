@@ -3,9 +3,11 @@ package com.zootopia.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zootopia.domain.usecase.letter.received.TestFcmUseCase
 import com.zootopia.domain.usecase.preference.GetAccessTokenUseCase
 import com.zootopia.domain.usecase.preference.GetPermissionRejectedUseCase
 import com.zootopia.domain.usecase.preference.SetPermissionRejectedUseCase
+import com.zootopia.presentation.readletter.ReadLetterViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +26,7 @@ class MainViewModel @Inject constructor(
     private val setPermissionRejectedUseCase: SetPermissionRejectedUseCase,
     private val getAccessTokenUseCase: GetAccessTokenUseCase,
 
-) : ViewModel() {
+    ) : ViewModel() {
     
     private var _isShowPermissionDialog: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isShowPermissionDialog: StateFlow<Boolean>
@@ -78,4 +80,5 @@ class MainViewModel @Inject constructor(
     fun getAccessToken() = viewModelScope.launch {
         _accessToken.emit(getAccessTokenUseCase.invoke().first())
     }
+
 }
