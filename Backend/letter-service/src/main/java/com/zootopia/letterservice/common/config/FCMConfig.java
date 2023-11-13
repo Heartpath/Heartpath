@@ -12,10 +12,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+
 @Configuration
 public class FCMConfig {
     @Bean
     FirebaseMessaging firebaseMessaging() throws IOException {
+
         ClassPathResource resource = new ClassPathResource("firebase/heartpath-adminsdk.json");
 
         InputStream refreshToken = resource.getInputStream();
@@ -23,13 +25,13 @@ public class FCMConfig {
         FirebaseApp firebaseApp = null;
         List<FirebaseApp> firebaseAppList = FirebaseApp.getApps();
 
-        if (firebaseAppList != null && !firebaseAppList.isEmpty()) {
-            for (FirebaseApp app : firebaseAppList) {
+        if(firebaseAppList != null && !firebaseAppList.isEmpty()) {
+            for (FirebaseApp app: firebaseAppList) {
                 if (app.getName().equals(FirebaseApp.DEFAULT_APP_NAME)) {
                     firebaseApp = app;
                 }
             }
-        } else {
+        } else{
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(refreshToken))
                     .build();
