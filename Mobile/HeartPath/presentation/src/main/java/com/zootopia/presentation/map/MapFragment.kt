@@ -154,17 +154,17 @@ class MapFragment :
             Log.d(TAG, "initClickEvent: 신고버튼 클릭")
             mapViewModel.apply {
                 isReport = !isReport
-                uncheckedLetterList.map { UncheckLetterDto ->
-                    UncheckLetterDto.isSelected = !UncheckLetterDto.isSelected
-                }
+                uncheckedLetterList.map {it.isSelected = false}
+//                uncheckedLetterList.map { UncheckLetterDto ->
+//                    UncheckLetterDto.isSelected = !UncheckLetterDto.isSelected
+//                }
                 if (isReport) {
                     buttonReport.visibility = View.VISIBLE
                 } else {
                     buttonReport.visibility = View.GONE
                 }
+                mapLetterAdapter.notifyDataSetChanged()
             }
-            initAdapter()
-            initData()
         }
         
         // 신고 요청 이벤트
@@ -237,6 +237,13 @@ class MapFragment :
 
                 override fun reportClick(view: View, position: Int) {
                     Log.d(TAG, "itemClick: 받은 편지 신고버튼 클릭됨")
+                    mapViewModel.apply {
+                        uncheckedLetterList.map { it.isSelected = false }
+                        uncheckedLetterList[position].isSelected = true
+                    }
+                    // todo 수정 필요
+                    mapLetterAdapter.submitList(mapViewModel.uncheckedLetterList)
+                    notifyDataSetChanged()
                 }
             }
         }
