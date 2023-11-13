@@ -41,9 +41,23 @@ class ReadLetterFragment : BaseFragment<FragmentReadLetterBinding>(
     private fun initView() = with(binding) {
         // toolbar 설정
         toolbarHeartpathReadLetter.apply {
-            textviewCurrentPageTitle.text = getString(R.string.toolbar_read_letter_title)
+            textviewCurrentPageTitle.text =  getString(R.string.toolbar_read_letter_title)
             imageviewBackButton.setOnClickListener {
                 findNavController().popBackStack()
+            }
+            lifecycleScope.launch {
+                readLetterViewModel.imageCnt.collect {
+                    if(it>0) {
+                        imageviewSettingIcon.apply {
+                            setImageResource(R.drawable.icon_image_info)
+                            setOnClickListener {
+                                ReadLetterInfoDialog().show(childFragmentManager, TAG)
+                            }
+                            this.requestLayout()
+                            visibility = View.VISIBLE
+                        }
+                    }
+                }
             }
         }
         // floating buton 조건에 따라 visibility 설정

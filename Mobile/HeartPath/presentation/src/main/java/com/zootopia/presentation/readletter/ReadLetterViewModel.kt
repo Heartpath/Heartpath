@@ -31,6 +31,9 @@ class ReadLetterViewModel @Inject constructor(
     private val _letterList = MutableSharedFlow<List<String>>()
     var letterList = _letterList.asSharedFlow()
 
+    private val _imageCnt = MutableStateFlow(0)
+    var imageCnt = _imageCnt.asStateFlow()
+
     fun setCheckFriendCnt() = viewModelScope.launch {
         _checkFriendCnt.value -= 1
     }
@@ -77,6 +80,7 @@ class ReadLetterViewModel @Inject constructor(
                 tmpList.addAll(files)
             }
             _letterList.emit(tmpList)
+            _imageCnt.emit(it.files.size)
         }
     }
 }

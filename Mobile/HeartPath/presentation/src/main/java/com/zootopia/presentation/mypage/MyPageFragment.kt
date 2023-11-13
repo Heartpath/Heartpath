@@ -65,7 +65,7 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(
         }
         lifecycleScope.launch {
             myPageViewModel.userInfo.collect { user ->
-                textviewProfileId.text = user.memberID
+                textviewProfileId.text = root.context.getString(R.string.default_id, user.memberID)
                 textviewProfileName.text = user.nickname
                 textviewPoint.text = makeComma(user.point)
                 if(user.profileImagePath == "") { // 이미지 빈 값일 때
@@ -121,6 +121,7 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(
             myPageViewModel.friendListInfo.collect { value ->
                 myFriendList.clear()
                 myFriendList.addAll(value)
+                myPageFriendAdapter.notifyDataSetChanged()
             }
         }
     }
