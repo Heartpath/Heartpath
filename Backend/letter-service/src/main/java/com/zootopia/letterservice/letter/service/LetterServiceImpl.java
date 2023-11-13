@@ -135,7 +135,7 @@ public class LetterServiceImpl implements LetterService {
         // 편지 작성 유저와 요청을 보낸 유저가 같은 유저인지 확인
         UserDetailResDto user = accessTokenToMember(accessToken).getData();
         if (!letterMongo.getSenderId().equals(user.getMemberID())) {
-            throw new BadRequestException(ErrorCode.NOT_EQUAL_USER);
+            throw new BadRequestException(ErrorCode.NOT_EQUAL_SENDER);
         }
 
         Double lat = letterPlaceReqDto.getLat();
@@ -386,6 +386,20 @@ public class LetterServiceImpl implements LetterService {
                 .block();
 
         return res.getData();
+    }
+
+    public void updateIsPickUp(String accessToken, Long letter_id) {
+        UserDetailResDto user = accessTokenToMember(accessToken).getData();
+
+        LetterMySQL letterMySQL = letterJpaRepository.findById(letter_id).orElseThrow(() -> {
+            throw new BadRequestException(ErrorCode.NOT_EXISTS_LETTER);
+        });
+
+        if (!letterMySQL.getReceiverId().equals(user.getMemberID())) {
+            throw new BadRequestException(ErrorCode.NOT_EQUAL_RECEIVER);
+        }
+
+        letterJpaRepository.setLetterIsPickupTrue(letter_id);
     }
 
     public void test(String accessToken) {
