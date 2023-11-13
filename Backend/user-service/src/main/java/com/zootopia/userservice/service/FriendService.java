@@ -10,4 +10,6 @@ public interface FriendService {
     List<FriendInfoDTO> getFriendInfoList(String memberID);
 
     BaseResponse addFriend(String memberID, String opponentID);
+
+    BaseResponse blockOffFriend(String memberID, String opponentID);
 }
