@@ -3,8 +3,8 @@
     android:id="@+id/toolbar_heartpath"
     android:layout_width="match_parent"
     android:layout_height="@dimen/_48sdp"
-    android:background="@color/PrimaryLightBlue"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@color/PrimaryLightBlue">
+
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/linearlayout_toolbar"
             android:layout_width="match_parent"
