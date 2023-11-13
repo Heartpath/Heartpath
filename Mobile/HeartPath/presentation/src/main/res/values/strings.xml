@@ -101,4 +101,13 @@
 
     <!-- character encyclopedia -->
     <string name="character_encyclopedia_go_store">상점</string>
+
+    <!-- store -->
+    <string name="store_character">캐릭터</string>
+    <string name="store_letter_papper">편지지</string>
+    <string name="store_price">%d 우표</string>
+    <string name="store_buy">구매</string>
+    <string name="store_already_purchased">이미 구매하였습니다!</string>
+    <string name="store_cant_buy">우표가 모자라 구매 불가합니다!</string>
+    <string name="store_buy_success">구매 완료!</string>
 </resources>
