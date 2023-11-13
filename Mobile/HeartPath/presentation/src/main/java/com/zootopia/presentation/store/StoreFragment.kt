@@ -3,6 +3,7 @@ package com.zootopia.presentation.store
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -14,6 +15,7 @@ import com.zootopia.presentation.databinding.FragmentStoreBinding
 import com.zootopia.presentation.store.storecharacter.StoreCharacterFragment
 import com.zootopia.presentation.store.storeletterpapper.StoreLetterPaperFragment
 import com.zootopia.presentation.util.makeComma
+import com.zootopia.presentation.writeletter.addletterimage.AddLetterImageFragmentDirections
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -44,6 +46,18 @@ class StoreFragment : BaseFragment<FragmentStoreBinding>(
         lifecycleScope.launch {
             storeViewModel.userInfo.collectLatest {
                 textviewPoint.text = makeComma(it.point)
+            }
+        }
+        lifecycleScope.launch {
+            storeViewModel.isSendSuccess.collectLatest {
+                if (it) {
+                    storeViewModel.resetIsSendSuccess()
+                    Toast.makeText(
+                        mainActivity,
+                        R.string.store_buy_success,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
     }

@@ -26,6 +26,9 @@ class StoreViewModel @Inject constructor(
     private val buyStoreLetterPaperUseCase: BuyStoreLetterPaperUseCase
 ) : BaseViewModel() {
 
+    private val _isSendSuccess = MutableStateFlow<Boolean>(false)
+    var isSendSuccess: StateFlow<Boolean> = _isSendSuccess
+
     private val _userInfo = MutableStateFlow(UserInfoDto())
     var userInfo = _userInfo.asStateFlow()
 
@@ -81,6 +84,7 @@ class StoreViewModel @Inject constructor(
                 )
             },
             success = {
+                _isSendSuccess.value = true
                 getStoreCharacterList()
                 getUserInfo()
             }
@@ -95,10 +99,14 @@ class StoreViewModel @Inject constructor(
                 )
             },
             success = {
+                _isSendSuccess.value = true
                 getStoreLetterPaperList()
                 getUserInfo()
             }
         )
     }
 
+    fun resetIsSendSuccess() {
+        _isSendSuccess.value = false
+    }
 }

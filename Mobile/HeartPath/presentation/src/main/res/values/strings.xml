@@ -106,4 +106,5 @@
     <string name="store_buy">구매</string>
     <string name="store_already_purchased">이미 구매하였습니다!</string>
     <string name="store_cant_buy">우표가 모자라 구매 불가합니다!</string>
+    <string name="store_buy_success">구매 완료!</string>
 </resources>
