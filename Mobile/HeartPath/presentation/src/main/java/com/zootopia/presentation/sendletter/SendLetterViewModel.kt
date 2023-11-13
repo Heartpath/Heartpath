@@ -24,7 +24,7 @@ class SendLetterViewModel @Inject constructor(
     private val getUnplacedLetterUseCase: GetUnplacedLetterUseCase,
     private val requestLetterPlacedUseCase: RequestLetterPlacedUseCase,
 ) : BaseViewModel() {
-    
+
     // user posi
     var lastLatitude: Double = 0.0
     var lastLongitude: Double = 0.0
@@ -33,14 +33,14 @@ class SendLetterViewModel @Inject constructor(
         lastLatitude = latitude
         lastLongitude = longitude
     }
-    
+
     /**
      * 미발송 편지 얻기
      */
     private val _unplacedLetter = MutableSharedFlow<UnPlacedLetterListDto>()
     val unplacedLetter: SharedFlow<UnPlacedLetterListDto>
         get() = _unplacedLetter
-    
+
     fun getUnplacedLetter() {
         getApiResult(
             block = {
@@ -52,7 +52,7 @@ class SendLetterViewModel @Inject constructor(
             },
         )
     }
-    
+
     /**
      * 편지 전송
      */
@@ -79,7 +79,7 @@ class SendLetterViewModel @Inject constructor(
             },
         )
     }
-    
+
     /**
      * 화면 캡처 전처리
      */
@@ -87,9 +87,9 @@ class SendLetterViewModel @Inject constructor(
     val isSaveIamge: SharedFlow<Uri> = _isSaveImage
     private val _isRealPath = MutableSharedFlow<String>()
     val isRealPath: SharedFlow<String> = _isRealPath
-    
+
     suspend fun catchCapture(fragment: Fragment) {
-        val photoUriDeferred  = takePhoto(fragment = fragment)
+        val photoUriDeferred = takePhoto(fragment = fragment)
         val photoUri = photoUriDeferred.await()
 
         photoUri?.let {
@@ -99,7 +99,7 @@ class SendLetterViewModel @Inject constructor(
             )
         }
     }
-    
+
     suspend fun getRealPath(context: Context, uri: Uri) {
         getRealPathFromUri(context = context, contentUri = uri)?.let {
             _isRealPath.emit(it)

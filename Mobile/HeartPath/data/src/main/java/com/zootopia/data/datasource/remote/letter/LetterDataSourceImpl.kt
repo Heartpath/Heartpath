@@ -18,7 +18,7 @@ class LetterDataSourceImpl(
             businessService.getUnplacedLetter()
         }
     }
-    
+
     // 편지 배치
     override suspend fun requestLetterPlaced(
         files: MultipartBody.Part,

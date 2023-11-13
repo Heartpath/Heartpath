@@ -7,6 +7,7 @@ import com.zootopia.domain.model.letter.uncheckedletter.UncheckLetterDto
 import com.zootopia.domain.model.tmap.FeatureCollectionDto
 import com.zootopia.domain.model.tmap.RequestTmapWalkRoadDto
 import com.zootopia.domain.usecase.map.GetMapDirectionUseCase
+import com.zootopia.domain.usecase.map.GetPickUpLetterUseCase
 import com.zootopia.domain.usecase.map.GetUncheckedLetterUseCase
 import com.zootopia.domain.usecase.map.RequestTmapWalkRoadUseCase
 import com.zootopia.presentation.config.BaseViewModel
@@ -25,19 +26,19 @@ class MapViewModel @Inject constructor(
     private val getMapDirectionUseCase: GetMapDirectionUseCase,
     private val requestTmapWalkRoadUseCase: RequestTmapWalkRoadUseCase,
     private val uncheckedLetterUseCase: GetUncheckedLetterUseCase,
+    private val getPickUpLetterUseCase: GetPickUpLetterUseCase,
 ) : BaseViewModel() {
 
     // 편지 신고 삭제 신고 클릭 유무
     var isReport = false
-    
-    
+
     // 미확인 편지 리스트
-    var uncheckedLetterList : MutableList<UncheckLetterDto> = mutableListOf()
+    var uncheckedLetterList: MutableList<UncheckLetterDto> = mutableListOf()
 
     private val _mapLetterList = MutableSharedFlow<List<UncheckLetterDto>>()
     val mapLetterList: SharedFlow<List<UncheckLetterDto>>
         get() = _mapLetterList
-    
+
     fun getUncheckedLetterList() {
         getApiResult(
             block = {
@@ -46,11 +47,11 @@ class MapViewModel @Inject constructor(
             success = {
                 uncheckedLetterList = it.toMutableList()
                 _mapLetterList.emit(it)
-            }
+            },
         )
     }
     // 미확인 편지 리스트 END
-    
+
     // select Letter
     var selectLetter: UncheckLetterDto? = null
 
@@ -61,7 +62,7 @@ class MapViewModel @Inject constructor(
         lastLatitude = latitude
         lastLongitude = longitude
     }
-    
+
     // user: Location
     val lastLocation = Location("userProvider")
     fun makeUserLocataion() {
@@ -87,9 +88,9 @@ class MapViewModel @Inject constructor(
     private val _tmapWalkRoadInfo = MutableSharedFlow<FeatureCollectionDto>()
     val tmapWalkRoadInfo: SharedFlow<FeatureCollectionDto>
         get() = _tmapWalkRoadInfo.asSharedFlow()
-    
+
     var walkRoad: FeatureCollectionDto? = null
-    
+
     @OptIn(ExperimentalCoroutinesApi::class)
     fun resetTmapWalkRoadInfo() {
         _tmapWalkRoadInfo.resetReplayCache()
@@ -133,8 +134,23 @@ class MapViewModel @Inject constructor(
             _walkDistance.emit(dist.toDouble())
         }
     }
-    
+
     /**
-     * 편지 읽기 API
+     * 편지 pick up API
      */
+    private val _isPickUpLetter = MutableSharedFlow<String>()
+    val isPickUpLetter: SharedFlow<String> = _isPickUpLetter
+
+    fun getPickUpLetter(letter_id: Int) {
+        getApiResult(
+            block = {
+                getPickUpLetterUseCase.invoke(letter_id = letter_id)
+            },
+            success = {
+                Log.d(TAG, "getPickUpLetter: $it")
+                isStartWalk = false
+                _isPickUpLetter.emit(it)
+            },
+        )
+    }
 }

@@ -103,7 +103,6 @@ class ArCoreWriteFragment :
     }
 
     private fun initCollect() = with(sendLetterViewModel) {
-
         viewLifecycleOwner.lifecycleScope.launch {
             isSaveIamge.collectLatest {
                 getRealPath(context = mainActivity, uri = it)

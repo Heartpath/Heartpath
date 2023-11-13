@@ -21,9 +21,14 @@ interface MapRepository {
     suspend fun requestTmapWalkRoad(
         requestTmapWalkRoadDto: RequestTmapWalkRoadDto,
     ): FeatureCollectionDto
-    
+
     /**
      * 미확인 편지 리스트 수신
      */
     suspend fun getUncheckedLetter(): List<UncheckLetterDto>
+
+    /**
+     * 편지 줍기
+     */
+    suspend fun getPickUpLetter(letter_id: Int): String
 }

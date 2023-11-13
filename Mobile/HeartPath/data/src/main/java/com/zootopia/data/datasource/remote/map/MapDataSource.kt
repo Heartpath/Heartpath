@@ -1,5 +1,6 @@
 package com.zootopia.data.datasource.remote.map
 
+import com.zootopia.data.model.common.MessageResponse
 import com.zootopia.data.model.letter.response.UncheckedLetterResponse
 import com.zootopia.data.model.map.request.TmapWalkRoadRequest
 import com.zootopia.data.model.map.response.navermap.MapDirectionResponse
@@ -16,7 +17,7 @@ interface MapDataSource {
         apiKeyId: String,
         apiKey: String,
     ): MapDirectionResponse
-    
+
     /**
      * tmap 길찾기 (도보)
      */
@@ -24,9 +25,14 @@ interface MapDataSource {
         tmapWalkRoadRequest: TmapWalkRoadRequest,
         appKey: String,
     ): FeatureCollectionResponse
-    
+
     /**
      * 미확인 편지 리스트 수신
      */
     suspend fun getUncheckedLetter(): UncheckedLetterResponse
+
+    /**
+     * 편지 줍기
+     */
+    suspend fun getPickUpLetter(letter_id: Int): MessageResponse
 }
