@@ -274,7 +274,7 @@ public class LetterServiceImpl implements LetterService {
                 .stream()
                 .map(letterMySQL -> {
                     String senderNickname = findByUserId(letterMySQL.getSenderId()).getNickname();
-                    return new LetterPickUpResDto(letterMySQL, senderNickname, letterMySQL.isPickup());
+                    return new LetterPickUpResDto(letterMySQL, senderNickname, letterMySQL.isRead());
                 })
                 .collect(Collectors.toList());
         return letters;
