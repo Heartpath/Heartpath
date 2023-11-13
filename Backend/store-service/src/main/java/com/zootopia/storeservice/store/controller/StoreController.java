@@ -170,7 +170,8 @@ public class StoreController {
                             "           \"name\": \"일반 뱁새\"," +
                             "           \"price\": 100," +
                             "           \"imagePath\": \"url\"," +
-                            "           \"isowned\": \"true\"" +
+                            "           \"isowned\": \"true\"," +
+                            "           \"isMain\": \"true\"" +
                             "       }" +
                             "   ]" +
                             "}")))
@@ -198,7 +199,8 @@ public class StoreController {
                             "           \"name\": \"일반 뱁새\"," +
                             "           \"price\": 100," +
                             "           \"imagePath\": \"url\"," +
-                            "           \"isowned\": \"true\"" +
+                            "           \"isowned\": \"true\"," +
+                            "           \"isMain\": \"true\"" +
                             "       }" +
                             "   ]" +
                             "}")))
