@@ -44,7 +44,7 @@ class ReadLetterAddFriendDialog : DialogFragment() {
             }
             lifecycleScope.launch {
                 readLetterViewModel.readLetterResult.collect {letter ->
-                    textviewAddFriendWhoIsNotFriend.text = letter.sender + "님은 친구가 아닙니다."
+                    textviewAddFriendWhoIsNotFriend.text = view.context.getString(R.string.received_letter_title, letter.sender)
                 }
             }
         }
