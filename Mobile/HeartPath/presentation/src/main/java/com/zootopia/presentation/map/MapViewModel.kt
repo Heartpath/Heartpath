@@ -74,9 +74,6 @@ class MapViewModel @Inject constructor(
 
     // 길찾기 상태
     var isStartWalk = false
-    private val _isWorkManager = MutableSharedFlow<Boolean>()
-    val isWorkManager: SharedFlow<Boolean>
-        get() = _isWorkManager
 
     // Tmap
     private val _tmapWalkRoadInfo = MutableSharedFlow<FeatureCollectionDto>()
@@ -88,6 +85,7 @@ class MapViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     fun resetTmapWalkRoadInfo() {
         _tmapWalkRoadInfo.resetReplayCache()
+        walkRoad = null
     }
 
     fun requestTmapWalkRoad(
@@ -126,17 +124,5 @@ class MapViewModel @Inject constructor(
         viewModelScope.launch {
             _walkDistance.emit(dist.toDouble())
         }
-    }
-
-    // 임시 사용
-    fun test() {
-        getApiResult(
-            block = {
-                testUseCase.invoke()
-            },
-            success = {
-                Log.d(TAG, "test: $it")
-            },
-        )
     }
 }
