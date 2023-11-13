@@ -17,10 +17,10 @@ public class FCMService {
         try {
             Map<String, String> data = new HashMap<>();
             System.out.println("title: " + title);
-            System.out.println("body: " + body);
+            System.out.println("body : " + body);
             // FCM 데이터 입력
-            data.put("title :", title);
-            data.put("message :", body);
+            data.put("title", title);
+            data.put("message", body);
 
             Message message = Message.builder()
                     .putAllData(data)
