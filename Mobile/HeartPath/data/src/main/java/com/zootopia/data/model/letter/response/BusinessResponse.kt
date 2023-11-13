@@ -1,4 +1,4 @@
-package com.zootopia.data.model.business.response
+package com.zootopia.data.model.letter.response
 
 data class BusinessResponse (
     val status: String,

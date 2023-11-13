@@ -3,7 +3,8 @@ package com.zootopia.heartpath.di
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.zootopia.data.datasource.local.PreferenceDataSource
-import com.zootopia.data.intercepter.AuthInterceptor
+import com.zootopia.data.intercepter.RequestInterceptor
+import com.zootopia.data.intercepter.ResponseInterceptor
 import com.zootopia.data.service.BusinessService
 import com.zootopia.data.service.NaverService
 import com.zootopia.data.service.TmapService
@@ -30,9 +31,11 @@ object ServiceModule {
     @Singleton
     @Provides
     fun provideOkHttpClient(preferenceDataSource: PreferenceDataSource): OkHttpClient = OkHttpClient.Builder()
-        .readTimeout(20000, TimeUnit.MILLISECONDS)
-        .connectTimeout(20000, TimeUnit.MILLISECONDS)
-        .addInterceptor(AuthInterceptor(preferenceDataSource)) // TODO interceptor 추가 필요 (주석 해제)
+        .readTimeout(10000, TimeUnit.MILLISECONDS)
+        .connectTimeout(10000, TimeUnit.MILLISECONDS)
+//        .addInterceptor(AuthInterceptor(preferenceDataSource)) // TODO interceptor 추가 필요 (주석 해제)
+        .addInterceptor(ResponseInterceptor(preferenceDataSource))
+        .addInterceptor(RequestInterceptor(preferenceDataSource))
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
         .build()
 
