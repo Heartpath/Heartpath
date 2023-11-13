@@ -1,9 +1,6 @@
 package com.zootopia.storeservice.store.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -17,7 +14,7 @@ public class LetterPaper {
     @Id
     @Column(name = "LETTER_PAPER_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @Column(name = "NAME")
     private String name;
