@@ -267,14 +267,14 @@ public class LetterServiceImpl implements LetterService {
     // isPickup(true) & isRead(상관 x)
     @Override
     @Transactional
-    public List<LetterNotPickUpResDto> getPickupLetters(String accessToken) {
+    public List<LetterPickUpResDto> getPickupLetters(String accessToken) {
         String userId = accessTokenToMember(accessToken).getData().getMemberID();
 
-        List<LetterNotPickUpResDto> letters = letterJpaRepository.findByReceiverIdAndIsPickup(userId, true)
+        List<LetterPickUpResDto> letters = letterJpaRepository.findByReceiverIdAndIsPickup(userId, true)
                 .stream()
                 .map(letterMySQL -> {
                     String senderNickname = findByUserId(letterMySQL.getSenderId()).getNickname();
-                    return new LetterNotPickUpResDto(letterMySQL, senderNickname);
+                    return new LetterPickUpResDto(letterMySQL, senderNickname, letterMySQL.isRead());
                 })
                 .collect(Collectors.toList());
         return letters;
