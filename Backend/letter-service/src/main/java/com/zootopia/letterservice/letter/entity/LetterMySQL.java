@@ -29,8 +29,8 @@ public class LetterMySQL {
     @Column(name="CONTENT")
     private String content;
 
-    @Column(nullable = false, columnDefinition = "boolean default true", name = "IS_PLACE")
-    private boolean isPlace;
+    @Column(nullable = false, columnDefinition = "boolean default false", name = "IS_PICK_UP")
+    private boolean isPickup;
 
     @Column(nullable = false, columnDefinition = "boolean default false", name = "IS_READ")
     private boolean isRead;
@@ -71,7 +71,7 @@ public class LetterMySQL {
         this.type = type;
         this.lat = lat;
         this.lng = lng;
-        this.isPlace = true;
+        this.isPickup = false;
     }
 
 }

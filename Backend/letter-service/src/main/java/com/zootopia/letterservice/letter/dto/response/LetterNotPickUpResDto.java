@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
-public class LetterReceivedResDto {
+public class LetterNotPickUpResDto {
 
     private Long index;
     private String sender;
@@ -20,7 +20,7 @@ public class LetterReceivedResDto {
 
     private List<String> location;
 
-    public LetterReceivedResDto(LetterMySQL letter, String sender) {
+    public LetterNotPickUpResDto(LetterMySQL letter, String sender) {
         this.index = letter.getId();
         this.sender = sender;
         this.time = letter.getCreatedDate();
