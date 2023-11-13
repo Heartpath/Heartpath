@@ -135,6 +135,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         }
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        Log.d(TAG, "onNewIntent: 여기 호출되었어요")
+    }
+
     // 코틀린의 전역변수
     companion object {
         const val CAMERA_PERMISSION_REJECTED = android.Manifest.permission.CAMERA // 카메라

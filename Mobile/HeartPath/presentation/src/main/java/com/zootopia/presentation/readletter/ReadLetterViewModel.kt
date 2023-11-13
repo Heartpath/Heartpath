@@ -19,7 +19,7 @@ import javax.inject.Inject
 class ReadLetterViewModel @Inject constructor(
     private val addFriendUseCase: AddFriendUseCase,
     private val getLetterToReadUseCase: GetLetterToReadUseCase,
-    private val testFcmUseCase: TestFcmUseCase,
+
 ) : BaseViewModel() {
 
     private val _checkFriendCnt = MutableStateFlow(1)
@@ -87,16 +87,6 @@ class ReadLetterViewModel @Inject constructor(
         }
     }
 
-    fun testFcm() {
-        getApiResult(
-            block = {
-                testFcmUseCase.invoke()
-            },
-            success = {
-                Log.d(TAG, "testFcm: $it")
-            }
-        )
-    }
 
     companion object {
         private const val TAG = "ReadLetterViewModel_HP"

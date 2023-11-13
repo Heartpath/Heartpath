@@ -108,7 +108,6 @@ class ReadLetterFragment : BaseFragment<FragmentReadLetterBinding>(
 
     private fun initData() {
         readLetterViewModel.getReadLetter(args.letterId)
-        readLetterViewModel.testFcm()
     }
     private fun initCollect() {
         lifecycleScope.launch {
