@@ -52,7 +52,8 @@ class CharacterEncyclopediaFragment : BaseFragment<FragmentCharacterEncyclopedia
         characterEncyclopediaAdapter.itemClickListener =
             object : CharacterEncyclopediaAdapter.ItemClickListener {
                 override fun onItemClicked(character: CharacterDto) {
-                    TODO("Not yet implemented")
+                    val dialog = CharacterEncyclopediaDialog(binding.root.context, character)
+                    dialog.show(childFragmentManager, "characterEncyclopediaDialog")
                 }
             }
 
