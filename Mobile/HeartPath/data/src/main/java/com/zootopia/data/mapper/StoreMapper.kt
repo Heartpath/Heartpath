@@ -4,6 +4,7 @@ import com.zootopia.data.model.store.request.BuyStoreCharacterRequest
 import com.zootopia.data.model.store.request.BuyStoreLetterPaperRequest
 import com.zootopia.data.model.store.request.ChangeMainCharacterRequest
 import com.zootopia.data.model.store.response.CharacterEncyclopediaListResponse
+import com.zootopia.data.model.store.response.GetMainCharacterResponse
 import com.zootopia.data.model.store.response.StoreCharacterListResponse
 import com.zootopia.data.model.store.response.StoreItemLetterPaperListResponse
 import com.zootopia.domain.model.store.BuyStoreCharacterRequestDto
@@ -41,4 +42,8 @@ fun ChangeMainCharacterRequestDto.toData(): ChangeMainCharacterRequest{
     return ChangeMainCharacterRequest(
         characterId = characterId
     )
+}
+
+fun GetMainCharacterResponse.toDomain(): CharacterDto{
+    return data
 }
