@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zootopia.domain.model.user.FriendDto
+import com.zootopia.domain.model.user.SearchUserInfoDto
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
@@ -26,7 +27,7 @@ class SearchFriendFragment : BaseFragment<FragmentFriendSearchBinding>(
     private lateinit var mainActivity: MainActivity
     private lateinit var friendSearchAdapter: SearchFriendAdapter
     private val searchFriendViewModel: SearchFriendViewModel by activityViewModels()
-    private val searchedFriendList: MutableList<FriendDto> = mutableListOf()
+    private val searchedFriendList: MutableList<SearchUserInfoDto> = mutableListOf()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -75,6 +76,7 @@ class SearchFriendFragment : BaseFragment<FragmentFriendSearchBinding>(
                         searchFriendViewModel.setSearchIdValue(value = sequence.toString())
                         Log.d(TAG, "onTextChanged: ${sequence}")
                     }
+                    searchFriendViewModel.searchUser()
                 }
                 override fun afterTextChanged(p0: Editable?) {
                 }
@@ -113,7 +115,7 @@ class SearchFriendFragment : BaseFragment<FragmentFriendSearchBinding>(
             itemClickListener = object : SearchFriendAdapter.ItemClickListener {
                 override fun itemClick(view: View, position: Int) {
                     Log.d(TAG, "itemClick_fragment: $position")
-                    searchFriendViewModel.setAddingFriendId(friendId = searchedFriendList[position].memberId)   // 해당 친구 id 값 저장
+                    searchFriendViewModel.setAddingFriendId(friendId = searchedFriendList[position].memberID)   // 해당 친구 id 값 저장
                     SearchFriendAddFriendDialog(requireContext()).show(childFragmentManager, TAG)
                 }
             }
@@ -158,6 +160,7 @@ class SearchFriendFragment : BaseFragment<FragmentFriendSearchBinding>(
             searchFriendViewModel.searchedFriendInfoList.collect {result ->
                 searchedFriendList.clear()
                 searchedFriendList.addAll(result)
+                friendSearchAdapter.notifyDataSetChanged()
             }
         }
     }
