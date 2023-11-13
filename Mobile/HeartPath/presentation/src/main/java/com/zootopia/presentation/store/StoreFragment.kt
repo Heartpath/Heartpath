@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayout
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
@@ -36,6 +37,7 @@ class StoreFragment : BaseFragment<FragmentStoreBinding>(
         initTabLayout()
         initCollect()
         initData()
+        initView()
     }
 
     private fun initData(){
@@ -92,6 +94,16 @@ class StoreFragment : BaseFragment<FragmentStoreBinding>(
             }
         )
 
+    }
+
+    private fun initView() = with(binding) {
+        toolbarHeartpathStore.apply {
+            textviewCurrentPageTitle.text =
+                resources.getString(R.string.toolbar_store_title)
+            imageviewBackButton.setOnClickListener {
+                findNavController().popBackStack()
+            }
+        }
     }
 
 }

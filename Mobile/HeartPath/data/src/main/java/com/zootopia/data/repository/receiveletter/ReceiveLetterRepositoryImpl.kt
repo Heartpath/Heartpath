@@ -22,4 +22,10 @@ class ReceiveLetterRepositoryImpl(
         }
     }
 
+    override suspend fun testFCM(): String {
+        return getValueOrThrow2 {
+            receiveLetterDataSource.testFCM().toDomain()
+        }
+    }
+
 }
