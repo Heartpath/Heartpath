@@ -12,13 +12,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-
 @Configuration
 public class FCMConfig {
     @Bean
     FirebaseMessaging firebaseMessaging() throws IOException {
-
+        // 파이어베이스에서 발급한 json
         ClassPathResource resource = new ClassPathResource("firebase/heartpath-adminsdk.json");
+
 
         InputStream refreshToken = resource.getInputStream();
 
