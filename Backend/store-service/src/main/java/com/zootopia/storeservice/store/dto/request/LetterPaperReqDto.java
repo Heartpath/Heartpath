@@ -1,21 +1,21 @@
 package com.zootopia.storeservice.store.dto.request;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class LetterPaperReqDto {
-    private String name;
-    private Long price;
-    private String description;
-    private String imagePath;
 
-    @Builder
-    public LetterPaperReqDto(String name, Long price, String description, String imagePath) {
-        this.name = name;
-        this.price = price;
-        this.description = description;
-        this.imagePath = imagePath;
+    private int letterpaperId;
+
+    @JsonCreator
+    public LetterPaperReqDto(@JsonProperty("letterpaperId") int letterpaperId){
+        this.letterpaperId = letterpaperId;
     }
+
 }
