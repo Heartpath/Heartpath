@@ -6,12 +6,16 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.zootopia.domain.model.store.CharacterDto
 import com.zootopia.presentation.R
 import com.zootopia.presentation.databinding.DialogCharacterEncyclopediaBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class CharacterEncyclopediaDialog (context: Context, private val characterDto: CharacterDto) :
     DialogFragment() {
@@ -36,6 +40,7 @@ class CharacterEncyclopediaDialog (context: Context, private val characterDto: C
         super.onViewCreated(view, savedInstanceState)
         initListener()
         initData()
+        initCollecter()
     }
 
     override fun onResume() {
@@ -58,6 +63,9 @@ class CharacterEncyclopediaDialog (context: Context, private val characterDto: C
         buttonDiaologClose.setOnClickListener {
             dismiss()
         }
+        buttonChangeMainCharacter.setOnClickListener {
+            characterEncyclopediaViewModel.changeMainCharacter(characterDto.characterId)
+        }
     }
 
     private fun initData() = with(binding){
@@ -68,5 +76,20 @@ class CharacterEncyclopediaDialog (context: Context, private val characterDto: C
             .into(binding.imageviewEncyclopediaBird)
     }
 
+    private fun initCollecter(){
+        lifecycleScope.launch {
+            characterEncyclopediaViewModel.isSendSuccess.collectLatest {
+                if (it) {
+                    characterEncyclopediaViewModel.resetIsSendSuccess()
+                    Toast.makeText(
+                        binding.root.context,
+                        R.string.character_encyclopedia_change_success,
+                        Toast.LENGTH_LONG
+                    ).show()
+                    dismiss()
+                }
+            }
+        }
+    }
 
 }
