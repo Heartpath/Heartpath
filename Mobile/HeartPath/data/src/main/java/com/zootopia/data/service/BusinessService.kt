@@ -159,6 +159,10 @@ interface BusinessService {
 
     @POST("/store/letterpaper/buy")
     suspend fun buyStoreLetterPaper(@Body buyStoreLetterPaperRequest: BuyStoreLetterPaperRequest): Response<BuyStoreLetterPaperResponse>
+
+    // FCM test 보내기
+    @GET("/letter/test")
+    suspend fun testFCM(): Response<MessageResponse>
 }
 
 
