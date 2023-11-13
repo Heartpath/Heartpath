@@ -18,4 +18,6 @@ public interface FriendMapper {
     int addFriend(@Param(value = "from") String from, @Param(value = "to") String to);
 
     int blockOffFriend(@Param(value = "from") String from, @Param(value = "to") String to);
+
+    List<FriendInfoDTO> getBlockOffFriendList(String memberID);
 }

@@ -67,9 +67,15 @@ public class FriendServiceImpl implements FriendService {
         } catch (DataIntegrityViolationException e) {
             throw new FriendException(BLOCK_OFF_NON_EXISTENT_USER);
         }
+        System.out.println("res = " + res);
 
         String msg = String.format("%s 유저를 차단했습니다.", opponentID);
 
         return new BaseResponse(200, msg, null);
+    }
+
+    @Override
+    public List<FriendInfoDTO> getBlockList(String memberID) {
+        return friendMapper.getBlockOffFriendList(memberID);
     }
 }

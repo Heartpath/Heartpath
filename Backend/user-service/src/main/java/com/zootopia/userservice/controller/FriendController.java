@@ -165,4 +165,36 @@ public class FriendController {
         BaseResponse baseResponse = friendService.blockOffFriend(memberID, opponentID);
         return ResponseEntity.status(200).body(baseResponse);
     }
+
+    @Operation(summary = "차단한 유저 목록 조회 API")
+    @ApiResponse(
+            responseCode = "200", description = "차단한 유저 목록 조회",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = "{\n" +
+                            "    \"status\": 200,\n" +
+                            "    \"message\": \"차단 목록\",\n" +
+                            "    \"data\": [\n" +
+                            "        {\n" +
+                            "            \"memberID\": \"\",\n" +
+                            "            \"nickname\": \"\",\n" +
+                            "            \"profileImagePath\": \"\"\n" +
+                            "        },\n" +
+                            "        {\n" +
+                            "            \"memberID\": \"\",\n" +
+                            "            \"nickname\": \"\",\n" +
+                            "            \"profileImagePath\": \"\"\n" +
+                            "        }\n" +
+                            "    ]\n" +
+                            "}")
+            )
+    )
+    @GetMapping("/blocklist")
+    public ResponseEntity<BaseResponse> listBlockFriends() {
+
+        List<FriendInfoDTO> blockOffFriendList = friendService.getBlockList(memberID);
+        BaseResponse baseResponse = new BaseResponse(200, "차단 목록", blockOffFriendList);
+
+        return ResponseEntity.status(200).body(baseResponse);
+    }
 }
