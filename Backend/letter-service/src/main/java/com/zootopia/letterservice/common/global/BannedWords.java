@@ -58,10 +58,10 @@ public class BannedWords {
             "ㅡㅡ", "ส", "ค็", "้", "็", "zoomin.cur", "eventHostId", "open.", "onchat", "ajax_comment", "stub-extra", "-stub",
             "line.me", "ask.fm", "adinc.co.kr", "vonvon", "&feature=share", "superfeed", "lumieyes", "theqoo", "dmitory",
             "_enliple", "apt_review", "showcat", "쇼캣", ".pls", "stype=3", "$('", "bitly", "poomang.com", "comment_memo",
-            "vote.php", "onmouse", "onkeyup", "newsnack", "onkeydown", "", "", "〈", "시바라"};
+            "vote.php", "onmouse", "onkeyup", "newsnack", "onkeydown", "〈", "시바라"};
 
     public boolean isBannedWords(String ext) {
-        String[] words = ext.split("[\\s?!;]+"); // 정규 표현식, 공백(tab, space 등) & "?!;" 이 나오면 split
+        String[] words = ext.split("[\\p{Z}?;!]]+"); // 정규 표현식, 공백(tab, space 등) & "?!;" 이 나오면 split
 
         for (String word : words) {
             if (Arrays.asList(stt).contains(word.toLowerCase()))
