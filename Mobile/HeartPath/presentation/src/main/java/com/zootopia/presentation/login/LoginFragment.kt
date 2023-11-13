@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -37,6 +38,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         Log.d(TAG, "onViewCreated: ")
         initView()
         initClickEvent()
+        initCallback()
     }
 
     private fun initClickEvent() = with(binding) {
@@ -141,6 +143,16 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         ) // 카카오 이메일 로그인
             Log.d(TAG, "loginByKakao: 웹으로 로그인 시도 끝")
         }
+    }
+
+    private fun initCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // 뒤로가기로 앱 종료
+                activity?.finish()
+            }
+        }
+        mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
     override fun onDestroyView() {
