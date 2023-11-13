@@ -11,6 +11,7 @@ import com.zootopia.userservice.kakao.KakaoOAuthService;
 import com.zootopia.userservice.service.UserService;
 import com.zootopia.userservice.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,7 +34,8 @@ import javax.servlet.http.HttpServletRequest;
 @Tag(name = "유저 관련 정보 조회 API",
         description = "<b>JWT가 필요한 Method</b> \n" +
                 "1. [GET] /user/mypage (마이페이지)\n" +
-                "2. [PUT] /user/mypage (유저 정보 수정)"
+                "2. [PUT] /user/mypage (유저 정보 수정)\n" +
+                "3. [GET] /user/search (유저 ID로 유저 검색)"
 )
 @Slf4j
 @RestController
@@ -189,7 +191,7 @@ public class UserController {
 
     @Operation(
             summary = "유저 ID로 유저 검색",
-            description = "JWT 토큰이 필요없습니다. \n 검색한 유저 ID와 유사한 유저 정보를 <b>'limit 개수'만큼 반환</b>합니다." +
+            description = "JWT 토큰이 필요합니다. \n 검색한 유저 ID와 유사한 유저 정보를 <b>'limit 개수'만큼 반환</b>합니다." +
                     "{\n" +
                     "  \"id\": \"검색할 유저 ID\",\n" +
                     "  \"limit\": \"반환할 유저 정보 개수\"\n" +
@@ -216,6 +218,7 @@ public class UserController {
                             "  ]\n" +
                             "}"))),
     })
+    @Parameter(name = "checkFriends", description = "친구 관계 포함해서 반환 : True, 아니면 : False")
     @GetMapping("/search")
     public ResponseEntity<BaseResponse> searchUserByID(
             @RequestParam(name = "id") String query,
@@ -235,7 +238,7 @@ public class UserController {
     }
 
     @Operation(summary = "유저 정보(닉네임, 프로필 사진) 수정 API")
-    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/mypage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BaseResponse> renewUserInfo(
             @RequestPart(value = "nickname", required = false) String nickname,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
