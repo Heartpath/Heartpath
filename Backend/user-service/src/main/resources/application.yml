@@ -24,6 +24,18 @@ spring:
         format_sql: true
     open-in-view: false
 
+cloud:
+  aws:
+    s3:
+      bucket: ENC(SOvvTYfGMSgcE/hVyZxWVlG+I370emYn)
+    credentials:
+      access-key: ENC(QjAZdSmPEbtCqu5y+s89uIJns8S+fjbkTx1o2ptn9TY=)
+      secret-key: ENC(HembcJ68NF7PAmofcbLEh6Y3Spe2kRAQL1J3RIz4RX6Vy3mVYqi3RUPUl3AbgPmXYdi9it0jpFQ=)
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.zootopia.userservice.dto
