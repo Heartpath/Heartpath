@@ -224,7 +224,16 @@
         android:id="@+id/characterEncyclopediaFragment"
         android:name="com.zootopia.presentation.characterencyclopedia.CharacterEncyclopediaFragment"
         android:label="CharacterEncyclopediaFragment"
-        tools:layout="@layout/fragment_character_encyclopedia"/>
+        tools:layout="@layout/fragment_character_encyclopedia">
+        <action
+            android:id="@+id/action_characterEncyclopediaFragment_to_storeFragment"
+            app:destination="@id/storeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/storeFragment"
+        android:name="com.zootopia.presentation.store.StoreFragment"
+        android:label="StoreFragment"
+        tools:layout="@layout/fragment_store"/>
 
 
 </navigation>
