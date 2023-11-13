@@ -32,4 +32,6 @@ public interface LetterService {
     List<LetterReceivedResDto> getUnreadLetters(String accessToken);
 
     LetterReceivedDetailResDto getLetter(String accessToken, Long letter_id);
+
+    void test(String accessToken);
 }
