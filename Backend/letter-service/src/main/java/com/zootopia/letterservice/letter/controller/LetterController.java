@@ -152,7 +152,7 @@ public class LetterController {
                             "           \"lng\": 45.235233," +
                             "           \"location\":[" +
                             "                           \"https://zootopia-s3.s3.ap-northeast-2.amazonaws.com/-/file.jpg\"" +
-                                                    "]" +
+                                                    "]," +
                             "           \"Read\": true" +
                             "       }" +
                             "   ]" +
