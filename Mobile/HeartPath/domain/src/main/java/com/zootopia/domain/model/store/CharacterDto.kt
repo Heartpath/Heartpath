@@ -14,5 +14,7 @@ data class CharacterDto (
     @SerializedName("imagePath")
     val imagePath: String,
     @SerializedName("owned")
-    val isOwned: Boolean
+    val isOwned: Boolean,
+    @SerializedName("main")
+    val isMain: Boolean
 )
