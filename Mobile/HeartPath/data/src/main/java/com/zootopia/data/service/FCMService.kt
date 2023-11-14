@@ -29,16 +29,19 @@ class FCMService : FirebaseMessagingService() {
             Log.d(TAG, "onMessageReceived: notification은 null이에요")
             Log.d(TAG, "onMessageReceived: ${message.data}")
             if(message.data.isNotEmpty()) {
-                val msg = message.data.get("title")
+                val title = message.data.get("title")
+                val msg = message.data.get("body")
                 val mainIntent = Intent(
                     this@FCMService,
                     Class.forName("com.zootopia.presentation.MainActivity")
                 ).apply {
                     putExtra("destination", "map")
                 }
+
+                val requestCode = Random(System.nanoTime()).nextInt()
                 val pendingIntent: PendingIntent = PendingIntent.getActivity(
                     this,
-                    REQEUSTCODE,
+                    requestCode,
                     mainIntent,
                     PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
                 )
@@ -52,8 +55,8 @@ class FCMService : FirebaseMessagingService() {
                     NotificationCompat.Builder(this@FCMService, CHANNEL_ID)
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setDefaults(NotificationCompat.DEFAULT_SOUND or NotificationCompat.DEFAULT_VIBRATE)
-                        .setSmallIcon(com.google.firebase.R.drawable.notification_icon_background)
-                        .setContentTitle(getString(R.string.app_name))
+                        .setSmallIcon(R.drawable.image_bird_face)
+                        .setContentTitle(title)
                         .setContentText(msg)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true)
@@ -68,7 +71,7 @@ class FCMService : FirebaseMessagingService() {
                         Log.d(TAG, "onMessageReceived: permission 문제")
                         return
                     }
-                    notificationManager.notify(Random(System.nanoTime()).nextInt(), builder.build())
+                    notificationManager.notify(requestCode, builder.build())
                 }
             }
         }else{
@@ -78,9 +81,7 @@ class FCMService : FirebaseMessagingService() {
                 Log.d(TAG, "onMessageReceived: ${notification.body}")
             }
         }
-
     }
-
     private fun createNotificaitonChannel(manager: NotificationManager) {
         var notificationChannel : NotificationChannel? = null
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
