@@ -170,6 +170,10 @@ interface BusinessService {
     // 메인 캐릭터 조회
     @GET("/store/crowtit/main")
     suspend fun getMainCharacter(): Response<GetMainCharacterResponse>
+
+    // FCM test 보내기
+    @GET("/letter/test")
+    suspend fun testFCM(): Response<MessageResponse>
 }
 
 
