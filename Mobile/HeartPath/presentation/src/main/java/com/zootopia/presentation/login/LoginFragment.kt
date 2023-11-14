@@ -51,9 +51,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
                 loginViewModel.loginResult.collect { result ->
                     if(result.accessToken != "") {
                         // 성공 -> home으로 이동
-                        loginViewModel.setToken(result)
-                        loginViewModel.storeToken()
-                        findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                        launch {
+                            loginViewModel.setToken(result)
+                            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                        }
                     } else {
                         // 성공 못함 -> 회원가입 시키기
                         findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
