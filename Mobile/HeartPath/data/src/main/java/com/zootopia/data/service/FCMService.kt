@@ -1,9 +1,13 @@
 package com.zootopia.data.service
 
 import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -12,6 +16,7 @@ import androidx.navigation.NavDeepLinkBuilder
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.zootopia.data.R
+import java.util.Random
 import kotlin.math.log
 
 
@@ -37,6 +42,11 @@ class FCMService : FirebaseMessagingService() {
                     mainIntent,
                     PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
                 )
+
+                val notificationManager: NotificationManager =  getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    createNotificaitonChannel(notificationManager)
+                }
                 // 알림 생성하고 nav args에 집어넣고 아이콘 지정
                 val builder =
                     NotificationCompat.Builder(this@FCMService, CHANNEL_ID)
@@ -58,7 +68,7 @@ class FCMService : FirebaseMessagingService() {
                         Log.d(TAG, "onMessageReceived: permission 문제")
                         return
                     }
-                    notify(REQEUSTCODE, builder.build())
+                    notificationManager.notify(Random(System.nanoTime()).nextInt(), builder.build())
                 }
             }
         }else{
@@ -71,6 +81,27 @@ class FCMService : FirebaseMessagingService() {
 
     }
 
+    private fun createNotificaitonChannel(manager: NotificationManager) {
+        var notificationChannel : NotificationChannel? = null
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationChannel = NotificationChannel(
+                CHANNEL_ID,
+                CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+        }
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (notificationChannel != null) {
+                notificationChannel.description = NOTIFICATION_CHANNEL_DESCRIPTION
+            }
+        }
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (notificationChannel != null) {
+                manager.createNotificationChannel(notificationChannel)
+            }
+        }
+    }
+
     // token update되면 호출
     override fun onNewToken(token: String) {
         super.onNewToken(token)
@@ -81,5 +112,7 @@ class FCMService : FirebaseMessagingService() {
         private const val TAG = "FCMService_HP"
         private const val REQEUSTCODE = 1
         private const val CHANNEL_ID = "heartpath_channel"
+        private const val CHANNEL_NAME = "Heart Path"
+        private const val NOTIFICATION_CHANNEL_DESCRIPTION = "notification channel"
     }
 }
