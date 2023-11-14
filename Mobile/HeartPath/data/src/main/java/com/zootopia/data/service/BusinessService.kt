@@ -17,9 +17,12 @@ import com.zootopia.data.model.login.response.CheckIdResponse
 import com.zootopia.data.model.login.response.LoginResponse
 import com.zootopia.data.model.store.request.BuyStoreCharacterRequest
 import com.zootopia.data.model.store.request.BuyStoreLetterPaperRequest
+import com.zootopia.data.model.store.request.ChangeMainCharacterRequest
 import com.zootopia.data.model.store.response.BuyStoreCharacterResponse
 import com.zootopia.data.model.store.response.BuyStoreLetterPaperResponse
+import com.zootopia.data.model.store.response.ChangeMainCharacterResponse
 import com.zootopia.data.model.store.response.CharacterEncyclopediaListResponse
+import com.zootopia.data.model.store.response.GetMainCharacterResponse
 import com.zootopia.data.model.store.response.StoreCharacterListResponse
 import com.zootopia.data.model.store.response.StoreItemLetterPaperListResponse
 import com.zootopia.data.model.user.response.FriendListResponse
@@ -159,6 +162,14 @@ interface BusinessService {
 
     @POST("/store/letterpaper/buy")
     suspend fun buyStoreLetterPaper(@Body buyStoreLetterPaperRequest: BuyStoreLetterPaperRequest): Response<BuyStoreLetterPaperResponse>
+
+    // 메인 캐릭터 설정
+    @POST("/store/crowtit/change")
+    suspend fun changeMainCharacter(@Body changeMainCharacterRequest: ChangeMainCharacterRequest): Response<ChangeMainCharacterResponse>
+
+    // 메인 캐릭터 조회
+    @GET("/store/crowtit/main")
+    suspend fun getMainCharacter(): Response<GetMainCharacterResponse>
 
     // FCM test 보내기
     @GET("/letter/test")
