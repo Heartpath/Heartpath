@@ -29,7 +29,8 @@
             android:layout_gravity="center"
             android:indeterminate="true"
             app:indicatorSize="64dp"
-            app:trackColor="#3FFFFFFF" />
+            app:indicatorColor="@color/LightBlueGray"
+            app:trackColor="@color/white" />
     </FrameLayout>
 
     <TextView
@@ -69,31 +70,12 @@
         app:strokeWidth="@dimen/_2sdp" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/button_re_set_item"
-        android:layout_width="@dimen/_80sdp"
-        android:layout_height="@dimen/_40sdp"
-        android:layout_marginBottom="@dimen/_50sdp"
-        android:backgroundTint="@color/white"
-        android:gravity="center"
-        android:paddingHorizontal="@dimen/_4sdp"
-        android:paddingVertical="@dimen/_2sdp"
-        android:text="편지 다시 놓기"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:strokeColor="@color/PrimaryLightBlue"
-        app:strokeWidth="@dimen/_2sdp" />
-
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/button_send_item"
-        android:layout_width="@dimen/_80sdp"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/_40sdp"
         android:layout_marginBottom="@dimen/_50sdp"
         android:backgroundTint="@color/white"
         android:gravity="center"
-        android:paddingHorizontal="@dimen/_4sdp"
         android:paddingVertical="@dimen/_2sdp"
         android:text="편지 보내기"
         android:visibility="gone"
