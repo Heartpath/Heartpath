@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zootopia.domain.model.user.SearchUserInfoDto
+import com.zootopia.presentation.R
 import com.zootopia.presentation.databinding.ItemMypageFriendBinding
 import com.zootopia.presentation.databinding.ItemSearchedFriendBinding
 import com.zootopia.presentation.databinding.ItemSelectUserBinding
@@ -26,6 +27,7 @@ class SearchedUserAdapter(var searchedUserList: MutableList<SearchUserInfoDto>) 
             textviewSearchUserId.text = user.memberID
 
             Glide.with(root).load(user.profileImagePath)
+                .error(R.drawable.image_default_profile)
                 .circleCrop()
                 .into(imageviewSearchUserProfile)
 
