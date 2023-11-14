@@ -14,15 +14,17 @@ public class LetterNotPickUpResDto {
 
     private Long index;
     private String sender;
+    private String senderID;
     private LocalDateTime time;
     private Double lat;
     private Double lng;
 
     private List<String> location;
 
-    public LetterNotPickUpResDto(LetterMySQL letter, String sender) {
+    public LetterNotPickUpResDto(LetterMySQL letter, String sender, String senderID) {
         this.index = letter.getId();
         this.sender = sender;
+        this.senderID = senderID;
         this.time = letter.getCreatedDate();
         this.lat = letter.getLat();
         this.lng = letter.getLng();
