@@ -1,7 +1,7 @@
 package com.zootopia.letterservice.letter.service;
 
 import com.zootopia.letterservice.common.FCM.FCMService;
-import com.zootopia.letterservice.common.FCM.FirebaseCloudMessageService;
+//import com.zootopia.letterservice.common.FCM.FirebaseCloudMessageService;
 import com.zootopia.letterservice.common.error.code.ErrorCode;
 import com.zootopia.letterservice.common.error.exception.BadRequestException;
 import com.zootopia.letterservice.common.error.exception.ServerException;
@@ -44,7 +44,7 @@ public class LetterServiceImpl implements LetterService {
     private final LetterImageRepository letterImageRepository;
     private final PlaceImageRepository placeImageRepository;
 
-    private final FirebaseCloudMessageService firebaseCloudMessageService;
+//    private final FirebaseCloudMessageService firebaseCloudMessageService;
     private final FCMService fcmService;
 
     private final BannedWords bannedWords;
@@ -200,12 +200,12 @@ public class LetterServiceImpl implements LetterService {
         }
         // Receiver, FCM 알림 발송 추가 필요
         UserInfoDetailResDto receiver = findByUserId(letterMongo.getReceiverId());
-        try {
-            String message = receiver.getNickname() + "님이 당신에게 편지를 보냈습니다.";
-            firebaseCloudMessageService.sendMessageTo(receiver.getFcmToken(), "뱁새가 편지를 물고 왔어요.",message);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            String message = receiver.getNickname() + "님이 당신에게 편지를 보냈습니다.";
+//            firebaseCloudMessageService.sendMessageTo(receiver.getFcmToken(), "뱁새가 편지를 물고 왔어요.",message);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         letterMongoRepository.deleteById(letterMongo.getId());
     }
@@ -408,11 +408,6 @@ public class LetterServiceImpl implements LetterService {
         UserDetailResDto user = accessTokenToMember(accessToken).getData();
 
         String message = user.getNickname() + "님이 당신에게 편지를 보냈습니다.";
-//        fcmService.sendFCMNotification(user.getFcmToken(), "뱁새가 편지를 물고 왔어요.",message);
-        try {
-            firebaseCloudMessageService.sendMessageTo(user.getFcmToken(), "뱁새가 편지를 물고 왔어요.", message);
-        } catch (IOException e) {
-            System.out.println("firebaseCloud 오류 : " + e.getMessage());
-        }
+        fcmService.sendFCM(user.getFcmToken(), "뱁새가 편지를 물고 왔어요.", message);
     }
 }
