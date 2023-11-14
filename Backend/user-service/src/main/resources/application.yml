@@ -1,6 +1,5 @@
 server:
   port: 80
-
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -49,3 +48,15 @@ jwt:
   expiration: 1
   refresh-token:
     expiration: 7
+
+logging:
+  level:
+    com:
+      zootopia:
+        userservice:
+          mapper: debug
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
