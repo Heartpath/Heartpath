@@ -1,8 +1,10 @@
 package com.zootopia.data.datasource.remote.store
 
+import com.zootopia.data.model.common.MessageResponse
 import com.zootopia.data.model.store.request.BuyStoreCharacterRequest
 import com.zootopia.data.model.store.request.BuyStoreLetterPaperRequest
 import com.zootopia.data.model.store.request.ChangeMainCharacterRequest
+import com.zootopia.data.model.store.request.PostPointRequest
 import com.zootopia.data.model.store.response.BuyStoreCharacterResponse
 import com.zootopia.data.model.store.response.BuyStoreLetterPaperResponse
 import com.zootopia.data.model.store.response.ChangeMainCharacterResponse
@@ -43,6 +45,15 @@ class StoreDataSourceImpl(
     override suspend fun buyStoreLetterPaper(buyStoreLetterPaperRequest: BuyStoreLetterPaperRequest): BuyStoreLetterPaperResponse {
         return handleApi {
             businessService.buyStoreLetterPaper(buyStoreLetterPaperRequest)
+        }
+    }
+    
+    /**
+     * 포인트 적립
+     */
+    override suspend fun postPoint(point: Int): MessageResponse {
+        return handleApi {
+            businessService.postPoint(point = PostPointRequest(point = point))
         }
     }
 

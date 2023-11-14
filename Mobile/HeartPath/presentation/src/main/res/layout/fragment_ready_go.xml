@@ -5,14 +5,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:minWidth="@dimen/_150sdp"
-    app:cardCornerRadius="24dp"
+    app:cardCornerRadius="16dp"
     tools:context=".map.ReadyGoDialogFragment">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
+        android:gravity="center"
         android:padding="@dimen/_16sdp">
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -23,7 +23,25 @@
 
         <Space
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/_100sdp"/>
+            android:layout_height="@dimen/_10sdp"/>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardElevation="0dp"
+            app:cardCornerRadius="16dp">
+
+            <ImageView
+                android:id="@+id/imageview_letter"
+                android:layout_width="@dimen/_200sdp"
+                android:layout_height="@dimen/_200sdp"
+                android:scaleType="centerCrop"/>
+
+        </androidx.cardview.widget.CardView>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_10sdp"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_start"
@@ -34,6 +52,7 @@
             android:padding="@dimen/_3sdp"
             android:gravity="center"
             android:background="@drawable/custom_round_stroke_button"
+            android:outlineProvider="none"
             style="@style/Black_12_Bold_NanumText"/>
 
     </LinearLayout>
