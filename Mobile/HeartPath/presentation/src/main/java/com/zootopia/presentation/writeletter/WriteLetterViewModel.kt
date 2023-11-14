@@ -14,6 +14,7 @@ import com.zootopia.domain.usecase.writeletter.PostHandLetterUseCase
 import com.zootopia.domain.usecase.writeletter.PostTypingLetterUseCase
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseViewModel
+import com.zootopia.presentation.util.WriteLetterSendState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -76,6 +77,9 @@ class WriteLetterViewModel @Inject constructor(
 
     private val _letterText = MutableStateFlow<String>("")
     var letterText: StateFlow<String> = _letterText
+
+    private var _writeLetterSendState = MutableStateFlow<WriteLetterSendState>(WriteLetterSendState.NOT_LOADING)
+    var writeLetterSendState: StateFlow<WriteLetterSendState> = _writeLetterSendState
 
     init {
         resetBitmap()
@@ -231,6 +235,18 @@ class WriteLetterViewModel @Inject constructor(
                 _isSendSuccess.value = true
             }
         )
+    }
+
+    fun setWriteLetterSendState(state: WriteLetterSendState){
+        viewModelScope.launch {
+            _writeLetterSendState.value = state
+        }
+    }
+
+    fun resetWriteLetterSendState(){
+        viewModelScope.launch {
+            _writeLetterSendState.value = WriteLetterSendState.NOT_LOADING
+        }
     }
 
 
