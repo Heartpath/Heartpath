@@ -28,11 +28,34 @@ public class VerifyJwtFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
 
+    private static String getURL(HttpServletRequest req) {
+
+        String method = req.getMethod();
+        String contextPath = req.getContextPath();
+        String servletPath = req.getServletPath();
+        String pathInfo = req.getPathInfo();
+        String queryString = req.getQueryString();
+
+        // Reconstruct original requesting URL
+        StringBuilder url = new StringBuilder();
+        url.append("[").append(method).append("]").append(" ");
+
+        url.append(contextPath).append(servletPath);
+
+        if (pathInfo != null) {
+            url.append(pathInfo);
+        }
+        if (queryString != null) {
+            url.append("?").append(queryString);
+        }
+        return url.toString();
+    }
+
     // TODO: yaml 파일로 빼기
     private static final String[] EXCLUDED_URLS = {
             "/user/health_check",
             "/user/login", "/user/register", "/user/check", "/user/token",
-            "/api/user/", "/api/token", "/api/point",
+            "/api/user/", "/api/token", "/api/point/",
             "/swagger-ui", "/v3/api-docs"
     };
 
@@ -79,6 +102,8 @@ public class VerifyJwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain
     ) throws ServletException, IOException {
 
+        log.info("Request : {}", getURL(request));
+
         /*
         WhiteList
         Check if the request URI matches any of the excluded URLs
@@ -95,13 +120,9 @@ public class VerifyJwtFilter extends OncePerRequestFilter {
 
         // JWT 확인
         try {
+
             Optional<String> authorizationToken = Optional.ofNullable(request.getHeader("Authorization"));
             String accessToken = extractJwtFromHeader(authorizationToken);
-
-            log.info("============================================================");
-            log.info("Request URL: {}", requestURI);
-            log.info("Get Access Token: {}", accessToken);
-            log.info("============================================================");
 
             // JWT 검증
             jwtProvider.validateToken(accessToken);
