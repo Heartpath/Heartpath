@@ -1,5 +1,7 @@
 package com.zootopia.presentation.util
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +26,7 @@ class LoadingDialog : DialogFragment() {
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         binding = DialogLoadingBinding.inflate(inflater, container, false)
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         return binding.root
     }
 
