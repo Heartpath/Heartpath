@@ -65,6 +65,7 @@ class PointHistoryFragment : BaseFragment<FragmentPointHistoryBinding>(
             pointHistoryViewModel.pointInfoList.collect {value ->
                 pointHistoryList.clear()
                 pointHistoryList.addAll(value)
+                pointHistoryAdapter.notifyDataSetChanged()
             }
         }
     }
