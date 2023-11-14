@@ -174,6 +174,7 @@ public class LetterController {
                             "       {" +
                             "           \"index\": 1," +
                             "           \"sender\": \"사용자 닉네임\"," +
+                            "           \"senderID\": \"사용자 ID\"," +
                             "           \"time\": \"yyyy-MM-ddThh:mm:ss\"," +
                             "           \"lat\": 125.345436," +
                             "           \"lng\": 45.235233," +
@@ -221,10 +222,12 @@ public class LetterController {
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "편지 상세 조회 성공", letterService.getLetter(accessToken, letter_id)));
     }
 
-    @Operation(summary = "isPickUp 업데이트", description = "Authorization : Bearer {accessToken}, 필수")
+    @Operation(summary = "편지 주운 후 isPickup 업데이트", description = "Authorization : Bearer {accessToken}, 필수")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description =  "UPDATE", content = @Content(mediaType = "application/json",
-                    examples = @ExampleObject(value = "{\n \"status\": 200,\n \"message\": \"isPickup true로 변경 성공\"\n}")))
+                    examples = @ExampleObject(value = "{\n \"status\": 200,\n \"message\": \"isPickup true로 변경 성공\"\n}"))),
+            @ApiResponse(responseCode = "4006", description =  "NOT_EXISTS_LETTER", content = @Content(examples = @ExampleObject(value = "{\n \"httpStatus\": \"400 BAD_REQUEST\",\n \"status\": 4006,\n \"message\": \"존재하지 않는 편지입니다.\"\n}"))),
+            @ApiResponse(responseCode = "4011", description =  "NOT_EQUAL_RECEIVER", content = @Content(examples = @ExampleObject(value = "{\n \"httpStatus\": \"400 BAD_REQUEST\",\n \"status\": 4011,\n \"message\": \"편지의 수신자가 아니면 편지를 주울 수 없습니다.\"\n}")))
     })
     @GetMapping("/pickup/{letter_id}")
     public ResponseEntity<? extends BaseResponseBody> updatePickup(@PathVariable Long letter_id,

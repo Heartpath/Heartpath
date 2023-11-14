@@ -200,12 +200,12 @@ public class LetterServiceImpl implements LetterService {
         }
         // Receiver, FCM 알림 발송 추가 필요
         UserInfoDetailResDto receiver = findByUserId(letterMongo.getReceiverId());
-//        try {
-//            String message = receiver.getNickname() + "님이 당신에게 편지를 보냈습니다.";
-//            firebaseCloudMessageService.sendMessageTo(receiver.getFcmToken(), "뱁새가 편지를 물고 왔어요.",message);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            String message = receiver.getNickname() + "님이 당신에게 편지를 보냈습니다.";
+            firebaseCloudMessageService.sendMessageTo(receiver.getFcmToken(), "뱁새가 편지를 물고 왔어요.",message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         letterMongoRepository.deleteById(letterMongo.getId());
     }
@@ -291,7 +291,7 @@ public class LetterServiceImpl implements LetterService {
                 .stream()
                 .map(letterMySQL -> {
                     String senderNickname = findByUserId(letterMySQL.getSenderId()).getNickname();
-                    return new LetterNotPickUpResDto(letterMySQL, senderNickname);
+                    return new LetterNotPickUpResDto(letterMySQL, senderNickname, letterMySQL.getSenderId());
                 })
                 .collect(Collectors.toList());
         return letters;
@@ -409,12 +409,10 @@ public class LetterServiceImpl implements LetterService {
         System.out.println(user.getFcmToken());
 
         String message = user.getNickname() + "님이 당신에게 편지를 보냈습니다.";
-//        fcmService.sendFCM(user.getFcmToken(), "뱁새가 편지를 물고 왔어요.", message);
         try {
             firebaseCloudMessageService.sendMessageTo(user.getFcmToken(), "뱁새가 편지를 물고 왔어요.", message);
         } catch (IOException e) {
             System.out.println(e.getMessage());
-
         }
     }
 }
