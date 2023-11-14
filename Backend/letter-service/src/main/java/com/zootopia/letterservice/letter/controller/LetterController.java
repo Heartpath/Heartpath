@@ -134,7 +134,7 @@ public class LetterController {
     })
     @GetMapping("/unplaced")
     public ResponseEntity<? extends BaseResponseBody> getUnsendLetters(@RequestHeader(value = "Authorization") String accessToken) {
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "미발송 편지 목록 조회 성공", letterService.getNotPickupLetters(accessToken)));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "미발송 편지 목록 조회 성공", letterService.getUnsendLetters(accessToken)));
     }
 
     @Operation(summary = "주운 수신 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
