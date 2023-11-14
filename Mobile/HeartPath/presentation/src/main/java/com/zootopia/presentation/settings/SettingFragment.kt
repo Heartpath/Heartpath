@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentSettingBinding
+import kotlinx.coroutines.launch
 
 class SettingFragment : BaseFragment<FragmentSettingBinding>(
     FragmentSettingBinding::bind,
@@ -21,6 +23,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(
         super.onViewCreated(view, savedInstanceState)
         initView()
         initClickEvent()
+        settingViewModel.testFcm()
     }
 
     private fun initView() = with(binding) {
@@ -34,14 +37,20 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(
     }
     private fun initClickEvent() = with(binding) {
         linearlayoutSetBgm.setOnClickListener {
-            // TODO: bgm 설정
             BgmSettingDialog().show(childFragmentManager, BgmSettingDialog.TAG)
         }
         linearlayoutPrivatePolicy.setOnClickListener {
             // TODO: 개인정보 처리방침 페이지로 이동
         }
         linearlayoutLogout.setOnClickListener {
-            // TODO: 로그아웃
+            settingViewModel.logout()
+            lifecycleScope.launch {
+                settingViewModel.tokenDeleteResult.collect {
+                    if(true) {
+                        findNavController().navigate(R.id.action_settingFragment_to_loginFragment)
+                    }
+                }
+            }
         }
         linearlayoutWithdraw.setOnClickListener {
             // TODO: 회원 탈퇴
