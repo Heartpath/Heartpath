@@ -110,6 +110,7 @@ class LoginViewModel @Inject constructor(
         Log.d(TAG, "setToken: here")
         _accessToken.emit(token.accessToken)
         _refreshToken.emit(token.refreshToken)
+        storeToken()
     }
     // token 저장
     fun storeToken() = viewModelScope.launch {
