@@ -5,6 +5,7 @@ import com.zootopia.data.BuildConfig
 import com.zootopia.data.datasource.remote.map.MapDataSource
 import com.zootopia.data.mapper.toData
 import com.zootopia.data.mapper.toDomain
+import com.zootopia.domain.model.letter.uncheckedletter.UncheckLetterDto
 import com.zootopia.domain.model.navermap.MapDirectionDto
 import com.zootopia.domain.model.tmap.FeatureCollectionDto
 import com.zootopia.domain.model.tmap.RequestTmapWalkRoadDto
@@ -20,8 +21,7 @@ class MapRepositoryImpl @Inject constructor(
     val NAVER_MAP_CLIENT_ID = BuildConfig.DATA_NAVER_MAP_CLIENT_ID
     val NAVER_MAP_API_KEY = BuildConfig.DATA_NAVER_MAP_API_KEY
     val TMAP_APP_KEY = BuildConfig.TMAP_APP_KEY
-    
-    
+
     /**
      * 네이버 맵 길찾기 요청
      */
@@ -30,18 +30,18 @@ class MapRepositoryImpl @Inject constructor(
         goal: String,
         option: String,
     ): MapDirectionDto {
-        Log.d(TAG, "requestMapDirection: ${NAVER_MAP_CLIENT_ID}")
+        Log.d(TAG, "requestMapDirection: $NAVER_MAP_CLIENT_ID")
         return getValueOrThrow2 {
             mapDataSource.getNaverMapDirection(
                 start = start,
                 goal = goal,
                 option = option,
                 apiKeyId = NAVER_MAP_CLIENT_ID,
-                apiKey = NAVER_MAP_API_KEY
+                apiKey = NAVER_MAP_API_KEY,
             ).toDomain()
         }
     }
-    
+
     /**
      * tmap 길찾기 (도보)
      */
@@ -52,16 +52,26 @@ class MapRepositoryImpl @Inject constructor(
             Log.d(TAG, "requestTmapWalkRoad: 레파지토리에서 티맵 길 요청!!")
             mapDataSource.requestTmapWalkRoad(
                 tmapWalkRoadRequest = requestTmapWalkRoadDto.toData(),
-                appKey = TMAP_APP_KEY
+                appKey = TMAP_APP_KEY,
             ).toDomain()
         }
     }
-    
-    
-    override suspend fun test() : String{
+
+    /**
+     * 미확인 편지 리스트 수신
+     */
+    override suspend fun getUncheckedLetter(): List<UncheckLetterDto> {
         return getValueOrThrow2 {
-            mapDataSource.test()
+            mapDataSource.getUncheckedLetter().data as List<UncheckLetterDto>
         }
     }
-    
+
+    /**
+     * 편지 줍기
+     */
+    override suspend fun getPickUpLetter(letter_id: Int): String {
+        return getValueOrThrow2 {
+            mapDataSource.getPickUpLetter(letter_id = letter_id).message
+        }
+    }
 }

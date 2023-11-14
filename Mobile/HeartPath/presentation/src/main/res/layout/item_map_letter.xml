@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat
-    android:id="@+id/linearlayout_map_letter"
+<androidx.appcompat.widget.LinearLayoutCompat android:id="@+id/linearlayout_map_letter"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingVertical="@dimen/_8sdp"
     android:paddingHorizontal="@dimen/_16sdp"
     android:background="@color/white"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageButton
         android:id="@+id/button_report"
@@ -24,8 +24,10 @@
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/_8sdp"
+        android:background="@drawable/custom_bottom_stroke"
+        android:paddingVertical="@dimen/_4sdp"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -47,7 +49,6 @@
             style="@style/DarkGray_10_Regular_NanumText"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
-
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>
