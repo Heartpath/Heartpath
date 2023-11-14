@@ -19,8 +19,8 @@ import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentArCoreWriteBinding
 import com.zootopia.presentation.sendletter.SendLetterViewModel
+import com.zootopia.presentation.util.LoadingDialog
 import com.zootopia.presentation.util.setFullScreen
-import io.github.sceneview.ar.ARSceneView
 import io.github.sceneview.ar.arcore.getUpdatedPlanes
 import io.github.sceneview.ar.getDescription
 import io.github.sceneview.ar.node.AnchorNode
@@ -42,8 +42,7 @@ class ArCoreWriteFragment :
     private lateinit var mainActivity: MainActivity
     private lateinit var currentFrame: Frame
     private val sendLetterViewModel: SendLetterViewModel by activityViewModels()
-
-    private lateinit var arSceneView: ARSceneView
+    private val dialog = LoadingDialog()
 
     var isLoading = false
         set(value) {
@@ -92,8 +91,9 @@ class ArCoreWriteFragment :
     private fun initClickEvent() = with(binding) {
         // 편지 서버로 보내기 클릭 이벤트
         buttonSendItem.setOnClickListener {
-            isLoading = true
-
+//            isLoading = true
+            dialog.show(childFragmentManager,"ArCoreLoading")
+            
             sendLetterViewModel.apply {
                 viewLifecycleOwner.lifecycleScope.launch {
                     catchCapture(this@ArCoreWriteFragment)
@@ -112,12 +112,13 @@ class ArCoreWriteFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             isRealPath.collectLatest {
                 requestSendLetter(files = it)
-                isLoading = false
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             isResult.collectLatest {
+//                isLoading = false
+                dialog.dismiss()
                 mainActivity.showToast(it)
                 findNavController().popBackStack()
             }
