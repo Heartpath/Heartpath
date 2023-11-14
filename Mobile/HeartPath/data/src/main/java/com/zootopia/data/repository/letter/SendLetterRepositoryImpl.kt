@@ -1,6 +1,5 @@
 package com.zootopia.data.repository.letter
 
-import android.util.Log
 import com.zootopia.data.datasource.remote.letter.LetterDataSource
 import com.zootopia.data.mapper.toData
 import com.zootopia.data.mapper.toDomain

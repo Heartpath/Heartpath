@@ -1,6 +1,5 @@
 package com.zootopia.data.datasource.remote.user
 
-import android.os.Message
 import com.zootopia.data.model.common.MessageResponse
 import com.zootopia.data.model.user.response.FriendListResponse
 import com.zootopia.data.model.user.response.PointInfoResponse
@@ -13,4 +12,9 @@ interface UserDataSource {
     suspend fun getFriendList(): FriendListResponse
     suspend fun addFriend(id: String): MessageResponse
     suspend fun searchUser(id: String, limit: Int, checkFriends: Boolean): SearchUserResponse
+    
+    /**
+     * 친구 차단
+     */
+    suspend fun putOpponentFriend(opponentID: String): MessageResponse
 }
