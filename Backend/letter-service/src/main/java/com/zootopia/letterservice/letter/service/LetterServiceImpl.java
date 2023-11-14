@@ -1,7 +1,7 @@
 package com.zootopia.letterservice.letter.service;
 
 import com.zootopia.letterservice.common.FCM.FCMService;
-//import com.zootopia.letterservice.common.FCM.FirebaseCloudMessageService;
+import com.zootopia.letterservice.common.FCM.FirebaseCloudMessageService;
 import com.zootopia.letterservice.common.error.code.ErrorCode;
 import com.zootopia.letterservice.common.error.exception.BadRequestException;
 import com.zootopia.letterservice.common.error.exception.ServerException;
@@ -44,7 +44,7 @@ public class LetterServiceImpl implements LetterService {
     private final LetterImageRepository letterImageRepository;
     private final PlaceImageRepository placeImageRepository;
 
-//    private final FirebaseCloudMessageService firebaseCloudMessageService;
+    private final FirebaseCloudMessageService firebaseCloudMessageService;
     private final FCMService fcmService;
 
     private final BannedWords bannedWords;
@@ -406,8 +406,15 @@ public class LetterServiceImpl implements LetterService {
 
     public void test(String accessToken) {
         UserDetailResDto user = accessTokenToMember(accessToken).getData();
+        System.out.println(user.getFcmToken());
 
         String message = user.getNickname() + "님이 당신에게 편지를 보냈습니다.";
-        fcmService.sendFCM(user.getFcmToken(), "뱁새가 편지를 물고 왔어요.", message);
+//        fcmService.sendFCM(user.getFcmToken(), "뱁새가 편지를 물고 왔어요.", message);
+        try {
+            firebaseCloudMessageService.sendMessageTo(user.getFcmToken(), "뱁새가 편지를 물고 왔어요.", message);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+
+        }
     }
 }
