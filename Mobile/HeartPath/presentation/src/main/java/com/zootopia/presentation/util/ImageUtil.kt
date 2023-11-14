@@ -127,40 +127,42 @@ fun getImages(context: Context): MutableList<Uri> {
 
 fun takePhoto(fragment: Fragment): Deferred<Uri?> {
     val deferred = CompletableDeferred<Uri?>()
-    
+
     fragment.lifecycleScope.launch {
         withContext(Dispatchers.IO) {
             val context = fragment.requireContext()
-            
+
             val fileName = "${UUID.randomUUID()}_${SimpleDateFormat("yyMMdd_HHmmss").format(Date())}.jpg"
-            
+
             val values = ContentValues().apply {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     put(
                         MediaStore.Images.Media.RELATIVE_PATH,
-                        "${Environment.DIRECTORY_DCIM}/ARCamera"
+                        "${Environment.DIRECTORY_DCIM}/ARCamera",
                     )
                 }
                 put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
                 put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
             }
-            
+
             val photoUri = fragment.requireContext().contentResolver.insert(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                values
+                values,
             )!!
-            
+
             val bitmap = Bitmap.createBitmap(
                 fragment.requireView().width,
                 fragment.requireView().height,
-                Bitmap.Config.ARGB_8888
+                Bitmap.Config.ARGB_8888,
             )
             val surfaceView = fragment.view?.findViewById<SurfaceView>(R.id.sceneView)
             val surface = surfaceView?.holder?.surface
-    
+
             if (surface != null) {
                 PixelCopy.request(
-                    surface, bitmap, { result ->
+                    surface,
+                    bitmap,
+                    { result ->
                         if (result == PixelCopy.SUCCESS) {
                             fragment.lifecycleScope.launch {
                                 withContext(Dispatchers.IO) {
@@ -168,20 +170,18 @@ fun takePhoto(fragment: Fragment): Deferred<Uri?> {
                                         bitmap.compress(
                                             Bitmap.CompressFormat.PNG,
                                             100,
-                                            it
+                                            it,
                                         )
                                     }
                                 }
                                 deferred.complete(photoUri)
                             }
                         }
-                        
-                    }, Handler(Looper.getMainLooper())
+                    },
+                    Handler(Looper.getMainLooper()),
                 )
             }
         }
     }
     return deferred
 }
-
-
