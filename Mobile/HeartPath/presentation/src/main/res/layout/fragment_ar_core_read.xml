@@ -29,7 +29,8 @@
             android:layout_gravity="center"
             android:indeterminate="true"
             app:indicatorSize="64dp"
-            app:trackColor="#3FFFFFFF" />
+            app:indicatorColor="@color/LightBlueGray"
+            app:trackColor="@color/white" />
     </FrameLayout>
 
     <TextView
@@ -53,12 +54,11 @@
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/button_get_letter"
-        android:layout_width="@dimen/_80sdp"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/_40sdp"
         android:layout_marginBottom="@dimen/_50sdp"
         android:text="편지 담기"
         android:paddingVertical="@dimen/_2sdp"
-        android:paddingHorizontal="@dimen/_4sdp"
         android:gravity="center"
         app:strokeColor="@color/PrimaryLightBlue"
         app:strokeWidth="@dimen/_2sdp"
