@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -35,6 +36,7 @@ class HomeFragment :
         initAnimation()
         initCollecter()
         initData()
+        initCallback()
     }
 
     private fun initData(){
@@ -118,5 +120,15 @@ class HomeFragment :
                 }
             }
         }
+    }
+
+    private fun initCallback() {
+        val callback = object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // 뒤로가기 앱 종료
+                activity?.finish()
+            }
+        }
+        mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 }
