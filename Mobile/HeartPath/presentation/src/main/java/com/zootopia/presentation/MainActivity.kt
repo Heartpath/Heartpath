@@ -3,6 +3,7 @@ package com.zootopia.presentation
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -34,9 +35,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     lateinit var navGraph: NavGraph
     private val mainViewModel: MainViewModel by viewModels()
     private val intent: Intent = Intent()
+    lateinit var mediaPlayer: MediaPlayer
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_Splash)
         super.onCreate(savedInstanceState)
+        initMediaPlayer()
+        
         initNavHost()
         initCheckPermission()
         initCollect()
@@ -45,15 +50,37 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 //        initAppbar()
 
         initNotification()
-
+        initData()
         // 카카오 키 해시 값 가지고 오기
         Log.d(TAG, "KAKAO keyhash : ${Utility.getKeyHash(this)}")
     }
-
+    
+    private fun initMediaPlayer(){
+        mediaPlayer = MediaPlayer.create(this, R.raw.my_precious_teddy_bear)
+        mediaPlayer.isLooping = true
+    }
+    
     override fun onDestroy() {
         // 앱이 종료되면 백그라운드 서비스 취소하기
         WorkManager.getInstance(applicationContext).cancelAllWork()
         super.onDestroy()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if(mediaPlayer.isPlaying){
+            mediaPlayer.pause()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume: ")
+        if(mainViewModel.bgmState.value == true && mediaPlayer.isPlaying == false){
+            mediaPlayer.start()
+        }else if(mainViewModel.bgmState.value == false && mediaPlayer.isPlaying){
+            mediaPlayer.pause()
+        }
     }
 
     private fun initNavHost() {
@@ -108,6 +135,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                     }
                 }
             }
+            lifecycleScope.launch {
+                bgmState.collectLatest {
+                    Log.d(TAG, "initCollect: bgm state ${it}")
+                    Log.d(TAG, "initCollect: ? ${mediaPlayer.isPlaying}")
+                    if(it && mediaPlayer.isPlaying == false){
+                        Log.d(TAG, "initCollect: start bgm")
+                        mediaPlayer.start()
+                    }else if (it == false && mediaPlayer.isPlaying){
+                        mediaPlayer.pause()
+                    }
+                }
+            }
         }
     }
 
@@ -133,6 +172,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                 Log.d(TAG, "Key: $key Value: $value")
             }
         }
+    }
+
+    private fun initData(){
+        mainViewModel.getBgmState()
     }
 
     override fun onNewIntent(intent: Intent?) {
