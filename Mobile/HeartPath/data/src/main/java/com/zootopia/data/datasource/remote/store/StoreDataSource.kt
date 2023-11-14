@@ -1,5 +1,6 @@
 package com.zootopia.data.datasource.remote.store
 
+import com.zootopia.data.model.common.MessageResponse
 import com.zootopia.data.model.store.request.BuyStoreCharacterRequest
 import com.zootopia.data.model.store.request.BuyStoreLetterPaperRequest
 import com.zootopia.data.model.store.response.BuyStoreCharacterResponse
@@ -14,4 +15,9 @@ interface StoreDataSource {
     suspend fun getStoreItemLetterPaperList(): StoreItemLetterPaperListResponse
     suspend fun buyStoreCharacter(buyStoreCharacterRequest: BuyStoreCharacterRequest): BuyStoreCharacterResponse
     suspend fun buyStoreLetterPaper(buyStoreLetterPaperRequest: BuyStoreLetterPaperRequest): BuyStoreLetterPaperResponse
+    
+    /**
+     * 포인트 적립
+     */
+    suspend fun postPoint(point: Int): MessageResponse
 }

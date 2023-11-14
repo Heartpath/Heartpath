@@ -79,7 +79,6 @@ class WalkWorker(context: Context, parameters: WorkerParameters) :
             .setContentTitle("지금은 산책중입니다~")
             .setTicker(title)
             .setContentText(progress)
-            .setContentText(progress)
             .setSmallIcon(R.drawable.image_bird_delivery)
             .setOngoing(true)
             .setContentIntent(pendingIntent)
@@ -114,7 +113,7 @@ class WalkWorker(context: Context, parameters: WorkerParameters) :
             }
 
             Log.d(TAG, "simulateLocationUpdates: time: $time  / dist: $dist")
-            updateNotification("시간: ${timeIntToString(time)} \n 거리: ${distanceIntToString(dist.toInt())}")
+            updateNotification("시간: ${timeIntToString(time)} \n거리: ${distanceIntToString(dist.toInt())}")
         }
     }
 

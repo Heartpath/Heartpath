@@ -38,12 +38,6 @@ class MapLetterAdapter(
             
             // 신고버튼 클릭 이벤트
             buttonReport.setOnClickListener{
-//                if(uncheckLetterDto.isSelected) {
-//                    buttonReport.setBackgroundResource(R.drawable.image_selected_button)
-//                } else {
-//                    buttonReport.setBackgroundResource(R.drawable.image_un_selected_button)
-//                }
-//                uncheckLetterDto.isSelected = !uncheckLetterDto.isSelected
                 itemClickListener.reportClick(it, layoutPosition)
             }
         }

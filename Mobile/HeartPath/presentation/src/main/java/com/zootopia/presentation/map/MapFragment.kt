@@ -19,7 +19,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
@@ -91,7 +93,10 @@ class MapFragment :
     // WorkManager
     private lateinit var workManager: WorkManager
     private lateinit var workRequest: WorkRequest
-
+    
+    // 편지 position
+    private lateinit var letterSenderId: String
+    
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
@@ -144,7 +149,7 @@ class MapFragment :
         // 워커 매니저 초기화
         workManager = WorkManager.getInstance(mainActivity)
         binding.apply {
-            textviewDistance.text = "이동 거리: ${distanceIntToString(walkDist.toInt())}"
+            textviewDistance.text = "남은 거리: ${distanceIntToString(walkDist.toInt())}"
             textviewTime.text = "이동 시간: ${timeIntToString(walkTime)}"
         }
     }
@@ -159,6 +164,7 @@ class MapFragment :
 
                 if (isReport) {
                     buttonReport.visibility = View.VISIBLE
+                    letterSenderId = ""
                 } else {
                     buttonReport.visibility = View.GONE
                 }
@@ -168,6 +174,9 @@ class MapFragment :
 
         // 신고 요청 이벤트
         buttonReport.setOnClickListener {
+            if(!letterSenderId.isNullOrEmpty()) {
+                mapViewModel.putOpponentFriend(opponentID = letterSenderId)
+            }
         }
 
         // workManager 종료 버튼
@@ -236,6 +245,7 @@ class MapFragment :
                 override fun reportClick(view: View, position: Int) {
                     Log.d(TAG, "itemClick: 받은 편지 신고버튼 클릭됨")
                     mapViewModel.apply {
+                        letterSenderId = uncheckedLetterList[position].senderID
                         uncheckedLetterList.map { it.isSelected = false }
                         uncheckedLetterList[position].isSelected = true
                     }
@@ -245,9 +255,11 @@ class MapFragment :
                 }
             }
         }
-
+        val decoration = DividerItemDecoration(mainActivity, VERTICAL)
+      
         binding.recyclerviewLetterList.apply {
             adapter = mapLetterAdapter
+//            addItemDecoration(decoration)
             layoutManager = LinearLayoutManager(mainActivity, LinearLayoutManager.VERTICAL, false)
         }
     }
@@ -283,10 +295,25 @@ class MapFragment :
                 mapViewModel.dist = distanceIntToString(it.toInt())
                 if (mapViewModel.isStartWalk) {
                     binding.apply {
-                        textviewDistance.text = "이동 거리: ${distanceIntToString(walkDist.toInt())}"
+                        textviewDistance.text = "남은 거리: ${distanceIntToString(walkDist.toInt())}"
                         textviewTime.text = "이동 시간: ${timeIntToString(walkTime)}"
                     }
                 }
+            }
+        }
+        
+        // 친구차단 결과
+        viewLifecycleOwner.lifecycleScope.launch {
+            mapViewModel.isOppenentFriend.collectLatest {
+                mainActivity.showToast(it)
+            }
+        }
+        
+        // 포인트 적립
+        viewLifecycleOwner.lifecycleScope.launch {
+            mapViewModel.isPostPoint.collectLatest {
+                Log.d(TAG, "initCollect: 포인트 적립 collect")
+                mainActivity.showToast(it)
             }
         }
     }
