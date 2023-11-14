@@ -12,7 +12,7 @@ public class DocumentDBConfig {
     private MongoProperties properties;
 
     public static final String KEY_STORE_TYPE = "/tmp/certs/rds-truststore.jks";
-    public static final String DEFAULT_KEY_STORE_PASSWORD = "zootopia";
+    public static final String DEFAULT_KEY_STORE_PASSWORD = "zootopia-admin";
 
     public DocumentDBConfig(final MongoProperties properties) {
         super();
