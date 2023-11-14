@@ -44,6 +44,15 @@ class StoreRepositoryImpl(
             storeDataSource.buyStoreLetterPaper(buyStoreLetterPaperRequestDto.toData())
         }
     }
+    
+    /**
+     * 포인트 적립
+     */
+    override suspend fun postPoint(point: Int): String {
+        return getValueOrThrow2 {
+            storeDataSource.postPoint(point = point).message
+        }
+    }
 
     override suspend fun changeMainCharacter(changeMainCharacterRequestDto: ChangeMainCharacterRequestDto) {
         return getValueOrThrow2 {
@@ -56,6 +65,4 @@ class StoreRepositoryImpl(
             storeDataSource.getMainCharacter().toDomain()
         }
     }
-
-
 }

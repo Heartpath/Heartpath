@@ -41,4 +41,10 @@ class UserRepositoryImpl(
             userDataSource.searchUser(id = id, limit = limit, checkFriends = checkFriends).toDomain()
         }
     }
+    
+    override suspend fun putOpponentFriend(opponentID: String): String {
+        return getValueOrThrow2 {
+            userDataSource.putOpponentFriend(opponentID = opponentID).message
+        }
+    }
 }

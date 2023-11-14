@@ -17,8 +17,8 @@ import com.zootopia.data.repository.receiveletter.ReceiveLetterRepositoryImpl
 import com.zootopia.data.repository.store.StoreRepositoryImpl
 import com.zootopia.data.repository.user.UserRepositoryImpl
 import com.zootopia.domain.repository.PreferenceRepository
-import com.zootopia.domain.repository.letter.WriteLetterRepository
 import com.zootopia.domain.repository.letter.SendLetterRepository
+import com.zootopia.domain.repository.letter.WriteLetterRepository
 import com.zootopia.domain.repository.login.LoginRepository
 import com.zootopia.domain.repository.map.MapRepository
 import com.zootopia.domain.repository.receiveletter.ReceiveLetterRepository

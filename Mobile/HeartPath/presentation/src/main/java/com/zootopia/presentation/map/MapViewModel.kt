@@ -3,12 +3,15 @@ package com.zootopia.presentation.map
 import android.location.Location
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.zootopia.domain.model.navermap.MapLetterDto
+import com.zootopia.domain.model.letter.uncheckedletter.UncheckLetterDto
 import com.zootopia.domain.model.tmap.FeatureCollectionDto
 import com.zootopia.domain.model.tmap.RequestTmapWalkRoadDto
 import com.zootopia.domain.usecase.map.GetMapDirectionUseCase
+import com.zootopia.domain.usecase.map.GetPickUpLetterUseCase
+import com.zootopia.domain.usecase.map.GetUncheckedLetterUseCase
 import com.zootopia.domain.usecase.map.RequestTmapWalkRoadUseCase
-import com.zootopia.domain.usecase.testUseCase
+import com.zootopia.domain.usecase.store.PostPointUseCase
+import com.zootopia.domain.usecase.user.PutOpponentFriendUseCase
 import com.zootopia.presentation.config.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,38 +27,48 @@ private const val TAG = "MapViewModel_HP"
 class MapViewModel @Inject constructor(
     private val getMapDirectionUseCase: GetMapDirectionUseCase,
     private val requestTmapWalkRoadUseCase: RequestTmapWalkRoadUseCase,
-    private val testUseCase: testUseCase,
+    private val uncheckedLetterUseCase: GetUncheckedLetterUseCase,
+    private val getPickUpLetterUseCase: GetPickUpLetterUseCase,
+    private val putOpponentFriendUseCase: PutOpponentFriendUseCase,
+    private val postPointUseCase: PostPointUseCase,
 ) : BaseViewModel() {
 
     // 편지 신고 삭제 신고 클릭 유무
     var isReport = false
 
-    // 더미더미더미
-    var LetterList = mutableListOf<MapLetterDto>(
-        MapLetterDto(1, false, "하동혁님이 보낸 편지1", "2023.11.01", "36.1094880", "128.420560"),
-        MapLetterDto(2, false, "하동혁님이 보낸 편지2", "2023.11.01", "36.1051004", "128.422769"),
-        MapLetterDto(3, false, "하동혁님이 보낸 편지3", "2023.11.01", "36.111282119957956", "128.42349987855764"),
-        MapLetterDto(4, false, "우리집", "2023.11.01", "36.121949856660855", "128.38053050168602"),
-    )
+    // 미확인 편지 리스트
+    var uncheckedLetterList: MutableList<UncheckLetterDto> = mutableListOf()
 
-    private val _mapLetterList = MutableSharedFlow<MutableList<MapLetterDto>>()
-    val mapLetterList: SharedFlow<MutableList<MapLetterDto>>
-        get() = _mapLetterList
+    private val _mapLetterList = MutableSharedFlow<List<UncheckLetterDto>>()
+    val mapLetterList: SharedFlow<List<UncheckLetterDto>>
+        get() = _mapLetterList.asSharedFlow()
 
-    fun getDummyList() {
-        viewModelScope.launch {
-            _mapLetterList.emit(LetterList)
-        }
+    fun getUncheckedLetterList() {
+        getApiResult(
+            block = {
+                uncheckedLetterUseCase.invoke()
+            },
+            success = {
+                uncheckedLetterList = it.toMutableList()
+                _mapLetterList.emit(it)
+            },
+        )
     }
+    // 미확인 편지 리스트 END
+
+    // select Letter
+    var selectLetter: UncheckLetterDto? = null
 
     // user posi
     var lastLatitude: Double = 0.0
     var lastLongitude: Double = 0.0
-    val lastLocation = Location("userProvider")
     fun setLocation(latitude: Double, longitude: Double) {
         lastLatitude = latitude
         lastLongitude = longitude
     }
+
+    // user: Location
+    val lastLocation = Location("userProvider")
     fun makeUserLocataion() {
         lastLocation.latitude = lastLatitude
         lastLocation.longitude = lastLongitude
@@ -79,9 +92,9 @@ class MapViewModel @Inject constructor(
     private val _tmapWalkRoadInfo = MutableSharedFlow<FeatureCollectionDto>()
     val tmapWalkRoadInfo: SharedFlow<FeatureCollectionDto>
         get() = _tmapWalkRoadInfo.asSharedFlow()
-    
+
     var walkRoad: FeatureCollectionDto? = null
-    
+
     @OptIn(ExperimentalCoroutinesApi::class)
     fun resetTmapWalkRoadInfo() {
         _tmapWalkRoadInfo.resetReplayCache()
@@ -89,7 +102,7 @@ class MapViewModel @Inject constructor(
     }
 
     fun requestTmapWalkRoad(
-        mapLetterDto: MapLetterDto,
+        uncheckLetterDto: UncheckLetterDto,
     ) {
         getApiResult(
             block = {
@@ -98,8 +111,8 @@ class MapViewModel @Inject constructor(
                     RequestTmapWalkRoadDto(
                         startX = lastLongitude.toString(),
                         startY = lastLatitude.toString(),
-                        endX = mapLetterDto.longitude,
-                        endY = mapLetterDto.latitude,
+                        endX = uncheckLetterDto.lng.toString(),
+                        endY = uncheckLetterDto.lat.toString(),
                         reqCoordType = "WGS84GEO", // 위경도 표현 타입 코드
                         resCoordType = "WGS84GEO",
                         startName = "내 위치",
@@ -124,5 +137,58 @@ class MapViewModel @Inject constructor(
         viewModelScope.launch {
             _walkDistance.emit(dist.toDouble())
         }
+    }
+
+    /**
+     * 편지 pick up API
+     */
+    private val _isPickUpLetter = MutableSharedFlow<String>()
+    val isPickUpLetter: SharedFlow<String> = _isPickUpLetter.asSharedFlow()
+
+    fun getPickUpLetter(letter_id: Int) {
+        getApiResult(
+            block = {
+                getPickUpLetterUseCase.invoke(letter_id = letter_id)
+            },
+            success = {
+                Log.d(TAG, "getPickUpLetter: $it")
+                isStartWalk = false
+                _isPickUpLetter.emit(it)
+            },
+        )
+    }
+    
+    /**
+     * 친구차단
+     */
+    private val _isOpponentFriend = MutableSharedFlow<String>()
+    val isOppenentFriend: SharedFlow<String> = _isOpponentFriend.asSharedFlow()
+    
+    fun putOpponentFriend(opponentID: String) {
+        getApiResult(
+            block = {
+                putOpponentFriendUseCase.invoke(opponentID = opponentID)
+            },
+            success = {
+                _isOpponentFriend.emit(it)
+            }
+        )
+    }
+    
+    // 포인트 적립
+    private val _isPostPoint = MutableSharedFlow<String>()
+    val isPostPoint: SharedFlow<String> = _isPostPoint.asSharedFlow()
+    
+    fun postPoint() {
+        getApiResult(
+            block = {
+                // todo 포인트 저장 위치 만들어서 사용??
+                postPointUseCase.invoke(point = 100)
+            },
+            success = {
+                Log.d(TAG, "postPoint: 포인트 적립 성공")
+                _isPostPoint.emit(it)
+            }
+        )
     }
 }
