@@ -11,6 +11,7 @@ import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph
@@ -19,6 +20,8 @@ import androidx.work.WorkManager
 import com.kakao.sdk.common.util.Utility
 import com.zootopia.presentation.config.BaseActivity
 import com.zootopia.presentation.databinding.ActivityMainBinding
+import com.zootopia.presentation.home.HomeFragment
+import com.zootopia.presentation.map.MapFragment
 import com.zootopia.presentation.util.checkAllPermission
 import com.zootopia.presentation.util.showPermissionDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -181,6 +184,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         mainViewModel.getBgmState()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         Log.d(TAG, "onNewIntent: 여기 호출되었어요")
@@ -189,7 +193,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         if(extraStr != null) {
             if(extraStr == "map") {
                 Log.d(TAG, "onNewIntent: $extraStr")
-//                supportFragmentManager.beginTransaction().add()
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.main_container, MapFragment())
+                    .addToBackStack("homeFragment")
+                    .commit()
             }
         }
     }
