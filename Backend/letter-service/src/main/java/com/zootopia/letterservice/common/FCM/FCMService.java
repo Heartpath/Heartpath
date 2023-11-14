@@ -1,7 +1,8 @@
 package com.zootopia.letterservice.common.FCM;
 
-import com.google.firebase.messaging.*;
-import lombok.*;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.Message;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -12,15 +13,14 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class FCMService {
-
-    public void sendFCMNotification(String token, String title, String body) {
-        try {
+    public void sendFCM(String token, String title, String body) {
+        try{
             Map<String, String> data = new HashMap<>();
-            System.out.println("title: " + title);
-            System.out.println("body : " + body);
-            // FCM 데이터 입력
+
             data.put("title", title);
             data.put("message", body);
+
+            System.out.println("title :" + title + "body :" + body);
 
             Message message = Message.builder()
                     .putAllData(data)
@@ -30,7 +30,7 @@ public class FCMService {
             String response = FirebaseMessaging.getInstance().send(message);
             System.out.println("Successfully sent message: " + response);
         } catch (Exception e) {
-            System.out.println("UnSuccessfully sent message: " + e);
+            e.printStackTrace();;
         }
     }
 }
