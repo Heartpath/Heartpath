@@ -161,7 +161,7 @@ public class LetterController {
     @GetMapping("/checked")
     public ResponseEntity<? extends BaseResponseBody> getPickupLetters(@RequestHeader(value = "Authorization") String accessToken) {
         // accessToken으로 멤버 객체 찾기 → SendId가 해당 맴버인 것 중 isPickup = true인 값들만 반환
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "열람한 편지 목록 조회 성공", letterService.getPickupLetters(accessToken)));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "수신한 편지 중 가지고 온 편지 목록 반환", letterService.getPickupLetters(accessToken)));
     }
 
     @Operation(summary = "줍지 않은 수신 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
@@ -187,7 +187,7 @@ public class LetterController {
     @GetMapping("/unchecked")
     public ResponseEntity<? extends BaseResponseBody> getNotPickupLetters(@RequestHeader(value = "Authorization") String accessToken) {
         // accessToken으로 멤버 객체 찾기 → SendId가 해당 맴버인 것 중 isPickup = false인 값들만 반환
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "미열람한 편지 목록 조회 성공", letterService.getNotPickupLetters(accessToken)));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "수신한 편지 중 가지러 가지 않은 편지 목록 반환", letterService.getNotPickupLetters(accessToken)));
     }
 
     @Operation(summary = "편지 상세조회", description = "Authorization : Bearer {accessToken}, 필수")
