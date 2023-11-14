@@ -159,5 +159,6 @@ class TypingWriteFragment : BaseFragment<FragmentTypingWriteBinding>(
         writeLetterViewModel.setSelectedLetterPaperUrl("")
         writeLetterViewModel.resetBitmap()
         writeLetterViewModel.resetLetterText()
+        writeLetterViewModel.resetImageList()
     }
 }
