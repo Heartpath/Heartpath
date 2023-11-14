@@ -6,6 +6,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
@@ -44,33 +45,25 @@ public class FirebaseCloudMessageService {
     private String makeMessage(String targetToken, String title, String body) throws JsonProcessingException {
         System.out.println("FCM makeMessageTo");
 
-        FCMMessage.Notification notification = FCMMessage.Notification.builder()
-                .title(title)
-                .body(body)
-                .build();
-
-        FCMMessage.Message message = FCMMessage.Message.builder()
-                .notification(notification)
-                .token(targetToken)
-                .build();
-
         FCMMessage fcmMessage = FCMMessage.builder()
-                .validateOnly(false)
-                .message(message)
-                .build();
+                .message(FCMMessage.Message.builder()
+                        .token(targetToken)
+                        .notification(FCMMessage.Notification.builder()
+                                .title(title)
+                                .body(body)
+                                .build()
+                        ).build()).validateOnly(false).build();
 
         return objectMapper.writeValueAsString(fcmMessage);
     }
 
     private String getAccessToken() throws IOException {
-        // 클래스패스 내의 리소스로 파일 로드
-        InputStream is = getClass().getResourceAsStream("/firebase/heartpath-adminsdk.json");
+        String firebaseConfigPath = "firebase/heartpath-adminsdk.json";
 
         GoogleCredentials googleCredentials = GoogleCredentials
-                .fromStream(is)
+                .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
                 .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
 
-        System.out.println("FIREBASE GET ACCESS TOKEN");
         googleCredentials.refreshIfExpired();
         return googleCredentials.getAccessToken().getTokenValue();
     }
