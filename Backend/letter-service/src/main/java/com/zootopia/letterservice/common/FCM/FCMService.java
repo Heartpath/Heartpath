@@ -30,7 +30,7 @@ public class FCMService {
             String response = FirebaseMessaging.getInstance().send(message);
             System.out.println("Successfully sent message: " + response);
         } catch (Exception e) {
-            e.printStackTrace();;
+            System.out.println("UnSuccessfully sent message: " + e.getMessage());
         }
     }
 }
