@@ -30,5 +30,12 @@ class UserDataSourceImpl(
     override suspend fun searchUser(id: String, limit: Int, checkFriends: Boolean): SearchUserResponse {
         return handleApi { businessService.searchUser(id = id, limit = limit, checkFriends = checkFriends) }
     }
-
+    
+    /**
+     * 친구 차단
+     */
+    override suspend fun putOpponentFriend(opponentID: String): MessageResponse {
+        return handleApi { businessService.putOpponentFriend(opponentID = opponentID) }
+    }
+    
 }

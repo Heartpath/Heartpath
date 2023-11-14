@@ -16,4 +16,6 @@ data class ReceiveLetterDto(
     val sender: String = "하참새",
     @SerializedName("time")
     val time: String = "",
+    @SerializedName("read")
+    val read: Boolean = false  // true: 읽은거
 )

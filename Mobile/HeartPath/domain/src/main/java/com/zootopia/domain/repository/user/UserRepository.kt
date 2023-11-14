@@ -11,4 +11,9 @@ interface UserRepository {
     suspend fun getFriendList(): List<FriendDto>?
     suspend fun addFriend(id: String): String
     suspend fun searchUser(id: String, limit: Int, checkFriends: Boolean): List<SearchUserInfoDto>
+    
+    /**
+     * 친구차단
+     */
+    suspend fun putOpponentFriend(opponentID: String): String
 }
