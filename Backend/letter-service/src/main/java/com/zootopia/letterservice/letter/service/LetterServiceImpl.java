@@ -334,7 +334,7 @@ public class LetterServiceImpl implements LetterService {
             flag = false;
         }
 
-        LetterReceivedDetailResDto letter = new LetterReceivedDetailResDto(letterMySQL, senderNickname, receiverNickname, flag);
+        LetterReceivedDetailResDto letter = new LetterReceivedDetailResDto(letterMySQL, senderNickname, letterMySQL.getSenderId(), receiverNickname, flag);
         return letter;
     }
 
