@@ -159,5 +159,6 @@ class HandWriteFragment : BaseFragment<FragmentHandWriteBinding>(
         writeLetterViewModel.setPenSize(10f)
         writeLetterViewModel.setEraserState(false)
         writeLetterViewModel.resetBitmap()
+        writeLetterViewModel.resetImageList()
     }
 }

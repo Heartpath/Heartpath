@@ -27,6 +27,8 @@ import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentAddLetterImageBinding
 import com.zootopia.presentation.util.LetterType
+import com.zootopia.presentation.util.LoadingDialog
+import com.zootopia.presentation.util.WriteLetterSendState
 import com.zootopia.presentation.util.getRealPathFromUri
 import com.zootopia.presentation.util.hasPermissions
 import com.zootopia.presentation.util.requestPermissionsOnClick
@@ -49,6 +51,7 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
     private lateinit var addLetterImageAdapter: AddLetterImageAdapter
     private var imageList: MutableList<Uri> = mutableListOf()
     private val args: AddLetterImageFragmentArgs by navArgs()
+    private val dialog = LoadingDialog()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -103,6 +106,7 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
                 if (it) {
                     writeLetterViewModel.resetIsSendSuccess()
                     writeLetterViewModel.resetImageList()
+                    writeLetterViewModel.setWriteLetterSendState(WriteLetterSendState.NOT_LOADING)
                     Toast.makeText(
                         mainActivity,
                         R.string.add_letter_image_write_success,
@@ -115,10 +119,22 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
         lifecycleScope.launch {
             writeLetterViewModel.error.collectLatest {
                 val err = it as NetworkThrowable
+                writeLetterViewModel.setWriteLetterSendState(WriteLetterSendState.NOT_LOADING)
                 when (err.code) {
                     4001 -> Toast.makeText(mainActivity, R.string.add_letter_image_unexpected_image, Toast.LENGTH_LONG).show()
                     4004 -> Toast.makeText(mainActivity, R.string.add_letter_image_forbidden_word, Toast.LENGTH_LONG).show()
                     else -> Toast.makeText(mainActivity, R.string.add_letter_unknown_err, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+        lifecycleScope.launch {
+            writeLetterViewModel.writeLetterSendState.collectLatest {
+                if(it == WriteLetterSendState.NOT_LOADING){
+                    if(dialog.isVisible){
+                        dialog.dismiss()
+                    }
+                }else{
+                    dialog.show(childFragmentManager, "writeLetterSendLoadingDialog")
                 }
             }
         }
@@ -139,6 +155,7 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
                                 realFilePathList.add(filePath)
                             }
                         }
+                        writeLetterViewModel.setWriteLetterSendState(WriteLetterSendState.LOADING)
                         if (args.letterType == LetterType.HAND_WRITE) {
                             writeLetterViewModel.saveHandWriteLetter(
                                 realPathOfLetter,
@@ -185,6 +202,7 @@ class AddLetterImageFragment : BaseFragment<FragmentAddLetterImageBinding>(
 
     override fun onDestroy() {
         super.onDestroy()
+        writeLetterViewModel.resetWriteLetterSendState()
     }
 
     companion object {

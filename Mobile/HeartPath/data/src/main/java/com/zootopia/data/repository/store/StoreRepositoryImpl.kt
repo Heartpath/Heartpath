@@ -5,6 +5,7 @@ import com.zootopia.data.mapper.toData
 import com.zootopia.data.mapper.toDomain
 import com.zootopia.domain.model.store.BuyStoreCharacterRequestDto
 import com.zootopia.domain.model.store.BuyStoreLetterPaperRequestDto
+import com.zootopia.domain.model.store.ChangeMainCharacterRequestDto
 import com.zootopia.domain.model.store.CharacterDto
 import com.zootopia.domain.model.store.StoreCharacterDto
 import com.zootopia.domain.model.store.StoreItemLetterPaperDto
@@ -52,6 +53,16 @@ class StoreRepositoryImpl(
             storeDataSource.postPoint(point = point).message
         }
     }
-    
-    
+
+    override suspend fun changeMainCharacter(changeMainCharacterRequestDto: ChangeMainCharacterRequestDto) {
+        return getValueOrThrow2 {
+            storeDataSource.changeMainCharacter(changeMainCharacterRequestDto.toData())
+        }
+    }
+
+    override suspend fun getMainCharacter(): CharacterDto {
+        return getValueOrThrow2 {
+            storeDataSource.getMainCharacter().toDomain()
+        }
+    }
 }

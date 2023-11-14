@@ -1,8 +1,10 @@
 package com.zootopia.presentation.readletter
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.zootopia.domain.model.letter.ReadLetterDto
 import com.zootopia.domain.usecase.letter.received.GetLetterToReadUseCase
+import com.zootopia.domain.usecase.letter.received.TestFcmUseCase
 import com.zootopia.domain.usecase.user.AddFriendUseCase
 import com.zootopia.presentation.config.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +19,7 @@ import javax.inject.Inject
 class ReadLetterViewModel @Inject constructor(
     private val addFriendUseCase: AddFriendUseCase,
     private val getLetterToReadUseCase: GetLetterToReadUseCase,
+
 ) : BaseViewModel() {
 
     private val _checkFriendCnt = MutableStateFlow(1)
@@ -82,5 +85,10 @@ class ReadLetterViewModel @Inject constructor(
             _letterList.emit(tmpList)
             _imageCnt.emit(it.files.size)
         }
+    }
+
+
+    companion object {
+        private const val TAG = "ReadLetterViewModel_HP"
     }
 }
