@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.zootopia.domain.model.store.CharacterDto
 import com.zootopia.presentation.MainActivity
@@ -40,13 +41,23 @@ class CharacterEncyclopediaFragment : BaseFragment<FragmentCharacterEncyclopedia
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-
+        initView()
         initRecyclerGridView()
         initData()
         initClickListener()
 
         initCollecter()
 
+    }
+
+    private fun initView() = with(binding) {
+        // toolbar setting
+        toolbarHeartpathCharacterEncyclopedia.apply {
+            textviewCurrentPageTitle.text = resources.getString(R.string.toolbar_character_encyclopedia_title)
+            imageviewBackButton.setOnClickListener {
+                findNavController().popBackStack()
+            }
+        }
     }
 
     private fun initData() {
