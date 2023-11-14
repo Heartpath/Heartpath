@@ -16,6 +16,7 @@ public class LetterReceivedDetailResDto {
     private Long index;
     private String content;
     private String sender;
+    private String senderID;
     private String receiver;
     private LocalDateTime time;
     private Double lat;
@@ -23,10 +24,11 @@ public class LetterReceivedDetailResDto {
     private List<String> files;
     private boolean isFriend;
 
-    public LetterReceivedDetailResDto(LetterMySQL letter, String sender, String receiver, boolean flag) {
+    public LetterReceivedDetailResDto(LetterMySQL letter, String sender, String senderID, String receiver, boolean flag) {
         this.index = letter.getId();
         this.content = letter.getContent();
         this.sender = sender;
+        this.senderID = senderID;
         this.receiver = receiver;
         this.time = letter.getCreatedDate();
         this.lat = letter.getLat();
