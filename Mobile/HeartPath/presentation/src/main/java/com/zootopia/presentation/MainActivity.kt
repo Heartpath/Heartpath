@@ -41,25 +41,24 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         setTheme(R.style.Theme_Splash)
         super.onCreate(savedInstanceState)
         initMediaPlayer()
-        
+
         initNavHost()
         initCheckPermission()
         initCollect()
         initCheck()
-
-//        initAppbar()
-
         initNotification()
+        Log.d(TAG, "onCreate: main activity on create 되었어요")
+
         initData()
         // 카카오 키 해시 값 가지고 오기
-        Log.d(TAG, "KAKAO keyhash : ${Utility.getKeyHash(this)}")
+//        Log.d(TAG, "KAKAO keyhash : ${Utility.getKeyHash(this)}")
     }
-    
+
     private fun initMediaPlayer(){
         mediaPlayer = MediaPlayer.create(this, R.raw.my_precious_teddy_bear)
         mediaPlayer.isLooping = true
     }
-    
+
     override fun onDestroy() {
         // 앱이 종료되면 백그라운드 서비스 취소하기
         WorkManager.getInstance(applicationContext).cancelAllWork()
@@ -84,6 +83,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
     private fun initNavHost() {
+        val extraStr = intent.getStringExtra("destination")
         val navHostFragmentManager =
             supportFragmentManager.findFragmentById(R.id.main_container) as NavHostFragment
         navController = navHostFragmentManager.navController
@@ -91,25 +91,28 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 //            initCheck()
         val inflater = navHostFragmentManager.navController.navInflater
         val graph = inflater.inflate(R.navigation.nav_graph)
+        Log.d(TAG, "initNavHost: extraStr!!! $extraStr")
+        navController.navigate(R.id.mapFragment)
 
-        val type = intent.getStringExtra("destination")
-        if(type != null) {
-            navController.navigate(R.id.mapFragment)
-        } else {
-            lifecycleScope.launch {
-                mainViewModel.accessToken.collect { value ->
-                    Log.d(TAG, "initCheck: access token $value")
-                    if (value != "") {
+        lifecycleScope.launch {
+            mainViewModel.accessToken.collect { value ->
+                Log.d(TAG, "initCheck: access token $value")
+                if (value != "") {
 //                    graph.setStartDestination(R.id.homeFragment)
-                        navController.currentDestination?.let { it1 -> navController.popBackStack(it1.id, true) }   // 백스택 지움
-                        navController.navigate(R.id.homeFragment)
-                    } else {
+                    navController.currentDestination?.let { it1 ->
+                        navController.popBackStack(
+                            it1.id,
+                            true
+                        )
+                    }   // 백스택 지움
+                    navController.navigate(R.id.homeFragment)
+                } else {
 //                    graph.setStartDestination(R.id.loginFragment)
-                        navController.navigate(R.id.loginFragment)
-                    }
+                    navController.navigate(R.id.loginFragment)
                 }
             }
         }
+
 
     }
 
@@ -181,6 +184,29 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         Log.d(TAG, "onNewIntent: 여기 호출되었어요")
+
+        val extraStr = intent?.getStringExtra("destination")
+        if(extraStr != null) {
+            if(extraStr == "map") {
+                Log.d(TAG, "onNewIntent: $extraStr")
+//                supportFragmentManager.beginTransaction().add()
+            }
+        }
+    }
+
+    // 화면 터치했을 때 키보드 내리기
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        val inputMethodManager: InputMethodManager =
+            getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+        if (currentFocus is EditText) { // 외부에 클릭했을 때 edit text focus 제거
+            currentFocus!!.clearFocus()
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
+    private fun initCheck() {
+        mainViewModel.getAccessToken()
     }
 
     // 코틀린의 전역변수
@@ -215,20 +241,5 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             ACCESS_FINE_LOCATION,
             POST_NOTIFICATIONS,
         )
-    }
-
-    // 화면 터치했을 때 키보드 내리기
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        val inputMethodManager: InputMethodManager =
-            getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
-        if (currentFocus is EditText) { // 외부에 클릭했을 때 edit text focus 제거
-            currentFocus!!.clearFocus()
-        }
-        return super.dispatchTouchEvent(ev)
-    }
-
-    private fun initCheck() {
-        mainViewModel.getAccessToken()
     }
 }
