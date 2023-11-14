@@ -323,7 +323,7 @@ public class LetterServiceImpl implements LetterService {
             letterJpaRepository.setLetterIsReadTrue(letterMySQL.getId());
             List<FriendDetailResDto> friends = FriendIsBlocked(accessToken, letterMySQL.getReceiverId(), letterMySQL.getSenderId()).getData();
             for (FriendDetailResDto friend : friends) {
-                if (friend.getFrom().equals(letterMySQL.getReceiverId()) && friend.getTo().equals(letterMySQL.getSenderId()) && friend.isBlocked()) {
+                if (friend.getFrom().equals(letterMySQL.getReceiverId()) && friend.getTo().equals(letterMySQL.getSenderId())) {
                     flag = true;
                 }
             }
@@ -331,7 +331,7 @@ public class LetterServiceImpl implements LetterService {
 
 
         if (letterMySQL.getSenderId().equals(user.getMemberID())) {
-            flag = false;
+            flag = true;
         }
 
         LetterReceivedDetailResDto letter = new LetterReceivedDetailResDto(letterMySQL, senderNickname, letterMySQL.getSenderId(), receiverNickname, flag);
