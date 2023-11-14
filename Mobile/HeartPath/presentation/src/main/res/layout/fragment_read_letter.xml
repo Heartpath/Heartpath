@@ -34,6 +34,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:rippleColor="@android:color/transparent"
-        app:tint="@color/DarkGray" />
+        app:tint="@color/DarkGray"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
