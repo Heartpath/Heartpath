@@ -202,6 +202,7 @@ public class LetterController {
                             "           \"index\": 1," +
                             "           \"content\": \"https://zootopia-s3.s3.ap-northeast-2.amazonaws.com/-/file.jpg\"," +
                             "           \"sender\": \"사용자 닉네임\"," +
+                            "           \"senderID\": \"사용자 ID\"," +
                             "           \"receiver\": \"사용자 닉네임\"," +
                             "           \"time\": \"yyyy-MM-ddThh:mm:ss\"," +
                             "           \"lat\": 125.345436," +
