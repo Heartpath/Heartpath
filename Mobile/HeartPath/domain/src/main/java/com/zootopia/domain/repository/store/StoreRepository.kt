@@ -12,4 +12,9 @@ interface StoreRepository {
     suspend fun getStoreItemLetterPaperList(): MutableList<StoreItemLetterPaperDto>
     suspend fun buyStoreCharacter(buyStoreCharacterRequestDto: BuyStoreCharacterRequestDto)
     suspend fun buyStoreLetterPaper(buyStoreLetterPaperRequestDto: BuyStoreLetterPaperRequestDto)
+    
+    /**
+     * 포인트 적립
+     */
+    suspend fun postPoint(point: Int): String
 }

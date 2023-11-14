@@ -96,10 +96,12 @@ class ArCoreReadFragment :
                 dist = it
             }
         }
-
+        
+        // 편지 pick up 성공시
         viewLifecycleOwner.lifecycleScope.launch {
             mapViewModel.isPickUpLetter.collectLatest {
                 isLoading = false
+                mapViewModel.postPoint()
                 mainActivity.showToast("편지를 편지함에 담았습니다.")
                 WorkManager.getInstance(mainActivity).cancelAllWork() // 백그라운드 종료
                 mapViewModel.resetTmapWalkRoadInfo() // 길찾기 data 초기화

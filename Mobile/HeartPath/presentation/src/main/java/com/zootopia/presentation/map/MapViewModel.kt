@@ -10,6 +10,8 @@ import com.zootopia.domain.usecase.map.GetMapDirectionUseCase
 import com.zootopia.domain.usecase.map.GetPickUpLetterUseCase
 import com.zootopia.domain.usecase.map.GetUncheckedLetterUseCase
 import com.zootopia.domain.usecase.map.RequestTmapWalkRoadUseCase
+import com.zootopia.domain.usecase.store.PostPointUseCase
+import com.zootopia.domain.usecase.user.PutOpponentFriendUseCase
 import com.zootopia.presentation.config.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,6 +29,8 @@ class MapViewModel @Inject constructor(
     private val requestTmapWalkRoadUseCase: RequestTmapWalkRoadUseCase,
     private val uncheckedLetterUseCase: GetUncheckedLetterUseCase,
     private val getPickUpLetterUseCase: GetPickUpLetterUseCase,
+    private val putOpponentFriendUseCase: PutOpponentFriendUseCase,
+    private val postPointUseCase: PostPointUseCase,
 ) : BaseViewModel() {
 
     // 편지 신고 삭제 신고 클릭 유무
@@ -37,7 +41,7 @@ class MapViewModel @Inject constructor(
 
     private val _mapLetterList = MutableSharedFlow<List<UncheckLetterDto>>()
     val mapLetterList: SharedFlow<List<UncheckLetterDto>>
-        get() = _mapLetterList
+        get() = _mapLetterList.asSharedFlow()
 
     fun getUncheckedLetterList() {
         getApiResult(
@@ -139,7 +143,7 @@ class MapViewModel @Inject constructor(
      * 편지 pick up API
      */
     private val _isPickUpLetter = MutableSharedFlow<String>()
-    val isPickUpLetter: SharedFlow<String> = _isPickUpLetter
+    val isPickUpLetter: SharedFlow<String> = _isPickUpLetter.asSharedFlow()
 
     fun getPickUpLetter(letter_id: Int) {
         getApiResult(
@@ -151,6 +155,40 @@ class MapViewModel @Inject constructor(
                 isStartWalk = false
                 _isPickUpLetter.emit(it)
             },
+        )
+    }
+    
+    /**
+     * 친구차단
+     */
+    private val _isOpponentFriend = MutableSharedFlow<String>()
+    val isOppenentFriend: SharedFlow<String> = _isOpponentFriend.asSharedFlow()
+    
+    fun putOpponentFriend(opponentID: String) {
+        getApiResult(
+            block = {
+                putOpponentFriendUseCase.invoke(opponentID = opponentID)
+            },
+            success = {
+                _isOpponentFriend.emit(it)
+            }
+        )
+    }
+    
+    // 포인트 적립
+    private val _isPostPoint = MutableSharedFlow<String>()
+    val isPostPoint: SharedFlow<String> = _isPostPoint.asSharedFlow()
+    
+    fun postPoint() {
+        getApiResult(
+            block = {
+                // todo 포인트 저장 위치 만들어서 사용??
+                postPointUseCase.invoke(point = 100)
+            },
+            success = {
+                Log.d(TAG, "postPoint: 포인트 적립 성공")
+                _isPostPoint.emit(it)
+            }
         )
     }
 }

@@ -1,6 +1,5 @@
 package com.zootopia.data.service
 
-import android.media.tv.CommandResponse
 import com.zootopia.data.model.auth.AuthResponse
 import com.zootopia.data.model.common.MessageResponse
 import com.zootopia.data.model.letter.request.LetterPlacedRequest
@@ -18,6 +17,7 @@ import com.zootopia.data.model.login.response.CheckIdResponse
 import com.zootopia.data.model.login.response.LoginResponse
 import com.zootopia.data.model.store.request.BuyStoreCharacterRequest
 import com.zootopia.data.model.store.request.BuyStoreLetterPaperRequest
+import com.zootopia.data.model.store.request.PostPointRequest
 import com.zootopia.data.model.store.response.BuyStoreCharacterResponse
 import com.zootopia.data.model.store.response.BuyStoreLetterPaperResponse
 import com.zootopia.data.model.store.response.CharacterEncyclopediaListResponse
@@ -171,5 +171,17 @@ interface BusinessService {
     @GET("/letter/pickup/{letter_id}")
     suspend fun getPickUpLetter(
         @Path("letter_id") letter_id: Int,
+    ): Response<MessageResponse>
+    
+    // 친구 차단
+    @PUT("/user/friend/{opponentID}")
+    suspend fun putOpponentFriend(
+        @Path("opponentID") opponentID: String,
+    ): Response<MessageResponse>
+    
+    // 포인트 적립
+    @POST("/store/point")
+    suspend fun postPoint(
+        @Body point: PostPointRequest
     ): Response<MessageResponse>
 }
