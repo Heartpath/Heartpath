@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -58,6 +59,9 @@ class LoginViewModel @Inject constructor(
 
     private val _refreshToken = MutableStateFlow("")
     var refreshToken = _refreshToken.asStateFlow()
+    
+    private val _setTokenResult = MutableSharedFlow<Boolean>()
+    var setTokenResult = _setTokenResult.asSharedFlow()
 
 
     fun setKakaoAccessToken(kakaoToken: String) = viewModelScope.launch {
@@ -115,7 +119,10 @@ class LoginViewModel @Inject constructor(
     // token 저장
     fun storeToken() = viewModelScope.launch {
         Log.d(TAG, "storeToken: here")
-        setTokenUseCase.invoke(accessToken = accessToken.value, refreshToken = refreshToken.value)
+        setTokenUseCase.invoke(accessToken = accessToken.value, refreshToken = refreshToken.value).collectLatest { 
+            _setTokenResult.emit(it)
+            Log.d(TAG, "storeToken: store 끝났으면? $it")
+        }
     }
 
     companion object {

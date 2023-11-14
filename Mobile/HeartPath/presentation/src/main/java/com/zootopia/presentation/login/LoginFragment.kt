@@ -47,13 +47,16 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
 //            findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
             lifecycleScope.launch {
                 loginByKakao()
-                // 로그인 결과에 따라 동작 TODO: 분기 다시 처리
+                // 로그인 결과에 따라 동작
                 loginViewModel.loginResult.collect { result ->
                     if(result.accessToken != "") {
                         // 성공 -> home으로 이동
                         launch {
                             loginViewModel.setToken(result)
-                            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                            // 토큰 값 다 저장했으면 home으로 이동
+                            loginViewModel.setTokenResult.collect {done ->
+                                if(done) findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                            }
                         }
                     } else {
                         // 성공 못함 -> 회원가입 시키기
