@@ -65,7 +65,7 @@
     <string name="toolbar_point_history_title">포인트 정보</string>
     <string name="toolbar_my_page_title">마이페이지</string>
     <string name="toolbar_setting_title">설정</string>
-    <string name="toolbar_select_letter_type_title">편지 쓰기</string>
+    <string name="toolbar_select_letter_type_title">편지 유형 선택</string>
     <string name="toolbar_select_letter_paper_title">편지지 선택</string>
     <string name="toolbar_hand_write_title">손편지 쓰기</string>
     <string name="toolbar_typing_title">편지 쓰기</string>
@@ -76,6 +76,9 @@
     <string name="toolbar_put_letter_title">편지 배치</string>
     <string name="toolbar_store_title">상점</string>
     <string name="toolbar_character_encyclopedia_title">캐릭터 도감</string>
+    <string name="toolbar_receiver_search_title">받는 이 검색</string>
+    <string name="toolbar_letter_paper_type_title">편지지 선택</string>
+    <string name="toolbar_encyclopedia_title">캐릭터 도감</string>
 
     <string name="friend_edit">친구 수정</string>
     <string name="friend_delete">삭제하기</string>
