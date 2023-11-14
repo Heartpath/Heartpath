@@ -1,20 +1,31 @@
 package com.zootopia.presentation.receiveletter
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.zootopia.domain.model.letter.ReceiveLetterDto
+import com.zootopia.presentation.R
 import com.zootopia.presentation.databinding.ItemReceiveLetterBinding
+import com.zootopia.presentation.util.convertDateFormat
 
+@RequiresApi(Build.VERSION_CODES.O)
 class ReceiveLetterAdapter(val list: MutableList<ReceiveLetterDto>) :
     RecyclerView.Adapter<ReceiveLetterAdapter.ReceiveLetterViewHolder>() {
     
     inner class ReceiveLetterViewHolder(val binding: ItemReceiveLetterBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bindInfo(receiveLetter: ReceiveLetterDto) = with(binding) {
-            textviewSendUser.text = receiveLetter.sender + "님이 보낸 편지"
-            textviewSendTime.text = receiveLetter.time
+            if(receiveLetter.read) {
+                constraintlayoutLetter.setBackgroundResource(R.drawable.image_open_letter)
+            } else {
+                constraintlayoutLetter.setBackgroundResource(R.drawable.image_unopen_letter)
+            }
+            
+            textviewSendUser.text = "from.${receiveLetter.sender}"
+            textviewSendTime.text = convertDateFormat(receiveLetter.time)
             
             // Click Event
             linearlayoutLetter.setOnClickListener {
