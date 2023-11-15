@@ -106,6 +106,7 @@ class PreferenceDataSource @Inject constructor(
 
     // access token 값 호출
     fun getAccessToken(): Flow<String> {
+        Log.d(TAG, "getAccessToken: aceess token get")
         return context.dataStore.data
             .catch { exception ->
                 // IOException이 발생하는 경우도 있기 때문에 throw-catch 처리
@@ -116,15 +117,17 @@ class PreferenceDataSource @Inject constructor(
                 }
             }
             .map { preferences ->
+                Log.d(TAG, "getAccessToken: ${preferences[stringPreferencesKey("access_token")]}")
                 preferences[stringPreferencesKey("access_token")] ?: ""
             }
     }
 
     // access token 값 수정
     suspend fun setAccessToken(accessToken: String) {
-        Log.d(TAG, "setAccessToken: $accessToken")
+        Log.d(TAG, "setAccessToken 1: $accessToken")
         context.dataStore.edit { preferences ->
             preferences[stringPreferencesKey("access_token")] = accessToken
+            Log.d(TAG, "setAccessToken 2: ${preferences[stringPreferencesKey("access_token")]}")
         }
     }
 
@@ -172,6 +175,26 @@ class PreferenceDataSource @Inject constructor(
         context.dataStore.edit {preferences ->
             preferences[stringPreferencesKey("kakao_access_token")] = accessToken
         }
+    }
+
+    suspend fun setToken(accessToken: String, refreshToken: String): Flow<Boolean> {
+        context.dataStore.edit { preferences ->
+            preferences[stringPreferencesKey("access_token")] = accessToken
+            preferences[stringPreferencesKey("refresh_token")] = refreshToken
+        }
+        val checkFlow: Flow<Boolean> = context.dataStore.data
+            .catch { exception ->
+                // IOException이 발생하는 경우도 있기 때문에 throw-catch 처리
+                if (exception is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+            }
+            .map { preferences ->
+                preferences[stringPreferencesKey("access_token")]?.isNotEmpty() ?: false
+            }
+        return checkFlow
     }
     companion object {
         private const val TAG = "PreferenceDataSource_HP"

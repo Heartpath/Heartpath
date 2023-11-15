@@ -6,12 +6,24 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
+import android.view.PixelCopy
+import android.view.SurfaceView
 import android.view.View
 import androidx.core.net.toUri
-import androidx.lifecycle.ViewModel
-import com.zootopia.presentation.config.BaseViewModel
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.zootopia.presentation.R
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -19,7 +31,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.UUID
 
-private const val TAG = "ImageUtil"
+private const val TAG = "ImageUtil_HP"
 
 fun getRealPathFromUri(context: Context, contentUri: Uri): String? {
     var result: String? = null
@@ -71,7 +83,7 @@ fun viewToBitmap(view: View): Bitmap {
     return bitmap
 }
 
-fun getImages(context: Context): MutableList<Uri>{
+fun getImages(context: Context): MutableList<Uri> {
     Log.d(TAG, "getImages: ~~~~~~~~~~~~~~~~~~~~~~~")
     var list = mutableListOf<Uri>()
 
@@ -105,10 +117,71 @@ fun getImages(context: Context): MutableList<Uri>{
             val imageData = cursor.getString(dataColumnIndex)
             // 이미지 데이터를 사용하여 필요한 작업 수행
             list.add(
-                imageData.toUri()
+                imageData.toUri(),
             )
         }
     }
 
     return list
+}
+
+fun takePhoto(fragment: Fragment): Deferred<Uri?> {
+    val deferred = CompletableDeferred<Uri?>()
+
+    fragment.lifecycleScope.launch {
+        withContext(Dispatchers.IO) {
+            val context = fragment.requireContext()
+
+            val fileName = "${UUID.randomUUID()}_${SimpleDateFormat("yyMMdd_HHmmss").format(Date())}.jpg"
+
+            val values = ContentValues().apply {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    put(
+                        MediaStore.Images.Media.RELATIVE_PATH,
+                        "${Environment.DIRECTORY_DCIM}/ARCamera",
+                    )
+                }
+                put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+                put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            }
+
+            val photoUri = fragment.requireContext().contentResolver.insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                values,
+            )!!
+
+            val bitmap = Bitmap.createBitmap(
+                fragment.requireView().width,
+                fragment.requireView().height,
+                Bitmap.Config.ARGB_8888,
+            )
+            val surfaceView = fragment.view?.findViewById<SurfaceView>(R.id.sceneView)
+            val surface = surfaceView?.holder?.surface
+
+            if (surface != null) {
+                PixelCopy.request(
+                    surface,
+                    bitmap,
+                    { result ->
+                        if (result == PixelCopy.SUCCESS) {
+                            fragment.lifecycleScope.launch {
+                                withContext(Dispatchers.IO) {
+                                    context.contentResolver.openOutputStream(photoUri!!)?.let {
+                                        bitmap.compress(
+                                            Bitmap.CompressFormat.PNG,
+                                            100,
+                                            it,
+                                        )
+                                    }
+                                }
+                                deferred.complete(photoUri)
+                            }
+                        }
+                    },
+                    Handler(Looper.getMainLooper()),
+                )
+            }
+        }
+    }
+    return deferred
 }

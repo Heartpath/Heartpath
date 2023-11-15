@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.zootopia.domain.model.unplacedletter.UnplacedLetterDto
+import com.zootopia.domain.model.letter.unplacedletter.UnplacedLetterDto
 import com.zootopia.presentation.databinding.ItemSendLetterBinding
 
 // todo : dto 생성
