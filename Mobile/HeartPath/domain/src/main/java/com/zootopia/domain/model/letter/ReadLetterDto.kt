@@ -8,7 +8,7 @@ data class ReadLetterDto(
     @SerializedName("files")
     val files: List<String> = mutableListOf(),
     @SerializedName("friend")
-    val friend: Boolean = false,
+    val friend: Boolean = true,
     @SerializedName("index")
     val index: Int = 0,
     @SerializedName("lat")
@@ -19,6 +19,8 @@ data class ReadLetterDto(
     val receiver: String = "",
     @SerializedName("sender")
     val sender: String = "",
+    @SerializedName("senderID")
+    val senderId: String = "",
     @SerializedName("time")
     val time: String = "",
 )
