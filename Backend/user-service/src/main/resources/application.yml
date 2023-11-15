@@ -8,8 +8,10 @@ spring:
       username: admin
       password: ENC(aZhyo9Zn2KY/LzJYoqXgwY4bCKai+uW+)
       maximum-pool-size: 20
-      connectionTimeout: 9700
-      validationTimeout: 1000
+      connectionTimeout: 10000
+      validationTimeout: 10000
+      max-lifetime: 580000
+      connection-init-sql: set wait_timeout = 600
   redis:
     host: ENC(VXjy6MiylvpTkGupRZ+zKBkO4+G2S34sBWUx9Nb3y7w=)
     port: 6379
