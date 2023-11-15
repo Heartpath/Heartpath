@@ -185,11 +185,9 @@ class ArCoreWriteFragment :
                                 ModelNode(
                                     modelInstance = modelInstance,
                                     // Scale to fit in a 0.5 meters cube
-                                    scaleToUnits = 0.03f,
+                                    scaleToUnits = 0.05f,
                                     // Bottom origin instead of center so the model base is on floor
-                                    centerOrigin = Position(y = 100f),
-                                    
-                                    
+                                    centerOrigin = Position(y = 200f),
                                 ).apply {
                                     isEditable = true
                                 },

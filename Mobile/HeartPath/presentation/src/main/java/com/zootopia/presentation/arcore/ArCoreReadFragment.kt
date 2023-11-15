@@ -42,6 +42,7 @@ class ArCoreReadFragment :
     private lateinit var mainActivity: MainActivity
     private lateinit var currentFrame: Frame
     private val mapViewModel: MapViewModel by activityViewModels()
+    private val readSuccessDialogFragment = ReadSuccessDialogFragment()
 
     private var dist = 10.0
 
@@ -102,9 +103,11 @@ class ArCoreReadFragment :
             mapViewModel.isPickUpLetter.collectLatest {
                 isLoading = false
                 mapViewModel.postPoint()
-                mainActivity.showToast("편지를 편지함에 담았습니다.")
                 WorkManager.getInstance(mainActivity).cancelAllWork() // 백그라운드 종료
                 mapViewModel.resetTmapWalkRoadInfo() // 길찾기 data 초기화
+                
+                // 다이얼로그
+                readSuccessDialogFragment.show(mainActivity.supportFragmentManager, "readSuccessDialogFragment")
                 findNavController().popBackStack()
             }
         }
