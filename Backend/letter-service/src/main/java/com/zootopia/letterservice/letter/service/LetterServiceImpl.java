@@ -24,6 +24,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -346,11 +347,15 @@ public class LetterServiceImpl implements LetterService {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         String apiUrl = "http://3.34.86.93/api/user";
-        ResponseEntity<UserResDto> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET, entity, UserResDto.class);
 
-        UserResDto res = responseEntity.getBody();
+        try {
+            ResponseEntity<UserResDto> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET, entity, UserResDto.class);
+            UserResDto res = responseEntity.getBody();
+            return res;
+        } catch (HttpClientErrorException.Unauthorized e) {
+            throw new BadRequestException(ErrorCode.EXPIRED_TOKEN);
+        }
 
-        return res;
     }
 
     // member_Id 2개를 보냈을 때 차단되있는지 안되어있는지 판별
@@ -368,22 +373,28 @@ public class LetterServiceImpl implements LetterService {
         HttpEntity<FriendReqDto> requestEntity = new HttpEntity<>(req, headers);
 
         String apiUrl = "http://3.34.86.93/api/friend";
-        ResponseEntity<FriendResDto> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, FriendResDto.class);
+        try {
+            ResponseEntity<FriendResDto> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, FriendResDto.class);
+            FriendResDto res = responseEntity.getBody();
+            return res;
+        } catch (HttpClientErrorException.Unauthorized e) {
+            throw new BadRequestException(ErrorCode.EXPIRED_TOKEN);
+        }
 
-        FriendResDto res = responseEntity.getBody();
 
-        return res;
     }
 
     private UserInfoDetailResDto findByUserId(String userId) {
         RestTemplate restTemplate = new RestTemplate();
 
         String apiUrl = "http://3.34.86.93/api/user/" + userId;
-        ResponseEntity<UserInfoResDto> responseEntity = restTemplate.getForEntity(apiUrl, UserInfoResDto.class);
-
-        UserInfoResDto res = responseEntity.getBody();
-
-        return res.getData();
+        try {
+            ResponseEntity<UserInfoResDto> responseEntity = restTemplate.getForEntity(apiUrl, UserInfoResDto.class);
+            UserInfoResDto res = responseEntity.getBody();
+            return res.getData();
+        } catch (HttpClientErrorException.Unauthorized e) {
+            throw new BadRequestException(ErrorCode.EXPIRED_TOKEN);
+        }
     }
 
     public void updateIsPickup(String accessToken, Long letter_id) {
