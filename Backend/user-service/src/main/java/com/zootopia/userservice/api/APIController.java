@@ -1,8 +1,10 @@
 package com.zootopia.userservice.api;
 
 import com.zootopia.userservice.common.BaseResponse;
+import com.zootopia.userservice.dto.FirebaseDTO;
 import com.zootopia.userservice.dto.FriendShipDTO;
 import com.zootopia.userservice.dto.UserInfoDTO;
+import com.zootopia.userservice.firebase.FirebaseCloudMessageService;
 import com.zootopia.userservice.jwt.JwtProvider;
 import com.zootopia.userservice.service.APIService;
 import com.zootopia.userservice.service.PointService;
@@ -18,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,6 +37,7 @@ public class APIController {
     private final APIService apiService;
     private final JwtProvider jwtProvider;
     private final PointService pointService;
+    private final FirebaseCloudMessageService fcmService;
 
     @Operation(summary = "JWT로 멤버 정보 반환")
     @ApiResponse(
@@ -183,5 +187,17 @@ public class APIController {
         }
 
         return ResponseEntity.status(status).body(baseResponse);
+    }
+
+    @Operation(summary = "Android에게 알림 보내기")
+    @PostMapping("/fcm")
+    public void sendFCMAlert(@RequestBody FirebaseDTO firebaseDTO) {
+
+        System.out.println("firebaseDTO = " + firebaseDTO);
+        try {
+            fcmService.sendMessageTo(firebaseDTO.getTargetToken(), firebaseDTO.getTitle(), firebaseDTO.getBody());
+        } catch (IOException e) {
+            log.error("error to send Alert : {}", e.toString());
+        }
     }
 }

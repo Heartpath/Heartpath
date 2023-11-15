@@ -57,7 +57,7 @@ public class VerifyJwtFilter extends OncePerRequestFilter {
 
     // TODO: yaml 파일로 빼기
     private static final String[] EXCLUDED_URLS = {
-            "/user/health_check",
+            "/user/health_check", "/api/fcm",
             "/user/login", "/user/register", "/user/check", "/user/token",
             "/api/user/", "/api/token", "/api/point/",
             "/swagger-ui", "/v3/api-docs"
