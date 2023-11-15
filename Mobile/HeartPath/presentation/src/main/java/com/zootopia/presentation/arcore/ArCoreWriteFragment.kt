@@ -153,8 +153,8 @@ class ArCoreWriteFragment :
                                 addAnchorNode(plane.createAnchor(plane.centerPose))
 
                                 // 카메라 부터 모델까지 거리 구하기 (dist는 m 단위)
-                                currentFrame = frame
-                                measureDistanceFromCamera()
+//                                currentFrame = frame
+//                                measureDistanceFromCamera()
 
                                 // 버튼 비활성화
                                 binding.apply {
@@ -179,19 +179,24 @@ class ArCoreWriteFragment :
                 Log.d(TAG, "addAnchorNode: $this")
                 lifecycleScope.launch {
                     isLoading = true
-                    binding.sceneView.modelLoader.loadModelInstance("models/lamborghini.glb")
+                    binding.sceneView.modelLoader.loadModelInstance("models/letter.glb")
                         ?.let { modelInstance ->
                             addChildNode(
                                 ModelNode(
                                     modelInstance = modelInstance,
                                     // Scale to fit in a 0.5 meters cube
-                                    scaleToUnits = 0.2f,
+                                    scaleToUnits = 0.03f,
                                     // Bottom origin instead of center so the model base is on floor
-                                    centerOrigin = Position(y = -0.5f),
+                                    centerOrigin = Position(y = 100f),
+                                    
+                                    
                                 ).apply {
                                     isEditable = true
                                 },
                             )
+    
+                            // Model이 나타났으므로 PlaneRenderer를 비활성화
+                            binding.sceneView.planeRenderer.isEnabled = false
                         }
                     isLoading = false
                 }

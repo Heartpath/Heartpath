@@ -131,7 +131,7 @@
                         style="@style/Black_12_Bold_NanumText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="2"
                         android:text="시간: " />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -149,10 +149,10 @@
 
                 <ImageView
                     android:id="@+id/button_camera"
-                    android:layout_width="wrap_content"
+                    android:layout_width="@dimen/_50sdp"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/image_camera_bird"
-                    android:scaleType="fitCenter"
+                    android:background="@drawable/image_bird_camera"
+                    android:scaleType="centerCrop"
                     android:layout_weight="1"
                     />
 
