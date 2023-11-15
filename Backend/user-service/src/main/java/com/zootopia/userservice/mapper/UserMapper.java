@@ -22,4 +22,9 @@ public interface UserMapper {
             @Param(value = "memberID") String memberID,
             @Param(value = "point") int point
     );
+
+    int updateFCMToken(
+            @Param(value = "memberID") String memberID,
+            @Param(value = "token") String token
+    );
 }
