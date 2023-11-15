@@ -4,7 +4,6 @@ import com.zootopia.letterservice.common.FCM.FCMService;
 import com.zootopia.letterservice.common.FCM.FirebaseCloudMessageService;
 import com.zootopia.letterservice.common.error.code.ErrorCode;
 import com.zootopia.letterservice.common.error.exception.BadRequestException;
-import com.zootopia.letterservice.common.error.exception.ServerException;
 import com.zootopia.letterservice.common.global.BannedWords;
 import com.zootopia.letterservice.common.s3.S3Uploader;
 import com.zootopia.letterservice.letter.dto.request.FriendReqDto;
@@ -22,10 +21,13 @@ import com.zootopia.letterservice.letter.repository.LetterMongoRepository;
 import com.zootopia.letterservice.letter.repository.PlaceImageRepository;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -340,52 +342,50 @@ public class LetterServiceImpl implements LetterService {
 
     // accessToken으로 해당 member에 대한 정보 받기
     private UserResDto accessTokenToMember(String accessToken) {
-        WebClient webClient = WebClient.builder().build();
+        RestTemplate restTemplate = new RestTemplate();
 
-        UserResDto res = webClient.get()
-                .uri("http://3.34.86.93/api/user")
-                .header(HttpHeaders.AUTHORIZATION, accessToken)
-                .retrieve() // ResponseEntity를 받아 디코딩, exchange() : ClientResponse를 상태값, 헤더 제공
-                .onStatus(HttpStatus::is4xxClientError, clientResponse -> {
-                    throw new BadRequestException(ErrorCode.INVALID_USER_REQUEST);
-                })
-                .onStatus(HttpStatus::is5xxServerError, clientResponse -> {
-                    throw new ServerException(ErrorCode.UNSTABLE_SERVER);
-                })
-                .bodyToMono(UserResDto.class)
-                .block();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.AUTHORIZATION, accessToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        String apiUrl = "http://3.34.86.93/api/user";
+        ResponseEntity<UserResDto> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET, entity, UserResDto.class);
+
+        UserResDto res = responseEntity.getBody();
 
         return res;
     }
 
     // member_Id 2개를 보냈을 때 차단되있는지 안되어있는지 판별
     private FriendResDto FriendIsBlocked(String accessToken, String senderId, String receiverId) {
-        WebClient webClient = WebClient.builder().build();
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.AUTHORIZATION, accessToken);
 
         FriendReqDto req = FriendReqDto.builder()
                 .from(senderId)
                 .to(receiverId)
                 .build();
 
-        FriendResDto res = webClient.post()
-                .uri("http://3.34.86.93/api/friend")
-                .header(HttpHeaders.AUTHORIZATION, accessToken)
-                .bodyValue(req)
-                .retrieve()
-                .bodyToMono(FriendResDto.class)
-                .block();
+        HttpEntity<FriendReqDto> requestEntity = new HttpEntity<>(req, headers);
+
+        String apiUrl = "http://3.34.86.93/api/friend";
+        ResponseEntity<FriendResDto> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, FriendResDto.class);
+
+        FriendResDto res = responseEntity.getBody();
 
         return res;
     }
 
     private UserInfoDetailResDto findByUserId(String userId) {
-        WebClient webClient = WebClient.builder().build();
+        RestTemplate restTemplate = new RestTemplate();
 
-        UserInfoResDto res = webClient.get()
-                .uri("http://3.34.86.93/api/user/" + userId)
-                .retrieve()
-                .bodyToMono(UserInfoResDto.class)
-                .block();
+        String apiUrl = "http://3.34.86.93/api/user/" + userId;
+        ResponseEntity<UserInfoResDto> responseEntity = restTemplate.getForEntity(apiUrl, UserInfoResDto.class);
+
+        UserInfoResDto res = responseEntity.getBody();
 
         return res.getData();
     }
