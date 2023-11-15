@@ -36,12 +36,15 @@ public class PointServiceImpl implements PointService{
         int currentBalance = lastBalance + pointTransReqDto.getPoint();
         Point point = Point.builder()
                 .memberId(memberId)
-                .outline("뱁새 잡기 성공")
+                .outline("편지 획득 성공")
                 .price(pointTransReqDto.getPoint())
                 .balance(currentBalance)
                 .createdDate(LocalDateTime.now())
                 .build();
         pointRepository.save(point);
-        String res = memberService.pointToMember(memberId, currentBalance);
+        log.info("잔액: " +currentBalance);
+        log.info("memberId: " + memberId);
+        memberService.pointToMember(memberId, currentBalance);
+        log.info("저장됨??");
     }
 }
