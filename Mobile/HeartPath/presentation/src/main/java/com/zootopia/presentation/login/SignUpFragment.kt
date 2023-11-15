@@ -154,7 +154,10 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
                                 signupToast(message = getString(R.string.toast_message_signup_done))
                                 loginViewModel.setToken(result)
                                 loginViewModel.storeToken()
-                                findNavController().navigate(R.id.action_signUpFragment_to_homeFragment)
+                                // 토큰 값 다 저장했으면 home으로 이동
+                                loginViewModel.setTokenResult.collectLatest { done ->
+                                    if(done) findNavController().navigate(R.id.action_signUpFragment_to_homeFragment)
+                                }
                             } else {
                                 signupToast(message = getString(R.string.toast_message_signup_fail))
                             }

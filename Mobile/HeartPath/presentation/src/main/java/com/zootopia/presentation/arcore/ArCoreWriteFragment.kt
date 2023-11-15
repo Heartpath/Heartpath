@@ -7,6 +7,7 @@ import android.view.View
 import androidx.core.view.isGone
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.ar.core.Anchor
 import com.google.ar.core.Config
 import com.google.ar.core.Frame
@@ -18,12 +19,14 @@ import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentArCoreWriteBinding
 import com.zootopia.presentation.sendletter.SendLetterViewModel
+import com.zootopia.presentation.util.LoadingDialog
 import com.zootopia.presentation.util.setFullScreen
 import io.github.sceneview.ar.arcore.getUpdatedPlanes
 import io.github.sceneview.ar.getDescription
 import io.github.sceneview.ar.node.AnchorNode
 import io.github.sceneview.math.Position
 import io.github.sceneview.node.ModelNode
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -39,6 +42,7 @@ class ArCoreWriteFragment :
     private lateinit var mainActivity: MainActivity
     private lateinit var currentFrame: Frame
     private val sendLetterViewModel: SendLetterViewModel by activityViewModels()
+    private val dialog = LoadingDialog()
 
     var isLoading = false
         set(value) {
@@ -71,6 +75,7 @@ class ArCoreWriteFragment :
         super.onViewCreated(view, savedInstanceState)
         initView()
         initClickEvent()
+        initCollect()
     }
 
     fun updateInstructions() {
@@ -82,11 +87,40 @@ class ArCoreWriteFragment :
             null
         }
     }
-    
+
     private fun initClickEvent() = with(binding) {
+        // 편지 서버로 보내기 클릭 이벤트
         buttonSendItem.setOnClickListener {
+//            isLoading = true
+            dialog.show(childFragmentManager,"ArCoreLoading")
+            
             sendLetterViewModel.apply {
-                requestSendLetter()
+                viewLifecycleOwner.lifecycleScope.launch {
+                    catchCapture(this@ArCoreWriteFragment)
+                }
+            }
+        }
+    }
+
+    private fun initCollect() = with(sendLetterViewModel) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            isSaveIamge.collectLatest {
+                getRealPath(context = mainActivity, uri = it)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            isRealPath.collectLatest {
+                requestSendLetter(files = it)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            isResult.collectLatest {
+//                isLoading = false
+                dialog.dismiss()
+                mainActivity.showToast(it)
+                findNavController().popBackStack()
             }
         }
     }
@@ -123,7 +157,10 @@ class ArCoreWriteFragment :
                                 measureDistanceFromCamera()
 
                                 // 버튼 비활성화
-                                binding.buttonSetItem.visibility = View.GONE
+                                binding.apply {
+                                    buttonSetItem.visibility = View.GONE
+                                    buttonSendItem.visibility = View.VISIBLE
+                                }
                             }
                         }
                 }

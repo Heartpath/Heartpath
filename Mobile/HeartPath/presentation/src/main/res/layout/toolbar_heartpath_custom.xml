@@ -2,9 +2,9 @@
 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/toolbar_heartpath"
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
-    android:background="@color/PrimaryLightBlue"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="@dimen/_48sdp"
+    android:background="@color/PrimaryLightBlue">
+
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/linearlayout_toolbar"
             android:layout_width="match_parent"
@@ -35,8 +35,8 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imageview_setting_icon"
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/_16sdp"
                 android:src="@drawable/icon_setting"
                 android:tint="@color/DarkGray"
