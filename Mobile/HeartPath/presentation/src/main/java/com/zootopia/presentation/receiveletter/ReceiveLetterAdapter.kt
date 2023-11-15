@@ -1,20 +1,25 @@
 package com.zootopia.presentation.receiveletter
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.zootopia.domain.model.letter.ReceiveLetterDto
 import com.zootopia.presentation.databinding.ItemReceiveLetterBinding
+import com.zootopia.presentation.util.convertDateFormat
 
+@RequiresApi(Build.VERSION_CODES.O)
 class ReceiveLetterAdapter(val list: MutableList<ReceiveLetterDto>) :
     RecyclerView.Adapter<ReceiveLetterAdapter.ReceiveLetterViewHolder>() {
     
     inner class ReceiveLetterViewHolder(val binding: ItemReceiveLetterBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bindInfo(receiveLetter: ReceiveLetterDto) = with(binding) {
             textviewSendUser.text = receiveLetter.sender + "님이 보낸 편지"
-            textviewSendTime.text = receiveLetter.time
+            textviewSendTime.text = convertDateFormat(receiveLetter.time)
             
             // Click Event
             linearlayoutLetter.setOnClickListener {
@@ -34,6 +39,7 @@ class ReceiveLetterAdapter(val list: MutableList<ReceiveLetterDto>) :
         )
     }
     
+
     override fun onBindViewHolder(holder: ReceiveLetterViewHolder, position: Int) {
         holder.bindInfo(list[position])
     }

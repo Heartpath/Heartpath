@@ -1,6 +1,7 @@
 package com.zootopia.data.service
 
 import android.Manifest
+import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -45,7 +46,6 @@ class FCMService : FirebaseMessagingService() {
                     mainIntent,
                     PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
                 )
-
                 val notificationManager: NotificationManager =  getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     createNotificaitonChannel(notificationManager)
