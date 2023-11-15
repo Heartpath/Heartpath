@@ -15,7 +15,7 @@ class MyPageFriendAdapter(val list: MutableList<FriendDto>) :
         RecyclerView.ViewHolder(binding.root) {
         fun bindInfo(friend: FriendDto) = with(binding) {
             textviewFriendName.text = friend.nickname
-            textviewFriendId.text = friend.memberId
+            textviewFriendId.text = root.context.getString(R.string.default_id, friend.memberId)
             if(friend.profileImage == "") { // 이미지 빈 값일 때
                 Glide
                     .with(root)

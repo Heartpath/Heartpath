@@ -4,10 +4,10 @@ import com.google.gson.annotations.SerializedName
 
 
 data class FriendDto (
-    @SerializedName("memeberId")
+    @SerializedName("memberID")
     val memberId: String = "iam_babsae_friend",
     @SerializedName("nickname")
     val nickname: String = "김뱁새 친구",
-    @SerializedName("profileImage")
+    @SerializedName("profileImagePath")
     val profileImage: String = "",
 )

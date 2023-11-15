@@ -31,6 +31,7 @@ class SelectLetterTypeFragment : BaseFragment<FragmentSelectLetterTypeBinding>(
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
         initClickListener()
+        initView()
     }
 
     fun initClickListener() = with(binding) {
@@ -47,6 +48,15 @@ class SelectLetterTypeFragment : BaseFragment<FragmentSelectLetterTypeBinding>(
                     LetterType.TYPING_WRITE
                 )
             findNavController().navigate(action)
+        }
+    }
+    private fun initView() = with(binding) {
+        toolbarHeartpathSelectLetterType.apply {
+            textviewCurrentPageTitle.text =
+                resources.getString(R.string.toolbar_select_letter_type_title)
+            imageviewBackButton.setOnClickListener {
+                findNavController().popBackStack()
+            }
         }
     }
 

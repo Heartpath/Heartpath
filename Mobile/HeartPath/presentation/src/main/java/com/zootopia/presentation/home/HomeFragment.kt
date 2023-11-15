@@ -5,18 +5,25 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentHomeBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class HomeFragment :
     BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::bind, R.layout.fragment_home) {
 
     private lateinit var mainActivity: MainActivity
     private lateinit var navController: NavController
+    private val homeViewModel: HomeViewModel by activityViewModels()
     
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -27,6 +34,13 @@ class HomeFragment :
         super.onViewCreated(view, savedInstanceState)
         initClickEvent()
         initAnimation()
+        initCollecter()
+        initData()
+        initCallback()
+    }
+
+    private fun initData(){
+        homeViewModel.getMainCharacter()
     }
     
     private fun initClickEvent() = with(binding) {
@@ -47,6 +61,10 @@ class HomeFragment :
 
         buttonWriteLetter.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_selectUserFragment)
+        }
+
+        buttonCharacterEncyclopedia.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_characterEncyclopediaFragment)
         }
     }
 
@@ -88,5 +106,29 @@ class HomeFragment :
                 R.anim.shaking_animation_down_and_up_5800
             )
         )
+    }
+
+    private fun initCollecter() = with(binding) {
+        lifecycleScope.launch {
+            homeViewModel.mainCharacter.collectLatest {
+                if(it != null){
+                    Glide
+                        .with(root)
+                        .load(it.imagePath)
+                        .error(R.drawable.image_bird_silhouette)
+                        .into(buttonCharacterEncyclopedia)
+                }
+            }
+        }
+    }
+
+    private fun initCallback() {
+        val callback = object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // 뒤로가기 앱 종료
+                activity?.finish()
+            }
+        }
+        mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 }

@@ -6,8 +6,9 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageview_loading_bird"
-        android:layout_width="@dimen/_200sdp"
-        android:layout_height="@dimen/_200sdp"
+        android:layout_width="@dimen/_300sdp"
+        android:layout_height="@dimen/_300sdp"
+        android:background="@android:color/transparent"
         android:src="@drawable/animation_bird_flying"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -17,8 +18,9 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
         android:text="@string/loading_message"
-        style="@style/DarkerGray_14_ExtraBold_NanumText"
+        style="@style/White_14_ExtraBold_NanumText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

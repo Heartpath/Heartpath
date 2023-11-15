@@ -105,7 +105,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center_vertical"
                     android:padding="@dimen/_8sdp"
@@ -121,6 +121,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="거리: " />
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_8sdp"/>
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/textview_time"

@@ -13,9 +13,9 @@ abstract class BaseFragment<B : ViewBinding>(
     @LayoutRes layoutResId: Int,
 ) : Fragment(layoutResId) {
     private var _binding: B? = null
-    
+
     protected val binding get() = _binding!!
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -24,7 +24,7 @@ abstract class BaseFragment<B : ViewBinding>(
         _binding = bind(super.onCreateView(inflater, container, savedInstanceState)!!)
         return binding.root
     }
-    
+
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
