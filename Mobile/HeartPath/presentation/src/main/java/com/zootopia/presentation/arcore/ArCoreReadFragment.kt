@@ -42,6 +42,7 @@ class ArCoreReadFragment :
     private lateinit var mainActivity: MainActivity
     private lateinit var currentFrame: Frame
     private val mapViewModel: MapViewModel by activityViewModels()
+    private val readSuccessDialogFragment = ReadSuccessDialogFragment()
 
     private var dist = 10.0
 
@@ -102,9 +103,11 @@ class ArCoreReadFragment :
             mapViewModel.isPickUpLetter.collectLatest {
                 isLoading = false
                 mapViewModel.postPoint()
-                mainActivity.showToast("편지를 편지함에 담았습니다.")
                 WorkManager.getInstance(mainActivity).cancelAllWork() // 백그라운드 종료
                 mapViewModel.resetTmapWalkRoadInfo() // 길찾기 data 초기화
+                
+                // 다이얼로그
+                readSuccessDialogFragment.show(mainActivity.supportFragmentManager, "readSuccessDialogFragment")
                 findNavController().popBackStack()
             }
         }
@@ -154,8 +157,8 @@ class ArCoreReadFragment :
                                 addAnchorNode(plane.createAnchor(plane.centerPose))
 
                                 // 카메라 부터 모델까지 거리 구하기 (dist는 m 단위)
-                                currentFrame = frame
-                                measureDistanceFromCamera()
+//                                currentFrame = frame
+//                                measureDistanceFromCamera()
 
                                 binding.buttonGetLetter.visibility = View.VISIBLE
                             }
@@ -176,15 +179,15 @@ class ArCoreReadFragment :
                 Log.d(TAG, "addAnchorNode: $this")
                 lifecycleScope.launch {
                     isLoading = true
-                    binding.sceneView.modelLoader.loadModelInstance("models/lamborghini.glb")
+                    binding.sceneView.modelLoader.loadModelInstance("models/letter.glb")
                         ?.let { modelInstance ->
                             addChildNode(
                                 ModelNode(
                                     modelInstance = modelInstance,
                                     // Scale to fit in a 0.5 meters cube
-                                    scaleToUnits = 0.2f,
+                                    scaleToUnits = 0.05f,
                                     // Bottom origin instead of center so the model base is on floor
-                                    centerOrigin = Position(y = -0.5f),
+                                    centerOrigin = Position(y = 200f),
                                 ).apply {
                                     isEditable = true
                                 },
