@@ -17,6 +17,7 @@ class ReceiveLetterAdapter(val list: MutableList<ReceiveLetterDto>) :
     
     inner class ReceiveLetterViewHolder(val binding: ItemReceiveLetterBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bindInfo(receiveLetter: ReceiveLetterDto) = with(binding) {
             if(receiveLetter.read) {
                 constraintlayoutLetter.setBackgroundResource(R.drawable.image_open_letter)
@@ -45,6 +46,7 @@ class ReceiveLetterAdapter(val list: MutableList<ReceiveLetterDto>) :
         )
     }
     
+
     override fun onBindViewHolder(holder: ReceiveLetterViewHolder, position: Int) {
         holder.bindInfo(list[position])
     }
