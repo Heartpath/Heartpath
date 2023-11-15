@@ -22,7 +22,7 @@ class ReadLetterViewModel @Inject constructor(
 
 ) : BaseViewModel() {
 
-    private val _checkFriendCnt = MutableStateFlow(1)
+    private val _checkFriendCnt = MutableStateFlow(0)
     var checkFriendCnt = _checkFriendCnt.asStateFlow()
 
     private val _readLetterResult = MutableStateFlow(ReadLetterDto())
@@ -44,7 +44,7 @@ class ReadLetterViewModel @Inject constructor(
     fun addAsFriend() {
         getApiResult(
             block = {
-                addFriendUseCase.invoke(readLetterResult.value.sender)
+                addFriendUseCase.invoke(readLetterResult.value.senderId)
             },
             success = { result ->
                 _addFriendResult.emit(result)
@@ -61,6 +61,7 @@ class ReadLetterViewModel @Inject constructor(
             success = { result ->
                 if (result != null) {
                     _readLetterResult.emit(result)
+                    if(!result.friend) _checkFriendCnt.emit(1)
                     setLetterImgList()
                 }
             }
@@ -83,10 +84,13 @@ class ReadLetterViewModel @Inject constructor(
                 tmpList.addAll(files)
             }
             _letterList.emit(tmpList)
-            _imageCnt.emit(it.files.size)
+            _imageCnt.emit(it.files.size + 1)
         }
     }
 
+    fun setFriendState() = viewModelScope.launch {
+        _checkFriendCnt.emit(0)
+    }
 
     companion object {
         private const val TAG = "ReadLetterViewModel_HP"
