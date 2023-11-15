@@ -14,6 +14,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/textview_letter_index"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:text="test"
+        style="@style/DarkGray_12_Bold_NanumText"/>
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewpager_letter"
         android:layout_width="match_parent"
@@ -34,6 +45,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:rippleColor="@android:color/transparent"
-        app:tint="@color/DarkGray" />
+        app:tint="@color/DarkGray"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

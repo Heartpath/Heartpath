@@ -3,7 +3,9 @@ package com.zootopia.presentation.readletter
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -14,6 +16,7 @@ import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentReadLetterBinding
 import com.zootopia.presentation.writeletter.selectletterpaper.LetterPaperViewPagerAdapter
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class ReadLetterFragment : BaseFragment<FragmentReadLetterBinding>(
@@ -25,6 +28,8 @@ class ReadLetterFragment : BaseFragment<FragmentReadLetterBinding>(
     private val args: ReadLetterFragmentArgs by navArgs()
     private lateinit var letterViewPagerAdapter: LetterViewPagerAdapter
     private val letterImageList: MutableList<String> = mutableListOf()
+    private var letterIndex = 1
+    private var totalIndex = 1
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
@@ -45,20 +50,6 @@ class ReadLetterFragment : BaseFragment<FragmentReadLetterBinding>(
             imageviewBackButton.setOnClickListener {
                 findNavController().popBackStack()
             }
-            lifecycleScope.launch {
-                readLetterViewModel.imageCnt.collect {
-                    if(it>0) {
-                        imageviewSettingIcon.apply {
-                            setImageResource(R.drawable.icon_image_info)
-                            setOnClickListener {
-                                ReadLetterInfoDialog().show(childFragmentManager, TAG)
-                            }
-                            this.requestLayout()
-                            visibility = View.VISIBLE
-                        }
-                    }
-                }
-            }
         }
         // floating buton 조건에 따라 visibility 설정
         lifecycleScope.launch {
@@ -75,14 +66,17 @@ class ReadLetterFragment : BaseFragment<FragmentReadLetterBinding>(
         }
 
         // 들어가면 일단 친구 추가 다이얼로그 한 번 띄워줌
-        if(readLetterViewModel.checkFriendCnt.value > 0) {
-            ReadLetterAddFriendDialog().show(childFragmentManager, tag)
+        lifecycleScope.launch {
+            readLetterViewModel.checkFriendCnt.collectLatest {
+                if(it > 0)
+                    ReadLetterAddFriendDialog().show(childFragmentManager, tag)
+            }
         }
 
         // 친구 추가 완료 여부에 따라 floatin button 띄우기
         lifecycleScope.launch {
             readLetterViewModel.addFriendResult.collect {addResult ->
-                if(addResult == "친구 추가 성공") {
+                if(addResult == "친구 추가가 완료되었습니다.") {
                     floatingbuttonAddFriend.visibility = View.GONE
                 }
             }
@@ -96,6 +90,23 @@ class ReadLetterFragment : BaseFragment<FragmentReadLetterBinding>(
             setPageTransformer(ZoomOutPageTransformer())
             getChildAt(0).overScrollMode = View.OVER_SCROLL_NEVER
             orientation = ViewPager2.ORIENTATION_HORIZONTAL
+
+            registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback(){
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    letterIndex = position + 1
+                    textviewLetterIndex.text =  root.context.getString(R.string.readletter_letter_index, letterIndex, totalIndex)
+                }
+            })
+        }
+
+        // 위에 이미지 숫자 설정
+        lifecycleScope.launch {
+            readLetterViewModel.imageCnt.collect {
+                if(it>0) {
+                    totalIndex = it
+                }
+            }
         }
     }
 
@@ -123,6 +134,7 @@ class ReadLetterFragment : BaseFragment<FragmentReadLetterBinding>(
     override fun onDestroyView() {
         super.onDestroyView()
         readLetterViewModel.clearLetterResult()
+        readLetterViewModel.setFriendState()
     }
 
     companion object {
