@@ -92,7 +92,7 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(
 
                 override fun itemLongClick(view: View, position: Int) {
                     // 친구 수정 다이얼로그 띄우기
-                    MyPageEditFriendDialog().show(childFragmentManager, tag)
+                    MyPageEditFriendDialog(list[position].memberId).show(childFragmentManager, tag)
                 }
             }
         }
