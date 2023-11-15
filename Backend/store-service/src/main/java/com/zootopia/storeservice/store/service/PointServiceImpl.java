@@ -45,6 +45,5 @@ public class PointServiceImpl implements PointService{
         log.info("잔액: " +currentBalance);
         log.info("memberId: " + memberId);
         memberService.pointToMember(memberId, currentBalance);
-        log.info("저장됨??");
     }
 }
