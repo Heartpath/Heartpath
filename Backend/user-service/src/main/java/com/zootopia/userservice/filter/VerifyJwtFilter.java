@@ -35,6 +35,7 @@ public class VerifyJwtFilter extends OncePerRequestFilter {
         String servletPath = req.getServletPath();
         String pathInfo = req.getPathInfo();
         String queryString = req.getQueryString();
+        String remoteAddr = req.getRemoteAddr();
 
         // Reconstruct original requesting URL
         StringBuilder url = new StringBuilder();
@@ -48,6 +49,9 @@ public class VerifyJwtFilter extends OncePerRequestFilter {
         if (queryString != null) {
             url.append("?").append(queryString);
         }
+
+        url.append(" from ").append(remoteAddr);
+
         return url.toString();
     }
 
