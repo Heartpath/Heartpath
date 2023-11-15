@@ -188,15 +188,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         Log.d(TAG, "onNewIntent: 여기 호출되었어요")
-
         val extraStr = intent?.getStringExtra("destination")
         if(extraStr != null) {
             if(extraStr == "map") {
                 Log.d(TAG, "onNewIntent: $extraStr")
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.main_container, MapFragment())
-                    .addToBackStack("homeFragment")
-                    .commit()
+                navController.navigate(R.id.mapFragment)
             }
         }
     }
