@@ -5,6 +5,9 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
+    // User Token 만료
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, 401, "Token 시간이 만료되었습니다."),
+
     // S3
     FAIL_UPLOAD_FILE(HttpStatus.INTERNAL_SERVER_ERROR, 5000, "서버 장애로 s3에 파일에 업로드할 때 오류가 발생하였습니다."),
     FAIL_DELETE_FILE(HttpStatus.INTERNAL_SERVER_ERROR, 5001, "S3에 업로드 된 파일을 지울 때 오류가 발생하였습니다."),
