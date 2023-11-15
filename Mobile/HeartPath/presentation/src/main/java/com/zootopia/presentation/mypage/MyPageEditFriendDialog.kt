@@ -6,11 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import com.zootopia.presentation.R
 import com.zootopia.presentation.databinding.DialogFriendEditBinding
 
-class MyPageEditFriendDialog: DialogFragment() {
+class MyPageEditFriendDialog(memberId: String): DialogFragment() {
     private lateinit var binding: DialogFriendEditBinding
+    private val myPageViewModel: MyPageViewModel by activityViewModels()
+    private val mId = memberId
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,8 +39,7 @@ class MyPageEditFriendDialog: DialogFragment() {
 //                MyPageDeleteFriendDialog().show(childFragmentManager, tag)
             }
             buttonFriendEditReport.setOnClickListener {
-                // TODO: 사용자 신고
-
+                myPageViewModel.reportFriend(mId)
 //                MyPageReportFriendDialog().show(childFragmentManager, tag)
             }
         }
