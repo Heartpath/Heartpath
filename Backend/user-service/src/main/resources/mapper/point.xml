@@ -12,10 +12,10 @@
         WHERE pt.MEMBER_ID = #{memberID};
     </select>
 
-    <update id="updateUserPoint" parameterType="com.zootopia.userservice.dto.QueryParamMap">
+    <update id="updateUserPoint" parameterType="Map">
         UPDATE MEMBER m
-        SET POINT = #{limit}
-        WHERE m.MEMBER_ID = #{query};
+        SET POINT = #{point}
+        WHERE m.MEMBER_ID = #{memberID};
     </update>
 
 </mapper>

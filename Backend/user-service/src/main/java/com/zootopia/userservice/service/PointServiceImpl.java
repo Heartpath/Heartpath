@@ -1,6 +1,5 @@
 package com.zootopia.userservice.service;
 
-import com.zootopia.userservice.dto.QueryParamMap;
 import com.zootopia.userservice.dto.UserPointTXDTO;
 import com.zootopia.userservice.mapper.PointMapper;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +23,6 @@ public class PointServiceImpl implements PointService {
 
     @Override
     public int reviseUserPoint(String memberID, int point) {
-        return pointMapper.updateUserPoint(new QueryParamMap(memberID, point));
+        return pointMapper.updateUserPoint(memberID, point);
     }
 }

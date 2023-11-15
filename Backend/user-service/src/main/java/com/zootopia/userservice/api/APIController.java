@@ -3,7 +3,6 @@ package com.zootopia.userservice.api;
 import com.zootopia.userservice.common.BaseResponse;
 import com.zootopia.userservice.dto.FriendShipDTO;
 import com.zootopia.userservice.dto.UserInfoDTO;
-import com.zootopia.userservice.exception.FriendException;
 import com.zootopia.userservice.jwt.JwtProvider;
 import com.zootopia.userservice.service.APIService;
 import com.zootopia.userservice.service.PointService;
