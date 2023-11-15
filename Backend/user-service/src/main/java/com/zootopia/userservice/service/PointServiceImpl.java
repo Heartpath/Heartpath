@@ -2,6 +2,7 @@ package com.zootopia.userservice.service;
 
 import com.zootopia.userservice.dto.UserPointTXDTO;
 import com.zootopia.userservice.mapper.PointMapper;
+import com.zootopia.userservice.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PointServiceImpl implements PointService {
 
+    private final UserMapper userMapper;
     private final PointMapper pointMapper;
 
     @Override
@@ -23,6 +25,6 @@ public class PointServiceImpl implements PointService {
 
     @Override
     public int reviseUserPoint(String memberID, int point) {
-        return pointMapper.updateUserPoint(memberID, point);
+        return userMapper.updateUserPoint(memberID, point);
     }
 }

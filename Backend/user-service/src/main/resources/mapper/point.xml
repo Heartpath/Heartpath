@@ -12,10 +12,4 @@
         WHERE pt.MEMBER_ID = #{memberID};
     </select>
 
-    <update id="updateUserPoint" parameterType="Map">
-        UPDATE MEMBER m
-        SET POINT = #{point}
-        WHERE m.MEMBER_ID = #{memberID};
-    </update>
-
 </mapper>

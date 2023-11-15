@@ -3,6 +3,12 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zootopia.userservice.mapper.UserMapper">
 
+    <select id="updateUserPoint" parameterType="Map">
+        UPDATE MEMBER m
+        SET POINT = #{point}
+        WHERE m.MEMBER_ID = #{memberID};
+    </select>
+
     <select id="readUserInfo" parameterType="String" resultType="MypageDTO">
         SELECT m.`MEMBER_ID`          as `memberID`,
                m.`NICKNAME`           as `nickname`,
