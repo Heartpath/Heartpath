@@ -3,6 +3,12 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zootopia.userservice.mapper.UserMapper">
 
+    <update id="updateFCMToken" parameterType="Map">
+        UPDATE MEMBER m
+        SET FCM_TOKEN = #{token}
+        WHERE m.MEMBER_ID = #{memberID};
+    </update>
+
     <select id="updateUserPoint" parameterType="Map">
         UPDATE MEMBER m
         SET POINT = #{point}

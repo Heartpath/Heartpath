@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zootopia.userservice.common.BaseResponse;
 import com.zootopia.userservice.domain.User;
 import com.zootopia.userservice.jwt.JwtProvider;
+import com.zootopia.userservice.mapper.UserMapper;
 import com.zootopia.userservice.repository.RedisRepository;
 import com.zootopia.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import com.zootopia.userservice.util.KakaoOAuthUtil;
 
+import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -32,6 +34,7 @@ public class KakaoOAuthService {
     private final KakaoOAuthUtil kakaoOAuthUtil;
     private final UserRepository userRepository;
     private final RedisRepository redisRepository;
+    private final UserMapper userMapper;
 
     /**
      * 1. Get User KakaoID, Nickname, ProfileImageURL from The <b>KAKAO</b> via KakaoToken <br>
@@ -42,6 +45,7 @@ public class KakaoOAuthService {
      * @param kakaoToken 카카오 토큰
      * @return True if User is Registered, otherwise False
      */
+//    @Transactional
     public BaseResponse doKakaoLogin(String kakaoToken, String fcmToken) {
 
         // 반환값
@@ -63,6 +67,7 @@ public class KakaoOAuthService {
             // Redis에 임시 저장
             redisRepository.saveData(kakaoToken, userInfoFromKakao);
         } else {
+            System.out.println("여기");
             User user = oMember.get();
 
             String memberID = user.getMemberID();
@@ -74,7 +79,7 @@ public class KakaoOAuthService {
             res.put("RefreshToken", refreshToken);
 
             // Update user's FCM Token
-            user.updateFCMToken(fcmToken);
+            userMapper.updateFCMToken(memberID, fcmToken);
             userRepository.save(user);
         }
 
