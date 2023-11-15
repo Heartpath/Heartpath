@@ -6,10 +6,7 @@ import com.zootopia.letterservice.common.error.code.ErrorCode;
 import com.zootopia.letterservice.common.error.exception.BadRequestException;
 import com.zootopia.letterservice.common.global.BannedWords;
 import com.zootopia.letterservice.common.s3.S3Uploader;
-import com.zootopia.letterservice.letter.dto.request.FriendReqDto;
-import com.zootopia.letterservice.letter.dto.request.LetterHandReqDto;
-import com.zootopia.letterservice.letter.dto.request.LetterPlaceReqDto;
-import com.zootopia.letterservice.letter.dto.request.LetterTextReqDto;
+import com.zootopia.letterservice.letter.dto.request.*;
 import com.zootopia.letterservice.letter.dto.response.*;
 import com.zootopia.letterservice.letter.entity.LetterImage;
 import com.zootopia.letterservice.letter.entity.LetterMongo;
@@ -303,7 +300,6 @@ public class LetterServiceImpl implements LetterService {
     @Transactional
     public LetterReceivedDetailResDto getLetter(String accessToken, Long letter_id) {
         UserDetailResDto user = accessTokenToMember(accessToken).getData();
-
         LetterMySQL letterMySQL = letterJpaRepository.findById(letter_id).orElseThrow(() -> {
             throw new BadRequestException(ErrorCode.NOT_EXISTS_LETTER);
         });
@@ -391,21 +387,36 @@ public class LetterServiceImpl implements LetterService {
     }
 
     public void updateIsPickup(String accessToken, Long letter_id) {
+        UserDetailResDto user = accessTokenToMember(accessToken).getData();
+
         LetterMySQL letterMySQL = letterJpaRepository.findById(letter_id).orElseThrow(() -> {
             throw new BadRequestException(ErrorCode.NOT_EXISTS_LETTER);
         });
-        letterJpaRepository.setLetterIsPickupTrue(letterMySQL.getId());
+
+        if (!letterMySQL.getReceiverId().equals(user.getMemberID())) {
+            throw new BadRequestException(ErrorCode.NOT_EQUAL_RECEIVER);
+        }
+
+        letterJpaRepository.setLetterIsPickupTrue(letter_id);
     }
 
     public void test(String accessToken) {
         UserDetailResDto user = accessTokenToMember(accessToken).getData();
-        System.out.println(user.getFcmToken());
-
         String message = user.getNickname() + "님이 당신에게 편지를 보냈습니다.";
-        try {
-            firebaseCloudMessageService.sendMessageTo(user.getFcmToken(), "뱁새가 편지를 물고 왔어요.", message);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        FCMReqDto req = FCMReqDto.builder()
+                .token(user.getFcmToken())
+                .title("뱁새가 편지를 물고 왔어요.")
+                .body(message)
+                .build();
+
+        HttpEntity<FCMReqDto> requestEntity = new HttpEntity<>(req);
+
+        String apiUrl = "http://3.34.86.93/api/fcm";
+        ResponseEntity<String> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, String.class);
+        System.out.println(responseEntity);
+
     }
 }
