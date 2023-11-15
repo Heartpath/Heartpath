@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -37,6 +38,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         Log.d(TAG, "onViewCreated: ")
         initView()
         initClickEvent()
+        initCallback()
     }
 
     private fun initClickEvent() = with(binding) {
@@ -45,13 +47,17 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
 //            findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
             lifecycleScope.launch {
                 loginByKakao()
-                // 로그인 결과에 따라 동작 TODO: 분기 다시 처리
+                // 로그인 결과에 따라 동작
                 loginViewModel.loginResult.collect { result ->
                     if(result.accessToken != "") {
                         // 성공 -> home으로 이동
-                        loginViewModel.setToken(result)
-                        loginViewModel.storeToken()
-                        findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                        launch {
+                            loginViewModel.setToken(result)
+                            // 토큰 값 다 저장했으면 home으로 이동
+                            loginViewModel.setTokenResult.collect {done ->
+                                if(done) findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                            }
+                        }
                     } else {
                         // 성공 못함 -> 회원가입 시키기
                         findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
@@ -141,6 +147,16 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         ) // 카카오 이메일 로그인
             Log.d(TAG, "loginByKakao: 웹으로 로그인 시도 끝")
         }
+    }
+
+    private fun initCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // 뒤로가기로 앱 종료
+                activity?.finish()
+            }
+        }
+        mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
     override fun onDestroyView() {

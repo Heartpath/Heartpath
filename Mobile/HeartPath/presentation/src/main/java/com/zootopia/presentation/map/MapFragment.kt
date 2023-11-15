@@ -5,21 +5,23 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
 import android.view.Gravity
 import android.view.View
-import android.view.Window
 import androidx.activity.addCallback
-import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
@@ -43,7 +45,7 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
-import com.zootopia.domain.model.navermap.MapLetterDto
+import com.zootopia.domain.model.letter.uncheckedletter.UncheckLetterDto
 import com.zootopia.domain.model.tmap.FeatureCollectionDto
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.MainActivity.Companion.CAMERA_PERMISSION_REJECTED
@@ -57,12 +59,14 @@ import com.zootopia.presentation.util.checkAllPermission
 import com.zootopia.presentation.util.distanceIntToString
 import com.zootopia.presentation.util.hasPermissions
 import com.zootopia.presentation.util.requestPermissionsOnClick
+import com.zootopia.presentation.util.timeIntToString
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 private const val TAG = "MapFragment_HP"
 
+@RequiresApi(Build.VERSION_CODES.O)
 @AndroidEntryPoint
 class MapFragment :
     BaseFragment<FragmentMapBinding>(FragmentMapBinding::bind, R.layout.fragment_map),
@@ -73,7 +77,6 @@ class MapFragment :
     private lateinit var mainActivity: MainActivity
     private lateinit var navController: NavController
     private lateinit var mapLetterAdapter: MapLetterAdapter
-    private lateinit var requestMultiplePermission: ActivityResultLauncher<Array<String>>
 
     // Map
     private var path: PathOverlay? = null
@@ -90,29 +93,25 @@ class MapFragment :
     // WorkManager
     private lateinit var workManager: WorkManager
     private lateinit var workRequest: WorkRequest
-
-    // window
-    private lateinit var window: Window
-
+    
+    // 편지 position
+    private lateinit var letterSenderId: String
+    
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        Log.d(TAG, "onAttach: ")
         mainActivity = context as MainActivity
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-        
+
         setWalkView()
         initView()
         initAdapter()
         initCollect()
         initClickEvent()
         initData()
-        
-        // 테스트 (임시)
-//        mapViewModel.test()
 
         mapView = binding.mapviewNaver
         if (checkBasePermission()) {
@@ -129,6 +128,7 @@ class MapFragment :
         toolbarHeartpathMap.apply {
             textviewCurrentPageTitle.text = resources.getString(R.string.toolbar_map_title)
             imageviewBackButton.setOnClickListener {
+                mapViewModel.resetTmapWalkRoadInfo()
                 stopWalk()
                 stopLocationUpdates()
                 findNavController().popBackStack()
@@ -143,30 +143,40 @@ class MapFragment :
     }
 
     private fun initData() {
-        mapViewModel.getDummyList()
+        // Unchecked 편지 리스트 얻기
+        mapViewModel.getUncheckedLetterList()
 
         // 워커 매니저 초기화
         workManager = WorkManager.getInstance(mainActivity)
-        binding.textviewDistance.text = distanceIntToString(walkDist.toInt())
+        binding.apply {
+            textviewDistance.text = "남은 거리: ${distanceIntToString(walkDist.toInt())}"
+            textviewTime.text = "이동 시간: ${timeIntToString(walkTime)}"
+        }
     }
 
     private fun initClickEvent() = with(binding) {
-        // 신고 버튼
+        // 신고 버튼 활성화 이벤트
         imageviewReport.setOnClickListener {
             Log.d(TAG, "initClickEvent: 신고버튼 클릭")
             mapViewModel.apply {
                 isReport = !isReport
-                LetterList.map { MapLetterDto ->
-                    MapLetterDto.isSelected = !MapLetterDto.isSelected
-                }
+                uncheckedLetterList.map { it.isSelected = false }
+
                 if (isReport) {
                     buttonReport.visibility = View.VISIBLE
+                    letterSenderId = ""
                 } else {
                     buttonReport.visibility = View.GONE
                 }
+                mapLetterAdapter.notifyDataSetChanged()
             }
-            initAdapter()
-            initData()
+        }
+
+        // 신고 요청 이벤트
+        buttonReport.setOnClickListener {
+            if(!letterSenderId.isNullOrEmpty()) {
+                mapViewModel.putOpponentFriend(opponentID = letterSenderId)
+            }
         }
 
         // workManager 종료 버튼
@@ -190,6 +200,7 @@ class MapFragment :
         val callback = mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             // 뒤로 버튼 이벤트 처리
             Log.e(TAG, "뒤로가기 클릭")
+            mapViewModel.resetTmapWalkRoadInfo()
             stopWalk()
             stopLocationUpdates()
             findNavController().popBackStack()
@@ -200,20 +211,22 @@ class MapFragment :
     private fun initAdapter() {
         mapLetterAdapter = MapLetterAdapter(mapViewModel = mapViewModel).apply {
             itemClickListener = object : MapLetterAdapter.ItemClickListener {
-                override fun itemClick(view: View, position: Int, mapLetterDto: MapLetterDto) {
+                override fun itemClick(view: View, position: Int, uncheckLetterDto: UncheckLetterDto) {
                     Log.d(TAG, "itemClick: 받은 편지 item 클릭됨")
 
                     if (mapViewModel.lastLatitude != 0.0 && mapViewModel.lastLongitude != 0.0) {
                         mapViewModel.apply {
-                            goalLatitude = mapLetterDto.latitude.toDouble()
-                            goalLongitude = mapLetterDto.longitude.toDouble()
+                            goalLatitude = uncheckLetterDto.lat
+                            goalLongitude = uncheckLetterDto.lng
                             mapViewModel.makeGoalLocataion()
+                            // 선택된 편지
+                            selectLetter = uncheckLetterDto
 
                             // 현재 위치와 마커위치를 계산
                             calculateDistance()
                             // 마커 포지션
                             setMarkerLocation(
-                                mapLetterDto = mapLetterDto,
+                                uncheckLetterDto = uncheckLetterDto,
                                 latitude = goalLatitude,
                                 longitude = goalLongitude,
                             )
@@ -231,12 +244,22 @@ class MapFragment :
 
                 override fun reportClick(view: View, position: Int) {
                     Log.d(TAG, "itemClick: 받은 편지 신고버튼 클릭됨")
+                    mapViewModel.apply {
+                        letterSenderId = uncheckedLetterList[position].senderID
+                        uncheckedLetterList.map { it.isSelected = false }
+                        uncheckedLetterList[position].isSelected = true
+                    }
+                    // todo 수정 필요
+                    mapLetterAdapter.submitList(mapViewModel.uncheckedLetterList)
+                    notifyDataSetChanged()
                 }
             }
         }
-
+        val decoration = DividerItemDecoration(mainActivity, VERTICAL)
+      
         binding.recyclerviewLetterList.apply {
             adapter = mapLetterAdapter
+//            addItemDecoration(decoration)
             layoutManager = LinearLayoutManager(mainActivity, LinearLayoutManager.VERTICAL, false)
         }
     }
@@ -259,20 +282,38 @@ class MapFragment :
         // 길 찾기 data 수신[Tmap] -> 경로 그리기 & WorkManager 실행
         viewLifecycleOwner.lifecycleScope.launch {
             mapViewModel.tmapWalkRoadInfo.collect {
-                Log.d(TAG, "initCollect: ${it}")
+                Log.d(TAG, "initCollect: $it")
                 DrawLoad(it) // 경로 그리기
                 startWalk() // WorkManager 실행
                 mapViewModel.walkRoad = it
             }
         }
-        
+
         // 목적지 까지 거리 계산
         viewLifecycleOwner.lifecycleScope.launch {
             mapViewModel.walkDistance.collectLatest {
                 mapViewModel.dist = distanceIntToString(it.toInt())
                 if (mapViewModel.isStartWalk) {
-                    binding.textviewDistance.text = mapViewModel.dist
+                    binding.apply {
+                        textviewDistance.text = "남은 거리: ${distanceIntToString(walkDist.toInt())}"
+                        textviewTime.text = "이동 시간: ${timeIntToString(walkTime)}"
+                    }
                 }
+            }
+        }
+        
+        // 친구차단 결과
+        viewLifecycleOwner.lifecycleScope.launch {
+            mapViewModel.isOppenentFriend.collectLatest {
+                mainActivity.showToast(it)
+            }
+        }
+        
+        // 포인트 적립
+        viewLifecycleOwner.lifecycleScope.launch {
+            mapViewModel.isPostPoint.collectLatest {
+                Log.d(TAG, "initCollect: 포인트 적립 collect")
+                mainActivity.showToast(it)
             }
         }
     }
@@ -318,25 +359,25 @@ class MapFragment :
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(mainActivity) // gps 자동으로 받아오기
         setUpdateLocationListner() // 내위치를 가져오는 코드
-        
-        rewriteMap() // 다시 그려야 하는 경로가 있다면 다시 그리기
+
+        if (mapViewModel.isStartWalk) rewriteMap() // 다시 그려야 하는 경로가 있다면 다시 그리기
     }
-    
+
     // 다시 그려야 하는 경로가 있다면 다시 그리기
-    private fun rewriteMap() = with(mapViewModel){
-        if(walkRoad != null) {
+    private fun rewriteMap() = with(mapViewModel) {
+        if (walkRoad != null) {
             Log.d(TAG, "onViewCreated: 기존 경로 다시 그리기 ")
             DrawLoad(walkRoad!!)
-    
+
             // 현재 위치와 마커위치를 계산
             calculateDistance()
-            
+
             // 마커 포지션
             setMarkerLocation(
                 latitude = goalLatitude,
                 longitude = goalLongitude,
             )
-            
+
             // 카메라 위치 지정
             setCameraToIncludeMyLocationAndMarker(
                 naverMap,
@@ -375,7 +416,7 @@ class MapFragment :
                 override fun onLocationResult(locationResult: LocationResult) {
                     locationResult ?: return
                     for ((i, location) in locationResult.locations.withIndex()) {
-                        Log.d(TAG, " $locationCallback    mapOn -> latitude: ${location.latitude}, longitude: ${location.longitude}")
+//                        Log.d(TAG, " $locationCallback    mapOn -> latitude: ${location.latitude}, longitude: ${location.longitude}")
                         mapViewModel.apply {
                             setLocation(
                                 latitude = location.latitude,
@@ -399,13 +440,14 @@ class MapFragment :
         )
     }
 
+    // 위치 서비스 콜백 취소
     fun stopLocationUpdates() {
         if (locationCallback != null) {
             fusedLocationProviderClient.removeLocationUpdates(locationCallback!!)
         }
     }
 
-    fun setMarkerLocation(mapLetterDto: MapLetterDto? = null, latitude: Double, longitude: Double) {
+    fun setMarkerLocation(uncheckLetterDto: UncheckLetterDto? = null, latitude: Double, longitude: Double) {
         // 기존 마커가 존재하는 경우 제거합니다
         marker?.map = null
 
@@ -426,13 +468,13 @@ class MapFragment :
         }
 
         marker?.setOnClickListener {
-            if(mapViewModel.isStartWalk) {
+            if (mapViewModel.isStartWalk) {
                 return@setOnClickListener false
             }
-            
-            if (it is Marker && checkBasePermission() && mapLetterDto != null) {
+
+            if (it is Marker && checkBasePermission() && uncheckLetterDto != null) {
                 // 확인 다이얼로그
-                val readyGoDialog = ReadyGoDialogFragment(mapLetterDto = mapLetterDto)
+                val readyGoDialog = ReadyGoDialogFragment(uncheckLetterDto = uncheckLetterDto)
                 readyGoDialog.show(mainActivity.supportFragmentManager, "ReadyGoDialogFragment")
             } else {
                 requestBasePermission()
@@ -462,10 +504,10 @@ class MapFragment :
         naverMap.maxZoom = 21.0
         naverMap.minZoom = 5.0
     }
-    
-    private fun setWalkView() = with(binding){
+
+    private fun setWalkView() = with(binding) {
         Log.d(TAG, "setWalkView: ${mapViewModel.isStartWalk}")
-        if(!mapViewModel.isStartWalk) {
+        if (!mapViewModel.isStartWalk) {
             presidentBottomSheet.visibility = View.VISIBLE
             cardviewWork.visibility = View.GONE
         } else {
@@ -477,9 +519,10 @@ class MapFragment :
     // WorkManager
     // 산책 종료
     private fun stopWalk() {
+        Log.d(TAG, "stopWalk: 백그라운드 종료")
         mapViewModel.isStartWalk = false
         mainActivity.showToast("편지 찾기를 종료합니다.")
-        workManager.cancelAllWork()
+        workManager.cancelAllWork() // 백그라운드 작업 종료
         mapViewModel.resetTmapWalkRoadInfo()
         setUpdateLocationListner()
         setWalkView()

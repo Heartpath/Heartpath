@@ -6,11 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.zootopia.presentation.R
 import com.zootopia.presentation.databinding.DialogLetterAddFriendBinding
+import kotlinx.coroutines.launch
 
 class ReadLetterAddFriendDialog : DialogFragment() {
     private lateinit var binding: DialogLetterAddFriendBinding
+    private val readLetterViewModel: ReadLetterViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +38,13 @@ class ReadLetterAddFriendDialog : DialogFragment() {
                 dismiss()
             }
             buttonFriendAddAccept.setOnClickListener {
-                // TODO: 친구 추가
+                readLetterViewModel.addAsFriend()
                 dismiss()
+            }
+            lifecycleScope.launch {
+                readLetterViewModel.readLetterResult.collect {letter ->
+                    textviewAddFriendWhoIsNotFriend.text = view.context.getString(R.string.received_letter_title, letter.sender)
+                }
             }
         }
     }

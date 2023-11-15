@@ -7,6 +7,8 @@ import android.view.View
 import androidx.core.view.isGone
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.work.WorkManager
 import com.google.ar.core.Anchor
 import com.google.ar.core.Config
 import com.google.ar.core.Frame
@@ -94,9 +96,34 @@ class ArCoreReadFragment :
                 dist = it
             }
         }
+        
+        // 편지 pick up 성공시
+        viewLifecycleOwner.lifecycleScope.launch {
+            mapViewModel.isPickUpLetter.collectLatest {
+                isLoading = false
+                mapViewModel.postPoint()
+                mainActivity.showToast("편지를 편지함에 담았습니다.")
+                WorkManager.getInstance(mainActivity).cancelAllWork() // 백그라운드 종료
+                mapViewModel.resetTmapWalkRoadInfo() // 길찾기 data 초기화
+                findNavController().popBackStack()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            mapViewModel.error.collectLatest {
+                mainActivity.showToast("편지 담기에 실패했습니다. 다시 시도해 주세요.")
+            }
+        }
     }
     private fun initClickEvent() = with(binding) {
+        // 편지 담기 버튼 -> API 통신
         buttonGetLetter.setOnClickListener {
+            mapViewModel.apply {
+                selectLetter?.let { letter ->
+                    getPickUpLetter(letter.index)
+                    isLoading = true
+                }
+            }
         }
     }
 
@@ -139,23 +166,6 @@ class ArCoreReadFragment :
             onTrackingFailureChanged = { reason ->
                 this@ArCoreReadFragment.trackingFailureReason = reason
             }
-
-//            anchorNode.apply {
-//                onTapAR = { motionEvent, hitResult ->
-//                    Log.d(TAG, "initView: 클릭!!!!")
-//
-//                    // 클릭 이벤트가 발생했을때 수행하고자 하는 작업을 여기에 추가
-//                    // motionEvent 및 hitResult를 사용하여 필요한 동작을 수행
-//                    val x = motionEvent.x
-//                    val y = motionEvent.y
-//                    // hitResult를 통해 클릭한 객체 및 위치 정보에 액세스할 수 있습니다.
-//                    val trackable = hitResult.trackable
-//                    val pose = hitResult.hitPose
-//
-//                    Log.d(TAG, "클릭 -> :$x / $y  / trackable: $trackable /  pose: $pose ")
-//                    // 클릭 이벤트 처리
-//                }
-//            }
         }
     }
 
