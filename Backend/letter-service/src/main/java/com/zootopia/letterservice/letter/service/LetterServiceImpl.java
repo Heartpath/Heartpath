@@ -1,7 +1,5 @@
 package com.zootopia.letterservice.letter.service;
 
-import com.zootopia.letterservice.common.FCM.FCMService;
-import com.zootopia.letterservice.common.FCM.FirebaseCloudMessageService;
 import com.zootopia.letterservice.common.error.code.ErrorCode;
 import com.zootopia.letterservice.common.error.exception.BadRequestException;
 import com.zootopia.letterservice.common.global.BannedWords;
@@ -27,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,9 +40,6 @@ public class LetterServiceImpl implements LetterService {
     private final LetterMongoRepository letterMongoRepository;
     private final LetterImageRepository letterImageRepository;
     private final PlaceImageRepository placeImageRepository;
-
-    private final FirebaseCloudMessageService firebaseCloudMessageService;
-    private final FCMService fcmService;
 
     private final BannedWords bannedWords;
     private final S3Uploader s3Uploader;
@@ -200,12 +194,7 @@ public class LetterServiceImpl implements LetterService {
         }
         // Receiver, FCM 알림 발송 추가 필요
         UserInfoDetailResDto receiver = findByUserId(letterMongo.getReceiverId());
-        try {
-            String message = receiver.getNickname() + "님이 당신에게 편지를 보냈습니다.";
-            firebaseCloudMessageService.sendMessageTo(receiver.getFcmToken(), "뱁새가 편지를 물고 왔어요.",message);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        toSendFCM(receiver.getFcmToken(), receiver.getNickname());
 
         letterMongoRepository.deleteById(letterMongo.getId());
     }
@@ -337,6 +326,20 @@ public class LetterServiceImpl implements LetterService {
         return letter;
     }
 
+    public void updateIsPickup(String accessToken, Long letter_id) {
+        UserDetailResDto user = accessTokenToMember(accessToken).getData();
+
+        LetterMySQL letterMySQL = letterJpaRepository.findById(letter_id).orElseThrow(() -> {
+            throw new BadRequestException(ErrorCode.NOT_EXISTS_LETTER);
+        });
+
+        if (!letterMySQL.getReceiverId().equals(user.getMemberID())) {
+            throw new BadRequestException(ErrorCode.NOT_EQUAL_RECEIVER);
+        }
+
+        letterJpaRepository.setLetterIsPickupTrue(letter_id);
+    }
+
     // accessToken으로 해당 member에 대한 정보 받기
     private UserResDto accessTokenToMember(String accessToken) {
         RestTemplate restTemplate = new RestTemplate();
@@ -397,18 +400,21 @@ public class LetterServiceImpl implements LetterService {
         }
     }
 
-    public void updateIsPickup(String accessToken, Long letter_id) {
-        UserDetailResDto user = accessTokenToMember(accessToken).getData();
+    public void toSendFCM(String fcmToken, String nickname) {
+        String message = nickname + "님이 당신에게 편지를 보냈습니다.";
 
-        LetterMySQL letterMySQL = letterJpaRepository.findById(letter_id).orElseThrow(() -> {
-            throw new BadRequestException(ErrorCode.NOT_EXISTS_LETTER);
-        });
+        RestTemplate restTemplate = new RestTemplate();
 
-        if (!letterMySQL.getReceiverId().equals(user.getMemberID())) {
-            throw new BadRequestException(ErrorCode.NOT_EQUAL_RECEIVER);
-        }
+        FCMReqDto req = FCMReqDto.builder()
+                .token(fcmToken)
+                .title("뱁새가 편지를 물고 왔어요.")
+                .body(message)
+                .build();
 
-        letterJpaRepository.setLetterIsPickupTrue(letter_id);
+        HttpEntity<FCMReqDto> requestEntity = new HttpEntity<>(req);
+
+        String apiUrl = "http://3.34.86.93/api/fcm";
+        ResponseEntity<String> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, String.class);
     }
 
     public void test(String accessToken) {
@@ -428,6 +434,5 @@ public class LetterServiceImpl implements LetterService {
         String apiUrl = "http://3.34.86.93/api/fcm";
         ResponseEntity<String> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, String.class);
         System.out.println(responseEntity);
-
     }
 }
