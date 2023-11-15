@@ -60,4 +60,8 @@ public class User {
     public void setStatus(boolean status) {
         this.status = status;
     }
+
+    public void setPoint(int point) {
+        this.point = point;
+    }
 }
