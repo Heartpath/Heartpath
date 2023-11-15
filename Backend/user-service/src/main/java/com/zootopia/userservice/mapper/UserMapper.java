@@ -4,6 +4,7 @@ import com.zootopia.userservice.dto.MypageDTO;
 import com.zootopia.userservice.dto.UserSearchDTO;
 import com.zootopia.userservice.dto.UserSearchParam;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -16,4 +17,9 @@ public interface UserMapper {
     List<UserSearchDTO> readLimitUserByID(UserSearchParam paramMap);
 
     List<UserSearchDTO> readLimitUserByIDWithFriendRelation(UserSearchParam paramMap);
+
+    int updateUserPoint(
+            @Param(value = "memberID") String memberID,
+            @Param(value = "point") int point
+    );
 }
