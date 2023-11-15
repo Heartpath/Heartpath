@@ -391,10 +391,17 @@ public class LetterServiceImpl implements LetterService {
     }
 
     public void updateIsPickup(String accessToken, Long letter_id) {
+        UserDetailResDto user = accessTokenToMember(accessToken).getData();
+
         LetterMySQL letterMySQL = letterJpaRepository.findById(letter_id).orElseThrow(() -> {
             throw new BadRequestException(ErrorCode.NOT_EXISTS_LETTER);
         });
-        letterJpaRepository.setLetterIsPickupTrue(letterMySQL.getId());
+
+        if (!letterMySQL.getReceiverId().equals(user.getMemberID())) {
+            throw new BadRequestException(ErrorCode.NOT_EQUAL_RECEIVER);
+        }
+
+        letterJpaRepository.setLetterIsPickupTrue(letter_id);
     }
 
     public void test(String accessToken) {
