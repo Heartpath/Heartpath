@@ -28,6 +28,8 @@ class ReadLetterFragment : BaseFragment<FragmentReadLetterBinding>(
     private val args: ReadLetterFragmentArgs by navArgs()
     private lateinit var letterViewPagerAdapter: LetterViewPagerAdapter
     private val letterImageList: MutableList<String> = mutableListOf()
+    private var letterIndex = 1
+    private var totalIndex = 1
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
@@ -47,20 +49,6 @@ class ReadLetterFragment : BaseFragment<FragmentReadLetterBinding>(
             textviewCurrentPageTitle.text =  getString(R.string.toolbar_read_letter_title)
             imageviewBackButton.setOnClickListener {
                 findNavController().popBackStack()
-            }
-            lifecycleScope.launch {
-                readLetterViewModel.imageCnt.collect {
-                    if(it>0) {
-                        imageviewSettingIcon.apply {
-                            setImageResource(R.drawable.icon_image_info)
-                            setOnClickListener {
-                                ReadLetterInfoDialog().show(childFragmentManager, TAG)
-                            }
-                            this.requestLayout()
-                            visibility = View.VISIBLE
-                        }
-                    }
-                }
             }
         }
         // floating buton 조건에 따라 visibility 설정
@@ -102,6 +90,23 @@ class ReadLetterFragment : BaseFragment<FragmentReadLetterBinding>(
             setPageTransformer(ZoomOutPageTransformer())
             getChildAt(0).overScrollMode = View.OVER_SCROLL_NEVER
             orientation = ViewPager2.ORIENTATION_HORIZONTAL
+
+            registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback(){
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    letterIndex = position + 1
+                    textviewLetterIndex.text =  root.context.getString(R.string.readletter_letter_index, letterIndex, totalIndex)
+                }
+            })
+        }
+
+        // 위에 이미지 숫자 설정
+        lifecycleScope.launch {
+            readLetterViewModel.imageCnt.collect {
+                if(it>0) {
+                    totalIndex = it
+                }
+            }
         }
     }
 

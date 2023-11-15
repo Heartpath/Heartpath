@@ -84,7 +84,7 @@ class ReadLetterViewModel @Inject constructor(
                 tmpList.addAll(files)
             }
             _letterList.emit(tmpList)
-            _imageCnt.emit(it.files.size)
+            _imageCnt.emit(it.files.size + 1)
         }
     }
 
