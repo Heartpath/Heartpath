@@ -59,7 +59,7 @@ public class StoreController {
                             "           \"name\": \"빨간 편지지\"," +
                             "           \"price\": 300," +
                             "           \"imagePath\": \"url\"," +
-                            "           \"isowned\": \"true\"" +
+                            "           \"owned\": \"true\"" +
                             "       }" +
                             "   ]" +
                             "}")))
@@ -89,7 +89,7 @@ public class StoreController {
                             "           \"name\": \"빨간 편지지\"," +
                             "           \"price\": 300," +
                             "           \"imagePath\": \"url\"," +
-                            "           \"isowned\": \"true\"" +
+                            "           \"owned\": \"true\"" +
                             "       }" +
                             "   ]" +
                             "}")))
@@ -170,7 +170,8 @@ public class StoreController {
                             "           \"name\": \"일반 뱁새\"," +
                             "           \"price\": 100," +
                             "           \"imagePath\": \"url\"," +
-                            "           \"isowned\": \"true\"" +
+                            "           \"owned\": \"true\"," +
+                            "           \"main\": \"true\"" +
                             "       }" +
                             "   ]" +
                             "}")))
@@ -198,7 +199,8 @@ public class StoreController {
                             "           \"name\": \"일반 뱁새\"," +
                             "           \"price\": 100," +
                             "           \"imagePath\": \"url\"," +
-                            "           \"isowned\": \"true\"" +
+                            "           \"owned\": \"true\"," +
+                            "           \"main\": \"true\"" +
                             "       }" +
                             "   ]" +
                             "}")))
@@ -223,9 +225,11 @@ public class StoreController {
                             "       {" +
                             "           \"index\": 1," +
                             "           \"name\": \"일반 뱁새\"," +
+                            "           \"description\": \"편지 배달을 업으로 삼는 뱁새다. 몹시 지친 직장인과 유사한 퀭한 생김새를 가지고 있다.\"," +
                             "           \"price\": 100," +
                             "           \"imagePath\": \"url\"," +
-                            "           \"isowned\": \"true\"" +
+                            "           \"owned\": \"true\"," +
+                            "           \"main\": \"true\"" +
                             "       }" +
                             "   ]" +
                             "}")))
@@ -234,8 +238,7 @@ public class StoreController {
         UserResDto userResDto = memberService.accessTokenToMember(accessToken);
         String memberId = userResDto.getData().getMemberID();
 
-        Optional<CrowTitBook> mainCrowTit = crowTitBookRepository.findByMemberIdAndIsMain(memberId, true);
-
+        CrowTitResDto mainCrowTit = storeService.getMainCrowTit(memberId);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "메인 캐릭터 조회 성공", mainCrowTit));
     }
 
