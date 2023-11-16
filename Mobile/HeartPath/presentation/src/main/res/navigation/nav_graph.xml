@@ -80,6 +80,9 @@
         <action
             android:id="@+id/action_mapFragment_to_arCoreReadFragment"
             app:destination="@id/arCoreReadFragment" />
+        <action
+            android:id="@+id/action_mapFragment_to_receiveLetterFragment"
+            app:destination="@id/receiveLetterFragment" />
     </fragment>
     <fragment
         android:id="@+id/myPageFragment"
@@ -201,7 +204,8 @@
     <fragment
         android:id="@+id/arCoreReadFragment"
         android:name="com.zootopia.presentation.arcore.ArCoreReadFragment"
-        android:label="ArCoreReadFragment" />
+        android:label="ArCoreReadFragment" >
+    </fragment>
     <fragment
         android:id="@+id/addLetterImageFragment"
         android:name="com.zootopia.presentation.writeletter.addletterimage.AddLetterImageFragment"

@@ -40,6 +40,7 @@
                     android:gravity="top"
                     android:scrollHorizontally="false"
                     android:text=""
+                    style="@style/DarkGray_10_Regular_NanumText"
                     android:textColor="@color/black"
                     app:layout_constraintBottom_toBottomOf="@+id/imageview_letter_paper"
                     app:layout_constraintEnd_toEndOf="@id/imageview_letter_paper"
