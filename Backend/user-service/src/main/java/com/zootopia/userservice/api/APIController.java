@@ -175,19 +175,9 @@ public class APIController {
     )
     @PostMapping("/point/{memberID}/{point}")
     public ResponseEntity<BaseResponse> renewUserPoint(@PathVariable String memberID, @PathVariable int point) {
-        int res = pointService.reviseUserPoint(memberID, point);
+        pointService.reviseUserPoint(memberID, point);
 
-        int status = 200;
-        BaseResponse baseResponse;
-        if (res == 1) {
-            log.info("유저 포인트가 변경되었습니다");
-            baseResponse = new BaseResponse(status, "유저 포인트가 변경되었습니다", null);
-        } else {
-            status = 400;
-            baseResponse = new BaseResponse(status, "유저 포인트 변경을 실패했습니다.", null);
-        }
-
-        return ResponseEntity.status(status).body(baseResponse);
+        return ResponseEntity.status(200).body(new BaseResponse(200, "유저 포인트가 변경되었습니다", null));
     }
 
     @Operation(summary = "Android에게 알림 보내기")
