@@ -45,7 +45,7 @@ public class JwtProvider {
 
     @PostConstruct
     public void calculateDate() {
-        long durationOfOneDay = DateUtil.toDays(jwtExpiration);
+        long durationOfOneDay = DateUtil.toDays(2);
         ONE_DAY = DateUtil.toDate(durationOfOneDay);
 
         long durationOfSevenDays = DateUtil.toDays(refreshExpiration);
@@ -76,7 +76,7 @@ public class JwtProvider {
                 .setHeaderParams(JwtUtil.getHeaderMap())
                 .setIssuedAt(DateUtil.getCurrentDate())
                 .setExpiration(ONE_DAY)
-                .claim("email", memberID)
+                .claim("memberID", memberID)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
         log.info("Create AccessToken: {}", accessToken);
@@ -90,11 +90,29 @@ public class JwtProvider {
                 .setHeaderParams(JwtUtil.getHeaderMap())
                 .setIssuedAt(DateUtil.getCurrentDate())
                 .setExpiration(SEVEN_DAYS)
-                .claim("email", memberID)
+                .claim("memberID", memberID)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
         log.info("Create RefreshToken: {}", refreshToken);
 
         return refreshToken;
+    }
+
+    public String getMemberIDFromToken(String token) {
+
+        String nickname;
+
+        try {
+            nickname = (String) Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody().get("memberID");
+        } catch (NullPointerException e) {
+            log.error("Token에서 MemberID를 찾을 수 없습니다.");
+            nickname = "";
+        }
+
+        return nickname;
     }
 }

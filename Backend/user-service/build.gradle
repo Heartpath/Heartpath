@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.zootopia'
-version = '0.0.1-SNAPSHOT'
+version = 'SNAPSHOT'
 
 java {
     sourceCompatibility = '11'
@@ -28,6 +28,8 @@ dependencies {
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.1'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
     // MySQL
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -43,11 +45,32 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
+    // AWS S3
+    implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
+
+    // XML Processing
+    implementation 'javax.xml.bind:jaxb-api'
+
+    // 설정 파일 암호화 Library
+    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+
+    // swagger
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
+
+    // Firebase
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
+
     // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:2.3.1'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
+//tasks.named('test') {
+//    useJUnitPlatform()
+//}
+
+jar {
+    archiveClassifier = ''
+    enabled = false
 }
