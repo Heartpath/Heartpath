@@ -13,7 +13,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
@@ -147,16 +149,19 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
                 val isCheckDone = loginViewModel.checkIdDone.value
                 Log.d(TAG, "회원가입 버튼 $isCheckDone")
                 if (isCheckDone) { // 아이디 중복 체크 확인 되었는 상태
-                    lifecycleScope.launch {
+                    viewLifecycleOwner.lifecycleScope.launch {
                         loginViewModel.signUp()
                         loginViewModel.signupResult.collectLatest { result ->
                             if (result.accessToken != "") {
                                 signupToast(message = getString(R.string.toast_message_signup_done))
+                                Log.d(TAG, "initClickEvent: settoken 재호출")
                                 loginViewModel.setToken(result)
                                 loginViewModel.storeToken()
-                                // 토큰 값 다 저장했으면 home으로 이동
-                                loginViewModel.setTokenResult.collectLatest { done ->
-                                    if(done) findNavController().navigate(R.id.action_signUpFragment_to_homeFragment)
+                                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                                    // 토큰 값 다 저장했으면 home으로 이동
+                                    loginViewModel.setTokenResult.collectLatest { done ->
+                                        if (done) findNavController().navigate(R.id.action_signUpFragment_to_homeFragment)
+                                    }
                                 }
                             } else {
                                 signupToast(message = getString(R.string.toast_message_signup_fail))

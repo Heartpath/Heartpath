@@ -6,6 +6,7 @@ import com.zootopia.domain.model.login.TokenDto
 import com.zootopia.domain.usecase.login.CheckIdUseCase
 import com.zootopia.domain.usecase.login.LoginUseCase
 import com.zootopia.domain.usecase.login.SignupUseCase
+import com.zootopia.domain.usecase.preference.GetAccessTokenUseCase
 import com.zootopia.domain.usecase.preference.SetFcmTokenUseCase
 import com.zootopia.domain.usecase.preference.SetKakaoAccessTokenUseCase
 import com.zootopia.domain.usecase.preference.SetTokenUseCase
@@ -15,7 +16,10 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,6 +32,7 @@ class LoginViewModel @Inject constructor(
     private val checkIdUseCase: CheckIdUseCase,
     private val signupUseCase: SignupUseCase,
     private val setTokenUseCase: SetTokenUseCase,
+    private val getAccessTokenUseCase: GetAccessTokenUseCase,
 ) :
     BaseViewModel() {
 
@@ -62,6 +67,9 @@ class LoginViewModel @Inject constructor(
     
     private val _setTokenResult = MutableSharedFlow<Boolean>()
     var setTokenResult = _setTokenResult.asSharedFlow()
+
+    private val _checkAutoLogin = MutableSharedFlow<String>()
+    var checkAutoLogin = _checkAutoLogin.asSharedFlow()
 
 
     fun setKakaoAccessToken(kakaoToken: String) = viewModelScope.launch {
@@ -123,6 +131,21 @@ class LoginViewModel @Inject constructor(
             _setTokenResult.emit(it)
             Log.d(TAG, "storeToken: store 끝났으면? $it")
         }
+    }
+
+    // 자동 로그인 체크
+    fun checkAutoLogin() = viewModelScope.launch {
+        Log.d(TAG, "checkAutoLogin: 여기호출")
+        _checkAutoLogin.emit(getAccessTokenUseCase.invoke().first())
+        Log.d(TAG, "checkAutoLogin: $checkAutoLogin")
+
+    }
+
+    fun resetValues() = viewModelScope.launch {
+        _setTokenResult.emit(false)
+        _accessToken.emit("")
+        _refreshToken.emit("")
+        _checkAutoLogin.emit("")
     }
 
     companion object {
