@@ -2,46 +2,42 @@ package com.zootopia.storeservice.store.service;
 
 import com.zootopia.storeservice.common.error.code.ErrorCode;
 import com.zootopia.storeservice.common.error.exception.BadRequestException;
-import com.zootopia.storeservice.common.s3.S3Uploader;
-import com.zootopia.storeservice.store.dto.request.CharacterBuyReqDto;
+//import com.zootopia.storeservice.common.s3.S3Uploader;
 import com.zootopia.storeservice.store.dto.request.CrowTitReqDto;
-import com.zootopia.storeservice.store.dto.request.LetterPaperBuyReqDto;
-import com.zootopia.storeservice.store.entity.CrowTit;
-import com.zootopia.storeservice.store.entity.LetterPaper;
-import com.zootopia.storeservice.store.entity.LetterPaperBook;
-import com.zootopia.storeservice.store.entity.Point;
-import com.zootopia.storeservice.store.repository.CrowTitRepository;
-import com.zootopia.storeservice.store.repository.LetterPaperRepository;
-import com.zootopia.storeservice.store.repository.PointRepository;
+import com.zootopia.storeservice.store.dto.request.LetterPaperReqDto;
+import com.zootopia.storeservice.store.dto.response.CrowTitResDto;
+import com.zootopia.storeservice.store.dto.response.LetterPaperResDto;
+import com.zootopia.storeservice.store.entity.*;
+import com.zootopia.storeservice.store.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class StoreServiceImpl implements StoreService {
-    @Autowired
-    private WebClient webClient;
 
     private final LetterPaperRepository letterPaperRepository;
+    private final LetterPaperBookRepository letterPaperBookRepository;
     private final CrowTitRepository crowTitRepository;
+    private final CrowTitBookRepository crowTitBookRepository;
     private final PointRepository pointRepository;
+    private final MemberService memberService;
 
-    private final S3Uploader s3Uploader;
+//    private final S3Uploader s3Uploader;
 
-    public void buyLetterPaper(String memberId, LetterPaperBuyReqDto letterPaperBuyReqDto){
-        LetterPaper letterPaper = letterPaperRepository.findById(letterPaperBuyReqDto.getLetterpaperId())
+    public void buyLetterPaper(String memberId, LetterPaperReqDto letterPaperBuyReqDto){
+        int letterPaperBookId = letterPaperBuyReqDto.getLetterpaperId();
+        LetterPaper letterPaper = letterPaperRepository.findById(letterPaperBookId)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTS_LETTERPAPER));
 
         List<Point> pointUsage = pointRepository.findByMemberId(memberId);
@@ -49,12 +45,15 @@ public class StoreServiceImpl implements StoreService {
         pointUsage.sort(Comparator.comparing(Point::getCreatedDate).reversed());
         // 가장 최근의 포인트 사용 내역의 balance 가져오기
         int lastBalance = pointUsage.isEmpty() ? 0 : pointUsage.get(0).getBalance();
-        int currentBalance = lastBalance + letterPaper.getPrice();
+        int currentBalance = lastBalance - letterPaper.getPrice();
+        memberService.pointToMember(memberId, currentBalance);
 
         LetterPaperBook letterPaperBook = LetterPaperBook.builder()
-                .letterPaper(letterPaper)
+                .letterPaperId(letterPaper.getId())
+                .memberId(memberId)
                 .acquisitionDate(LocalDateTime.now())
                 .build();
+        letterPaperBookRepository.save(letterPaperBook);
 
         Point point = Point.builder()
                 .memberId(memberId)
@@ -66,14 +65,67 @@ public class StoreServiceImpl implements StoreService {
         pointRepository.save(point);
     }
 
-    public LetterPaper getLetterPaperDetail(Long letterpaperId){
+    public List<LetterPaperResDto> getLetterPaper(String memberId){
+        List<LetterPaperBook> letterPaperBookList = letterPaperBookRepository.findAllByMemberId(memberId);
+
+        List<LetterPaperResDto> result = new ArrayList<>();
+
+        for (LetterPaperBook letterPaperBook:letterPaperBookList){
+            Optional<LetterPaper> letterPaper = letterPaperRepository.findById(letterPaperBook.getLetterPaperId());
+
+            if (letterPaper.isPresent()){
+                LetterPaperResDto letterPaperResDto = LetterPaperResDto.builder()
+                        .letterpaperId(letterPaper.get().getId())
+                        .name(letterPaper.get().getName())
+                        .price(letterPaper.get().getPrice())
+                        .description(letterPaper.get().getDescription())
+                        .imagePath(letterPaper.get().getImagePath())
+                        .isOwned(true)
+                        .build();
+                result.add(letterPaperResDto);
+            }
+        }
+        return result;
+    }
+
+    public List<LetterPaperResDto> getLetterPaperAll(String memberId){
+        List<LetterPaper> letterPaperList = letterPaperRepository.findAll();
+        List<LetterPaperBook> letterPaperBookList = letterPaperBookRepository.findAllByMemberId(memberId);
+
+        List<LetterPaperResDto> result = new ArrayList<>();
+
+        for (LetterPaper letterPaper:letterPaperList){
+            boolean isOwned = false;
+            for (LetterPaperBook letterpaperBook:letterPaperBookList){
+                if (letterPaper.getId()==letterpaperBook.getLetterPaperId()){
+                    isOwned=true;
+                    break;
+                }
+            }
+            LetterPaperResDto letterPaperResDto = LetterPaperResDto.builder()
+                    .letterpaperId(letterPaper.getId())
+                    .name(letterPaper.getName())
+                    .price(letterPaper.getPrice())
+                    .description(letterPaper.getDescription())
+                    .imagePath(letterPaper.getImagePath())
+                    .isOwned(isOwned)
+                    .build();
+            result.add(letterPaperResDto);
+        }
+
+        return result;
+    }
+
+
+    public LetterPaper getLetterPaperDetail(int letterpaperId){
         LetterPaper letterPaper = letterPaperRepository.findById(letterpaperId)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTS_LETTERPAPER));
         return letterPaper;
     }
 
-    public void buyCharacter(String memberId, CharacterBuyReqDto characterBuyReqDto){
-        CrowTit crowTit = crowTitRepository.findById(characterBuyReqDto.getCharacterId())
+    public void buyCrowTit(String memberId, CrowTitReqDto crowTitBuyReqDto){
+        int crowTitBookId = crowTitBuyReqDto.getCrowTitId();
+        CrowTit crowTit = crowTitRepository.findById(crowTitBookId)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTS_CROWTIT));
 
         List<Point> pointUsage = pointRepository.findByMemberId(memberId);
@@ -81,22 +133,16 @@ public class StoreServiceImpl implements StoreService {
         pointUsage.sort(Comparator.comparing(Point::getCreatedDate).reversed());
         // 가장 최근의 포인트 사용 내역의 balance 가져오기
         int lastBalance = pointUsage.isEmpty() ? 0 : pointUsage.get(0).getBalance();
-        int currentBalance = lastBalance+crowTit.getPrice();
+        int currentBalance = lastBalance - crowTit.getPrice();
+        memberService.pointToMember(memberId, currentBalance);
 
-        // ** 구매한 뱁새정보 멤버 서버로 전송
-
-//        try {
-//            ResponseEntity<String> result = webClient.post()
-//                    .uri("/crowtit/save")
-//                    .contentType(MediaType.APPLICATION_JSON)
-//                    .bodyValue(crowTit)
-//                    .retrieve()
-//                    .toEntity(String.class)
-//                    .block();
-//            return;
-//        }catch (Exception e){
-//            throw new BadRequestException(ErrorCode.FAIL_SEND_TO_MEMBER_CROWTIT);
-//        }
+        CrowTitBook crowTitBook = CrowTitBook.builder()
+                .crowTitId(crowTit.getId())
+                .memberId(memberId)
+                .isMain(false)
+                .acquisitionDate(LocalDateTime.now())
+                .build();
+        crowTitBookRepository.save(crowTitBook);
 
         Point point = Point.builder()
                 .memberId(memberId)
@@ -109,53 +155,119 @@ public class StoreServiceImpl implements StoreService {
 
     }
 
-    public CrowTit getCharacterInfo(Long charater_id){
-        CrowTit crowTit = crowTitRepository.findById(charater_id)
+    public void changeMainCrowTit(String memberId, CrowTitReqDto crowTitChangeReqDto){
+        int crowTitBookId = crowTitChangeReqDto.getCrowTitId();
+        CrowTitBook crowTit = crowTitBookRepository.findByCrowTitIdAndMemberId(crowTitBookId, memberId)
+                .orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTS_CROWTIT));
+
+        Optional<CrowTitBook> oldCrowTIt = crowTitBookRepository.findByMemberIdAndIsMain(memberId, true);
+
+        oldCrowTIt.ifPresent(oldCrowTit -> {
+            oldCrowTit.setMain(false);
+            crowTitBookRepository.save(oldCrowTit);
+        });
+
+        crowTit.setMain(true);
+        crowTitBookRepository.save(crowTit);
+    }
+
+    public List<CrowTitResDto> getCrowTitList(String memberId){
+        List<CrowTitBook> crowTitBookList = crowTitBookRepository.findAllByMemberId(memberId);
+        List<CrowTitResDto> result = new ArrayList<>();
+
+        for (CrowTitBook crowTitBook:crowTitBookList){
+            Optional<CrowTit> crowTit = crowTitRepository.findById(crowTitBook.getCrowTitId());
+            if (crowTit.isPresent()){
+                CrowTitResDto crowTitResDto = CrowTitResDto.builder()
+                        .crowTitId(crowTit.get().getId())
+                        .name(crowTit.get().getName())
+                        .price(crowTit.get().getPrice())
+                        .description(crowTit.get().getDescription())
+                        .imagePath(crowTit.get().getImagePath())
+                        .isOwned(true)
+                        .build();
+                result.add(crowTitResDto);
+            }
+        }
+        return result;
+    }
+
+    public List<CrowTitResDto> getCrowTitListAll(String memberId){
+        List<CrowTit> crowTitList = crowTitRepository.findAll();
+        List<CrowTitBook> crowTitBookList = crowTitBookRepository.findAllByMemberId(memberId);
+
+        List<CrowTitResDto> result = new ArrayList<>();
+
+        for (CrowTit crowTit:crowTitList){
+            boolean isOwned = false;
+            for (CrowTitBook crowTitBook:crowTitBookList){
+                if (crowTit.getId()==crowTitBook.getCrowTitId()){
+                    isOwned=true;
+                    break;
+                }
+            }
+            CrowTitResDto crowTitResDto = CrowTitResDto.builder()
+                    .crowTitId(crowTit.getId())
+                    .name(crowTit.getName())
+                    .price(crowTit.getPrice())
+                    .description(crowTit.getDescription())
+                    .imagePath(crowTit.getImagePath())
+                    .isOwned(isOwned)
+                    .build();
+            result.add(crowTitResDto);
+        }
+
+        return result;
+
+    }
+
+    public CrowTit getCrowTitInfo(int crowTit_id){
+        CrowTit crowTit = crowTitRepository.findById(crowTit_id)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTS_CROWTIT));
         return crowTit;
     }
 
-    public void upload(CrowTitReqDto crowTitReqDto, List<MultipartFile> files) {
-//        if (letterPaperReqDto.getName().isEmpty() || letterPaperReqDto.getPrice() == null || letterPaperReqDto.getDescription().isEmpty() || letterPaperReqDto == null) {
-//            throw new StoreBadRequestException(StoreErrorCode.FAIL);
+//    public void upload(CrowTitReqDto crowTitReqDto, List<MultipartFile> files) {
+////        if (letterPaperReqDto.getName().isEmpty() || letterPaperReqDto.getPrice() == null || letterPaperReqDto.getDescription().isEmpty() || letterPaperReqDto == null) {
+////            throw new StoreBadRequestException(StoreErrorCode.FAIL);
+////        }
+//
+//        if (crowTitReqDto.getName().isEmpty() || crowTitReqDto.getPrice() == null || crowTitReqDto.getDescription().isEmpty() || crowTitReqDto == null) {
+//            throw new BadRequestException(ErrorCode.FAIL);
 //        }
-
-        if (crowTitReqDto.getName().isEmpty() || crowTitReqDto.getPrice() == null || crowTitReqDto.getDescription().isEmpty() || crowTitReqDto == null) {
-            throw new BadRequestException(ErrorCode.FAIL);
-        }
-
-        if (files != null) {
-            for (MultipartFile file : files) {
-                String fileUrl = uploadFileToS3(file, "crowtit");
-
-//                LetterPaper letterPaper = LetterPaper.builder()
-//                        .name(letterPaperReqDto.getName())
-//                        .price(letterPaperReqDto.getPrice())
-//                        .description(letterPaperReqDto.getDescription())
+//
+//        if (files != null) {
+//            for (MultipartFile file : files) {
+//                String fileUrl = uploadFileToS3(file, "crowtit");
+//
+////                LetterPaper letterPaper = LetterPaper.builder()
+////                        .name(letterPaperReqDto.getName())
+////                        .price(letterPaperReqDto.getPrice())
+////                        .description(letterPaperReqDto.getDescription())
+////                        .imagePath(fileUrl)
+////                        .build();
+////
+////                letterPaperRepository.save(letterPaper);
+//
+//                CrowTit crowTit = CrowTit.builder()
+//                        .name(crowTitReqDto.getName())
+//                        .price(Math.toIntExact(crowTitReqDto.getPrice()))
+//                        .description(crowTitReqDto.getDescription())
 //                        .imagePath(fileUrl)
 //                        .build();
 //
-//                letterPaperRepository.save(letterPaper);
-
-                CrowTit crowTit = CrowTit.builder()
-                        .name(crowTitReqDto.getName())
-                        .price(Math.toIntExact(crowTitReqDto.getPrice()))
-                        .description(crowTitReqDto.getDescription())
-                        .imagePath(fileUrl)
-                        .build();
-
-                crowTitRepository.save(crowTit);
-            }
-        } else {
-            throw new BadRequestException(ErrorCode.FAIL);
-        }
-    }
-
-    private String uploadFileToS3(MultipartFile file, String s3Folder) {
-        try {
-            return s3Uploader.uploadFiles(file, s3Folder);
-        } catch (IOException e) {
-            throw new BadRequestException(ErrorCode.FAIL_UPLOAD_FILE);
-        }
-    }
+//                crowTitRepository.save(crowTit);
+//            }
+//        } else {
+//            throw new BadRequestException(ErrorCode.FAIL);
+//        }
+//    }
+//
+//    private String uploadFileToS3(MultipartFile file, String s3Folder) {
+//        try {
+//            return s3Uploader.uploadFiles(file, s3Folder);
+//        } catch (IOException e) {
+//            throw new BadRequestException(ErrorCode.FAIL_UPLOAD_FILE);
+//        }
+//    }
 }

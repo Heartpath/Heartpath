@@ -13,24 +13,19 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@IdClass(LetterPaperBookId.class)
 public class LetterPaperBook {
 
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "LETTER_PAPER_ID")
+    private int letterPaperId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "letter_paper_id")
-    private LetterPaper letterPaper;
-
+    @Id
     @Column(name = "MEMBER_ID")
     private String memberId;
     @Column(name = "ACQUISITION_DATE")
     private LocalDateTime acquisitionDate;
 
-    @Builder
-    public LetterPaperBook(LetterPaper letterPaper,LocalDateTime acquisitionDate){
-        this.letterPaper = letterPaper;
-        this.acquisitionDate = acquisitionDate;
-    }
+
 }
