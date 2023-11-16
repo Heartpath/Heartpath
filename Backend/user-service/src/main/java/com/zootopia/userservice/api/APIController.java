@@ -69,6 +69,7 @@ public class APIController {
                 userInfo.getNickname().concat("의 회원 정보입니다."),
                 userInfo);
 
+
         return ResponseEntity.status(200).body(baseResponse);
     }
 
