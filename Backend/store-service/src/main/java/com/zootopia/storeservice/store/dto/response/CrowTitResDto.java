@@ -12,14 +12,16 @@ public class CrowTitResDto {
     private String description;
     private String imagePath;
     private boolean isOwned;
+    private boolean isMain;
 
     @Builder
-    public CrowTitResDto(int crowTitId, String name, int price, String description, String imagePath, boolean isOwned) {
+    public CrowTitResDto(int crowTitId, String name, int price, String description, String imagePath, boolean isOwned, boolean isMain) {
         this.crowTitId = crowTitId;
         this.name = name;
         this.price = price;
         this.description = description;
         this.imagePath = imagePath;
         this.isOwned = isOwned;
+        this.isMain = isMain;
     }
 }
