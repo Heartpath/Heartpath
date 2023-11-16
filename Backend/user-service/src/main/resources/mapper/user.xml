@@ -9,11 +9,11 @@
         WHERE m.MEMBER_ID = #{memberID};
     </update>
 
-    <select id="updateUserPoint" parameterType="Map">
+    <update id="updateUserPoint" parameterType="Map">
         UPDATE MEMBER m
         SET POINT = #{point}
         WHERE m.MEMBER_ID = #{memberID};
-    </select>
+    </update>
 
     <select id="readUserInfo" parameterType="String" resultType="MypageDTO">
         SELECT m.`MEMBER_ID`          as `memberID`,
