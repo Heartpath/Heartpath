@@ -123,5 +123,5 @@
 
 |                   Android                    |                   Android                    |                   Android                    |                   Back end                   |                   Back end                   |                   Back end                    |
 | :------------------------------------------: | :------------------------------------------: | :------------------------------------------: | :------------------------------------------: | :------------------------------------------: | :-------------------------------------------: |
-| <img src="./images/김도연.jpg" width="100"/> | <img src="./images/하동혁.jpg" width="100"/> | <img src="./images/황신운.jpg" width="100"/> | <img src="./images/김민수.jpg" width="100"/> | <img src="./images/이연지.jpg" width="100"/> | <img src="./images/조혜진.jpeg" width="100"/> |
+| <img src="./images/김도연.jpg" width="100"/> | <img src="./images/하동혁.jpg" width="100"/> | <img src="./images/황신운.jpg" width="100"/> | <img src="./images/김민수.jpg" width="100"/> | <img src="./images/이연지.JPG" width="100"/> | <img src="./images/조혜진.jpeg" width="100"/> |
 |                    김도연                    |                    하동혁                    |                    황신운                    |                    김민수                    |                    이연지                    |                    조혜진                     |
