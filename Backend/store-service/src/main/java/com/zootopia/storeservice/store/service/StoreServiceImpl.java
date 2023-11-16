@@ -171,6 +171,22 @@ public class StoreServiceImpl implements StoreService {
         crowTitBookRepository.save(crowTit);
     }
 
+    public CrowTitResDto getMainCrowTit(String memberId){
+       Optional<CrowTitBook> mainCrowTit = crowTitBookRepository.findByMemberIdAndIsMain(memberId, true);
+       Optional<CrowTit> crowTit = crowTitRepository.findById(mainCrowTit.get().getCrowTitId());
+
+       CrowTitResDto crowTitResDto = CrowTitResDto.builder()
+               .crowTitId(crowTit.get().getId())
+               .name(crowTit.get().getName())
+               .price(crowTit.get().getPrice())
+               .description(crowTit.get().getDescription())
+               .imagePath(crowTit.get().getImagePath())
+               .isOwned(true)
+               .isMain(mainCrowTit.get().getIsMain())
+               .build();
+        return crowTitResDto;
+    }
+
     public List<CrowTitResDto> getCrowTitList(String memberId){
         List<CrowTitBook> crowTitBookList = crowTitBookRepository.findAllByMemberId(memberId);
         List<CrowTitResDto> result = new ArrayList<>();
@@ -185,6 +201,7 @@ public class StoreServiceImpl implements StoreService {
                         .description(crowTit.get().getDescription())
                         .imagePath(crowTit.get().getImagePath())
                         .isOwned(true)
+                        .isMain(crowTitBook.getIsMain())
                         .build();
                 result.add(crowTitResDto);
             }
@@ -200,9 +217,11 @@ public class StoreServiceImpl implements StoreService {
 
         for (CrowTit crowTit:crowTitList){
             boolean isOwned = false;
+            boolean isMain = false;
             for (CrowTitBook crowTitBook:crowTitBookList){
                 if (crowTit.getId()==crowTitBook.getCrowTitId()){
                     isOwned=true;
+                    isMain = crowTitBook.getIsMain();
                     break;
                 }
             }
@@ -213,6 +232,7 @@ public class StoreServiceImpl implements StoreService {
                     .description(crowTit.getDescription())
                     .imagePath(crowTit.getImagePath())
                     .isOwned(isOwned)
+                    .isMain(isMain)
                     .build();
             result.add(crowTitResDto);
         }
