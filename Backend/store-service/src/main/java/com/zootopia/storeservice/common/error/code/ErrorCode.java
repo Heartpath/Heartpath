@@ -21,6 +21,7 @@ public enum ErrorCode {
     FAIL(HttpStatus.BAD_REQUEST, 4001, "뷁 실패!"),
 
     // member
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, 4001, "Token 시간이 만료되었습니다."),
     INVALID_USER_REQUEST(HttpStatus.BAD_REQUEST, 4009, "유효하지 않은 사용자의 요청입니다."),
     UNSTABLE_SERVER(HttpStatus.INTERNAL_SERVER_ERROR, 5002, "서버 오류입니다. 잠시 후에 다시 시도해주세요.");
 
