@@ -24,7 +24,7 @@ class SearchedUserAdapter(var searchedUserList: MutableList<SearchUserInfoDto>) 
         RecyclerView.ViewHolder(binding.root) {
         fun bindInfo(user: SearchUserInfoDto) = with(binding) {
             textviewSearchUserNickname.text = user.nickname
-            textviewSearchUserId.text = user.memberID
+            textviewSearchUserId.text = "@${user.memberID}"
 
             Glide.with(root).load(user.profileImagePath)
                 .error(R.drawable.image_default_profile)
