@@ -5,6 +5,7 @@ import com.zootopia.userservice.dto.FriendShipDTO;
 import com.zootopia.userservice.dto.UserInfoDTO;
 import com.zootopia.userservice.jwt.JwtProvider;
 import com.zootopia.userservice.mapper.FriendMapper;
+import com.zootopia.userservice.mapper.UserMapper;
 import com.zootopia.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class APIServiceImpl implements APIService {
     private final JwtProvider jwtProvider;
     private final FriendMapper friendMapper;
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -50,18 +52,7 @@ public class APIServiceImpl implements APIService {
     @Override
     @Transactional(readOnly = true)
     public UserInfoDTO loadUserInfoByMemberID(String memberID) {
-
-        Optional<User> findUser = userRepository.findByMemberID(memberID);
-        if (findUser.isEmpty()) {
-            return null;
-        }
-
-        User user = findUser.get();
-
-        UserInfoDTO userInfoDTO = new UserInfoDTO();
-        userInfoDTO.ofEntity(user);
-
-        return userInfoDTO;
+        return userMapper.findByMemberID(memberID);
     }
 
     @Override

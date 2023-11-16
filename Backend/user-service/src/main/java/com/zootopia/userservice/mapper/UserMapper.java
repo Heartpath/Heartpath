@@ -1,6 +1,7 @@
 package com.zootopia.userservice.mapper;
 
 import com.zootopia.userservice.dto.MypageDTO;
+import com.zootopia.userservice.dto.UserInfoDTO;
 import com.zootopia.userservice.dto.UserSearchDTO;
 import com.zootopia.userservice.dto.UserSearchParam;
 import org.apache.ibatis.annotations.Mapper;
@@ -27,4 +28,6 @@ public interface UserMapper {
             @Param(value = "memberID") String memberID,
             @Param(value = "token") String token
     );
+
+    UserInfoDTO findByMemberID(String memberID);
 }
