@@ -194,7 +194,7 @@ public class LetterServiceImpl implements LetterService {
         }
         // Receiver, FCM 알림 발송 추가 필요
         UserInfoDetailResDto receiver = findByUserId(letterMongo.getReceiverId());
-        toSendFCM(receiver.getFcmToken(), receiver.getNickname());
+        toSendFCM(receiver.getFcmToken(), user.getNickname());
 
         letterMongoRepository.deleteById(letterMongo.getId());
     }
