@@ -10,7 +10,7 @@
         android:layout_marginHorizontal="@dimen/_16sdp"
         android:layout_marginVertical="@dimen/_16sdp"
         android:text="@string/delete_friend_dialog_question"
-        style="@style/DarkGray_10_Bold_NanumText"/>
+        style="@style/DarkGray_12_Bold_NanumText"/>
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,6 +18,7 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
         <Button
+            android:id="@+id/button_delete_friend_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -28,6 +29,7 @@
             android:layout_height="@dimen/_16sdp"
             android:backgroundTint="@color/Gray"/>
         <Button
+            android:id="@+id/button_delete_friend_accept"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"

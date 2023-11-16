@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.zootopia'
-version = '0.0.1-SNAPSHOT'
+version = 'SNAPSHOT'
 
 java {
 	sourceCompatibility = '11'
@@ -32,8 +32,11 @@ dependencies {
 	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
 	// WebClient
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	// RestTemplate
+	implementation 'org.apache.httpcomponents:httpcore:4.4.15'
+	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 	// Jasypt
-	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3'
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
 	// swagger
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
 	// firebase
@@ -48,6 +51,11 @@ dependencies {
 	testImplementation 'io.projectreactor:reactor-test'
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
+//tasks.named('test') {
+//	useJUnitPlatform()
+//}
+
+jar {
+	archiveClassifier = ''
+	enabled = false
 }

@@ -7,11 +7,13 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("dagger.hilt.android.plugin")
     id("kotlin-kapt")
+
+    // Add the Google services Gradle plugin
+    id("com.google.gms.google-services")
 }
 
 val localProperties = Properties()
 localProperties.load(project.rootProject.file("local.properties").inputStream())
-
 
 android {
     namespace = "com.zootopia.heartpath"
@@ -28,12 +30,11 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        
+
         buildConfigField("String", "NAVER_MAP_CLIENT_ID", "\"" + properties["naver_map_client_id"] + "\"")
         addManifestPlaceholders(mutableMapOf("NAVER_MAP_CLIENT_ID" to localProperties["naver_map_client_id"]!!))
         buildConfigField("String", "KAKAO_NATIVE_APP_KEY", localProperties.getProperty("kakao_native_app_key"))
-        addManifestPlaceholders(mutableMapOf("KAKAO_NATIVE_APP_KEY" to localProperties["kakao_native_app_key"]!!))
-
+        addManifestPlaceholders(mutableMapOf("KAKAO_NATIVE_APP_KEY" to localProperties["kakao_native_app_key_manifest"]!!))
     }
 
     buildTypes {
@@ -52,7 +53,7 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    
+
     buildFeatures {
         buildConfig = true
     }
@@ -70,8 +71,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    
-    
+
     // Hilt
     val dagger_version = "2.45"
     val hilt_version = "1.0.0"
@@ -84,11 +84,17 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
-    implementation ("com.squareup.retrofit2:converter-scalars:2.3.0")
+    implementation("com.squareup.retrofit2:converter-scalars:2.3.0")
 
     // kakao
     implementation("com.kakao.sdk:v2-all:2.14.0")
-    
+
     // multidex
     implementation("com.android.support:multidex:1.0.3")
+
+    // splash screen
+    implementation("androidx.core:core-splashscreen:1.0.0")
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
 }
