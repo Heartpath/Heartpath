@@ -25,6 +25,9 @@ public class PointServiceImpl implements PointService {
 
     @Override
     public int reviseUserPoint(String memberID, int point) {
-        return userMapper.updateUserPoint(memberID, point);
+        log.info("change member point");
+        int i = userMapper.updateUserPoint(memberID, point);
+        log.info("changePoint {} {} : {}", i, memberID, point);
+        return i;
     }
 }

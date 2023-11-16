@@ -180,6 +180,7 @@ public class APIController {
         int status = 200;
         BaseResponse baseResponse;
         if (res == 1) {
+            log.info("유저 포인트가 변경되었습니다");
             baseResponse = new BaseResponse(status, "유저 포인트가 변경되었습니다", null);
         } else {
             status = 400;
