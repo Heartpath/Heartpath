@@ -10,17 +10,17 @@ import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
-public class LetterReceivedResDto {
+public class LetterPickUpResDto {
 
     private Long index;
     private String sender;
     private LocalDateTime time;
     private Double lat;
     private Double lng;
-
     private List<String> location;
+    private boolean isRead;
 
-    public LetterReceivedResDto(LetterMySQL letter, String sender) {
+    public LetterPickUpResDto(LetterMySQL letter, String sender, boolean flag) {
         this.index = letter.getId();
         this.sender = sender;
         this.time = letter.getCreatedDate();
@@ -30,5 +30,6 @@ public class LetterReceivedResDto {
                 .stream()
                 .map(PlaceImage::getImagePath)
                 .collect(Collectors.toList());
+        this.isRead = flag;
     }
 }
