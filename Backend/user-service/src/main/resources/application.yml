@@ -1,21 +1,45 @@
+server:
+  port: 80
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/zootopia?serverTimezone=UTC&useUniCode=yes&characterEncoding=UTF-8
-    username: ssafy
-    password: ssafy
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://zootopia-mysql.c2f2jpwzzxst.ap-northeast-2.rds.amazonaws.com:3306/zootopia
+      username: admin
+      password: ENC(aZhyo9Zn2KY/LzJYoqXgwY4bCKai+uW+)
+      maximum-pool-size: 20
+      connectionTimeout: 10000
+      validationTimeout: 10000
+      max-lifetime: 580000
+      connection-init-sql: set wait_timeout = 600
   redis:
-    host: localhost
+    host: ENC(VXjy6MiylvpTkGupRZ+zKBkO4+G2S34sBWUx9Nb3y7w=)
     port: 6379
+    password: ENC(Jw9sypS0yEWh6L2uZflvGs7VoWsnb7QV)
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
-    show-sql: true
     hibernate:
       ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
       hibernate:
+        show_sql: true
         format_sql: true
+    open-in-view: false
+
+cloud:
+  aws:
+    s3:
+      bucket: ENC(SOvvTYfGMSgcE/hVyZxWVlG+I370emYn)
+    credentials:
+      access-key: ENC(QjAZdSmPEbtCqu5y+s89uIJns8S+fjbkTx1o2ptn9TY=)
+      secret-key: ENC(HembcJ68NF7PAmofcbLEh6Y3Spe2kRAQL1J3RIz4RX6Vy3mVYqi3RUPUl3AbgPmXYdi9it0jpFQ=)
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
@@ -30,3 +54,15 @@ jwt:
   expiration: 1
   refresh-token:
     expiration: 7
+
+logging:
+  level:
+    com:
+      zootopia:
+        userservice:
+          mapper: debug
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace

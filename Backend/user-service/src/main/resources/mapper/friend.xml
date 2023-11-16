@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zootopia.userservice.mapper.FriendMapper">
+
+    <select id="getRelationshipWithFriends" parameterType="String" resultType="FriendShipDTO">
+        SELECT f.FROM_MEMBER_ID as `from`, f.TO_MEMBER_ID as `to`, f.IS_BLOCKED as `isBlocked`
+        FROM FRIEND f
+        WHERE f.FROM_MEMBER_ID = #{from}
+          AND f.TO_MEMBER_ID = #{to}
+        UNION ALL
+        SELECT f.FROM_MEMBER_ID as `from`, f.TO_MEMBER_ID as `to`, f.IS_BLOCKED as `isBlocked`
+        FROM FRIEND f
+        WHERE f.FROM_MEMBER_ID = #{to}
+          AND f.TO_MEMBER_ID = #{from}
+    </select>
+
+    <select id="getBlockOffOrFriendInfoList" parameterType="Map" resultType="FriendInfoDTO">
+        SELECT m.MEMBER_ID          AS `memberID`,
+               m.NICKNAME           AS `nickname`,
+               m.PROFILE_IMAGE_PATH AS `profileImagePath`
+        FROM `MEMBER` m
+                 LEFT JOIN FRIEND f ON m.MEMBER_ID = f.TO_MEMBER_ID
+        WHERE f.FROM_MEMBER_ID = #{memberID}
+          AND f.IS_BLOCKED = #{option};
+    </select>
+
+    <insert id="addFriend" parameterType="Map">
+        INSERT INTO FRIEND (FROM_MEMBER_ID, TO_MEMBER_ID)
+        SELECT #{from},
+               #{to} WHERE NOT EXISTS (
+            SELECT f.FRIEND_ID FROM FRIEND f WHERE f.FROM_MEMBER_ID = #{from} AND f.TO_MEMBER_ID = #{to} );
+    </insert>
+
+    <update id="blockOrUnblockOffFriend" parameterType="Map">
+        INSERT INTO FRIEND (FROM_MEMBER_ID, TO_MEMBER_ID, IS_BLOCKED)
+        VALUES (#{from}, #{to}, #{option}) ON DUPLICATE KEY
+        UPDATE
+            IS_BLOCKED = #{option};
+    </update>
+
+</mapper>

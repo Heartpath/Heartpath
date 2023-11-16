@@ -1,7 +1,6 @@
 package com.zootopia.userservice.domain;
 
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +9,10 @@ import java.time.LocalDateTime;
 
 
 @Getter
+@Builder
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "MEMBER")
 public class User {
 
@@ -38,4 +40,28 @@ public class User {
 
     @Column(name = "CREATED_DATE")
     private LocalDateTime createdDate;
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
+
+    public void updateUserNickname(String nickname) {
+
+        if (nickname != null)
+            this.nickname = nickname;
+    }
+
+    public void updateProfileImagePath(String profileImagePath) {
+
+        if (profileImagePath != null)
+            this.profileImagePath = profileImagePath;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public void setPoint(int point) {
+        this.point = point;
+    }
 }
