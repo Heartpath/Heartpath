@@ -26,7 +26,7 @@ public class APIServiceImpl implements APIService {
     private final UserRepository userRepository;
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Transactional(readOnly = true)
     public UserInfoDTO loadUserInfo(String token) {
 
         String memberIDFromToken = jwtProvider.getMemberIDFromToken(token);
@@ -48,7 +48,7 @@ public class APIServiceImpl implements APIService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Transactional(readOnly = true)
     public UserInfoDTO loadUserInfoByMemberID(String memberID) {
 
         Optional<User> findUser = userRepository.findByMemberID(memberID);
@@ -65,7 +65,7 @@ public class APIServiceImpl implements APIService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Transactional(readOnly = true)
     public List<FriendShipDTO> checkRelationshipWithFriends(String from, String to) {
         List<FriendShipDTO> relationshipWithFriendsDTO = friendMapper.getRelationshipWithFriends(from, to);
         return relationshipWithFriendsDTO;
