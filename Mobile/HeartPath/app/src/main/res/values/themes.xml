@@ -8,6 +8,6 @@
     <style name="Theme.HeartPath" parent="Base.Theme.HeartPath">
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/PrimaryLightBlue</item>
-        <item name="snackbarStyle">@color/PrimaryLightBlue</item>
+        <item name="android:windowBackground">@color/PrimaryLightBlue</item>
     </style>
 </resources>
