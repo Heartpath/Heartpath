@@ -10,11 +10,13 @@ import java.util.List;
 public interface LetterJpaRepository extends JpaRepository<LetterMySQL, Long> {
     List<LetterMySQL> findBySenderId(String memberId);
 
-    List<LetterMySQL> findByReceiverId(String memberId);
-
-    List<LetterMySQL> findByReceiverIdAndIsRead(String memberId, boolean isRead);
+    List<LetterMySQL> findByReceiverIdAndIsPickup(String memberId, boolean isPickup);
 
     @Modifying
     @Query("UPDATE LetterMySQL l SET l.isRead = true WHERE l.id = :letterId")
     void setLetterIsReadTrue(Long letterId);
+
+    @Modifying
+    @Query("UPDATE LetterMySQL l SET l.isPickup = true WHERE l.id = :letterId")
+    void setLetterIsPickupTrue(Long letterId);
 }
