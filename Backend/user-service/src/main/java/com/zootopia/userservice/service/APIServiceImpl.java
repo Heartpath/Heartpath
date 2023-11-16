@@ -9,6 +9,8 @@ import com.zootopia.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +26,7 @@ public class APIServiceImpl implements APIService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public UserInfoDTO loadUserInfo(String token) {
 
         String memberIDFromToken = jwtProvider.getMemberIDFromToken(token);
@@ -45,6 +48,7 @@ public class APIServiceImpl implements APIService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public UserInfoDTO loadUserInfoByMemberID(String memberID) {
 
         Optional<User> findUser = userRepository.findByMemberID(memberID);
@@ -61,6 +65,7 @@ public class APIServiceImpl implements APIService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public List<FriendShipDTO> checkRelationshipWithFriends(String from, String to) {
         List<FriendShipDTO> relationshipWithFriendsDTO = friendMapper.getRelationshipWithFriends(from, to);
         return relationshipWithFriendsDTO;
