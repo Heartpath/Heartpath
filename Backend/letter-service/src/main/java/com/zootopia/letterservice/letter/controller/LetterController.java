@@ -83,7 +83,7 @@ public class LetterController {
             "(letterId : 필수, lat : 필수, lng : 필수, files : 필수(1장 이상))")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description =  "CREATED", content = @Content(mediaType = "application/json",
-                    examples = @ExampleObject(value = "{\n \"status\": 201,\n \"message\": \"편지 생성 성공\"\n}"))),
+                    examples = @ExampleObject(value = "{\n \"status\": 201,\n \"message\": \"편지 배치 성공\"\n}"))),
             @ApiResponse(responseCode = "4001", description =  "INVALID_IMAGE_FORMAT", content = @Content(examples = @ExampleObject(value = "{\n \"httpStatus\": \"400 BAD_REQUEST\",\n \"status\": 4001,\n \"message\": \"지원하지 않는 이미지 파일 확장자입니다.\"\n}"))),
             @ApiResponse(responseCode = "4005", description =  "NOT_EQUAL_USER", content = @Content(examples = @ExampleObject(value = "{\n \"httpStatus\": \"400 BAD_REQUEST\",\n \"status\": 4005,\n \"message\": \"편지 작성자와 요청을 보낸 사용자가 일치하지 않습니다.\"\n}"))),
             @ApiResponse(responseCode = "4006", description =  "NOT_EXISTS_LETTER", content = @Content(examples = @ExampleObject(value = "{\n \"httpStatus\": \"400 BAD_REQUEST\",\n \"status\": 4006,\n \"message\": \"존재하지 않는 편지입니다.\"\n}"))),
@@ -118,7 +118,7 @@ public class LetterController {
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "발송 편지 목록 조회 성공", letterService.getSendLetters(accessToken)));
     }
 
-    @Operation(summary = "미발송 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
+    @Operation(summary = "미발송 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수 / index : string (mongoDB index hash값)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
                     examples = @ExampleObject(value = "{" +
@@ -126,7 +126,7 @@ public class LetterController {
                             " \"message\": \"미발송 편지 목록 조회 성공\"," +
                             " \"data\": [" +
                             "       {" +
-                            "           \"index\": 1," +
+                            "           \"index\": \"654d03bf7cdd2f78a2c624cf\"," +
                             "           \"receiver\": \"사용자 닉네임\"" +
                             "       }" +
                             "   ]" +
@@ -137,43 +137,45 @@ public class LetterController {
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "미발송 편지 목록 조회 성공", letterService.getUnsendLetters(accessToken)));
     }
 
-    @Operation(summary = "열람한 수신 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
+    @Operation(summary = "주운 수신 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
                     examples = @ExampleObject(value = "{" +
                             " \"status\": 200," +
-                            " \"message\": \"열람한 편지 목록 조회 성공\"," +
+                            " \"message\": \"수신한 편지 중 가지고 온 편지 목록 반환\"," +
                             " \"data\": [" +
                             "       {" +
                             "           \"index\": 1," +
                             "           \"sender\": \"사용자 닉네임\"," +
-                            "           \"time\": \"yyyy-MM-ddThh:mm:ss.ssssss\"," +
+                            "           \"time\": \"yyyy-MM-ddThh:mm:ss\"," +
                             "           \"lat\": 125.345436," +
                             "           \"lng\": 45.235233," +
                             "           \"location\":[" +
                             "                           \"https://zootopia-s3.s3.ap-northeast-2.amazonaws.com/-/file.jpg\"" +
-                                                    "]" +
+                                                    "]," +
+                            "           \"read\": true" +
                             "       }" +
                             "   ]" +
                             "}")))
     })
     @GetMapping("/checked")
-    public ResponseEntity<? extends BaseResponseBody> getReadLetters(@RequestHeader(value = "Authorization") String accessToken) {
-        // accessToken으로 멤버 객체 찾기 → SendId가 해당 맴버인 것 중 isRead = true인 값들만 반환
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "열람한 편지 목록 조회 성공", letterService.getReadLetters(accessToken)));
+    public ResponseEntity<? extends BaseResponseBody> getPickupLetters(@RequestHeader(value = "Authorization") String accessToken) {
+        // accessToken으로 멤버 객체 찾기 → SendId가 해당 맴버인 것 중 isPickup = true인 값들만 반환
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "수신한 편지 중 가지고 온 편지 목록 반환", letterService.getPickupLetters(accessToken)));
     }
 
-    @Operation(summary = "미열람한 수신 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
+    @Operation(summary = "줍지 않은 수신 편지 목록 조회", description = "Authorization : Bearer {accessToken}, 필수")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description =  "OK", content = @Content(mediaType = "application/json",
                     examples = @ExampleObject(value = "{" +
                             " \"status\": 200," +
-                            " \"message\": \"미열람한 편지 목록 조회 성공\"," +
+                            " \"message\": \"수신한 편지 중 가지러 가지 않은 편지 목록 반환\"," +
                             " \"data\": [" +
                             "       {" +
                             "           \"index\": 1," +
                             "           \"sender\": \"사용자 닉네임\"," +
-                            "           \"time\": \"yyyy-MM-ddThh:mm:ss.ssssss\"," +
+                            "           \"senderID\": \"사용자 ID\"," +
+                            "           \"time\": \"yyyy-MM-ddThh:mm:ss\"," +
                             "           \"lat\": 125.345436," +
                             "           \"lng\": 45.235233," +
                             "           \"location\":[" +
@@ -184,9 +186,9 @@ public class LetterController {
                             "}")))
     })
     @GetMapping("/unchecked")
-    public ResponseEntity<? extends BaseResponseBody> getUnReadLetters(@RequestHeader(value = "Authorization") String accessToken) {
-        // accessToken으로 멤버 객체 찾기 → SendId가 해당 맴버인 것 중 isRead = false인 값들만 반환
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "미열람한 편지 목록 조회 성공", letterService.getUnreadLetters(accessToken)));
+    public ResponseEntity<? extends BaseResponseBody> getNotPickupLetters(@RequestHeader(value = "Authorization") String accessToken) {
+        // accessToken으로 멤버 객체 찾기 → SendId가 해당 맴버인 것 중 isPickup = false인 값들만 반환
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "수신한 편지 중 가지러 가지 않은 편지 목록 반환", letterService.getNotPickupLetters(accessToken)));
     }
 
     @Operation(summary = "편지 상세조회", description = "Authorization : Bearer {accessToken}, 필수")
@@ -200,8 +202,9 @@ public class LetterController {
                             "           \"index\": 1," +
                             "           \"content\": \"https://zootopia-s3.s3.ap-northeast-2.amazonaws.com/-/file.jpg\"," +
                             "           \"sender\": \"사용자 닉네임\"," +
+                            "           \"senderID\": \"사용자 ID\"," +
                             "           \"receiver\": \"사용자 닉네임\"," +
-                            "           \"time\": \"yyyy-MM-ddThh:mm:ss.ssssss\"," +
+                            "           \"time\": \"yyyy-MM-ddThh:mm:ss\"," +
                             "           \"lat\": 125.345436," +
                             "           \"lng\": 45.235233," +
                             "           \"files\":[" +
@@ -218,5 +221,30 @@ public class LetterController {
     public ResponseEntity<? extends BaseResponseBody> getLetter(@PathVariable Long letter_id,
                                                                 @RequestHeader(value = "Authorization") String accessToken) {
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "편지 상세 조회 성공", letterService.getLetter(accessToken, letter_id)));
+    }
+
+    @Operation(summary = "편지 주운 후 isPickup 업데이트", description = "Authorization : Bearer {accessToken}, 필수")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description =  "UPDATE", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{\n \"status\": 200,\n \"message\": \"isPickup true로 변경 성공\"\n}"))),
+            @ApiResponse(responseCode = "4006", description =  "NOT_EXISTS_LETTER", content = @Content(examples = @ExampleObject(value = "{\n \"httpStatus\": \"400 BAD_REQUEST\",\n \"status\": 4006,\n \"message\": \"존재하지 않는 편지입니다.\"\n}"))),
+            @ApiResponse(responseCode = "4011", description =  "NOT_EQUAL_RECEIVER", content = @Content(examples = @ExampleObject(value = "{\n \"httpStatus\": \"400 BAD_REQUEST\",\n \"status\": 4011,\n \"message\": \"편지의 수신자가 아니면 편지를 주울 수 없습니다.\"\n}")))
+    })
+    @GetMapping("/pickup/{letter_id}")
+    public ResponseEntity<? extends BaseResponseBody> updatePickup(@PathVariable Long letter_id,
+                                                                   @RequestHeader(value = "Authorization") String accessToken) {
+        letterService.updateIsPickup(accessToken, letter_id);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "isPickup true로 변경 성공"));
+    }
+
+    @Operation(summary = "FCM 테스트", description = "Authorization : Bearer {accessToken}, 필수")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description =  "CREATED", content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = "{\n \"status\": 200,\n \"message\": \"FCM 테스트 성공\"\n}")))
+    })
+    @GetMapping("/test")
+    public ResponseEntity<? extends BaseResponseBody> FCMtest(@RequestHeader(value = "Authorization") String accessToken) {
+        letterService.test(accessToken);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseBody<>(200, "FCM 테스트 성공"));
     }
 }
