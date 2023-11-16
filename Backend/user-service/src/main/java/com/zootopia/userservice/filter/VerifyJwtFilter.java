@@ -2,12 +2,10 @@ package com.zootopia.userservice.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zootopia.userservice.common.ErrorResponse;
-import com.zootopia.userservice.exception.JwtErrorCode;
 import com.zootopia.userservice.exception.JwtException;
 import com.zootopia.userservice.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -30,8 +28,40 @@ public class VerifyJwtFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
 
+    private static String getURL(HttpServletRequest req) {
+
+        String method = req.getMethod();
+        String contextPath = req.getContextPath();
+        String servletPath = req.getServletPath();
+        String pathInfo = req.getPathInfo();
+        String queryString = req.getQueryString();
+        String remoteAddr = req.getRemoteAddr();
+
+        // Reconstruct original requesting URL
+        StringBuilder url = new StringBuilder();
+        url.append("[").append(method).append("]").append(" ");
+
+        url.append(contextPath).append(servletPath);
+
+        if (pathInfo != null) {
+            url.append(pathInfo);
+        }
+        if (queryString != null) {
+            url.append("?").append(queryString);
+        }
+
+        url.append(" from ").append(remoteAddr);
+
+        return url.toString();
+    }
+
     // TODO: yaml 파일로 빼기
-    private static final String[] EXCLUDED_URLS = {"/user/health_check", "/user/login", "/user/register"};
+    private static final String[] EXCLUDED_URLS = {
+            "/user/health_check", "/api/fcm",
+            "/user/login", "/user/register", "/user/check", "/user/token",
+            "/api/user/", "/api/token", "/api/point/",
+            "/swagger-ui", "/v3/api-docs"
+    };
 
     private String extractJwtFromHeader(Optional<String> authorizationToken) throws JwtException {
 
@@ -76,6 +106,8 @@ public class VerifyJwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain
     ) throws ServletException, IOException {
 
+        log.info("Request : {}", getURL(request));
+
         /*
         WhiteList
         Check if the request URI matches any of the excluded URLs
@@ -92,6 +124,7 @@ public class VerifyJwtFilter extends OncePerRequestFilter {
 
         // JWT 확인
         try {
+
             Optional<String> authorizationToken = Optional.ofNullable(request.getHeader("Authorization"));
             String accessToken = extractJwtFromHeader(authorizationToken);
 
