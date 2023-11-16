@@ -113,9 +113,9 @@ class TypingWriteFragment : BaseFragment<FragmentTypingWriteBinding>(
                     imageviewLetterPaper.requestLayout()
 
                     Log.d(TAG, "onResourceReady: ${newImageHeight} ${newImageWidth}")
-                    val horizontalPadding = resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._34sdp)
-                    val topPadding = resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._60sdp)
-                    val bottomPadding = resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._20sdp)
+                    val horizontalPadding = resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._38sdp)
+                    val topPadding = resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._70sdp)
+                    val bottomPadding = resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._26sdp)
 
                     var fontHeight = edittextLetter.paint.fontMetrics.ascent - edittextLetter.paint.fontMetrics.descent
                     if(fontHeight < 0){
