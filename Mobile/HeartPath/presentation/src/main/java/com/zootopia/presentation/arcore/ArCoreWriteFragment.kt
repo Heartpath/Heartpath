@@ -19,8 +19,8 @@ import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentArCoreWriteBinding
 import com.zootopia.presentation.sendletter.SendLetterViewModel
+import com.zootopia.presentation.util.LoadingDialog
 import com.zootopia.presentation.util.setFullScreen
-import io.github.sceneview.ar.ARSceneView
 import io.github.sceneview.ar.arcore.getUpdatedPlanes
 import io.github.sceneview.ar.getDescription
 import io.github.sceneview.ar.node.AnchorNode
@@ -42,8 +42,7 @@ class ArCoreWriteFragment :
     private lateinit var mainActivity: MainActivity
     private lateinit var currentFrame: Frame
     private val sendLetterViewModel: SendLetterViewModel by activityViewModels()
-
-    private lateinit var arSceneView: ARSceneView
+    private val dialog = LoadingDialog()
 
     var isLoading = false
         set(value) {
@@ -92,8 +91,9 @@ class ArCoreWriteFragment :
     private fun initClickEvent() = with(binding) {
         // 편지 서버로 보내기 클릭 이벤트
         buttonSendItem.setOnClickListener {
-            isLoading = true
-
+//            isLoading = true
+            dialog.show(childFragmentManager,"ArCoreLoading")
+            
             sendLetterViewModel.apply {
                 viewLifecycleOwner.lifecycleScope.launch {
                     catchCapture(this@ArCoreWriteFragment)
@@ -112,12 +112,13 @@ class ArCoreWriteFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             isRealPath.collectLatest {
                 requestSendLetter(files = it)
-                isLoading = false
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             isResult.collectLatest {
+//                isLoading = false
+                dialog.dismiss()
                 mainActivity.showToast(it)
                 findNavController().popBackStack()
             }
@@ -152,8 +153,8 @@ class ArCoreWriteFragment :
                                 addAnchorNode(plane.createAnchor(plane.centerPose))
 
                                 // 카메라 부터 모델까지 거리 구하기 (dist는 m 단위)
-                                currentFrame = frame
-                                measureDistanceFromCamera()
+//                                currentFrame = frame
+//                                measureDistanceFromCamera()
 
                                 // 버튼 비활성화
                                 binding.apply {
@@ -178,19 +179,22 @@ class ArCoreWriteFragment :
                 Log.d(TAG, "addAnchorNode: $this")
                 lifecycleScope.launch {
                     isLoading = true
-                    binding.sceneView.modelLoader.loadModelInstance("models/lamborghini.glb")
+                    binding.sceneView.modelLoader.loadModelInstance("models/letter.glb")
                         ?.let { modelInstance ->
                             addChildNode(
                                 ModelNode(
                                     modelInstance = modelInstance,
                                     // Scale to fit in a 0.5 meters cube
-                                    scaleToUnits = 0.2f,
+                                    scaleToUnits = 0.05f,
                                     // Bottom origin instead of center so the model base is on floor
-                                    centerOrigin = Position(y = -0.5f),
+                                    centerOrigin = Position(y = 200f),
                                 ).apply {
                                     isEditable = true
                                 },
                             )
+    
+                            // Model이 나타났으므로 PlaneRenderer를 비활성화
+                            binding.sceneView.planeRenderer.isEnabled = false
                         }
                     isLoading = false
                 }
