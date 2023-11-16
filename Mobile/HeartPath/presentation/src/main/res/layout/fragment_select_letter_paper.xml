@@ -5,43 +5,63 @@
     android:layout_height="match_parent"
     android:background="@color/PrimaryLightBlue">
 
+    <include
+        android:id="@+id/toolbar_heartpath_select_letter_papaer"
+        layout="@layout/toolbar_heartpath_custom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="0dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/image_background2"/>
+        android:src="@drawable/image_background2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_heartpath_select_letter_papaer" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager_letter_paper"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingHorizontal="@dimen/_50sdp"
         android:clipChildren="false"
         android:clipToPadding="false"
-        app:layout_constraintHeight_percent="0.6"
-        app:layout_constraintVertical_bias="0.3"
+        android:paddingHorizontal="@dimen/_50sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.6"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button_select_letter_paper"
+        style="@style/DarkGray_10_ExtraBold_NanumText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/select_letter_paper_button"
-        style="@style/DarkGray_10_ExtraBold_NanumText"
+        android:background="@drawable/custom_round_corner_lightest_gray"
+        android:gravity="center"
         android:paddingHorizontal="@dimen/_30sdp"
         android:paddingVertical="@dimen/_10sdp"
-        android:gravity="center"
-        android:background="@drawable/custom_round_corner_lightest_gray"
+        android:text="@string/select_letter_paper_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view_pager_letter_paper"
-        />
+        app:layout_constraintTop_toBottomOf="@id/view_pager_letter_paper" />
+
+    <TextView
+        android:id="@+id/textview_no_letter_papper"
+        style="@style/DarkGray_14_ExtraBold_NanumText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="@string/select_letter_papper_no_user_letter_papper"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center"
+        android:textAlignment="center"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
