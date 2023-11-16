@@ -1,15 +1,11 @@
 package com.zootopia.letterservice.letter.service;
 
-import com.zootopia.letterservice.common.FCM.FCMService;
 import com.zootopia.letterservice.common.error.code.ErrorCode;
 import com.zootopia.letterservice.common.error.exception.BadRequestException;
 import com.zootopia.letterservice.common.global.BannedWords;
 import com.zootopia.letterservice.common.s3.S3Uploader;
-import com.zootopia.letterservice.letter.dto.request.LetterPlaceReqDto;
-import com.zootopia.letterservice.letter.dto.response.LetterReceivedDetailResDto;
-import com.zootopia.letterservice.letter.dto.response.LetterReceivedResDto;
-import com.zootopia.letterservice.letter.dto.response.LetterSendResDto;
-import com.zootopia.letterservice.letter.dto.response.LetterUnsendResDto;
+import com.zootopia.letterservice.letter.dto.request.*;
+import com.zootopia.letterservice.letter.dto.response.*;
 import com.zootopia.letterservice.letter.entity.LetterImage;
 import com.zootopia.letterservice.letter.entity.LetterMongo;
 import com.zootopia.letterservice.letter.entity.LetterMySQL;
@@ -20,8 +16,14 @@ import com.zootopia.letterservice.letter.repository.LetterMongoRepository;
 import com.zootopia.letterservice.letter.repository.PlaceImageRepository;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -39,15 +41,17 @@ public class LetterServiceImpl implements LetterService {
     private final LetterImageRepository letterImageRepository;
     private final PlaceImageRepository placeImageRepository;
 
-    private final FCMService fcmService;
-
     private final BannedWords bannedWords;
     private final S3Uploader s3Uploader;
 
-    // 수신자 확인 로직 추가 필요
     @Override
     @Transactional
-    public void createHandLetter(MultipartFile content, List<MultipartFile> files) {
+    public void createHandLetter(String accessToken, LetterHandReqDto letterHandReqDto, MultipartFile content, List<MultipartFile> files) {
+        UserDetailResDto user = accessTokenToMember(accessToken).getData();
+        System.out.println(user.getMemberID());
+        if (letterHandReqDto.getReceiverId().isEmpty()) {
+            throw new BadRequestException(ErrorCode.NOT_EXISTS_RECEIVER_ID);
+        }
         // content 파일
         if (content.isEmpty()) {
             throw new BadRequestException(ErrorCode.NOT_EXISTS_CONTENT);
@@ -65,6 +69,8 @@ public class LetterServiceImpl implements LetterService {
         }
 
         LetterMongo letterMongo = LetterMongo.builder()
+                .senderId(user.getMemberID())
+                .receiverId(letterHandReqDto.getReceiverId())
                 .content(contentUrl)
                 .files(fileUrls)
                 .type("HandWritten")
@@ -76,13 +82,18 @@ public class LetterServiceImpl implements LetterService {
     // 수신자 확인 로직 추가 필요
     @Override
     @Transactional
-    public void createTextLetter(String text, MultipartFile content, List<MultipartFile> files) {
-        if (text.trim().isEmpty()) {
+    public void createTextLetter(String accessToken, LetterTextReqDto letterTextReqDto, MultipartFile content, List<MultipartFile> files) {
+        UserDetailResDto user = accessTokenToMember(accessToken).getData();
+        if (letterTextReqDto.getReceiverId().isEmpty()) {
+            throw new BadRequestException(ErrorCode.NOT_EXISTS_RECEIVER_ID);
+        }
+
+        if (letterTextReqDto.getText().trim().isEmpty()) {
             throw new BadRequestException(ErrorCode.NOT_EXISTS_TEXT);
         }
 
         // text 금칙어 검사
-        if (bannedWords.isBannedWords(text)) {
+        if (bannedWords.isBannedWords(letterTextReqDto.getText())) {
             throw new BadRequestException(ErrorCode.EXISTS_FORBIDDEN_WORD);
         }
 
@@ -100,6 +111,8 @@ public class LetterServiceImpl implements LetterService {
         }
 
         LetterMongo letterMongo = LetterMongo.builder()
+                .senderId(user.getMemberID())
+                .receiverId(letterTextReqDto.getReceiverId())
                 .content(contentUrl)
                 .files(fileUrls)
                 .type("Digital")
@@ -110,11 +123,16 @@ public class LetterServiceImpl implements LetterService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void placeLetter(LetterPlaceReqDto letterPlaceReqDto, List<MultipartFile> files) {
-        // accessToken으로 지금 요청을 보낸 유저랑 편지의 발신자랑 맞는지 확인하는 작업 필요함.
+    public void placeLetter(String accessToken, LetterPlaceReqDto letterPlaceReqDto, List<MultipartFile> files) {
         LetterMongo letterMongo = letterMongoRepository.findById(letterPlaceReqDto.getId()).orElseThrow(() -> {
             return new BadRequestException(ErrorCode.NOT_EXISTS_LETTER);
         });
+
+        // 편지 작성 유저와 요청을 보낸 유저가 같은 유저인지 확인
+        UserDetailResDto user = accessTokenToMember(accessToken).getData();
+        if (!letterMongo.getSenderId().equals(user.getMemberID())) {
+            throw new BadRequestException(ErrorCode.NOT_EQUAL_SENDER);
+        }
 
         Double lat = letterPlaceReqDto.getLat();
         Double lng = letterPlaceReqDto.getLng();
@@ -122,7 +140,17 @@ public class LetterServiceImpl implements LetterService {
             throw new BadRequestException(ErrorCode.NOT_EXISTS_LAT_OR_LNG);
         }
 
+        // 차단 확인(From(R) → To(S) 차단, DB 저장 x)
+        List<FriendDetailResDto> friends = FriendIsBlocked(accessToken, letterMongo.getSenderId(), letterMongo.getReceiverId()).getData();
+        for (FriendDetailResDto friend : friends) {
+            if (friend.getFrom().equals(letterMongo.getReceiverId()) && friend.getTo().equals(letterMongo.getSenderId()) && friend.isBlocked()) {
+                return;
+            }
+        }
+
         LetterMySQL letterMySQL = LetterMySQL.builder()
+                .senderId(letterMongo.getSenderId())
+                .receiverId(letterMongo.getReceiverId())
                 .content(letterMongo.getContent())
                 .type(letterMongo.getType())
                 .lat(lat)
@@ -164,13 +192,17 @@ public class LetterServiceImpl implements LetterService {
 
             placeImageRepository.save(placeImage);
         }
-        letterMongoRepository.delete(letterMongo);
+        // Receiver, FCM 알림 발송 추가 필요
+        UserInfoDetailResDto receiver = findByUserId(letterMongo.getReceiverId());
+        toSendFCM(receiver.getFcmToken(), user.getNickname());
+
+        letterMongoRepository.deleteById(letterMongo.getId());
     }
 
     // 첨부된 파일이 이미지 파일인지 확인
     private boolean isImageFile(String filename) {
         String extenstion = filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
-        String[] allowedExtensions = {"png", "jpg", "jpeg", "heif", "hevc", "gif"};
+        String[] allowedExtensions = {"png", "jpg", "jpeg", "heif", "hevc", "gif", "jfif"};
 
         for (String allowedExtension : allowedExtensions) {
             if (extenstion.equals(allowedExtension)) {
@@ -195,58 +227,212 @@ public class LetterServiceImpl implements LetterService {
 
     @Override
     @Transactional
-    public List<LetterSendResDto> getSendLetters() {
-        // Member 객체 받아서 발신자가 해당 멤버에 해당하는 편지만 가져와야 함.
-        List<LetterSendResDto> letters = letterJpaRepository.findAll()
+    public List<LetterSendResDto> getSendLetters(String accessToken) {
+        UserDetailResDto sender = accessTokenToMember(accessToken).getData();
+
+        List<LetterSendResDto> letters = letterJpaRepository.findBySenderId(sender.getMemberID())
                 .stream()
-                .map(LetterSendResDto::new)
+                .map(letterMySQL -> {
+                    String receiverNickname = findByUserId(letterMySQL.getReceiverId()).getNickname();
+                    return new LetterSendResDto(letterMySQL, receiverNickname);
+                })
                 .collect(Collectors.toList());
         return letters;
     }
 
     @Override
     @Transactional
-    public List<LetterUnsendResDto> getUnsendLetters() {
-        // Member 객체 받아서 발신자가 해당 멤버에 해당하는 편지만 가져와야 함.
-        List<LetterUnsendResDto> letters = letterMongoRepository.findAll()
+    public List<LetterUnsendResDto> getUnsendLetters(String accessToken) {
+        String userId = accessTokenToMember(accessToken).getData().getMemberID();
+
+        List<LetterUnsendResDto> letters = letterMongoRepository.findBySenderId(userId)
                 .stream()
-                .map(LetterUnsendResDto::new)
+                .map(letterMongo -> {
+                    String receiverNickname = findByUserId(letterMongo.getReceiverId()).getNickname();
+                    return new LetterUnsendResDto(letterMongo, receiverNickname);
+                })
+                .collect(Collectors.toList());
+        return letters;
+    }
+
+    // isPickup(true) & isRead(상관 x)
+    @Override
+    @Transactional
+    public List<LetterPickUpResDto> getPickupLetters(String accessToken) {
+        String userId = accessTokenToMember(accessToken).getData().getMemberID();
+
+        List<LetterPickUpResDto> letters = letterJpaRepository.findByReceiverIdAndIsPickup(userId, true)
+                .stream()
+                .map(letterMySQL -> {
+                    String senderNickname = findByUserId(letterMySQL.getSenderId()).getNickname();
+                    return new LetterPickUpResDto(letterMySQL, senderNickname, letterMySQL.isRead());
+                })
                 .collect(Collectors.toList());
         return letters;
     }
 
     @Override
     @Transactional
-    public List<LetterReceivedResDto> getReadLetters() {
-        List<LetterReceivedResDto> letters = letterJpaRepository.findByIsReadTrue()
+    public List<LetterNotPickUpResDto> getNotPickupLetters(String accessToken) {
+        String userId = accessTokenToMember(accessToken).getData().getMemberID();
+
+        List<LetterNotPickUpResDto> letters = letterJpaRepository.findByReceiverIdAndIsPickup(userId, false)
                 .stream()
-                .map(LetterReceivedResDto::new)
+                .map(letterMySQL -> {
+                    String senderNickname = findByUserId(letterMySQL.getSenderId()).getNickname();
+                    return new LetterNotPickUpResDto(letterMySQL, senderNickname, letterMySQL.getSenderId());
+                })
                 .collect(Collectors.toList());
         return letters;
     }
 
     @Override
     @Transactional
-    public List<LetterReceivedResDto> getUnreadLetters() {
-        List<LetterReceivedResDto> letters = letterJpaRepository.findByIsReadFalse()
-                .stream()
-                .map(LetterReceivedResDto::new)
-                .collect(Collectors.toList());
-        return letters;
-    }
-
-    @Override
-    @Transactional
-    public LetterReceivedDetailResDto getLetter(Long letter_id) {
-        // accessToken으로 멤버 객체 찾기 → SendId, ReceivedId가 해당 맴버인 것만 열람 가능
-        // 해당 요청을 보낸 멤버가 ReceivedId와 일치하면 isRead = true로 변경
+    public LetterReceivedDetailResDto getLetter(String accessToken, Long letter_id) {
+        UserDetailResDto user = accessTokenToMember(accessToken).getData();
         LetterMySQL letterMySQL = letterJpaRepository.findById(letter_id).orElseThrow(() -> {
             throw new BadRequestException(ErrorCode.NOT_EXISTS_LETTER);
         });
-        LetterReceivedDetailResDto letter = new LetterReceivedDetailResDto(letterMySQL);
-        // isFriend 변수 추가
+
+        // SendId, ReceivedId가 해당 맴버인 것만 열람 가능
+        if (!letterMySQL.getSenderId().equals(user.getMemberID()) && (!letterMySQL.getReceiverId().equals(user.getMemberID()))) {
+            throw new BadRequestException(ErrorCode.NOT_EQUAL_SENDER_OR_RECEIVER);
+        }
+
+        String senderNickname = findByUserId(letterMySQL.getSenderId()).getNickname();
+        String receiverNickname = findByUserId(letterMySQL.getReceiverId()).getNickname();
+
+        /*
+         isFriend 변수 추가
+         해당 요청을 보낸 멤버가 ReceivedId와 일치하면 IS_READ = true로 변경
+         */
+        boolean flag = false;
+        if (letterMySQL.getReceiverId().equals(user.getMemberID())) {
+            letterJpaRepository.setLetterIsReadTrue(letterMySQL.getId());
+            List<FriendDetailResDto> friends = FriendIsBlocked(accessToken, letterMySQL.getReceiverId(), letterMySQL.getSenderId()).getData();
+            for (FriendDetailResDto friend : friends) {
+                if (friend.getFrom().equals(letterMySQL.getReceiverId()) && friend.getTo().equals(letterMySQL.getSenderId())) {
+                    flag = true;
+                }
+            }
+        }
+
+
+        if (letterMySQL.getSenderId().equals(user.getMemberID())) {
+            flag = true;
+        }
+
+        LetterReceivedDetailResDto letter = new LetterReceivedDetailResDto(letterMySQL, senderNickname, letterMySQL.getSenderId(), receiverNickname, flag);
         return letter;
     }
 
+    public void updateIsPickup(String accessToken, Long letter_id) {
+        UserDetailResDto user = accessTokenToMember(accessToken).getData();
 
+        LetterMySQL letterMySQL = letterJpaRepository.findById(letter_id).orElseThrow(() -> {
+            throw new BadRequestException(ErrorCode.NOT_EXISTS_LETTER);
+        });
+
+        if (!letterMySQL.getReceiverId().equals(user.getMemberID())) {
+            throw new BadRequestException(ErrorCode.NOT_EQUAL_RECEIVER);
+        }
+
+        letterJpaRepository.setLetterIsPickupTrue(letter_id);
+    }
+
+    // accessToken으로 해당 member에 대한 정보 받기
+    private UserResDto accessTokenToMember(String accessToken) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.AUTHORIZATION, accessToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        String apiUrl = "http://3.34.86.93/api/user";
+
+        try {
+            ResponseEntity<UserResDto> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET, entity, UserResDto.class);
+            UserResDto res = responseEntity.getBody();
+            return res;
+        } catch (HttpClientErrorException.Unauthorized e) {
+            throw new BadRequestException(ErrorCode.EXPIRED_TOKEN);
+        }
+
+    }
+
+    // member_Id 2개를 보냈을 때 차단되있는지 안되어있는지 판별
+    private FriendResDto FriendIsBlocked(String accessToken, String senderId, String receiverId) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.AUTHORIZATION, accessToken);
+
+        FriendReqDto req = FriendReqDto.builder()
+                .from(senderId)
+                .to(receiverId)
+                .build();
+
+        HttpEntity<FriendReqDto> requestEntity = new HttpEntity<>(req, headers);
+
+        String apiUrl = "http://3.34.86.93/api/friend";
+        try {
+            ResponseEntity<FriendResDto> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, FriendResDto.class);
+            FriendResDto res = responseEntity.getBody();
+            return res;
+        } catch (HttpClientErrorException.Unauthorized e) {
+            throw new BadRequestException(ErrorCode.EXPIRED_TOKEN);
+        }
+
+
+    }
+
+    private UserInfoDetailResDto findByUserId(String userId) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        String apiUrl = "http://3.34.86.93/api/user/" + userId;
+        try {
+            ResponseEntity<UserInfoResDto> responseEntity = restTemplate.getForEntity(apiUrl, UserInfoResDto.class);
+            UserInfoResDto res = responseEntity.getBody();
+            return res.getData();
+        } catch (HttpClientErrorException.Unauthorized e) {
+            throw new BadRequestException(ErrorCode.EXPIRED_TOKEN);
+        }
+    }
+
+    public void toSendFCM(String fcmToken, String nickname) {
+        String message = nickname + "님이 당신에게 편지를 보냈습니다.";
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        FCMReqDto req = FCMReqDto.builder()
+                .token(fcmToken)
+                .title("뱁새가 편지를 물고 왔어요.")
+                .body(message)
+                .build();
+
+        HttpEntity<FCMReqDto> requestEntity = new HttpEntity<>(req);
+
+        String apiUrl = "http://3.34.86.93/api/fcm";
+        ResponseEntity<String> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, String.class);
+    }
+
+    public void test(String accessToken) {
+        UserDetailResDto user = accessTokenToMember(accessToken).getData();
+        String message = user.getNickname() + "님이 당신에게 편지를 보냈습니다.";
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        FCMReqDto req = FCMReqDto.builder()
+                .token(user.getFcmToken())
+                .title("뱁새가 편지를 물고 왔어요.")
+                .body(message)
+                .build();
+
+        HttpEntity<FCMReqDto> requestEntity = new HttpEntity<>(req);
+
+        String apiUrl = "http://3.34.86.93/api/fcm";
+        ResponseEntity<String> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, String.class);
+        System.out.println(responseEntity);
+    }
 }

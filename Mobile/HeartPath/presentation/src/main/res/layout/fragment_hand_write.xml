@@ -11,22 +11,21 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintlayout_letter_paper_box"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:layout_gravity="center_vertical">
-        <com.zootopia.presentation.writeletter.LetterPaperCanvas
+        <com.zootopia.presentation.writeletter.handwrite.LetterPaperCanvas
             android:id="@+id/imageview_letter_paper"
             android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:src="@tools:sample/avatars"
-            android:background="@color/Green"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintVertical_bias="0.5">
-        </com.zootopia.presentation.writeletter.LetterPaperCanvas>
+        </com.zootopia.presentation.writeletter.handwrite.LetterPaperCanvas>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -35,6 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_30sdp"
         android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:gravity="end"
         android:orientation="horizontal">
 

@@ -18,7 +18,7 @@ public class CrowTit {
     @Id
     @Column(name = "CROW_TIT_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @Column(name = "NAME")
     private String name;

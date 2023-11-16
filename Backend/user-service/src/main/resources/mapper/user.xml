@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zootopia.userservice.mapper.UserMapper">
+
+    <select id="readUserInfo" parameterType="String" resultType="UserInfoDTO">
+        SELECT m.`MEMBER_ID`          as `memberID`,
+               m.`NICKNAME`           as `nickname`,
+               m.`PROFILE_IMAGE_PATH` as `profileImagePath`,
+               ct.`IMAGE_PATH`        as `characterImagePath`,
+               m.`POINT`              as `point`
+        FROM `member` m
+                 LEFT JOIN `crow_tit_book` ctb ON m.MEMBER_ID = ctb.MEMBER_ID
+                 LEFT JOIN `crow_tit` ct ON ctb.CROW_TIT_ID = ct.CROW_TIT_ID
+        WHERE m.MEMBER_ID = #{memberID}
+          AND ctb.IS_MAIN = TRUE;
+    </select>
+
+</mapper>

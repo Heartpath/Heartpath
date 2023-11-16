@@ -20,17 +20,23 @@ public class LetterMySQL {
     @Column(updatable = false, name = "LETTER_ID")
     private Long id;
 
-//    private String senderId;
-//    private String receiverId;
+    @Column(name = "SENDER_ID")
+    private String senderId;
 
-    @Column(length = 1000, name="CONTENT")
+    @Column(name = "RECEIVER_ID")
+    private String receiverId;
+
+    @Column(name="CONTENT")
     private String content;
 
-    @Column(nullable = false, columnDefinition = "boolean default true", name = "IS_PLACE")
-    private boolean isPlace;
+    @Column(nullable = false, columnDefinition = "boolean default false", name = "IS_PICK_UP")
+    private boolean isPickup;
 
     @Column(nullable = false, columnDefinition = "boolean default false", name = "IS_READ")
     private boolean isRead;
+
+    @Column(nullable = false, name = "IS_BLOCKED")
+    private boolean isBlocked;
 
     @Column(name = "CREATED_DATE")
     @CreatedDate
@@ -58,12 +64,14 @@ public class LetterMySQL {
     private List<PlaceImage> placeImages;
 
     @Builder
-    public LetterMySQL(String content, String type, Double lat, Double lng) {
+    public LetterMySQL(String senderId, String receiverId, String content, String type, Double lat, Double lng) {
+        this.senderId = senderId;
+        this.receiverId = receiverId;
         this.content = content;
         this.type = type;
         this.lat = lat;
         this.lng = lng;
-        this.isPlace = true;
+        this.isPickup = false;
     }
 
 }
