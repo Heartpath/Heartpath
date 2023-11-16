@@ -36,17 +36,7 @@ public class APIServiceImpl implements APIService {
             return null;
         }
 
-        Optional<User> findUser = userRepository.findByMemberID(memberIDFromToken);
-        if (findUser.isEmpty()) {
-            return null;
-        }
-
-        User user = findUser.get();
-
-        UserInfoDTO userInfoDTO = new UserInfoDTO();
-        userInfoDTO.ofEntity(user);
-
-        return userInfoDTO;
+        return userMapper.findByMemberID(memberIDFromToken);
     }
 
     @Override
