@@ -9,5 +9,5 @@ public interface PointService {
 
     List<UserPointTXDTO> loadUserPointTransaction(String memberID);
 
-    int reviseUserPoint(String memberID, int point);
+    void reviseUserPoint(String memberID, int point);
 }

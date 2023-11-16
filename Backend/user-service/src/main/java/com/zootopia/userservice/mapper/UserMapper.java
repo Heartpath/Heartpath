@@ -18,7 +18,7 @@ public interface UserMapper {
 
     List<UserSearchDTO> readLimitUserByIDWithFriendRelation(UserSearchParam paramMap);
 
-    int updateUserPoint(
+    void updateUserPoint(
             @Param(value = "memberID") String memberID,
             @Param(value = "point") int point
     );
