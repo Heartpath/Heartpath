@@ -21,6 +21,7 @@ public interface StoreService {
 
     void buyCrowTit(String memberId, CrowTitReqDto crowTitReqDto);
     void changeMainCrowTit(String memberId, CrowTitReqDto crowTitChangeReqDto);
+    CrowTitResDto getMainCrowTit(String memberId);
     CrowTit getCrowTitInfo(int crowTitId);
     List<CrowTitResDto> getCrowTitListAll(String memberId);
     List<CrowTitResDto> getCrowTitList(String memberId);
