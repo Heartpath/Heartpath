@@ -1,15 +1,10 @@
 package com.zootopia.letterservice.letter.service;
 
-import com.zootopia.letterservice.common.FCM.FCMService;
 import com.zootopia.letterservice.common.error.code.ErrorCode;
 import com.zootopia.letterservice.common.error.exception.BadRequestException;
-import com.zootopia.letterservice.common.error.exception.ServerException;
 import com.zootopia.letterservice.common.global.BannedWords;
 import com.zootopia.letterservice.common.s3.S3Uploader;
-import com.zootopia.letterservice.letter.dto.request.FriendReqDto;
-import com.zootopia.letterservice.letter.dto.request.LetterHandReqDto;
-import com.zootopia.letterservice.letter.dto.request.LetterPlaceReqDto;
-import com.zootopia.letterservice.letter.dto.request.LetterTextReqDto;
+import com.zootopia.letterservice.letter.dto.request.*;
 import com.zootopia.letterservice.letter.dto.response.*;
 import com.zootopia.letterservice.letter.entity.LetterImage;
 import com.zootopia.letterservice.letter.entity.LetterMongo;
@@ -21,12 +16,15 @@ import com.zootopia.letterservice.letter.repository.LetterMongoRepository;
 import com.zootopia.letterservice.letter.repository.PlaceImageRepository;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,8 +40,6 @@ public class LetterServiceImpl implements LetterService {
     private final LetterMongoRepository letterMongoRepository;
     private final LetterImageRepository letterImageRepository;
     private final PlaceImageRepository placeImageRepository;
-
-    private final FCMService fcmService;
 
     private final BannedWords bannedWords;
     private final S3Uploader s3Uploader;
@@ -135,7 +131,7 @@ public class LetterServiceImpl implements LetterService {
         // 편지 작성 유저와 요청을 보낸 유저가 같은 유저인지 확인
         UserDetailResDto user = accessTokenToMember(accessToken).getData();
         if (!letterMongo.getSenderId().equals(user.getMemberID())) {
-            throw new BadRequestException(ErrorCode.NOT_EQUAL_USER);
+            throw new BadRequestException(ErrorCode.NOT_EQUAL_SENDER);
         }
 
         Double lat = letterPlaceReqDto.getLat();
@@ -196,9 +192,11 @@ public class LetterServiceImpl implements LetterService {
 
             placeImageRepository.save(placeImage);
         }
-        letterMongoRepository.deleteById(letterMongo.getId());
-
         // Receiver, FCM 알림 발송 추가 필요
+        UserInfoDetailResDto receiver = findByUserId(letterMongo.getReceiverId());
+        toSendFCM(receiver.getFcmToken(), user.getNickname());
+
+        letterMongoRepository.deleteById(letterMongo.getId());
     }
 
     // 첨부된 파일이 이미지 파일인지 확인
@@ -257,16 +255,17 @@ public class LetterServiceImpl implements LetterService {
         return letters;
     }
 
+    // isPickup(true) & isRead(상관 x)
     @Override
     @Transactional
-    public List<LetterReceivedResDto> getReadLetters(String accessToken) {
+    public List<LetterPickUpResDto> getPickupLetters(String accessToken) {
         String userId = accessTokenToMember(accessToken).getData().getMemberID();
 
-        List<LetterReceivedResDto> letters = letterJpaRepository.findByReceiverIdAndIsRead(userId, true)
+        List<LetterPickUpResDto> letters = letterJpaRepository.findByReceiverIdAndIsPickup(userId, true)
                 .stream()
                 .map(letterMySQL -> {
                     String senderNickname = findByUserId(letterMySQL.getSenderId()).getNickname();
-                    return new LetterReceivedResDto(letterMySQL, senderNickname);
+                    return new LetterPickUpResDto(letterMySQL, senderNickname, letterMySQL.isRead());
                 })
                 .collect(Collectors.toList());
         return letters;
@@ -274,14 +273,14 @@ public class LetterServiceImpl implements LetterService {
 
     @Override
     @Transactional
-    public List<LetterReceivedResDto> getUnreadLetters(String accessToken) {
+    public List<LetterNotPickUpResDto> getNotPickupLetters(String accessToken) {
         String userId = accessTokenToMember(accessToken).getData().getMemberID();
 
-        List<LetterReceivedResDto> letters = letterJpaRepository.findByReceiverIdAndIsRead(userId, false)
+        List<LetterNotPickUpResDto> letters = letterJpaRepository.findByReceiverIdAndIsPickup(userId, false)
                 .stream()
                 .map(letterMySQL -> {
                     String senderNickname = findByUserId(letterMySQL.getSenderId()).getNickname();
-                    return new LetterReceivedResDto(letterMySQL, senderNickname);
+                    return new LetterNotPickUpResDto(letterMySQL, senderNickname, letterMySQL.getSenderId());
                 })
                 .collect(Collectors.toList());
         return letters;
@@ -291,7 +290,6 @@ public class LetterServiceImpl implements LetterService {
     @Transactional
     public LetterReceivedDetailResDto getLetter(String accessToken, Long letter_id) {
         UserDetailResDto user = accessTokenToMember(accessToken).getData();
-
         LetterMySQL letterMySQL = letterJpaRepository.findById(letter_id).orElseThrow(() -> {
             throw new BadRequestException(ErrorCode.NOT_EXISTS_LETTER);
         });
@@ -313,7 +311,7 @@ public class LetterServiceImpl implements LetterService {
             letterJpaRepository.setLetterIsReadTrue(letterMySQL.getId());
             List<FriendDetailResDto> friends = FriendIsBlocked(accessToken, letterMySQL.getReceiverId(), letterMySQL.getSenderId()).getData();
             for (FriendDetailResDto friend : friends) {
-                if (friend.getFrom().equals(letterMySQL.getReceiverId()) && friend.getTo().equals(letterMySQL.getSenderId()) && friend.isBlocked()) {
+                if (friend.getFrom().equals(letterMySQL.getReceiverId()) && friend.getTo().equals(letterMySQL.getSenderId())) {
                     flag = true;
                 }
             }
@@ -321,63 +319,120 @@ public class LetterServiceImpl implements LetterService {
 
 
         if (letterMySQL.getSenderId().equals(user.getMemberID())) {
-            flag = false;
+            flag = true;
         }
 
-        LetterReceivedDetailResDto letter = new LetterReceivedDetailResDto(letterMySQL, senderNickname, receiverNickname, flag);
+        LetterReceivedDetailResDto letter = new LetterReceivedDetailResDto(letterMySQL, senderNickname, letterMySQL.getSenderId(), receiverNickname, flag);
         return letter;
+    }
+
+    public void updateIsPickup(String accessToken, Long letter_id) {
+        UserDetailResDto user = accessTokenToMember(accessToken).getData();
+
+        LetterMySQL letterMySQL = letterJpaRepository.findById(letter_id).orElseThrow(() -> {
+            throw new BadRequestException(ErrorCode.NOT_EXISTS_LETTER);
+        });
+
+        if (!letterMySQL.getReceiverId().equals(user.getMemberID())) {
+            throw new BadRequestException(ErrorCode.NOT_EQUAL_RECEIVER);
+        }
+
+        letterJpaRepository.setLetterIsPickupTrue(letter_id);
     }
 
     // accessToken으로 해당 member에 대한 정보 받기
     private UserResDto accessTokenToMember(String accessToken) {
-        WebClient webClient = WebClient.builder().build();
+        RestTemplate restTemplate = new RestTemplate();
 
-        UserResDto res = webClient.get()
-                .uri("http://3.34.86.93/api/user")
-                .header(HttpHeaders.AUTHORIZATION, accessToken)
-                .retrieve() // ResponseEntity를 받아 디코딩, exchange() : ClientResponse를 상태값, 헤더 제공
-                .onStatus(HttpStatus::is4xxClientError, clientResponse -> {
-                    throw new BadRequestException(ErrorCode.INVALID_USER_REQUEST);
-                })
-                .onStatus(HttpStatus::is5xxServerError, clientResponse -> {
-                    throw new ServerException(ErrorCode.UNSTABLE_SERVER);
-                })
-                .bodyToMono(UserResDto.class)
-                .block();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.AUTHORIZATION, accessToken);
 
-        return res;
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        String apiUrl = "http://3.34.86.93/api/user";
+
+        try {
+            ResponseEntity<UserResDto> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET, entity, UserResDto.class);
+            UserResDto res = responseEntity.getBody();
+            return res;
+        } catch (HttpClientErrorException.Unauthorized e) {
+            throw new BadRequestException(ErrorCode.EXPIRED_TOKEN);
+        }
+
     }
 
     // member_Id 2개를 보냈을 때 차단되있는지 안되어있는지 판별
     private FriendResDto FriendIsBlocked(String accessToken, String senderId, String receiverId) {
-        WebClient webClient = WebClient.builder().build();
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.AUTHORIZATION, accessToken);
 
         FriendReqDto req = FriendReqDto.builder()
                 .from(senderId)
                 .to(receiverId)
                 .build();
 
-        FriendResDto res = webClient.post()
-                .uri("http://3.34.86.93/api/friend")
-                .header(HttpHeaders.AUTHORIZATION, accessToken)
-                .bodyValue(req)
-                .retrieve()
-                .bodyToMono(FriendResDto.class)
-                .block();
+        HttpEntity<FriendReqDto> requestEntity = new HttpEntity<>(req, headers);
 
-        return res;
+        String apiUrl = "http://3.34.86.93/api/friend";
+        try {
+            ResponseEntity<FriendResDto> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, FriendResDto.class);
+            FriendResDto res = responseEntity.getBody();
+            return res;
+        } catch (HttpClientErrorException.Unauthorized e) {
+            throw new BadRequestException(ErrorCode.EXPIRED_TOKEN);
+        }
+
+
     }
 
     private UserInfoDetailResDto findByUserId(String userId) {
-        WebClient webClient = WebClient.builder().build();
+        RestTemplate restTemplate = new RestTemplate();
 
-        UserInfoResDto res = webClient.get()
-                .uri("http://3.34.86.93/api/user/" + userId)
-                .retrieve()
-                .bodyToMono(UserInfoResDto.class)
-                .block();
-
-        return res.getData();
+        String apiUrl = "http://3.34.86.93/api/user/" + userId;
+        try {
+            ResponseEntity<UserInfoResDto> responseEntity = restTemplate.getForEntity(apiUrl, UserInfoResDto.class);
+            UserInfoResDto res = responseEntity.getBody();
+            return res.getData();
+        } catch (HttpClientErrorException.Unauthorized e) {
+            throw new BadRequestException(ErrorCode.EXPIRED_TOKEN);
+        }
     }
 
+    public void toSendFCM(String fcmToken, String nickname) {
+        String message = nickname + "님이 당신에게 편지를 보냈습니다.";
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        FCMReqDto req = FCMReqDto.builder()
+                .token(fcmToken)
+                .title("뱁새가 편지를 물고 왔어요.")
+                .body(message)
+                .build();
+
+        HttpEntity<FCMReqDto> requestEntity = new HttpEntity<>(req);
+
+        String apiUrl = "http://3.34.86.93/api/fcm";
+        ResponseEntity<String> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, String.class);
+    }
+
+    public void test(String accessToken) {
+        UserDetailResDto user = accessTokenToMember(accessToken).getData();
+        String message = user.getNickname() + "님이 당신에게 편지를 보냈습니다.";
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        FCMReqDto req = FCMReqDto.builder()
+                .token(user.getFcmToken())
+                .title("뱁새가 편지를 물고 왔어요.")
+                .body(message)
+                .build();
+
+        HttpEntity<FCMReqDto> requestEntity = new HttpEntity<>(req);
+
+        String apiUrl = "http://3.34.86.93/api/fcm";
+        ResponseEntity<String> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, String.class);
+        System.out.println(responseEntity);
+    }
 }
