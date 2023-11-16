@@ -29,6 +29,7 @@
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="@dimen/_10sdp"
                 android:text="from.하동혁"
+                android:bufferType="spannable"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.3"
