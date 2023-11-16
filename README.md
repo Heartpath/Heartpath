@@ -61,10 +61,11 @@
 ![amazonroute53](https://img.shields.io/badge/amazonroute53-8C4FFF.svg?style=for-the-badge&logo=amazonroute53&logoColor=white)
 ![amazondocumentdb](https://img.shields.io/badge/amazondocumentdb-527FFF.svg?style=for-the-badge&logo=amazondocumentdb&logoColor=white)
 ![amazonrds](https://img.shields.io/badge/amazonrds-C925D1.svg?style=for-the-badge&logo=amazonrds&logoColor=white)
+![amazonrds](https://img.shields.io/badge/amazonelb-000000.svg?style=for-the-badge&logo=amazonelb&logoColor=white)
 
-![mysql](https://img.shields.io/badge/mysql-%234479A1.svg?style=for-the-badge&logo=redis&logoColor=white)
+![mysql](https://img.shields.io/badge/mysql-%234479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)
 ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)
-![S3](https://img.shields.io/badge/amazons3-%23569A31.svg?style=for-the-badge&logo=redis&logoColor=white)
+![S3](https://img.shields.io/badge/amazons3-%23569A31.svg?style=for-the-badge&logo=amazons3&logoColor=white)
 
 ### 🤝 **Collaboration Tools**
 
