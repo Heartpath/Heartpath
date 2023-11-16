@@ -41,7 +41,8 @@
             app:destination="@id/homeFragment" />
         <action
             android:id="@+id/action_homeFragment_to_myPageFragment"
-            app:destination="@id/myPageFragment" />
+            app:destination="@id/myPageFragment"
+            style="@style/SlideAnimation"/>
         <action
             android:id="@+id/action_homeFragment_to_selectUserFragment"
             app:destination="@id/selectUserFragment"
@@ -91,13 +92,16 @@
         tools:layout="@layout/fragment_my_page" >
         <action
             android:id="@+id/action_myPageFragment_to_friendSearchFragment"
-            app:destination="@id/friendSearchFragment" />
+            app:destination="@id/friendSearchFragment"
+            style="@style/SlideAnimation"/>
         <action
             android:id="@+id/action_myPageFragment_to_settingFragment"
-            app:destination="@id/settingFragment" />
+            app:destination="@id/settingFragment"
+            style="@style/SlideAnimation"/>
         <action
             android:id="@+id/action_myPageFragment_to_pointHistoryFragment"
-            app:destination="@id/pointHistoryFragment" />
+            app:destination="@id/pointHistoryFragment"
+            style="@style/SlideAnimation"/>
         <action
             android:id="@+id/action_myPageFragment_to_loginFragment"
             app:destination="@id/loginFragment"
