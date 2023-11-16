@@ -95,23 +95,24 @@
 
 | 소셜 로그인 | 손글씨 편지 작성 |
 |:-------------------------:|:-------------------------:|
-| ![로그인](./images/login.gif) | ![손글씨 편지](./images/hand_letter.gif) |
+| <img src="./images/login.gif" width="250"/> | <img src="./images/hand_letter.gif" width="250"/> |
 
 | 타이핑 편지 작성 | 상점 |
 |:-------------------------:|:-------------------------:|
-| ![타이핑 편지](./images/typing_letter.gif) | ![상점](./images/store.gif) |
+| <img src="./images/typing_letter.gif" width="250"/> | <img src="./images/store.gif" width="250"/> |
 
 | 마이페이지 | 캐릭터 도감 |
 |:-------------------------:|:-------------------------:|
-| ![마이페이지](./images/add_friend.gif) | ![캐릭터 도감](./images/character_encyclopedia.gif) |
+| <img src="./images/add_friend.gif" width="250"/> | <img src="./images/character_encyclopedia.gif" width="250"/> |
 
 | 편지 두기 | 편지 줍기 |
 |:-------------------------:|:-------------------------:|
-| ![편지 두기](./images/send_letter.gif) | ![편지 줍기](./images/pickup_letter.gif) |
+| <img src="./images/send_letter.gif" width="250"/> | <img src="./images/pickup_letter.gif" width="250"/> |
 
 | 받은 편지 보관함 |
 |:-------------------------:|
-| ![받은 편지 보관함](./images/receive_letter.gif) |
+| <img src="./images/receive_letter.gif" width="250"/> |
+
 
 
 
