@@ -152,7 +152,7 @@ class ArCoreReadFragment :
                     frame.getUpdatedPlanes()
                         .firstOrNull { it.type == Plane.Type.HORIZONTAL_UPWARD_FACING }
                         ?.let { plane ->
-                            if (dist < 10.0) {
+                            if (dist < 4.0) {
                                 // 모델 올리기 (plane 정 중앙)
                                 addAnchorNode(plane.createAnchor(plane.centerPose))
 
