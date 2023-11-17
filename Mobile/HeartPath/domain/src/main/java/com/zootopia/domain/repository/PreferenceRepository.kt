@@ -13,7 +13,6 @@ interface PreferenceRepository {
 
     fun getAccessToken() : Flow<String>
     suspend fun setToken(accessToken: String, refreshToken: String): Flow<Boolean>
-
     fun getRefreshToken() : Flow<String>
     fun getKakaoAccessToken(): Flow<String>
     suspend fun setKakaoAccessToken(accessToken: String)
