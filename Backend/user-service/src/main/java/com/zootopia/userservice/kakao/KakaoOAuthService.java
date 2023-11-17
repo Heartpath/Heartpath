@@ -48,6 +48,8 @@ public class KakaoOAuthService {
 //    @Transactional
     public BaseResponse doKakaoLogin(String kakaoToken, String fcmToken) {
 
+        log.info("Get KakaoToken in Login Method: {}", kakaoToken);
+
         // 반환값
         String isRegistered = "true";
         HashMap<String, String> res = new HashMap<>();
