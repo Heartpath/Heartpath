@@ -9,6 +9,6 @@ data class SearchUserInfoDto (
     val nickname: String,
     @SerializedName("profileImagePath")
     val profileImagePath: String,
-    @SerializedName("friend")
+    @SerializedName("isFriend")
     val isFriend: Boolean
 )
