@@ -53,6 +53,7 @@ class SearchFriendViewModel @Inject constructor(
     fun addFriend() = viewModelScope.launch {
         Log.d(TAG, "addFriend: do add friend")
         addFriendUseCase.invoke(id = _addingFriendId.value)
+        searchUser()
     }
 
     fun setAddingFriendId(friendId: String) = viewModelScope.launch {

@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
@@ -48,7 +49,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         initNavHost()
         initCheckPermission()
         initCollect()
-        initCheck()
         initNotification()
         Log.d(TAG, "onCreate: main activity on create 되었어요")
 
@@ -57,7 +57,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 //        Log.d(TAG, "KAKAO keyhash : ${Utility.getKeyHash(this)}")
     }
 
-    private fun initMediaPlayer(){
+    private fun initMediaPlayer() {
         mediaPlayer = MediaPlayer.create(this, R.raw.my_precious_teddy_bear)
         mediaPlayer.isLooping = true
     }
@@ -70,7 +70,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     override fun onPause() {
         super.onPause()
-        if(mediaPlayer.isPlaying){
+        if (mediaPlayer.isPlaying) {
             mediaPlayer.pause()
         }
     }
@@ -78,9 +78,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume: ")
-        if(mainViewModel.bgmState.value == true && mediaPlayer.isPlaying == false){
+        if (mainViewModel.bgmState.value == true && mediaPlayer.isPlaying == false) {
             mediaPlayer.start()
-        }else if(mainViewModel.bgmState.value == false && mediaPlayer.isPlaying){
+        } else if (mainViewModel.bgmState.value == false && mediaPlayer.isPlaying) {
             mediaPlayer.pause()
         }
     }
@@ -90,31 +90,38 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         val navHostFragmentManager =
             supportFragmentManager.findFragmentById(R.id.main_container) as NavHostFragment
         navController = navHostFragmentManager.navController
-//            navGraph = navController.graph
-//            initCheck()
-        val inflater = navHostFragmentManager.navController.navInflater
-        val graph = inflater.inflate(R.navigation.nav_graph)
-        Log.d(TAG, "initNavHost: extraStr!!! $extraStr")
-        navController.navigate(R.id.mapFragment)
-
-        lifecycleScope.launch {
-            mainViewModel.accessToken.collect { value ->
-                Log.d(TAG, "initCheck: access token $value")
-                if (value != "") {
-//                    graph.setStartDestination(R.id.homeFragment)
-                    navController.currentDestination?.let { it1 ->
-                        navController.popBackStack(
-                            it1.id,
-                            true
-                        )
-                    }   // 백스택 지움
-                    navController.navigate(R.id.homeFragment)
-                } else {
-//                    graph.setStartDestination(R.id.loginFragment)
-                    navController.navigate(R.id.loginFragment)
-                }
-            }
-        }
+//        onBackPressedDispatcher.addCallback(this) {
+//            if (navController.currentDestination?.id == R.id.loginFragment) {
+//                // 앱을 종료하거나 다른 원하는 동작 수행
+//                finish()
+//            }
+//        }
+////            navGraph = navController.graph
+////            initCheck()
+//        val inflater = navHostFragmentManager.navController.navInflater
+//        val graph = inflater.inflate(R.navigation.nav_graph)
+////        Log.d(TAG, "initNavHost: extraStr!!! $extraStr")
+////        navController.navigate(R.id.mapFragment)
+//
+//        lifecycleScope.launch {
+//            mainViewModel.accessToken.collect { value ->
+//                Log.d(TAG, "initCheck: access token $value")
+//                if (value != "") {
+////                    graph.setStartDestination(R.id.homeFragment)
+//                    navController.currentDestination?.let { it1 ->
+//                        navController.popBackStack(
+//                            it1.id,
+//                            true
+//
+//                        )
+//                    }   // 백스택 지움
+//                    navController.navigate(R.id.homeFragment)
+//                } else {
+////                    graph.setStartDestination(R.id.loginFragment)
+//                    navController.navigate(R.id.loginFragment)
+//                }
+//            }
+//        }
 
 
     }
@@ -145,10 +152,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                 bgmState.collectLatest {
                     Log.d(TAG, "initCollect: bgm state ${it}")
                     Log.d(TAG, "initCollect: ? ${mediaPlayer.isPlaying}")
-                    if(it && mediaPlayer.isPlaying == false){
+                    if (it && mediaPlayer.isPlaying == false) {
                         Log.d(TAG, "initCollect: start bgm")
                         mediaPlayer.start()
-                    }else if (it == false && mediaPlayer.isPlaying){
+                    } else if (it == false && mediaPlayer.isPlaying) {
                         mediaPlayer.pause()
                     }
                 }
@@ -180,7 +187,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         }
     }
 
-    private fun initData(){
+    private fun initData() {
         mainViewModel.getBgmState()
     }
 
@@ -189,8 +196,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         super.onNewIntent(intent)
         Log.d(TAG, "onNewIntent: 여기 호출되었어요")
         val extraStr = intent?.getStringExtra("destination")
-        if(extraStr != null) {
-            if(extraStr == "map") {
+        if (extraStr != null) {
+            if (extraStr == "map") {
                 Log.d(TAG, "onNewIntent: $extraStr")
                 navController.navigate(R.id.mapFragment)
             }
@@ -206,10 +213,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             currentFocus!!.clearFocus()
         }
         return super.dispatchTouchEvent(ev)
-    }
-
-    private fun initCheck() {
-        mainViewModel.getAccessToken()
     }
 
     // 코틀린의 전역변수
