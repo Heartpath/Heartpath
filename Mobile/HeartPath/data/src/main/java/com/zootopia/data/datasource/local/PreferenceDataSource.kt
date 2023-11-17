@@ -179,6 +179,7 @@ class PreferenceDataSource @Inject constructor(
 
     suspend fun setToken(accessToken: String, refreshToken: String): Flow<Boolean> {
         context.dataStore.edit { preferences ->
+            Log.d(TAG, "setToken: edit 되었습니다")
             preferences[stringPreferencesKey("access_token")] = accessToken
             preferences[stringPreferencesKey("refresh_token")] = refreshToken
         }
@@ -192,6 +193,7 @@ class PreferenceDataSource @Inject constructor(
                 }
             }
             .map { preferences ->
+                Log.d(TAG, "setToken 호출되었습니다: ${preferences[stringPreferencesKey("access_token")]}")
                 preferences[stringPreferencesKey("access_token")]?.isNotEmpty() ?: false
             }
         return checkFlow

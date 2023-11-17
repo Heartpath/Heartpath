@@ -13,22 +13,27 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.zootopia.presentation.MainActivity
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentSignUpBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.math.log
 
+@AndroidEntryPoint
 class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
     FragmentSignUpBinding::bind,
     R.layout.fragment_sign_up
 ) {
     private lateinit var mainActivity: MainActivity
-    private val loginViewModel: LoginViewModel by activityViewModels()
+    private val signUpViewModel: SignUpViewModel by viewModels()
     private lateinit var toast: Toast
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -46,7 +51,7 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
         // 중복확인 버튼 중복 여부 확인에 따라 UI 변경
         buttonIdCheck.apply {
             lifecycleScope.launch {
-                loginViewModel.checkIdDone.collect { isCheckDone ->
+                signUpViewModel.checkIdDone.collect { isCheckDone ->
                     if (isCheckDone) {
                         // 완료된 상태라면
                         text = CHECKDONE
@@ -90,9 +95,9 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
                         }
 
                         // 입력 값 갱신
-                        loginViewModel.setNewId(sequence.toString())
+                        signUpViewModel.setNewId(sequence.toString())
                         // 입력 값 수정하면 중복확인 false 처리
-                        loginViewModel.setCheckIdDone(value = false)
+                        signUpViewModel.setCheckIdDone(value = false)
                     }
                 }
 
@@ -141,22 +146,25 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
         // 회원 가입 버튼
         buttonSignupAccept.setOnClickListener {
             Log.d(TAG, "initClickEvent: clicked accept")
-            if (loginViewModel.newId.value.isNullOrEmpty()) signupToast(message = getString(R.string.toast_message_signup_check_id_plz))
+            if (signUpViewModel.newId.value.isNullOrEmpty()) signupToast(message = getString(R.string.toast_message_signup_check_id_plz))
             else {
                 Log.d(TAG, "initClickEvent: clicked")
-                val isCheckDone = loginViewModel.checkIdDone.value
+                val isCheckDone = signUpViewModel.checkIdDone.value
                 Log.d(TAG, "회원가입 버튼 $isCheckDone")
                 if (isCheckDone) { // 아이디 중복 체크 확인 되었는 상태
-                    lifecycleScope.launch {
-                        loginViewModel.signUp()
-                        loginViewModel.signupResult.collectLatest { result ->
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        signUpViewModel.signUp()
+                        signUpViewModel.signupResult.collectLatest { result ->
                             if (result.accessToken != "") {
                                 signupToast(message = getString(R.string.toast_message_signup_done))
-                                loginViewModel.setToken(result)
-                                loginViewModel.storeToken()
-                                // 토큰 값 다 저장했으면 home으로 이동
-                                loginViewModel.setTokenResult.collectLatest { done ->
-                                    if(done) findNavController().navigate(R.id.action_signUpFragment_to_homeFragment)
+                                Log.d(TAG, "initClickEvent: settoken 재호출")
+                                signUpViewModel.setToken(result)
+                                signUpViewModel.storeToken()
+                                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                                    // 토큰 값 다 저장했으면 home으로 이동
+                                    signUpViewModel.setTokenResult.collectLatest { done ->
+                                        if (done) findNavController().navigate(R.id.action_signUpFragment_to_homeFragment)
+                                    }
                                 }
                             } else {
                                 signupToast(message = getString(R.string.toast_message_signup_fail))
@@ -171,23 +179,23 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
         }
         // 중복 확인 버튼
         buttonIdCheck.setOnClickListener {
-            if (loginViewModel.newId.value == "") {
+            if (signUpViewModel.newId.value == "") {
                 // 빈 값은 처리하지 않음
                 signupToast(message = getString(R.string.toast_message_signup_check_id_enter_letter))
             } else {
-                loginViewModel.duplicateCheckId()
+                signUpViewModel.duplicateCheckId()
                 setCancelButton()
                 lifecycleScope.launch {
-                    loginViewModel.checkIdResult.collectLatest { result ->
+                    signUpViewModel.checkIdResult.collectLatest { result ->
                         Log.d(TAG, "initClickEvent: 중복 확인 결과 $result")
                         if (!result) {
                             // 사용 가능
                             signupToast(message = getString(R.string.toast_message_signup_check_id_can_use))
-                            loginViewModel.setCheckIdDone(value = true)
+                            signUpViewModel.setCheckIdDone(value = true)
                         } else {
                             // 사용 불가능
                             signupToast(message = getString(R.string.toast_message_signup_check_id_cant_use))
-                            loginViewModel.setCheckIdDone(value = false)
+                            signUpViewModel.setCheckIdDone(value = false)
                         }
                     }
                 }
@@ -209,7 +217,7 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
     private fun setButtonByFocus() = with(binding) {
         // focus를 받았을 때 값 있으면 x 버튼 visible 처리
         lifecycleScope.launch {
-            loginViewModel.newId.collect { value ->
+            signUpViewModel.newId.collect { value ->
                 if (value.isNotEmpty()) imagebuttonIdInputCancel.visibility = View.VISIBLE
             }
         }
