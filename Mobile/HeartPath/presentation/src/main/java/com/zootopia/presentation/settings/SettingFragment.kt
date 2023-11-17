@@ -25,7 +25,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(
         super.onViewCreated(view, savedInstanceState)
         initView()
         initClickEvent()
-        settingViewModel.testFcm()
+//        settingViewModel.testFcm()
     }
 
     private fun initView() = with(binding) {
