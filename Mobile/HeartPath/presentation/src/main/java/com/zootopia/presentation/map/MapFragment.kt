@@ -19,7 +19,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.work.Data
@@ -93,10 +92,10 @@ class MapFragment :
     // WorkManager
     private lateinit var workManager: WorkManager
     private lateinit var workRequest: WorkRequest
-    
+
     // 편지 position
     private lateinit var letterSenderId: String
-    
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
@@ -174,7 +173,7 @@ class MapFragment :
 
         // 신고 요청 이벤트
         buttonReport.setOnClickListener {
-            if(!letterSenderId.isNullOrEmpty()) {
+            if (!letterSenderId.isNullOrEmpty()) {
                 mapViewModel.putOpponentFriend(opponentID = letterSenderId)
             }
         }
@@ -255,8 +254,7 @@ class MapFragment :
                 }
             }
         }
-        val decoration = DividerItemDecoration(mainActivity, VERTICAL)
-      
+
         binding.recyclerviewLetterList.apply {
             adapter = mapLetterAdapter
 //            addItemDecoration(decoration)
@@ -301,14 +299,14 @@ class MapFragment :
                 }
             }
         }
-        
+
         // 친구차단 결과
         viewLifecycleOwner.lifecycleScope.launch {
             mapViewModel.isOppenentFriend.collectLatest {
                 mainActivity.showToast(it)
             }
         }
-        
+
         // 포인트 적립
         viewLifecycleOwner.lifecycleScope.launch {
             mapViewModel.isPostPoint.collectLatest {
