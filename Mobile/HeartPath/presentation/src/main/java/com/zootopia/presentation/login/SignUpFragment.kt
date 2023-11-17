@@ -45,6 +45,7 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
         initView()
         initClickEvent()
         initAnimation()
+        initCollect()
     }
 
     private fun initView() = with(binding) {
@@ -153,9 +154,9 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
                 Log.d(TAG, "회원가입 버튼 $isCheckDone")
                 if (isCheckDone) { // 아이디 중복 체크 확인 되었는 상태
                     viewLifecycleOwner.lifecycleScope.launch {
-                        signUpViewModel.signUp()
+                        signUpViewModel.getKakaoToken()
                         signUpViewModel.signupResult.collectLatest { result ->
-                            if (result.accessToken != "") {
+                            if (result.accessToken != "default") {
                                 signupToast(message = getString(R.string.toast_message_signup_done))
                                 Log.d(TAG, "initClickEvent: settoken 재호출")
                                 signUpViewModel.setToken(result)
@@ -219,6 +220,21 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(
         lifecycleScope.launch {
             signUpViewModel.newId.collect { value ->
                 if (value.isNotEmpty()) imagebuttonIdInputCancel.visibility = View.VISIBLE
+            }
+        }
+    }
+    
+    private fun initCollect() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            signUpViewModel.kakaoAccessToken.collectLatest {
+                Log.d(TAG, "initCollect: 끝")
+                if(it != "") signUpViewModel.getFcmToken()
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            signUpViewModel.fcmToken.collectLatest {
+                Log.d(TAG, "initCollect: 끝 2")
+                if(it != "") signUpViewModel.signUp()
             }
         }
     }
