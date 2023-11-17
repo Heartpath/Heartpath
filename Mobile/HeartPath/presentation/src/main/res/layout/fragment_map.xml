@@ -131,21 +131,30 @@
                         style="@style/Black_12_Bold_NanumText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="2"
                         android:text="시간: " />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <ImageButton
-                    android:id="@+id/button_camera"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/custom_selected_button"
-                    android:src="@drawable/icon_photo_camera"
-                    android:layout_gravity="center|end"
-                    android:layout_weight="1"
-                    android:clickable="false"/>
+<!--                <ImageButton-->
+<!--                    android:id="@+id/button_camera"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@drawable/custom_selected_button"-->
+<!--                    android:src="@drawable/image_camera_bird"-->
+<!--                    android:scaleType="centerCrop"-->
+<!--                    android:layout_gravity="center|end"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:clickable="false"/>-->
 
+                <ImageView
+                    android:id="@+id/button_camera"
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/image_bird_camera"
+                    android:scaleType="centerCrop"
+                    android:layout_weight="1"
+                    />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 

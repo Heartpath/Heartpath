@@ -1,6 +1,7 @@
 package com.zootopia.presentation.settings
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.zootopia.presentation.R
 import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentSettingBinding
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class SettingFragment : BaseFragment<FragmentSettingBinding>(
@@ -43,10 +45,11 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(
             // TODO: 개인정보 처리방침 페이지로 이동
         }
         linearlayoutLogout.setOnClickListener {
-            settingViewModel.logout()
-            lifecycleScope.launch {
-                settingViewModel.tokenDeleteResult.collect {
-                    if(true) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                settingViewModel.logout()
+                settingViewModel.tokenDeleteResult.collectLatest {
+                    Log.d(TAG, "initClickEvent: $it")
+                    if(!it) {
                         findNavController().navigate(R.id.action_settingFragment_to_loginFragment)
                     }
                 }
@@ -55,5 +58,8 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(
         linearlayoutWithdraw.setOnClickListener {
             // TODO: 회원 탈퇴
         }
+    }
+    companion object {
+        private const val TAG = "SettingFragment_HP"
     }
 }

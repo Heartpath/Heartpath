@@ -3,7 +3,6 @@ package com.zootopia.presentation.settings
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.zootopia.domain.usecase.letter.received.TestFcmUseCase
-import com.zootopia.domain.usecase.preference.GetAccessTokenUseCase
 import com.zootopia.domain.usecase.preference.GetBgmStateUseCase
 import com.zootopia.domain.usecase.preference.SetBgmStateUseCase
 import com.zootopia.domain.usecase.preference.SetTokenUseCase
@@ -21,13 +20,13 @@ private const val TAG = "SettingViewModel_HP"
 class SettingViewModel @Inject constructor(
     private val getBgmStateUseCase: GetBgmStateUseCase,
     private val setBgmStateUseCase: SetBgmStateUseCase,
-    private val setTokenUseCase: SetTokenUseCase,
     private val testFcmUseCase: TestFcmUseCase,
+    private val setTokenUseCase: SetTokenUseCase
 ): BaseViewModel(){
     private val _switchState = MutableStateFlow<Boolean>(true)
     var switchState = _switchState.asStateFlow()
 
-    private val _tokenDeleteResult = MutableStateFlow(false)
+    private val _tokenDeleteResult = MutableStateFlow(true)
     var tokenDeleteResult = _tokenDeleteResult.asStateFlow()
 
     fun getBgmState() = viewModelScope.launch {
@@ -49,8 +48,10 @@ class SettingViewModel @Inject constructor(
     }
 
     fun logout() = viewModelScope.launch {
-        setTokenUseCase.invoke(accessToken = "", refreshToken = "")
-        _tokenDeleteResult.emit(true)
+        setTokenUseCase.invoke("","").collectLatest {
+            _tokenDeleteResult.emit(it)
+        }
+
     }
 
     fun testFcm() = viewModelScope.launch {
