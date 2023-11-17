@@ -56,7 +56,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
                 loginByKakao()
                 // 로그인 결과에 따라 동작
                 loginViewModel.loginResult.collectLatest { result ->
-                    if (result.accessToken != "") {
+                    Log.d(TAG, "initClickEvent: $result")
+                    if (result.accessToken != "default") {
                         Log.d(TAG, "initClickEvent: 여기 로그인 또 호출")
                         // 성공 -> home으로 이동
                         viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
