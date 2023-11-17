@@ -262,7 +262,7 @@ tasks.named('test') {
 }
 ```
 
-## Letter-Service
+## Letter-Service Gradle
 
 ```gradle
 plugins {
@@ -325,5 +325,19 @@ tasks.named('test') {
 jar {
 	archiveClassifier = ''
 	enabled = false
+}
+```
+
+## Android Build Gradle
+
+``` gradle
+plugins {
+    id("com.android.application") version "8.1.0" apply false
+    id("org.jetbrains.kotlin.android") version "1.8.10" apply false
+    id("com.android.library") version "8.1.0" apply false
+    id("com.google.dagger.hilt.android") version "2.45" apply false
+    id("com.google.gms.google-services") version "4.3.15" apply false
+    id("org.jlleitschuh.gradle.ktlint") version "10.2.1" apply false
+    id("androidx.navigation.safeargs") version "2.5.3" apply false
 }
 ```
