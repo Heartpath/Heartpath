@@ -210,3 +210,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+#bgm
+./Mobile/HeartPath/presentation/src/main/res/raw/*.mp3
