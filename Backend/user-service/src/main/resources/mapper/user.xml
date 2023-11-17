@@ -3,17 +3,28 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zootopia.userservice.mapper.UserMapper">
 
+    <select id="findByMemberID" parameterType="String" resultType="UserInfoDTO">
+        SELECT m.MEMBER_ID          AS `memberID`,
+               m.FCM_TOKEN          AS `fcmToken`,
+               m.NICKNAME           AS `nickname`,
+               m.PROFILE_IMAGE_PATH AS `profileImagePath`,
+               m.`POINT`            AS `point`,
+               m.CREATED_DATE       AS `createdDateTime`
+        FROM `MEMBER` m
+        WHERE m.MEMBER_ID = #{memberID};
+    </select>
+
     <update id="updateFCMToken" parameterType="Map">
         UPDATE MEMBER m
         SET FCM_TOKEN = #{token}
         WHERE m.MEMBER_ID = #{memberID};
     </update>
 
-    <select id="updateUserPoint" parameterType="Map">
-        UPDATE MEMBER m
+    <insert id="updateUserPoint" parameterType="Map">
+        UPDATE MEMBER
         SET POINT = #{point}
-        WHERE m.MEMBER_ID = #{memberID};
-    </select>
+        WHERE MEMBER_ID = #{memberID};
+    </insert>
 
     <select id="readUserInfo" parameterType="String" resultType="MypageDTO">
         SELECT m.`MEMBER_ID`          as `memberID`,
@@ -54,10 +65,11 @@
                    END                  AS `isFriend`
         FROM (SELECT m.*
               FROM `MEMBER` m
-              WHERE m.MEMBER_ID != #{memberID} AND m.MEMBER_ID LIKE CONCAT(#{query}, '%')
-              LIMIT #{limit}
-              ) AS `res`
-        LEFT JOIN FRIEND f ON f.FROM_MEMBER_ID = #{memberID} AND f.TO_MEMBER_ID = `res`.MEMBER_ID;
+              WHERE m.MEMBER_ID != #{memberID}
+                AND m.MEMBER_ID LIKE CONCAT(#{query}
+                  , '%')
+                  LIMIT #{limit}) AS `res`
+                 LEFT JOIN FRIEND f ON f.FROM_MEMBER_ID = #{memberID} AND f.TO_MEMBER_ID = `res`.MEMBER_ID;
     </select>
 
 </mapper>
