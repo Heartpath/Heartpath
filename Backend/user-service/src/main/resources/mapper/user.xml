@@ -3,6 +3,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zootopia.userservice.mapper.UserMapper">
 
+    <insert id="saveUser" parameterType="com.zootopia.userservice.dto.InsertUserDTO">
+        INSERT INTO MEMBER
+        VALUES (#{memberID}, #{kakaoID}, #{fcmToken}, #{nickname}, #{profileImagePath}, #{point}, 0, now())
+    </insert>
+
     <select id="findByMemberID" parameterType="String" resultType="UserInfoDTO">
         SELECT m.MEMBER_ID          AS `memberID`,
                m.FCM_TOKEN          AS `fcmToken`,
