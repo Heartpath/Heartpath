@@ -27,7 +27,6 @@ private const val TAG = "MainViewModel_HeartPath"
 class MainViewModel @Inject constructor(
     private val getPermissionRejectedUseCase: GetPermissionRejectedUseCase,
     private val setPermissionRejectedUseCase: SetPermissionRejectedUseCase,
-    private val getAccessTokenUseCase: GetAccessTokenUseCase,
     private val getBgmStateUseCase: GetBgmStateUseCase
 ) : ViewModel() {
 
@@ -35,8 +34,6 @@ class MainViewModel @Inject constructor(
     val isShowPermissionDialog: StateFlow<Boolean>
         get() = _isShowPermissionDialog.asStateFlow()
 
-    private val _accessToken = MutableSharedFlow<String>()
-    var accessToken = _accessToken.asSharedFlow()
 
     private var _bgmState: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val bgmState: StateFlow<Boolean> = _bgmState
@@ -82,11 +79,6 @@ class MainViewModel @Inject constructor(
             _isShowPermissionDialog.emit(value)
         }
     }
-
-    fun getAccessToken() = viewModelScope.launch {
-        _accessToken.emit(getAccessTokenUseCase.invoke().first())
-    }
-
 
     fun getBgmState() {
         viewModelScope.launch {
