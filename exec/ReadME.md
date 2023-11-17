@@ -93,16 +93,16 @@ nohup java -jar '빌드된 Jar Name' \
 
 > 사용한 **AWS 기술 스택**은 다음과 같습니다.
 
-|           AWS Stack            | Description |
-| :----------------------------: | :---------: |
-|          AWS **EC2**           |             |
-|          AWS **RDS**           |             |
-|           AWS **S3**           |             |
-|       AWS **DocumentDB**       |             |
-|        AWS **Route53**         |             |
-|   AWS **Cerificate Manager**   |             |
-| AWS **Elastic Load Balancing** |             |
-|       AWS **CloudWatch**       |             |
+|           AWS Stack            |             Description             |
+| :----------------------------: | :---------------------------------: |
+|          AWS **EC2**           |          Spring Boot 배포           |
+|          AWS **RDS**           |             MySQL 배포              |
+|           AWS **S3**           |          이미지 파일 관리           |
+|       AWS **DocumentDB**       |            MongoDB 배포             |
+|        AWS **Route53**         |              DNS 서버               |
+|   AWS **Cerificate Manager**   |          SSL 검증 및 관리           |
+| AWS **Elastic Load Balancing** | Load Balancing 및 Service Discovery |
+|       AWS **CloudWatch**       |    Application 및 Infra 모니터링    |
 
 ### 배포 환경
 
@@ -117,4 +117,213 @@ Request URL: `https://heartpath/`
 | /store/\*\*  | Store-Service  |
 |  otherwise   |   404 Error    |
 
-# 3.
+# 3. Config
+
+## User-Service Gradle
+
+```gradle
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.7.17'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+}
+
+group = 'com.zootopia'
+version = 'SNAPSHOT'
+
+java {
+    sourceCompatibility = '11'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    // Spring 관련 Libraries
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.1'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+    // MySQL
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // JWT 관련 Libraries
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // AWS S3
+    implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
+
+    // XML Processing
+    implementation 'javax.xml.bind:jaxb-api'
+
+    // 설정 파일 암호화 Library
+    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+
+    // swagger
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
+
+    // Firebase
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
+
+    // Test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:2.3.1'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+jar {
+    archiveClassifier = ''
+    enabled = false
+}
+
+```
+
+## Store-Service Gradle
+
+```gradle
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.7.17'
+	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+}
+
+group = 'com.zootopia'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '11'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.hibernate.validator:hibernate-validator:6.2.0.Final'
+
+	// AWS
+	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
+	// WebClient
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	// Jasypt
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3'
+	// swagger
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
+	// firebase
+	implementation 'com.google.firebase:firebase-admin:9.2.0'
+	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
+	// resttemplate
+	implementation 'org.apache.httpcomponents:httpcore:4.4.15'
+	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.projectreactor:reactor-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+```
+
+## Letter-Service
+
+```gradle
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.7.17'
+	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+}
+
+group = 'com.zootopia'
+version = 'SNAPSHOT'
+
+java {
+	sourceCompatibility = '11'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.hibernate.validator:hibernate-validator:6.2.0.Final'
+
+	// AWS
+	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
+	// WebClient
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	// RestTemplate
+	implementation 'org.apache.httpcomponents:httpcore:4.4.15'
+	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+	// Jasypt
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+	// swagger
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
+	// firebase
+	implementation 'com.google.firebase:firebase-admin:9.2.0'
+	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
+
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.projectreactor:reactor-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+jar {
+	archiveClassifier = ''
+	enabled = false
+}
+```
