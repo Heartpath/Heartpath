@@ -131,6 +131,7 @@ public class UserController {
     })
     @PostMapping("/register")
     public ResponseEntity<BaseResponse> registerUser(@RequestBody UserRegisterDTO userRegisterDTO) {
+        log.info("Register DTO: {}", userRegisterDTO);
         HashMap<String, String> tokens = userService.registerUser(userRegisterDTO);
 
         BaseResponse baseResponse = new BaseResponse(200, "회원가입이 완료되었습니다.", tokens);

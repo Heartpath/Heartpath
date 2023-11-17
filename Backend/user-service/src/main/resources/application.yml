@@ -60,9 +60,9 @@ logging:
     com:
       zootopia:
         userservice:
-          mapper: debug
+          mapper: info
     org:
       hibernate:
         type:
           descriptor:
-            sql: trace
+            sql: info
