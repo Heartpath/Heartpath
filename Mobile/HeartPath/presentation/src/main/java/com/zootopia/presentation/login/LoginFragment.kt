@@ -64,6 +64,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
                             Log.d(TAG, "initClickEvent: settoken 재호출")
                             loginViewModel.setToken(result)
                             // 토큰 값 다 저장했으면 home으로 이동
+                        }
+                        viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                             loginViewModel.setTokenResult.collectLatest { done ->
                                 if (done) {
                                     Log.d(TAG, "initClickEvent: 왜 또 호출")
