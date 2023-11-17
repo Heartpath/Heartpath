@@ -17,8 +17,8 @@ import com.zootopia.data.model.login.response.CheckIdResponse
 import com.zootopia.data.model.login.response.LoginResponse
 import com.zootopia.data.model.store.request.BuyStoreCharacterRequest
 import com.zootopia.data.model.store.request.BuyStoreLetterPaperRequest
-import com.zootopia.data.model.store.request.PostPointRequest
 import com.zootopia.data.model.store.request.ChangeMainCharacterRequest
+import com.zootopia.data.model.store.request.PostPointRequest
 import com.zootopia.data.model.store.response.BuyStoreCharacterResponse
 import com.zootopia.data.model.store.response.BuyStoreLetterPaperResponse
 import com.zootopia.data.model.store.response.ChangeMainCharacterResponse
