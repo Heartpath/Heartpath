@@ -1,5 +1,6 @@
 package com.zootopia.data.repository
 
+import android.util.Log
 import com.zootopia.data.datasource.local.PreferenceDataSource
 import com.zootopia.domain.repository.PreferenceRepository
 import kotlinx.coroutines.flow.Flow
@@ -32,6 +33,7 @@ class PreferenceRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setFcmToken(token: String) {
+        Log.d(TAG, "setFcmToken: $token")
         preferenceDataSource.setFcmToken(token = token)
     }
 
@@ -52,6 +54,7 @@ class PreferenceRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setKakaoAccessToken(accessToken: String) {
+        Log.d(TAG, "setKakaoAccessToken: $accessToken")
         preferenceDataSource.setKakaoAccessToken(accessToken = accessToken)
     }
 
