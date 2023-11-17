@@ -65,14 +65,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
                             loginViewModel.setToken(result)
                             // 토큰 값 다 저장했으면 home으로 이동
                         }
-                        viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                            loginViewModel.setTokenResult.collectLatest { done ->
-                                if (done) {
-                                    Log.d(TAG, "initClickEvent: 왜 또 호출")
-                                    findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-                                }
-                            }
-                        }
                     } else {
                         // 성공 못함 -> 회원가입 시키기
                         findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
@@ -183,6 +175,17 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
                 Log.d(TAG, "initCheck: 값 $it")
                 if (it != "") {
                     findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                loginViewModel.setTokenResult.collectLatest { done ->
+                    if (done) {
+                        Log.d(TAG, "initClickEvent: 왜 또 호출")
+                        findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                    }
                 }
             }
         }
