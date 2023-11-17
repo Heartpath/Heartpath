@@ -74,9 +74,16 @@ class LoginViewModel @Inject constructor(
 
     // 로그인 - 카카오 access token 넣어서 전송
     fun login() = viewModelScope.launch {
-//        getToken()
-        loginUseCase.invoke(kakaoAccessToken = kakaoAccessToken.value, fcmToken = fcmToken.value)
-            ?.let { _loginResult.emit(it) }
+        getApiResult(
+            block = {
+                loginUseCase.invoke(kakaoAccessToken = kakaoAccessToken.value, fcmToken = fcmToken.value)
+            },
+            success = {
+                if (it != null) {
+                    _loginResult.emit(it)
+                }
+            }
+        )
     }
 
     fun setToken(token: TokenDto) = viewModelScope.launch {
