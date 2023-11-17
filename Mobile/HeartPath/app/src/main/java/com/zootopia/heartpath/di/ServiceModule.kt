@@ -34,7 +34,7 @@ object ServiceModule {
         .readTimeout(10000, TimeUnit.MILLISECONDS)
         .connectTimeout(10000, TimeUnit.MILLISECONDS)
 //        .addInterceptor(AuthInterceptor(preferenceDataSource)) // TODO interceptor 추가 필요 (주석 해제)
-        .addInterceptor(ResponseInterceptor(preferenceDataSource))
+//        .addInterceptor(ResponseInterceptor(preferenceDataSource))
         .addInterceptor(RequestInterceptor(preferenceDataSource))
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
         .build()
