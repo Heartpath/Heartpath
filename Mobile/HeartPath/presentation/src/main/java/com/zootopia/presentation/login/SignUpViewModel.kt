@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,7 +26,7 @@ class SignUpViewModel @Inject constructor(
     private val setTokenUseCase: SetTokenUseCase,
     private val getKakaoAccessTokenUseCase: GetKakaoAccessTokenUseCase,
     private val getFcmTokenUseCase: GetFcmTokenUseCase,
-): BaseViewModel() {
+) : BaseViewModel() {
     private val _kakaoAccessToken = MutableStateFlow("")
     var kakaoAccessToken = _kakaoAccessToken.asStateFlow()
 
@@ -74,7 +75,6 @@ class SignUpViewModel @Inject constructor(
 
     // 회원가입 요청
     fun signUp() = viewModelScope.launch {
-        getToken()
         Log.d(TAG, "signUp: ${kakaoAccessToken.value} ${fcmToken.value}")
         signupUseCase.invoke(
             memberId = newId.value,
@@ -91,29 +91,29 @@ class SignUpViewModel @Inject constructor(
         _refreshToken.emit(token.refreshToken)
         storeToken()
     }
+
     // token 저장
     fun storeToken() = viewModelScope.launch {
         Log.d(TAG, "storeToken: here")
-        setTokenUseCase.invoke(accessToken = accessToken.value, refreshToken = refreshToken.value).collectLatest {
-            _setTokenResult.emit(it)
-            Log.d(TAG, "storeToken: store 끝났으면? $it")
+        setTokenUseCase.invoke(accessToken = accessToken.value, refreshToken = refreshToken.value)
+            .collectLatest {
+                _setTokenResult.emit(it)
+                Log.d(TAG, "storeToken: store 끝났으면? $it")
+            }
+    }
+
+    fun getKakaoToken() = viewModelScope.launch {
+        getKakaoAccessTokenUseCase.invoke().collectLatest {
+            _kakaoAccessToken.emit(it)
         }
     }
 
-    fun getToken() = viewModelScope.launch {
-        Log.d(TAG, "getToken: ㅇㅕ기도달")
-        launch {
-            getKakaoAccessTokenUseCase.invoke().collectLatest {
-                _kakaoAccessToken.emit(it)
-            }
+    fun getFcmToken() = viewModelScope.launch {
+        Log.d(TAG, "getFcmToken: 여기까지 도달")
+        getFcmTokenUseCase.invoke().collectLatest {
+            Log.d(TAG, "getFcmToken: $it")
+            _fcmToken.emit(it)
         }
-        Log.d(TAG, "getToken: kakao ${kakaoAccessToken.value}")
-        launch {
-            getFcmTokenUseCase.invoke().collectLatest {
-                _fcmToken.emit(it)
-            }
-        }
-        Log.d(TAG, "getToken: fcm ${fcmToken.value}")
     }
 
     companion object {
