@@ -73,6 +73,7 @@ public class UserServiceImpl implements UserService {
     public HashMap<String, String> registerUser(UserRegisterDTO userRegisterDTO) {
 
         String kakaoToken = userRegisterDTO.getKakaoToken();
+        System.out.println("kakaoToken = " + kakaoToken);
         Optional<KakaoUserInfo> oKakaoUserInfo = redisRepository.getData(kakaoToken, KakaoUserInfo.class);
         if (oKakaoUserInfo.isEmpty()) {
             throw new NullPointerException("카카오 로그인을 다시 진행해주세요.");
@@ -80,7 +81,7 @@ public class UserServiceImpl implements UserService {
 
         KakaoUserInfo kakaoUserInfo = oKakaoUserInfo.get();
 
-        User user = User.builder()
+        InsertUserDTO user = InsertUserDTO.builder()
                 .nickname(kakaoUserInfo.getNickname())
                 .profileImagePath(kakaoUserInfo.getProfileImageURL())
                 .kakaoID(kakaoUserInfo.getKakaoId())
@@ -93,7 +94,7 @@ public class UserServiceImpl implements UserService {
 
         // 유저 정보 저장
         String memberID = user.getMemberID();
-        userRepository.save(user);
+        userMapper.saveUser(user);
 
         // 기본 캐릭터 정보 저장
         final String URL = "http://3.37.181.29/api/default/".concat(memberID);
