@@ -82,6 +82,7 @@ class PreferenceDataSource @Inject constructor(
 
     // FCM token 값 호출
     fun getFcmToken(): Flow<String> {
+        Log.d(TAG, "getFcmToken: fcm 토큰 가지고 오기")
         val fcmTokenFlow: Flow<String> = context.dataStore.data
             .catch { exception ->
                 // IOException이 발생하는 경우도 있기 때문에 throw-catch 처리
@@ -157,6 +158,7 @@ class PreferenceDataSource @Inject constructor(
 
     // kakao access token 값 호출
     fun getKakaoAccessToken(): Flow<String> {
+        Log.d(TAG, "getKakaoAccessToken: get token")
         return context.dataStore.data
             .catch { exception ->
                 // IOException이 발생하는 경우도 있기 때문에 throw-catch 처리

@@ -56,19 +56,14 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
                 loginByKakao()
                 // 로그인 결과에 따라 동작
                 loginViewModel.loginResult.collectLatest { result ->
-                    if (result.accessToken != "") {
+                    Log.d(TAG, "initClickEvent: $result")
+                    if (result.accessToken != "default") {
                         Log.d(TAG, "initClickEvent: 여기 로그인 또 호출")
                         // 성공 -> home으로 이동
                         viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                             Log.d(TAG, "initClickEvent: settoken 재호출")
                             loginViewModel.setToken(result)
                             // 토큰 값 다 저장했으면 home으로 이동
-                            loginViewModel.setTokenResult.collectLatest { done ->
-                                if (done) {
-                                    Log.d(TAG, "initClickEvent: 왜 또 호출")
-                                    findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-                                }
-                            }
                         }
                     } else {
                         // 성공 못함 -> 회원가입 시키기
@@ -180,6 +175,17 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
                 Log.d(TAG, "initCheck: 값 $it")
                 if (it != "") {
                     findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                loginViewModel.setTokenResult.collectLatest { done ->
+                    if (done) {
+                        Log.d(TAG, "initClickEvent: 왜 또 호출")
+                        findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                    }
                 }
             }
         }
