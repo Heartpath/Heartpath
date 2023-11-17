@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/loginFragment"
@@ -15,7 +15,9 @@
             app:destination="@id/signUpFragment" />
         <action
             android:id="@+id/action_loginFragment_to_homeFragment"
-            app:destination="@id/homeFragment"/>
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
@@ -39,7 +41,8 @@
             app:destination="@id/homeFragment" />
         <action
             android:id="@+id/action_homeFragment_to_myPageFragment"
-            app:destination="@id/myPageFragment" />
+            app:destination="@id/myPageFragment"
+            style="@style/SlideAnimation"/>
         <action
             android:id="@+id/action_homeFragment_to_selectUserFragment"
             app:destination="@id/selectUserFragment"
@@ -89,13 +92,21 @@
         tools:layout="@layout/fragment_my_page" >
         <action
             android:id="@+id/action_myPageFragment_to_friendSearchFragment"
-            app:destination="@id/friendSearchFragment" />
+            app:destination="@id/friendSearchFragment"
+            style="@style/SlideAnimation"/>
         <action
             android:id="@+id/action_myPageFragment_to_settingFragment"
-            app:destination="@id/settingFragment" />
+            app:destination="@id/settingFragment"
+            style="@style/SlideAnimation"/>
         <action
             android:id="@+id/action_myPageFragment_to_pointHistoryFragment"
-            app:destination="@id/pointHistoryFragment" />
+            app:destination="@id/pointHistoryFragment"
+            style="@style/SlideAnimation"/>
+        <action
+            android:id="@+id/action_myPageFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/settingFragment"
@@ -104,8 +115,8 @@
         tools:layout="@layout/fragment_setting" >
         <action
             android:id="@+id/action_settingFragment_to_loginFragment"
-            app:popUpTo="@id/settingFragment"
             app:destination="@id/loginFragment"
+            app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true"/>
     </fragment>
     <fragment
@@ -167,7 +178,9 @@
         tools:layout="@layout/fragment_sign_up" >
         <action
             android:id="@+id/action_signUpFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/typingWriteFragment"

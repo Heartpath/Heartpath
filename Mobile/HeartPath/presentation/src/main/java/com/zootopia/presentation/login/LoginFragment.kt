@@ -6,7 +6,10 @@ import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.firebase.messaging.FirebaseMessaging
@@ -20,22 +23,26 @@ import com.zootopia.presentation.config.BaseFragment
 import com.zootopia.presentation.databinding.FragmentLoginBinding
 import com.zootopia.presentation.util.clickAnimation
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(
     FragmentLoginBinding::bind,
     R.layout.fragment_login
-){
-    private val loginViewModel : LoginViewModel by activityViewModels()
+) {
+    private val loginViewModel: LoginViewModel by viewModels()
     private lateinit var mainActivity: MainActivity
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "onViewCreated: ")
+        initCheck()
         initView()
         initClickEvent()
         initCallback()
@@ -45,17 +52,22 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         imagebuttonLogin.setOnClickListener {
             it.clickAnimation(lifeCycleOwner = viewLifecycleOwner)
 //            findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
-            lifecycleScope.launch {
+            viewLifecycleOwner.lifecycleScope.launch {
                 loginByKakao()
                 // 로그인 결과에 따라 동작
-                loginViewModel.loginResult.collect { result ->
-                    if(result.accessToken != "") {
+                loginViewModel.loginResult.collectLatest { result ->
+                    if (result.accessToken != "") {
+                        Log.d(TAG, "initClickEvent: 여기 로그인 또 호출")
                         // 성공 -> home으로 이동
-                        launch {
+                        viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                            Log.d(TAG, "initClickEvent: settoken 재호출")
                             loginViewModel.setToken(result)
                             // 토큰 값 다 저장했으면 home으로 이동
-                            loginViewModel.setTokenResult.collect {done ->
-                                if(done) findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                            loginViewModel.setTokenResult.collectLatest { done ->
+                                if (done) {
+                                    Log.d(TAG, "initClickEvent: 왜 또 호출")
+                                    findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                                }
                             }
                         }
                     } else {
@@ -66,6 +78,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
             }
         }
     }
+
     private fun initView() = with(binding) {
         Glide
             .with(this@LoginFragment)
@@ -85,7 +98,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
                     Log.d(TAG, "FCM token result: ${fcmTask.result}")
                     if (fcmTask.isSuccessful) {
                         // fcm 토큰 받아오기 성공
-                        lifecycleScope.launch {
+                        viewLifecycleOwner.lifecycleScope.launch {
                             // 카카오 access token 값 넣어주기
                             loginViewModel.setKakaoAccessToken(token.accessToken)
                             loginViewModel.setFCMToken(fcmTask.result)
@@ -125,7 +138,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
                         Log.d(TAG, "FCM token result: ${fcmTask.result}")
                         if (fcmTask.isSuccessful) {
                             // fcm 토큰 가지고 오기 성공
-                            lifecycleScope.launch {
+                            viewLifecycleOwner.lifecycleScope.launch {
                                 // 카카오 access token 값 넣어주기
                                 loginViewModel.setKakaoAccessToken(token.accessToken)
                                 loginViewModel.setFCMToken(fcmTask.result)
@@ -141,10 +154,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
             }
         } else {
             Log.d(TAG, "loginByKakao: 웹으로 로그인 시도 시작 ")
-        UserApiClient.instance.loginWithKakaoAccount(
-            context = context,
-            callback = callback
-        ) // 카카오 이메일 로그인
+            UserApiClient.instance.loginWithKakaoAccount(
+                context = context,
+                callback = callback
+            ) // 카카오 이메일 로그인
             Log.d(TAG, "loginByKakao: 웹으로 로그인 시도 끝")
         }
     }
@@ -159,6 +172,19 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
+    private fun initCheck() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            loginViewModel.checkAutoLogin()
+            loginViewModel.checkAutoLogin.collect {
+                Log.d(TAG, "initCheck: 여기 몇번 불려")
+                Log.d(TAG, "initCheck: 값 $it")
+                if (it != "") {
+                    findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                }
+            }
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         Log.d(TAG, "onDestroyView: 지금 destroy view 입니다")
@@ -168,6 +194,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         super.onDestroy()
         Log.d(TAG, "onDestroy: 지금은 destroy입니다")
     }
+
     companion object {
         private const val TAG = "LoginFragment_HP"
     }
