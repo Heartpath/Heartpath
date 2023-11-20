@@ -30,7 +30,7 @@ class PreferenceDataSource @Inject constructor(
         val BGM_STATE = booleanPreferencesKey("bgm_state") // BGM 상태
         val FCM_TOKEN = stringPreferencesKey("fcm_token") // FCM 토큰값
         val ACCESS_TOKEN = stringPreferencesKey("access_token") // access token
-        val REFRESH_TOKEN = stringPreferencesKey("refresh_token") // refresh_token
+        val REFRESH_TOKEN = stringPreferencesKey("refresh_token") // refresh_token sss
         val KAKAO_ACCESS_TOKEN = stringPreferencesKey("kakao_access_token") // 카카오 access token
     }
 
