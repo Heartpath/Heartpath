@@ -3,20 +3,15 @@ package com.zootopia.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zootopia.domain.usecase.letter.received.TestFcmUseCase
-import com.zootopia.domain.usecase.preference.GetAccessTokenUseCase
 import com.zootopia.domain.usecase.preference.GetBgmStateUseCase
 import com.zootopia.domain.usecase.preference.GetPermissionRejectedUseCase
 import com.zootopia.domain.usecase.preference.SetPermissionRejectedUseCase
-import com.zootopia.presentation.readletter.ReadLetterViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,53 +22,42 @@ private const val TAG = "MainViewModel_HeartPath"
 class MainViewModel @Inject constructor(
     private val getPermissionRejectedUseCase: GetPermissionRejectedUseCase,
     private val setPermissionRejectedUseCase: SetPermissionRejectedUseCase,
-    private val getBgmStateUseCase: GetBgmStateUseCase
+    private val getBgmStateUseCase: GetBgmStateUseCase,
 ) : ViewModel() {
 
     private var _isShowPermissionDialog: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val isShowPermissionDialog: StateFlow<Boolean>
-        get() = _isShowPermissionDialog.asStateFlow()
-
+    val isShowPermissionDialog: StateFlow<Boolean> = _isShowPermissionDialog.asStateFlow()
 
     private var _bgmState: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val bgmState: StateFlow<Boolean> = _bgmState
+    val bgmState: StateFlow<Boolean> = _bgmState.asStateFlow()
 
     fun getPermissionRejected(keys: MutableList<String>) {
-        Log.d(TAG, "getPermissionRejected: 들어옴~")
         var isDialog = false
         keys.forEach {
+            // todo : viewModelScope.launch (Dispatchers.IO) { }로 테스트 해보기
             viewModelScope.launch {
-                getPermissionRejectedUseCase.invoke(it).collect{ value ->
+                getPermissionRejectedUseCase.invoke(it).collect { value ->
                     Log.d(TAG, "getPermissionRejected: $it -> $value")
                     when (value) {
-                        0 -> {
-                            setPermissionRejected(it, value + 1)
-                        }
-                        
-                        1 -> {
-                            setPermissionRejected(it, value + 1)
-                        }
-                        
-                        2 -> {
-                            // 다이얼로그 출력
-                            isDialog = true
-                        }
+                        0 -> setPermissionRejected(it, value + 1)
+                        1 -> setPermissionRejected(it, value + 1)
+                        2 -> isDialog = true // 다이얼로그 출력
                     }
                 }
             }
         }
-        Log.d(TAG, "getPermissionRejected: 다이얼로그 : $isDialog")
+
         viewModelScope.launch {
             if (isDialog) setIsShowPermissionDialog(true)
         }
     }
-    
+
     fun setPermissionRejected(key: String, stack: Int) {
         viewModelScope.launch {
             setPermissionRejectedUseCase.invoke(key, stack)
         }
     }
-    
+
     suspend fun setIsShowPermissionDialog(value: Boolean) {
         viewModelScope.launch {
             _isShowPermissionDialog.emit(value)
@@ -87,5 +71,4 @@ class MainViewModel @Inject constructor(
             }
         }
     }
-
 }

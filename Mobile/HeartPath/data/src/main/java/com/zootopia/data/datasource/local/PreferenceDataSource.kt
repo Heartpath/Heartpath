@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 // datastore 객체를 파일의 최상단에 올려주어 싱글톤으로 사용
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
-    name = "HeartPath.pd"
+    name = "HeartPath.pd",
 )
 
 class PreferenceDataSource @Inject constructor(
@@ -27,11 +27,11 @@ class PreferenceDataSource @Inject constructor(
 ) {
     private object PreferenceKeys {
         val PERMISSION_REJECTED = intPreferencesKey("permission_rejected")
-        val BGM_STATE = booleanPreferencesKey("bgm_state")  // BGM 상태
-        val FCM_TOKEN = stringPreferencesKey("fcm_token")   // FCM 토큰값
+        val BGM_STATE = booleanPreferencesKey("bgm_state") // BGM 상태
+        val FCM_TOKEN = stringPreferencesKey("fcm_token") // FCM 토큰값
         val ACCESS_TOKEN = stringPreferencesKey("access_token") // access token
-        val REFRESH_TOKEN = stringPreferencesKey("refresh_token")   // refresh_token
-        val KAKAO_ACCESS_TOKEN = stringPreferencesKey("kakao_access_token")     // 카카오 access token
+        val REFRESH_TOKEN = stringPreferencesKey("refresh_token") // refresh_token
+        val KAKAO_ACCESS_TOKEN = stringPreferencesKey("kakao_access_token") // 카카오 access token
     }
 
     fun getPermissionRejected(key: String): Flow<Int> {
@@ -172,9 +172,10 @@ class PreferenceDataSource @Inject constructor(
                 preferences[stringPreferencesKey("kakao_access_token")] ?: ""
             }
     }
+
     // kakao access token 값 수정
     suspend fun setKakaoAccessToken(accessToken: String) {
-        context.dataStore.edit {preferences ->
+        context.dataStore.edit { preferences ->
             preferences[stringPreferencesKey("kakao_access_token")] = accessToken
         }
     }

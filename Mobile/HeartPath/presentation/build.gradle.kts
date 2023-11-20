@@ -98,26 +98,26 @@ dependencies {
 
     // google location
     implementation("com.google.android.gms:play-services-location:21.0.1")
-    
+
     // multidex
     implementation("com.android.support:multidex:1.0.3")
 
     // Kakao
     implementation("com.kakao.sdk:v2-all:2.15.0")
     implementation("com.kakao.sdk:v2-user:2.15.0")
-    implementation ("com.kakao.sdk:v2-talk:2.15.0") // 친구, 메시지(카카오톡)
-    implementation ("com.kakao.sdk:v2-share:2.15.0") // 메시지(카카오톡 공유)
-    implementation ("com.kakao.sdk:v2-friend:2.15.0") // 카카오톡 소셜 피커, 리소스 번들 파일 포함
+    implementation("com.kakao.sdk:v2-talk:2.15.0") // 친구, 메시지(카카오톡)
+    implementation("com.kakao.sdk:v2-share:2.15.0") // 메시지(카카오톡 공유)
+    implementation("com.kakao.sdk:v2-friend:2.15.0") // 카카오톡 소셜 피커, 리소스 번들 파일 포함
 
     // SSP
     implementation("com.intuit.ssp:ssp-android:1.1.0")
-    
+
     // WorkManager
     implementation("androidx.work:work-runtime-ktx:2.8.1")
 
     // coordinatorlayout
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
-    
+
     // arcore - sceneview library
     implementation("io.github.sceneview:arsceneview:1.2.2")
 

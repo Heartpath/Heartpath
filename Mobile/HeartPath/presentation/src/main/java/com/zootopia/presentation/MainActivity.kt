@@ -10,7 +10,6 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
@@ -18,15 +17,11 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraph
 import androidx.navigation.fragment.NavHostFragment
 import androidx.work.WorkManager
-import com.kakao.sdk.common.util.Utility
 import com.zootopia.presentation.config.BaseActivity
 import com.zootopia.presentation.databinding.ActivityMainBinding
-import com.zootopia.presentation.home.HomeFragment
-import com.zootopia.presentation.map.MapFragment
 import com.zootopia.presentation.util.checkAllPermission
 import com.zootopia.presentation.util.showPermissionDialog
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -96,18 +91,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 //                finish()
 //            }
 //        }
-////            navGraph = navController.graph
-////            initCheck()
+// //            navGraph = navController.graph
+// //            initCheck()
 //        val inflater = navHostFragmentManager.navController.navInflater
 //        val graph = inflater.inflate(R.navigation.nav_graph)
-////        Log.d(TAG, "initNavHost: extraStr!!! $extraStr")
-////        navController.navigate(R.id.mapFragment)
+// //        Log.d(TAG, "initNavHost: extraStr!!! $extraStr")
+// //        navController.navigate(R.id.mapFragment)
 //
 //        lifecycleScope.launch {
 //            mainViewModel.accessToken.collect { value ->
 //                Log.d(TAG, "initCheck: access token $value")
 //                if (value != "") {
-////                    graph.setStartDestination(R.id.homeFragment)
+// //                    graph.setStartDestination(R.id.homeFragment)
 //                    navController.currentDestination?.let { it1 ->
 //                        navController.popBackStack(
 //                            it1.id,
@@ -117,13 +112,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 //                    }   // 백스택 지움
 //                    navController.navigate(R.id.homeFragment)
 //                } else {
-////                    graph.setStartDestination(R.id.loginFragment)
+// //                    graph.setStartDestination(R.id.loginFragment)
 //                    navController.navigate(R.id.loginFragment)
 //                }
 //            }
 //        }
-
-
     }
 
     // 초기 권한 요청
@@ -148,9 +141,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                     }
                 }
             }
+
             lifecycleScope.launch {
                 bgmState.collectLatest {
-                    Log.d(TAG, "initCollect: bgm state ${it}")
+                    Log.d(TAG, "initCollect: bgm state $it")
                     Log.d(TAG, "initCollect: ? ${mediaPlayer.isPlaying}")
                     if (it && mediaPlayer.isPlaying == false) {
                         Log.d(TAG, "initCollect: start bgm")

@@ -19,7 +19,7 @@ private const val TAG = "PermissionUtil_HeartPath"
 fun Context.hasPermissions(permission: String): Boolean {
     return ContextCompat.checkSelfPermission(
         this,
-        permission
+        permission,
     ) == PackageManager.PERMISSION_GRANTED
 }
 
@@ -31,21 +31,20 @@ fun checkAllPermission(
     activity: MainActivity,
     mainViewModel: MainViewModel,
     permissionList: Array<String>,
-){
+) {
     val permissionsToRequest = mutableListOf<String>()
     val requestMultiplePermission =
-        (fragment?:activity).registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
-            var lastResult = false // 초기값을 false 설정
+        (fragment ?: activity).registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
             results.forEach {
                 Log.d(TAG, "checkAllPermission: ${it.key}  / ${it.value}")
-                if(!it.value) {
+                if (!it.value) {
                     permissionsToRequest.add(it.key)
                 } else {
                     mainViewModel.setPermissionRejected(it.key, 0)
                 }
             }
         }
-    
+
     mainViewModel.getPermissionRejected(permissionsToRequest)
     requestMultiplePermission.launch(permissionList)
 }
@@ -54,39 +53,32 @@ fun checkAllPermission(
 fun requestPermissionsOnClick(
     activity: MainActivity,
     mainViewModel: MainViewModel,
-    permissionList: Array<String>
+    permissionList: Array<String>,
 ) {
     // 권한을 이미 허용했는지 확인
     val permissionsToRequest = mutableListOf<String>()
     for (permission in permissionList) {
-        Log.d(TAG, "requestPermissionsOnClick: $permission")
-        
         if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "requestPermissionsOnClick: if문 안에 $permission")
             permissionsToRequest.add(permission)
-        } else {
-            Log.d(TAG, "requestPermissionsOnClick: else문 안에 $permission")
         }
     }
     
-    Log.d(TAG, "requestPermissionsOnClick: 요청할 권한 리스트 $permissionsToRequest")
     // 아직 허용되지 않은 권한이 있다면 요청
     if (permissionsToRequest.isNotEmpty()) {
         mainViewModel.getPermissionRejected(permissionsToRequest)
         ActivityCompat.requestPermissions(activity, permissionsToRequest.toTypedArray(), 123)
     } else {
         // 이미 모든 권한이 허용되었음
-        // 권한 처리 코드를 여기에 추가할 수 있습니다.
     }
 }
 
 // 다이얼로그를 띄우기 위한 함수
 fun showPermissionDialog(activity: MainActivity) {
     val builder = AlertDialog.Builder(activity)
-    
+
     builder.setTitle("권한 요청")
     builder.setMessage("앱을 사용하려면 권한을 허용해야 합니다. 설정으로 이동하여 권한을 허용하시겠습니까?")
-    
+
     builder.setPositiveButton("확인") { dialog, which ->
         // 사용자가 확인 버튼을 누를 때 설정으로 이동하는 코드
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
@@ -94,11 +86,11 @@ fun showPermissionDialog(activity: MainActivity) {
         intent.data = uri
         activity.startActivity(intent)
     }
-    
+
     builder.setNegativeButton("취소") { dialog, which ->
         // 사용자가 취소 버튼을 누를 때 수행할 작업 (옵션)
     }
-    
+
     val dialog = builder.create()
     dialog.show()
 }
