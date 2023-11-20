@@ -13,6 +13,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 import javax.inject.Inject
@@ -30,11 +31,11 @@ class PreferenceDataSource @Inject constructor(
         val BGM_STATE = booleanPreferencesKey("bgm_state") // BGM 상태
         val FCM_TOKEN = stringPreferencesKey("fcm_token") // FCM 토큰값
         val ACCESS_TOKEN = stringPreferencesKey("access_token") // access token
-        val REFRESH_TOKEN = stringPreferencesKey("refresh_token") // refresh_token sss
+        val REFRESH_TOKEN = stringPreferencesKey("refresh_token") // refresh_token
         val KAKAO_ACCESS_TOKEN = stringPreferencesKey("kakao_access_token") // 카카오 access token
     }
 
-    fun getPermissionRejected(key: String): Flow<Int> {
+    suspend fun getPermissionRejected(key: String): Int {
         val rejectedPreferencesFlow: Flow<Int> = context.dataStore.data
             .catch { exception ->
                 if (exception is IOException) {
@@ -46,13 +47,13 @@ class PreferenceDataSource @Inject constructor(
             .map { preferences ->
                 preferences[intPreferencesKey(key)] ?: 0
             }
-
-        return rejectedPreferencesFlow
+        Log.d(TAG, "getPermissionRejected: key: $key -> ${rejectedPreferencesFlow.first()}")
+        return rejectedPreferencesFlow.first()
     }
 
     suspend fun setPermissionRejected(key: String, stack: Int) {
         context.dataStore.edit { preferences ->
-            preferences[intPreferencesKey(key)] = stack + 1
+            preferences[intPreferencesKey(key)] = stack
         }
     }
 

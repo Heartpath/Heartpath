@@ -7,7 +7,7 @@ import javax.inject.Inject
 class GetPermissionRejectedUseCase @Inject constructor(
     private val preferenceRepository: PreferenceRepository,
 ) {
-    suspend operator fun invoke(key: String): Flow<Int> {
+    suspend operator fun invoke(key: String): Int {
         return preferenceRepository.getPermissionRejected(key)
     }
 }

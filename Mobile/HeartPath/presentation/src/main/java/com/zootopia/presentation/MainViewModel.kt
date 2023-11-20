@@ -1,13 +1,12 @@
 package com.zootopia.presentation
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zootopia.domain.usecase.preference.GetBgmStateUseCase
 import com.zootopia.domain.usecase.preference.GetPermissionRejectedUseCase
 import com.zootopia.domain.usecase.preference.SetPermissionRejectedUseCase
+import com.zootopia.presentation.config.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,7 +22,7 @@ class MainViewModel @Inject constructor(
     private val getPermissionRejectedUseCase: GetPermissionRejectedUseCase,
     private val setPermissionRejectedUseCase: SetPermissionRejectedUseCase,
     private val getBgmStateUseCase: GetBgmStateUseCase,
-) : ViewModel() {
+) : BaseViewModel() {
 
     private var _isShowPermissionDialog: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isShowPermissionDialog: StateFlow<Boolean> = _isShowPermissionDialog.asStateFlow()
@@ -32,19 +31,24 @@ class MainViewModel @Inject constructor(
     val bgmState: StateFlow<Boolean> = _bgmState.asStateFlow()
 
     fun getPermissionRejected(keys: MutableList<String>) {
+        // todo : viewModelScope.launch (Dispatchers.IO) { }로 테스트 해보기
         var isDialog = false
+        Log.d(TAG, "getPermissionRejected: 권한 요청 했음(1)!! ${keys.size}")
         keys.forEach {
-            // todo : viewModelScope.launch (Dispatchers.IO) { }로 테스트 해보기
-            viewModelScope.launch {
-                getPermissionRejectedUseCase.invoke(it).collect { value ->
+            getApiResult(
+                block = {
+                    Log.d(TAG, "getPermissionRejected: 권한 요청 했음(2)!!")
+                    getPermissionRejectedUseCase.invoke(it)
+                },
+                success = { value ->
                     Log.d(TAG, "getPermissionRejected: $it -> $value")
                     when (value) {
                         0 -> setPermissionRejected(it, value + 1)
                         1 -> setPermissionRejected(it, value + 1)
                         2 -> isDialog = true // 다이얼로그 출력
                     }
-                }
-            }
+                },
+            )
         }
 
         viewModelScope.launch {

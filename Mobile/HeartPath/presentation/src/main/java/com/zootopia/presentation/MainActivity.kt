@@ -1,5 +1,6 @@
 package com.zootopia.presentation
 
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
@@ -20,6 +21,8 @@ import androidx.work.WorkManager
 import com.zootopia.presentation.config.BaseActivity
 import com.zootopia.presentation.databinding.ActivityMainBinding
 import com.zootopia.presentation.util.checkAllPermission
+import com.zootopia.presentation.util.hasPermissions
+import com.zootopia.presentation.util.requestPermissionsOnClick
 import com.zootopia.presentation.util.showPermissionDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -121,12 +124,23 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     // 초기 권한 요청
     private fun initCheckPermission() {
-        checkAllPermission(
-            fragment = null,
-            activity = this,
-            mainViewModel = mainViewModel,
-            permissionList = INIT_PERMISSION_REQUEST,
-        )
+        if (!checkBasePermission()) {
+//            requestPermissionsOnClick(
+//                activity = this,
+//                mainViewModel = mainViewModel,
+//                permissionList = INIT_PERMISSION_REQUEST,
+//            )
+            checkAllPermission(
+                fragment = null,
+                activity = this,
+                mainViewModel = mainViewModel,
+                permissionList = INIT_PERMISSION_REQUEST,
+            )
+        }
+    }
+    
+    private fun checkBasePermission(): Boolean = with(this) {
+        return hasPermissions(android.Manifest.permission.ACCESS_COARSE_LOCATION) && hasPermissions(android.Manifest.permission.ACCESS_FINE_LOCATION) && hasPermissions(com.zootopia.presentation.MainActivity.POST_NOTIFICATIONS)
     }
 
     // 권한 확인 다이얼로그

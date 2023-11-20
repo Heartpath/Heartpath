@@ -32,20 +32,24 @@ fun checkAllPermission(
     mainViewModel: MainViewModel,
     permissionList: Array<String>,
 ) {
-    val permissionsToRequest = mutableListOf<String>()
     val requestMultiplePermission =
         (fragment ?: activity).registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
+            val permissionsToRequest = mutableListOf<String>()
+            
             results.forEach {
                 Log.d(TAG, "checkAllPermission: ${it.key}  / ${it.value}")
                 if (!it.value) {
                     permissionsToRequest.add(it.key)
                 } else {
+                    Log.d(TAG, "checkAllPermission: setPermission ${it.key}")
                     mainViewModel.setPermissionRejected(it.key, 0)
                 }
             }
+            
+            Log.d(TAG, "checkAllPermission: $permissionsToRequest")
+            mainViewModel.getPermissionRejected(permissionsToRequest)
         }
 
-    mainViewModel.getPermissionRejected(permissionsToRequest)
     requestMultiplePermission.launch(permissionList)
 }
 

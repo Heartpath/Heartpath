@@ -12,7 +12,7 @@ class PreferenceRepositoryImpl @Inject constructor(
     private val preferenceDataSource: PreferenceDataSource,
 ) : PreferenceRepository {
 
-    override suspend fun getPermissionRejected(key: String): Flow<Int> {
+    override suspend fun getPermissionRejected(key: String): Int {
         return preferenceDataSource.getPermissionRejected(key)
     }
 
