@@ -21,14 +21,14 @@ fun RequestTmapWalkRoadDto.toData(): TmapWalkRoadRequest {
         reqCoordType = reqCoordType,
         resCoordType = resCoordType,
         startName = startName,
-        endName =endName,
+        endName = endName,
     )
 }
 
 fun FeatureCollectionResponse.toDomain(): FeatureCollectionDto {
     return FeatureCollectionDto(
         type = type,
-        features = features.map { it.toDomain() }.toMutableList()
+        features = features.map { it.toDomain() }.toMutableList(),
     )
 }
 
@@ -44,7 +44,7 @@ fun GeometryResponse.toDomain(): GeometryDto {
     return GeometryDto(
         type = type,
         coordinates =
-        if(coordinates.isNullOrEmpty()) {
+        if (coordinates.isNullOrEmpty()) {
             listOf()
         } else if (coordinates[0] is List<*>) {
             // coordinates가 List<List<Double>> 형식인 경우
@@ -52,7 +52,7 @@ fun GeometryResponse.toDomain(): GeometryDto {
         } else {
             // coordinates가 List<Double> 형식인 경우, 이를 List<List<Double>>로 변환
             listOf(coordinates as List<Double>)
-        }
+        },
     )
 }
 

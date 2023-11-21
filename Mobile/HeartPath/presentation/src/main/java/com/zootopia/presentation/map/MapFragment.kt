@@ -27,10 +27,12 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.Granularity
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraPosition
@@ -404,11 +406,20 @@ class MapFragment :
     // 좌표계를 주기적으로 갱신
     @SuppressLint("MissingPermission")
     fun setUpdateLocationListner() {
-        val locationRequest = LocationRequest.create()
-        locationRequest.run {
-            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            locationRequest.setInterval(2000)
-        }
+        // 위치 서비스는 버전 21.0.0 이하
+//        val locationRequest = LocationRequest.create()
+//        locationRequest.run {
+//            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+//            locationRequest.setInterval(2000)
+//        }
+    
+        // 위치 서비스는 버전 21.0.0 이상
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000).apply {
+            setMinUpdateDistanceMeters(100f) // 위치 업데이트를 수행하기 위한 최소 거리 (Float)
+            setGranularity(Granularity.GRANULARITY_PERMISSION_LEVEL)
+            setWaitForAccurateLocation(true)
+        }.build()
+        
         if (locationCallback == null) {
             locationCallback = object : LocationCallback() {
                 override fun onLocationResult(locationResult: LocationResult) {
@@ -548,7 +559,6 @@ class MapFragment :
                 mainActivity,
             ) { workInfo ->
                 if (workInfo != null) {
-                    val outputData = workInfo.outputData
                     when (workInfo.state) {
                         WorkInfo.State.RUNNING -> {
                             Log.d(TAG, "startWalk:Running ")

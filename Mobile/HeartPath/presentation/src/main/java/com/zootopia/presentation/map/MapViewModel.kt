@@ -171,7 +171,7 @@ class MapViewModel @Inject constructor(
             },
             success = {
                 _isOpponentFriend.emit(it)
-            }
+            },
         )
     }
     
@@ -188,7 +188,7 @@ class MapViewModel @Inject constructor(
             success = {
                 Log.d(TAG, "postPoint: 포인트 적립 성공")
                 _isPostPoint.emit(it)
-            }
+            },
         )
     }
 }
