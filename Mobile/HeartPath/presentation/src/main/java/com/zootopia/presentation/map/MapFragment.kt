@@ -20,7 +20,6 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
@@ -335,9 +334,16 @@ class MapFragment :
 
         Log.d(TAG, "DrawLoad: $path_container")
         // 더미원소 드랍후 path.coords에 path들을 넣어줌.
-        path!!.coords = path_container?.drop(1)!!
-        path!!.color = Color.RED
-        path!!.map = naverMap
+//        path!!.coords = path_container?.drop(1)!!
+//        path!!.color = Color.RED
+//        path!!.map = naverMap
+        path?.let {
+            it.apply {
+                coords = path_container?.drop(1)!!
+                color = Color.RED
+                map = naverMap
+            }
+        }
     }
 
     override fun onMapReady(naverMap: NaverMap) {
@@ -359,7 +365,13 @@ class MapFragment :
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(mainActivity) // gps 자동으로 받아오기
         setUpdateLocationListner() // 내위치를 가져오는 코드
-
+        
+        // LocationOverlay 설정
+//        val locationOverlay = naverMap.locationOverlay
+//        locationOverlay.isVisible = true
+//        locationOverlay.position = LatLng(userLatitude, userLongitude) // 파란색 점의 위치 업데이트
+//        locationOverlay.icon = OverlayImage.fromResource(R.drawable.ic_location_dot) // 파란색 점 이미지 사용
+        
         if (mapViewModel.isStartWalk) rewriteMap() // 다시 그려야 하는 경로가 있다면 다시 그리기
     }
 
